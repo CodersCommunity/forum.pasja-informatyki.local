@@ -6,7 +6,7 @@ server:
     locale: pl_PL.UTF-8
 vagrant_local:
     install: '1'
-    vm: { base_box: trusty64, hostname: pasjainformatyki, ip: 192.168.112.112, memory: '2048', sharedfolder: ./forum/, useVagrantCloud: '1', syncType: nfs }
+    vm: { base_box: trusty64, hostname: pasjainformatyki, ip: 192.168.112.112, memory: '2048', sharedfolder: ./, useVagrantCloud: '1', syncType: nfs }
 apache:
     install: '1'
     docroot: /vagrant/forum/
@@ -17,7 +17,7 @@ mysql:
     database: forum
     user: test
     password: test
-    dump: ''
+    dump: 'dump/forum.sql'
 php:
     install: '1'
     ppa: php5-5.6

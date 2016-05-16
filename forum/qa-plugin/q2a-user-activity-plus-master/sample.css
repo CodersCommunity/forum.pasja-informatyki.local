@@ -1,0 +1,44 @@
+/* User Activity plugin */
+
+.qa-useract-page-links {
+	margin: 16px 0;
+	color: #555753;
+	font-size: 16px;
+	text-align: center;
+}
+.qa-useract-page-links > a {
+	font-weight: bold;
+}
+
+.qa-useract-stats {
+	margin: 8px 0;
+	text-align: center;
+}
+.qa-useract-stat {
+	display: inline-block;
+	margin: 0 16px 8px;
+}
+.qa-useract-count {
+	font-size: 36px;
+	font-weight: bold;
+}
+
+.qa-useract-wrapper {
+}
+.qa-useract-wrapper .qa-q-item-main {
+	width: 658px;
+}
+.qa-useract-wrapper .qa-a-count {
+	height: auto;
+	border: 1px solid #ebeaca;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius:8px;
+}
+.qa-useract-wrapper .qa-a-snippet {
+	margin-top: 2px;
+	color: #555753;
+}
+.qa-useract-wrapper .qa-q-item-meta {
+	float: none;
+}

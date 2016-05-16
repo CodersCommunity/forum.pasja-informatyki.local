@@ -1,0 +1,28 @@
+@import "buttons";
+@import "icons";
+
+.social-wrapper {
+  margin: 10px 0;
+  padding: 10px 20px;
+  text-align: center;
+  .social-share-text {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  .share-link {
+    margin-right: 5px;
+  }
+}
+
+.qa-sss-widget {
+  margin-top: 0 !important;
+  height: auto !important;
+}
+
+.qa-sss-clear {
+  clear: both;
+}
+
+.qa-widget-side .btn-share.with-icon .btn {
+  width: 100%;
+}

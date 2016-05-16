@@ -1,0 +1,13 @@
+{
+  "name": "Q2A Social Sharing",
+  "uri": "https://github.com/amiyasahu/q2a-social-share/",
+  "description": "Adds Clickable Social Sharing Buttons Below Questions",
+  "version": "1.7.0",
+  "date": "2016-02-07",
+  "author": "Amiya Sahu",
+  "author_uri": "http://www.amiyasahu.com/",
+  "license": "GPLv3",
+  "update_uri": "https://raw.githubusercontent.com/amiyasahu/q2a-social-share/master/qa-plugin.php",
+  "min_q2a": "1.5",
+  "min_php": "5.1.6"
+}
