@@ -1,0 +1,29 @@
+---
+server:
+    install: '1'
+    packages: [htop, imagemagick, git]
+    timezone: Europe/Warsaw
+    locale: pl_PL.UTF-8
+vagrant_local:
+    install: '1'
+    vm: { base_box: trusty64, hostname: pasjainformatyki, ip: 192.168.112.112, memory: '2048', sharedfolder: ./forum/, useVagrantCloud: '1', syncType: nfs }
+apache:
+    install: '1'
+    docroot: /vagrant/forum/
+    servername: forum.pasja-informatyki.local
+mysql:
+    install: '1'
+    root_password: root
+    database: forum
+    user: test
+    password: test
+    dump: ''
+php:
+    install: '1'
+    ppa: php5-5.6
+    packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-imagick, php5-common, php5-mbstring, php5-memcache, php5-mysql, php5-readline, php5-sqlite, php5-gd]
+xdebug:
+    install: '1'
+composer:
+    install: '1'
+
