@@ -1,0 +1,53 @@
+
+	/* Open Login buttons */
+	.open-login-button.context-associate,
+	.open-login-button.context-login,
+	.open-login-button.context-register {
+		font-weight: bold;
+		display: inline-block;
+		margin-top: 5px;
+		width: 30%;
+		text-decoration: none;
+	}
+	
+	.open-login-button.context-sidebar {
+		font-weight: bold;
+		margin: 0 0 5px 0;
+		display: block;
+		max-width: 90%;
+	}
+
+	.open-login-button.context-menu.zocial {
+		margin-top: -4px;
+		font-size: 11px;
+		text-decoration: none;
+	}
+	
+	.open-login-profile, .open-login-accounts, .open-login-others {
+		padding-bottom: 40px;
+		border-bottom: 1px solid gray;
+	}
+	
+	.qa-nav-user { /* this should not have negative effects */
+		height: 24px;
+		margin-top: 4px;
+	}
+	
+	.open-login-others .opacxhtml select {
+		margin: 5px 0;
+	}
+	
+	.open-login-others .opacxhtml {
+		padding-left: 0px;
+	}
+	
+	.open-login-accounts a.opacxdel:hover {
+		text-decoration: none;
+	}
+	
+	.open-login-accounts a.opacxdel{
+		display: inline-block;
+		line-height: 25px;
+		margin: 0 5px;
+	}
+	/* End of Open Login buttons */

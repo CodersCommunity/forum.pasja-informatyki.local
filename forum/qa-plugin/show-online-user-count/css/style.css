@@ -1,0 +1,29 @@
+div.show-online-user-count-total {
+	font-size: 16px;
+	text-align: center;
+	border-bottom: 1px #C0C0C0 solid;
+	height: 10px;
+	padding: 0px 20px 30px 20px;
+}
+
+.show-online-user-count-data {
+	font-weight: bold;
+	color: #2ECC71;
+}
+.show-online-user-count-info {
+	text-align: center;
+	font-size: 16px;
+	margin-top: 3px;
+}
+div.show-online-user-list {
+	margin: 10px;	
+	background-color: #EDF7FF;
+	padding: 5px;
+}
+.show-online-user-list_title {
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 3px;
+	background: #DFEDFF;
+}
