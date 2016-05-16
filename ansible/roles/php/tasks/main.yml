@@ -23,3 +23,4 @@
 
 - include: configure.yml
 - include: pecl.yml
+- include:  php_ini_configure.yml

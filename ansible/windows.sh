@@ -28,4 +28,6 @@ sudo apt-get install -y ansible
 cp /vagrant/ansible/inventories/dev /etc/ansible/hosts -f
 chmod 666 /etc/ansible/hosts
 cat /vagrant/ansible/files/authorized_keys >> /home/vagrant/.ssh/authorized_keys
+sudo sed -i -e 's/^#deprecation_warnings.*/deprecation_warnings = False/g' /etc/ansible/ansible.cfg
 sudo ansible-playbook /vagrant/ansible/playbook.yml -e hostname=$1 --connection=local
+
