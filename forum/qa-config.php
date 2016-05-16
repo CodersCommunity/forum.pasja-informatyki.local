@@ -167,7 +167,7 @@
 	define('QA_OPTIMIZE_LOCAL_DB', false);
 	define('QA_OPTIMIZE_DISTANT_DB', false);
 	define('QA_PERSISTENT_CONN_DB', false);
-	define('QA_DEBUG_PERFORMANCE', false);
+	define('QA_DEBUG_PERFORMANCE', true);
 	define('QA_DB_MAX_CONTENT_LENGTH', 15000);
 
 /*
