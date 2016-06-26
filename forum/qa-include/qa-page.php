@@ -608,10 +608,21 @@
 				'label' => '<dfn data-info="Zadaj pytanie"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav2.png" alt="Zadaj pytanie"/></dfn>',
 		);
 
+		// if (true)
+		// 	$qa_content['navigation']['main']['nav3']=array(
+		// 		'url' => qa_path_html('user'),
+		// 		'label' => '<dfn data-info="Twój profil"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav3.png" alt="Twój profil"/></dfn>',
+		// );
 		if (true)
-			$qa_content['navigation']['main']['nav3']=array(
-				'url' => qa_path_html('user'),
-				'label' => '<dfn data-info="Twój profil"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav3.png" alt="Twój profil"/></dfn>',
+		$qa_content['navigation']['main']['nav8']=array(
+			'url' => qa_path_html('categories'),
+			'label' => '<dfn data-info="Kategorie pytań"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav8.png" alt="Kategorie"/></dfn>',
+		);
+
+		if (true)
+		$qa_content['navigation']['main']['nav9']=array(
+			'url' => qa_path_html('tags'),
+			'label' => '<dfn data-info="Wszystkie tagi"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav9.png" alt="Tagi"/></dfn>',
 		);
 
 		if (true)
@@ -620,17 +631,17 @@
 				'label' => '<dfn data-info="Ranking punktowy"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav4.png" alt="Zdobyte punkty"/></dfn>',
 		);
 
-		if (true)
-			$qa_content['navigation']['main']['nav5']=array(
-				'url' => qa_path_html('badges'),
-				'label' => '<dfn data-info="Zdobyte odznaki"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav5.png" alt="Zdobyte odznaki"/></dfn>',
-		);
+		// if (true)
+		// 	$qa_content['navigation']['main']['nav5']=array(
+		// 		'url' => qa_path_html('badges'),
+		// 		'label' => '<dfn data-info="Zdobyte odznaki"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav5.png" alt="Zdobyte odznaki"/></dfn>',
+		// );
 
-		if (true)
-			$qa_content['navigation']['main']['nav6']=array(
-				'url' => qa_path_html('zasady-przyznawania-punktow'),
-				'label' => '<dfn data-info="Zasady punktacji"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav6.png" alt="Zdobywanie punktów"/></dfn>',
-		);
+		// if (true)
+		// 	$qa_content['navigation']['main']['nav6']=array(
+		// 		'url' => qa_path_html('zasady-przyznawania-punktow'),
+		// 		'label' => '<dfn data-info="Zasady punktacji"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav6.png" alt="Zdobywanie punktów"/></dfn>',
+		// );
 
 		if (true)
 			$qa_content['navigation']['main']['nav7']=array(
@@ -639,15 +650,9 @@
 		);
 
 		if (true)
-			$qa_content['navigation']['main']['nav8']=array(
-				'url' => qa_path_html('categories'),
-				'label' => '<dfn data-info="Kategorie pytań"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav8.png" alt="Kategorie"/></dfn>',
-		);
-
-		if (true)
-			$qa_content['navigation']['main']['nav9']=array(
-				'url' => qa_path_html('tags'),
-				'label' => '<dfn data-info="Wszystkie tagi"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav9.png" alt="Tagi"/></dfn>',
+		$qa_content['navigation']['main']['nav12']=array(
+			'url' => qa_path_html('chat-irc'),
+			'label' => '<dfn data-info="Chat IRC"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav12.png" alt="IRC"/></dfn>',
 		);
 
 		if (true)
@@ -656,34 +661,35 @@
 				'label' => '<dfn data-info="Pomoc (FAQ)"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav10.png" alt="FAQ"/></dfn>',
 		);
 
-		if (true)
-			$qa_content['navigation']['main']['nav11']=array(
-				'url' => qa_path_html('polls'),
-				'label' => '<dfn data-info="Ankiety"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav11.png" alt="Ankiety"/></dfn>',
-		);
+		// if (true)
+		// 	$qa_content['navigation']['main']['nav11']=array(
+		// 		'url' => qa_path_html('polls'),
+		// 		'label' => '<dfn data-info="Ankiety"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav11.png" alt="Ankiety"/></dfn>',
+		// );
 
-		if (true)
-			$qa_content['navigation']['main']['nav12']=array(
-				'url' => qa_path_html('chat-irc'),
-				'label' => '<dfn data-info="Chat IRC"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav12.png" alt="IRC"/></dfn>',
-		);
 
-		if (true)
-			$qa_content['navigation']['main']['nav13']=array(
-				'url' => qa_path_html('messages'),
-				'label' => '<dfn data-info="Wiadomości"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav13.png" alt="Wiadomości"/></dfn>',
-		);
+		// if (true)
+		// 	$qa_content['navigation']['main']['nav13']=array(
+		// 		'url' => qa_path_html('messages'),
+		// 		'label' => '<dfn data-info="Wiadomości"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav13.png" alt="Wiadomości"/></dfn>',
+		// );
 
 		if (true)
 			$qa_content['navigation']['main']['nav14']=array(
 				'url' => qa_path_html('regulamin-forum'),
-				'label' => '<dfn data-info="Regulamin"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav14.png" alt="Regulamin"/></dfn>',
+				'label' => '<dfn data-info="Regulamin"><img src="//forum.pasja-informatyki.local/qa-theme/SnowFlat/icons/nav14.png" alt="Regulamin"/></dfn>',
 		);
 
 		if (true)
 			$qa_content['navigation']['main']['nav15']=array(
 				'url' => qa_path_html('ksiazki-informatyczne-warte-uwagi'),
 				'label' => '<dfn data-info="Książki warte uwagi"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav15.png" alt="Książki warte uwagi"/></dfn>',
+		);
+
+		if (true)
+			$qa_content['navigation']['main']['nav16']=array(
+				'url' => qa_path_html('linkownia-ciekawe-linki'),
+				'label' => '<dfn data-info="Linkownia"><img src="//forum.pasja-informatyki.local/qa-theme/SnowFlat/icons/nav16.png" alt="Linkownia - ciekawe linki"/></dfn>',
 		);
 
 		// Only the 'level' permission error prevents the menu option being shown - others reported on qa-page-ask.php
@@ -790,6 +796,11 @@
 			$qa_content['loggedin']=qa_lang_html_sub_split('main/logged_in_x', QA_FINAL_EXTERNAL_USERS
 				? qa_get_logged_in_user_html(qa_get_logged_in_user_cache(), qa_path_to_root(), false)
 				: qa_get_one_user_html(qa_get_logged_in_handle(), false)
+			);
+
+			$qa_content['navigation']['user']['messages']=array(
+				'url' => qa_path_html('messages'),
+				'label' => qa_lang_html('main/nav_messages'),
 			);
 
 			$qa_content['navigation']['user']['updates']=array(

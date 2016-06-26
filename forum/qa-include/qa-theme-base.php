@@ -477,10 +477,10 @@ class qa_html_theme_base
 
 	public function logo()
 	{
-		
+
 		$adres = qa_path_absolute(qa_request());
-		
-		if($adres=="http://forum.pasja-informatyki.pl/") 
+
+		if($adres=="http://forum.pasja-informatyki.pl/")
 		{
 			$this->output(
 			'<div class="qa-logoA">',

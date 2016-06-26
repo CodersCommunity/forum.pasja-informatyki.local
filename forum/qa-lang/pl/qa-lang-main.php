@@ -113,6 +113,7 @@
 		'nav_register' => 'Rejestracja',
 		'nav_tags' => 'Tagi',
 		'nav_unanswered' => 'Bez odp.',
+		'nav_messages' => 'Wiadomości',
 		'nav_updates' => 'Powiadomienia',
 		'nav_users' => 'Pasjonaci',
 		'no_active_users' => 'Nie znaleziono aktywnych użytkowników',
