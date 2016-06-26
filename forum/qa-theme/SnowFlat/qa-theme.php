@@ -225,8 +225,8 @@ class qa_html_theme extends qa_html_theme_base
 		$this->nav('main');
 		$this->output('</div> <!-- END qam-main-nav-wrapper -->');
 		$this->nav('sub');
-		
-		
+
+
 		$adres = qa_path_absolute(qa_request());
 		if ($adres=="http://forum.pasja-informatyki.pl/")
 		$this->output('<div class="qa-nav-sub">
@@ -253,7 +253,7 @@ class qa_html_theme extends qa_html_theme_base
 					<div class="qa-nav-sub-clear">
 					</div>
 				</div>');
-	
+
 	}
 
 	/**
@@ -291,14 +291,14 @@ class qa_html_theme extends qa_html_theme_base
 		$this->header();
 
 		$adres = qa_path_absolute(qa_request());
-		if($adres=="http://forum.pasja-informatyki.pl/" || $adres=="http://forum.pasja-informatyki.pl/users" || $adres=="http://forum.pasja-informatyki.pl/polls" || $adres=="http://forum.pasja-informatyki.pl/messages" || $adres=="http://forum.pasja-informatyki.pl/messages/sent" || $adres=="http://forum.pasja-informatyki.pl/updates" || $adres=="http://forum.pasja-informatyki.pl/questions" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=hot" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=votes" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=answers" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=views" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=hot" || $adres=="http://forum.pasja-informatyki.pl/users/special" || $adres=="http://forum.pasja-informatyki.pl/users/blocked" || (substr($adres, 0, 42)=="http://forum.pasja-informatyki.pl/message/")) 
+		if($adres=="http://forum.pasja-informatyki.pl/" || $adres=="http://forum.pasja-informatyki.pl/users" || $adres=="http://forum.pasja-informatyki.pl/polls" || $adres=="http://forum.pasja-informatyki.pl/messages" || $adres=="http://forum.pasja-informatyki.pl/messages/sent" || $adres=="http://forum.pasja-informatyki.pl/updates" || $adres=="http://forum.pasja-informatyki.pl/questions" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=hot" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=votes" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=answers" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=views" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=hot" || $adres=="http://forum.pasja-informatyki.pl/users/special" || $adres=="http://forum.pasja-informatyki.pl/users/blocked" || (substr($adres, 0, 42)=="http://forum.pasja-informatyki.pl/message/"))
 		{
-			$this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');	
-		}			
+			$this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
+		}
 		else $this->output('<div class="qa-body-wrapper">', '');
-		
-		
-	
+
+
+
 		$this->output('<div id="fb-root"></div><script>(function(d, s, id) {  var js, fjs = d.getElementsByTagName(s)[0];  if (d.getElementById(id)) return;  js = d.createElement(s); js.id = id;  js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.4&appId=1423095607985502";  fjs.parentNode.insertBefore(js, fjs);}(document, \'script\', \'facebook-jssdk\'));</script>');
 		$this->widgets('full', 'high');
 
@@ -347,7 +347,14 @@ class qa_html_theme extends qa_html_theme_base
 		$this->output($qam_snow->footer_custom_content);
 		$this->output('<div class="qam-footer-box">');
 
-		$this->output('<div class="qam-footer-row"><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Fanpage na Facebooku</h3><div style="margin-bottom: 10px;" class="fb-page" data-href="https://www.facebook.com/pasjainformatykifanpage" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/pasjainformatykifanpage"><a href="https://www.facebook.com/pasjainformatykifanpage">miroslawzelent.pl</a></blockquote></div></div></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Cenne informacje</h3><a href="http://forum.miroslawzelent.pl/faq"> &rarr; Jak korzystać z Forum? Częste pytania</a><a href="http://forum.miroslawzelent.pl/ksiazki-informatyczne-warte-uwagi"> &rarr; Książki informatyczne warte uwagi</a><a href="http://forum.miroslawzelent.pl/manifest-pasjonata"> &rarr; Po co nam Forum? Manifest</a><a href="http://forum.miroslawzelent.pl/regulamin-forum"> &rarr; Regulamin tego miejsca</a><a href="http://forum.miroslawzelent.pl/zasluzeni-pasjonaci-hall-of-fame"> &rarr; Zasłużeni Pasjonaci</a><a href="http://forum.miroslawzelent.pl/zasady-przyznawania-punktow"> &rarr; Zasady przyznawania punktów</a></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Polecane miejsca w sieci</h3><ul class="qam-footer-links qam-social-links"><li><a href="http://egzamin-informatyk.pl/e12-e13-e14-testy-online-egzamin-zawodowy" target="_blank" class="ei"><i class="icon-graduation-cap-1"></i></a></li><li><a href="http://miroslawzelent.pl/" target="_blank" class="linkedin"><i class="icon-medium"></i></a></li><li><a href="https://www.youtube.com/channel/UCzn6vAfspIcagLax1fck_jw" target="_blank" class="gplus"><i class="icon-youtube"></i></a></li><li><a href="https://www.youtube.com/channel/UC2CwpGFeP-8pkswU5q24WXg" target="_blank" class="gplus"><i class="icon-youtube"></i></a></li><li><a href="http://egzamin-e13.pl/" target="_blank" class="wordpress"><i class="icon-signal"></i></a></li><li><a href="http://lenovotechzone.pl/" target="_blank" class="youtube"><i class="icon-users-2"></i></a></li></ul></div></div> <!-- END qam-footer-row -->');
+		$this->output('<div class="qam-footer-row"><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Fanpage na Facebooku</h3><div style="margin-bottom: 10px;" class="fb-page" data-href="https://www.facebook.com/pasjainformatykifanpage" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/pasjainformatykifanpage"><a href="https://www.facebook.com/pasjainformatykifanpage">pasja-informatyki.pl</a></blockquote></div></div></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Cenne informacje</h3><a href="http://forum.pasja-informatyki.pl/faq"> &rarr; Jak korzystać z Forum? Częste pytania</a><a href="http://forum.pasja-informatyki.pl/ksiazki-informatyczne-warte-uwagi"> &rarr; Książki informatyczne warte uwagi</a><a href="http://forum.pasja-informatyki.pl/manifest-pasjonata"> &rarr; Po co nam Forum? Manifest</a><a href="http://forum.pasja-informatyki.pl/regulamin-forum"> &rarr; Regulamin tego miejsca</a><a href="http://forum.pasja-informatyki.pl/zasluzeni-pasjonaci-hall-of-fame"> &rarr; Zasłużeni Pasjonaci</a><a href="http://forum.pasja-informatyki.pl/zasady-przyznawania-punktow"> &rarr; Zasady przyznawania punktów</a></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Polecane miejsca w sieci</h3><ul class="qam-footer-links qam-social-links">
+			<li title="GitHub CodersCommunity"><a href="https://github.com/CodersCommunity/" target="_blank" class="ei"><i class="icon-github-circled"></i></a></li>
+			<li title="Shell dla użytkowników forum"><a href="https://syntax-shell.me/" target="_blank" class="gplus"><i class="icon-terminal"></i></a></li>
+			<li title="Pasja informatyki na YouTube"><a href="https://www.youtube.com/pasjainformatykitutoriale" target="_blank" class="wordpress"><i class="icon-youtube"></i></a></li>
+			<li title="Mirosław Zelent"><a href="http://miroslawzelent.pl/" target="_blank" class="youtube"><i class="icon-medium"></i></a></li>
+			<li title="Testy E12, E13 i E14"><a href="http://egzamin-informatyk.pl/e12-e13-e14-testy-online-egzamin-zawodowy" target="_blank" class="wordpress"><i class="icon-graduation-cap-1"></i></a></li>
+			<li title="Przygotowanie do E13"><a href="http://egzamin-e13.pl/" target="_blank" class="ei"><i class="icon-signal"></i></a></li>
+		</ul></div></div> <!-- END qam-footer-row -->');
 		$this->widgets('full', 'bottom');
 		$this->output('</div> <!-- END qam-footer-row -->');
 
@@ -391,11 +398,11 @@ public function sidebar()
 
 		if (true) {
 			$sidebar = "";
-			
+
 			$this->output('<div class="qa-sidebar wet-asphalt ' . $qam_snow->welcome_widget_color . '">');
-				
+
 			$sidebar = $sidebar.'<div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white; margin-bottom: 10px;">Główne kategorie pytań</div>';
-			
+
 			$kategoria[1]="programowanie"; $tooltip[1]="Programowanie"; $ikona[1]="code";
 			$kategoria[2]="sprzet-komputerowy"; $tooltip[2]="Sprzęt komputerowy"; $ikona[2]="net";
 			$kategoria[3]="systemy-operacyjne-programy"; $tooltip[3]="Systemy operacyjne, programy"; $ikona[3]="os";
@@ -408,7 +415,7 @@ public function sidebar()
 			$kategoria[10]="nasze-poradniki"; $tooltip[10]="Nasze poradniki"; $ikona[10]="tut";
 			$kategoria[11]="sprawy-forum"; $tooltip[11]="Sprawy forum"; $ikona[11]="for";
 			$kategoria[12]="dyskusje"; $tooltip[12]="Dyskusje"; $ikona[12]="tea";
-			
+
 			$kategoria[13]="dyskusje/gry-pc-konsole"; $tooltip[13]="Gry PC i konsole"; $ikona[13]="game";
 			$kategoria[14]="dyskusje/muzyka"; $tooltip[14]="Muzyka"; $ikona[14]="music";
 			$kategoria[15]="dyskusje/filmy-i-seriale"; $tooltip[15]="Filmy i seriale"; $ikona[15]="mov";
@@ -417,27 +424,27 @@ public function sidebar()
 			$kategoria[18]="dyskusje/grafika-i-fotografia"; $tooltip[18]="Grafika, fotografia"; $ikona[18]="foto";
 			$kategoria[19]="dyskusje/heheszki"; $tooltip[19]="Heheszki"; $ikona[19]="hehe";
 			$kategoria[20]="dyskusje/off-topic"; $tooltip[20]="Offtop"; $ikona[20]="off";
-			
+
 			$ktory_dfn = "";
 			$licznik_dfn = 0;
-			
+
 			$adres = qa_path_absolute(qa_request());
-			
+
 			for($i=1; $i<=20; $i++)
 			{
 				if($adres=="http://forum.pasja-informatyki.pl/questions/".$kategoria[$i])
 				{
 					$zazn = " qa-nav-main-selected"; $kolor="1";
 				}
-				else 
+				else
 				{
-					$zazn = ""; $kolor = "0"; 
+					$zazn = ""; $kolor = "0";
 				}
 
-				$licznik_dfn++; 
+				$licznik_dfn++;
 				if ($licznik_dfn>2) $ktory_dfn="a"; else $ktory_dfn="";
 				if ($licznik_dfn>=4) $licznik_dfn=0;
-				
+
 				$sidebar = $sidebar.'<div class="qa-nav-main-item"><a href="http://forum.pasja-informatyki.pl/questions/'.$kategoria[$i].'" class="qa-nav-main-link'.$zazn.'"><dfn'.$ktory_dfn.' data-info="'.$tooltip[$i].'"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/'.$ikona[$i].$kolor.'.png"';
 
 				if ($kolor=="0")
@@ -448,60 +455,60 @@ public function sidebar()
 				{
 					$sidebar = $sidebar.'alt="'.$tooltip[$i].'"/></a></dfn'.$ktory_dfn.'></div>';
 				}
-				
+
 				if ($i==12) $sidebar = $sidebar.'<div style="height:5px; clear:both;"></div><div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white; margin-bottom: 10px;">Luźniejsze dyskusje</div>';
-			
-			}		
-			
+
+			}
+
 			$sidebar = $sidebar.'<div style="height:3px;"></div><div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white;">Programowanie</div>';
-			
+
 			$sidebar = $sidebar.'<div style="padding:10px; text-align:justify; line-height: 115%;">'.
-			
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/c-plus-plus" class="sidebarnav">C i C++</a> '.
-			
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/html-css" class="sidebarnav">HTML i CSS</a> '.			
-			
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/html-css" class="sidebarnav">HTML i CSS</a> '.
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/javascript-jquery-ajax" class="sidebarnav">JS, jQuery, AJAX</a> '.
-			
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/php-symfony-zend" class="sidebarnav">PHP, Symfony, Zend</a> '.
-			
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/mysql-bazy-danych" class="sidebarnav">SQL, bazy danych</a> '.
-			
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/hosting-domeny" class="sidebarnav">Hostingi, domeny</a> '.
-			
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/spoj" class="sidebarnav">SPOJ</a> '.
-			
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/systemy-cms" class="sidebarnav">Systemy CMS</a> '.
-			
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/pascal-delphi" class="sidebarnav">Pascal, Delphi</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/c-sharp-dot-net" class="sidebarnav">C# i .NET</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/java" class="sidebarnav">Java</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/python-django" class="sidebarnav">Python, &nbsp;Django </a>'.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/assembler" class="sidebarnav">Assembler</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/ruby-i-ruby-on-rails" class="sidebarnav">Ruby, Ruby On Rails</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/visual-basic" class="sidebarnav">Visual Basic</a> '.		
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/android-ios-swift-symbian" class="sidebarnav">Android, Swift, Symbian</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/opengl-unity" class="sidebarnav">OpenGL, Unity</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/algorytmy" class="sidebarnav">Algorytmy</a> '.	
-						
-			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/arduino" class="sidebarnav">Arduino</a> '.	
-						
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/pascal-delphi" class="sidebarnav">Pascal, Delphi</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/c-sharp-dot-net" class="sidebarnav">C# i .NET</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/java" class="sidebarnav">Java</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/python-django" class="sidebarnav">Python, &nbsp;Django </a>'.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/assembler" class="sidebarnav">Assembler</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/ruby-i-ruby-on-rails" class="sidebarnav">Ruby, Ruby On Rails</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/visual-basic" class="sidebarnav">Visual Basic</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/android-ios-swift-symbian" class="sidebarnav">Android, Swift, Symbian</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/opengl-unity" class="sidebarnav">OpenGL, Unity</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/algorytmy" class="sidebarnav">Algorytmy</a> '.
+
+			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/arduino" class="sidebarnav">Arduino</a> '.
+
 			'<a href="//forum.pasja-informatyki.pl/questions/programowanie/inne-jezyki" class="sidebarnav">Inne języki programowania</a> ';
 
 			$sidebar = $sidebar.'</div>'.
-		
+
 			$this->output_raw($sidebar);
 			$this->output('</div></div>', '');
-			
+
 		}
 	}
 
