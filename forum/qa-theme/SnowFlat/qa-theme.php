@@ -290,11 +290,32 @@ class qa_html_theme extends qa_html_theme_base
 		$this->widgets('full', 'top');
 		$this->header();
 
-		$adres = qa_path_absolute(qa_request());
-		if($adres=="http://forum.pasja-informatyki.pl/" || $adres=="http://forum.pasja-informatyki.pl/users" || $adres=="http://forum.pasja-informatyki.pl/polls" || $adres=="http://forum.pasja-informatyki.pl/messages" || $adres=="http://forum.pasja-informatyki.pl/messages/sent" || $adres=="http://forum.pasja-informatyki.pl/updates" || $adres=="http://forum.pasja-informatyki.pl/questions" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=hot" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=votes" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=answers" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=views" || $adres=="http://forum.pasja-informatyki.pl/questions?sort=hot" || $adres=="http://forum.pasja-informatyki.pl/users/special" || $adres=="http://forum.pasja-informatyki.pl/users/blocked" || (substr($adres, 0, 42)=="http://forum.pasja-informatyki.pl/message/")) {
-			if (substr($adres, 0, 42) === "http://forum.pasja-informatyki.pl/users" && qa_is_logged_in() && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR) {
+		$address = qa_path_absolute(qa_request());
+		$pages = [
+			'http://forum.pasja-informatyki.pl/',
+			'http://forum.pasja-informatyki.pl/users',
+			'http://forum.pasja-informatyki.pl/polls',
+			'http://forum.pasja-informatyki.pl/messages',
+			'http://forum.pasja-informatyki.pl/messages/sent',
+			'http://forum.pasja-informatyki.pl/updates',
+			'http://forum.pasja-informatyki.pl/questions',
+			'http://forum.pasja-informatyki.pl/questions?sort=hot',
+			'http://forum.pasja-informatyki.pl/questions?sort=votes',
+			'http://forum.pasja-informatyki.pl/questions?sort=answers',
+			'http://forum.pasja-informatyki.pl/questions?sort=views',
+			'http://forum.pasja-informatyki.pl/questions?sort=hot',
+			'http://forum.pasja-informatyki.pl/users/special',
+			'http://forum.pasja-informatyki.pl/users/blocked'
+		];
+		if (in_array($address, $pages) || (substr($address, 0, 42) === 'http://forum.pasja-informatyki.pl/message/')) {
+			$usersPages = [
+				'http://forum.pasja-informatyki.pl/users',
+				'http://forum.pasja-informatyki.pl/users/special',
+				'http://forum.pasja-informatyki.pl/users/blocked'
+			];
+			if (in_array($address, $usersPages) && qa_is_logged_in() && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR) {
 				$this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
-			} elseif (substr($adres, 0, 42) !== "http://forum.pasja-informatyki.pl/users") {
+			} elseif (!in_array($address, $usersPages)) {
 				$this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
 			} else {
 				$this->output('<div class="qa-body-wrapper">', '');
