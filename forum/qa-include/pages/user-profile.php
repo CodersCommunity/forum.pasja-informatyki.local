@@ -261,7 +261,7 @@
 			}
 		}
 
-		if (qa_clicked('doapprove') || qa_clicked('doblock') || qa_clicked('dounblock') || qa_clicked('dohideall') || qa_clicked('dodelete')) {
+		if (qa_clicked('doapprove') || qa_clicked('doblock') || qa_clicked('dounblock') || qa_clicked('dohideall') || qa_clicked('dodelete') || qa_clicked('up_votes_reset') || qa_clicked('down_votes_reset')) {
 			if (!qa_check_form_security_code('user-'.$handle, qa_post_text('code')))
 				$errors['page'] = qa_lang_html('misc/form_security_again');
 
@@ -310,6 +310,34 @@
 						));
 
 						qa_redirect('users');
+					}
+					if (qa_clicked('up_votes_reset') && ($loginlevel >= QA_USER_LEVEL_ADMIN)) {
+						require_once QA_INCLUDE_DIR.'db/votes.php';
+						require_once QA_INCLUDE_DIR.'db/users.php';
+						require_once QA_INCLUDE_DIR.'db/post-update.php';
+						require_once QA_INCLUDE_DIR.'db/points.php';
+
+						$postids = qa_db_uservoteflag_user_get($userid);
+						qa_db_query_sub('DELETE FROM ^uservotes WHERE userid=$ AND vote=1', $userid);
+						foreach ($postids as $postid) {
+							qa_db_post_recount_votes($postid);
+						}
+						qa_db_points_update_ifuser($userid, ['points', 'upvoteds', 'downvoteds', 'aupvotes', 'qupvotes', 'adownvotes', 'qdownvotes', 'avoteds', 'qvoteds']);
+						qa_redirect('user/'.$useraccount['handle']);
+					}
+					if (qa_clicked('down_votes_reset') && ($loginlevel >= QA_USER_LEVEL_ADMIN)) {
+						require_once QA_INCLUDE_DIR.'db/votes.php';
+						require_once QA_INCLUDE_DIR.'db/users.php';
+						require_once QA_INCLUDE_DIR.'db/post-update.php';
+						require_once QA_INCLUDE_DIR.'db/points.php';
+
+						$postids = qa_db_uservoteflag_user_get($userid);
+						qa_db_query_sub('DELETE FROM ^uservotes WHERE userid=$ AND vote=-1', $userid);
+						foreach ($postids as $postid) {
+							qa_db_post_recount_votes($postid);
+						}
+						qa_db_points_update_ifuser($userid, ['points', 'upvoteds', 'downvoteds', 'aupvotes', 'qupvotes', 'adownvotes', 'qdownvotes', 'avoteds', 'qvoteds']);
+						qa_redirect('user/'.$useraccount['handle']);
 					}
 				}
 			}
@@ -773,6 +801,14 @@
 						$qa_content['form_profile']['buttons']['delete'] = array(
 							'tags' => 'name="dodelete" onclick="qa_show_waiting_after(this, false);"',
 							'label' => qa_lang_html('users/delete_user_button'),
+						);
+						$qa_content['form_profile']['buttons']['up_votes_reset'] = array(
+							'tags' => 'name="up_votes_reset" onclick="qa_show_waiting_after(this, false);"',
+							'label' => 'Usuń wszystkie głosy w górę',
+						);
+						$qa_content['form_profile']['buttons']['down_votes_reset'] = array(
+							'tags' => 'name="down_votes_reset" onclick="qa_show_waiting_after(this, false);"',
+							'label' => 'Usuń wszystkie głosy w dół',
 						);
 					}
 
