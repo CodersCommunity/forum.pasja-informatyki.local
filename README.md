@@ -31,7 +31,7 @@ I ostatnim krokiem jest wykonanie w katalogu projektu:
 Ponieważ mamy do czynienia z **wirtualną maszyną**, będziemy musieli zapewnić z nią wygodną komunikację. Domyślnym adresem, pod którym jest dostępny *mirror* forum jest ```192.168.122.122```.
 W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka w pliku ```/etc/hosts```, dopisując to na samym końcu tego pliku:
 ```
-192.168.122.122 forum.pasja-informatyki.local
+192.168.112.112 forum.pasja-informatyki.local
 ```
 
 W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
@@ -45,7 +45,7 @@ Na serwerze zainstalowano:
  - PHP 5.6
  - xdebug
  - Composer
- - mysql (bez phpmydamin)
+ - mysql (bez phpmydamin) **[Zamiast phpmyadmin świetnie spisuje się MySQL Workbench]**
  - Apache
 
 ## Pliki skryptu z forum
@@ -60,7 +60,7 @@ Repozytorium zawiera:
    - Niezbędną konfigurację pluginow
  - Kod strony, obecne Q2A wraz ze zmianami wprowadzonymi do szablonu strony.
   - Kod strony **nie zawiera**: cache, avatarów, danych do bazy.
-  - specjalnie przygotowany plig `.gitignore`
+  - specjalnie przygotowany plik `.gitignore`
 
 ## Baza danych
 Dane do bazy mysql:
