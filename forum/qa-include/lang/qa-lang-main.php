@@ -116,6 +116,7 @@
 		'nav_register' => 'Register',
 		'nav_tags' => 'Tags',
 		'nav_unanswered' => 'Unanswered',
+		'nav_messages' => 'Messages',
 		'nav_updates' => 'My Updates',
 		'nav_users' => 'Users',
 		'no_active_users' => 'No active users found',

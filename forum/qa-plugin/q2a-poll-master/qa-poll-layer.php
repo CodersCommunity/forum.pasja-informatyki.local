@@ -183,7 +183,13 @@ function pollVote(qid,uid,vid,cancel) {
 		function nav_list($navigation, $class, $level=null)
 		{
 			if($class == 'nav-sub' && in_array($this->template, array('plugin','questions')) && qa_opt('poll_enable') && qa_opt('poll_enable_subnav')) {
-				if($this->request != 'logins') {
+				$pages = [
+					'logins',
+					'users',
+					'users/latest-registered',
+					'users/latest-logged'
+				];
+				if (!in_array($this->request, $pages)) {
 					$navigation['polls'] = array(
 						  'label' => 'Pierwszy raz tutaj?',
 						  'url' => qa_path_html('./faq'),

@@ -221,9 +221,10 @@ class qa_html_theme extends qa_html_theme_base
 		$this->output('<div class="qam-main-nav-wrapper clearfix">');
 		$this->output('<div class="sb-toggle-left qam-menu-toggle"><i class="icon-th-list"></i></div>');
 		$this->nav_user_search();
+		$this->output('<div class="qa-header-menu">');
 		$this->logo();
 		$this->nav('main');
-		$this->output('</div> <!-- END qam-main-nav-wrapper -->');
+		$this->output('</div></div> <!-- END qam-main-nav-wrapper -->');
 		$this->nav('sub');
 
 
@@ -324,7 +325,8 @@ class qa_html_theme extends qa_html_theme_base
         else {
 			$this->output('<div class="qa-body-wrapper">', '');
 		}
-		
+
+
 		$this->output('<div id="fb-root"></div><script>(function(d, s, id) {  var js, fjs = d.getElementsByTagName(s)[0];  if (d.getElementById(id)) return;  js = d.createElement(s); js.id = id;  js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.4&appId=1423095607985502";  fjs.parentNode.insertBefore(js, fjs);}(document, \'script\', \'facebook-jssdk\'));</script>');
 		$this->widgets('full', 'high');
 
