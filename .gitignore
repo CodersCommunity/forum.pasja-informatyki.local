@@ -1,3 +1,5 @@
 .idea/
 .vagrant/
 *.retry
+
+/vendor/
