@@ -4597,3 +4597,28 @@ a.sidebarnav:hover {
 .level-expert, .level-expert a {
 	color: #8a0fd1;
 }
+
+
+/* for SPOJ detection */
+.qa-form-tall-data.spoj-alert
+{
+	position: relative;
+}
+
+/*.qa-form-tall-data.spoj-alert.spoj-alert-input:after
+{
+	bottom: -15px;
+}*/
+
+.qa-form-tall-data.spoj-alert:after
+{
+    content: "Wykryto SPOJa";
+    border: 1px solid red;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: red;
+    background: white;
+    text-align: center;
+    padding: 1px 5px;
+}

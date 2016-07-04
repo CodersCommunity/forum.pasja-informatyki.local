@@ -296,3 +296,130 @@ function set_category_description(idprefix)
 		n.innerHTML=desc;
 	}
 }
+
+
+// check SPOJ content when User creates new topic (asks a question)
+(function (document)
+{
+	'use strict';
+	
+	window.addEventListener('load', function()
+	{
+		function detectSpoj(ev)
+		{
+			if (ev.target.id === 'title')
+			{
+				if (ev.target.value.toLowerCase().indexOf('spoj') > -1)
+				{
+						console.log('nie pytaj o SPOJ');
+						
+						ev.target.parentNode.classList.add('spoj-alert');
+				}
+				else
+				{
+					if (ev.target.parentNode.classList.contains('spoj-alert'))
+						ev.target.parentNode.classList.remove('spoj-alert');
+				}
+			}
+		}
+		
+		// when user clicks-off from topic title <input>
+		document.getElementById('title').addEventListener('input', detectSpoj);
+		
+		// searching for CKEditor
+		Array.from(document.querySelectorAll('.qa-form-tall-data')).forEach(function(elem)
+		{			
+			/*
+			 * Mutation Observer is used, because it seems that CKEditor inside <iframe> is loading even later than 'load' event is fired at Window Object
+			 * so observing DOM parent element lets to find when CKEditor is ready to work on it's DOM
+			 * Example is taken from: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+			 */
+			var observer = new MutationObserver(function(mutations) 
+			{
+				  mutations.forEach(function(mutation) 
+				  {
+					// if CKEditor <iframe> is loaded and can be found inside DOM
+					if (elem.querySelector('iframe'))
+					{
+						var iframe = elem.querySelector('iframe');
+						
+						// get CKEditor DOM from <iframe>
+						var ckeditor = iframe.contentWindow.document.body;
+						
+						ckeditor.addEventListener('input', function()
+						{							
+							// when script detect that user wrote "pl.spoj.com" inside CKEditor
+							if (ckeditor.querySelector('p').textContent.indexOf('pl.spoj.com') > -1)
+							{							
+								console.log('-----', elem.querySelector('#cke_content'));
+								
+								// add warning to #cke_content DIV
+								elem.classList.add('spoj-alert');
+								
+								////console.log('NIE spojuj!! ', iframe);
+							}
+							else
+							{
+								if (elem.classList.contains('spoj-alert'))
+									elem.classList.remove('spoj-alert');
+							}
+						});
+					}
+				  });    
+			});
+			
+			// configuration of the observer:
+			var config = { attributes: true, childList: true, characterData: true };
+			 
+			// pass in the target node, as well as the observer options
+			observer.observe(elem, config);
+		});
+	});
+	
+	
+	
+	
+	
+	// wait for DOM to load, because whole JS in Q2A is placed inside <head>
+	/*window.addEventListener('DOMContentLoaded', function()
+	{	
+		console.log('DOMContentLoaded!');
+		// when user clicks-off from topic title <input>
+		document.getElementById('title').addEventListener('blur', function(ev)
+		{
+			console.log(ev.target.value);
+		})
+		
+		console.log('ckeeeeee: ', document.querySelector('#cke_content'));
+		////console.log('ckeditor? : ', document.querySelector('.cke_wysiwyg_frame'), '/', document.querySelectorAll('.qa-form-tall-data'));
+		
+		var ckeditorParents = Array.from(document.querySelectorAll('.qa-form-tall-data')),
+			ckeditor = ckeditorParents.find(function(elem)
+			{
+				console.log('[p] ckeditor: ', elem, '/', elem.querySelector('.cke_1'));
+				
+				////return document.querySelector(elem);
+			});
+		
+		document.querySelector('.qa-form-tall-data').addEventListener('DOMSubtreeModified', function(ev)
+		{
+			console.log('??????? ', ev.target);
+		});
+		/*document.querySelector('.cke_wysiwyg_frame').addEventListener('load', function(ev)
+		{
+			console.log('ckeditor loaded ', ev.target);
+		});*/
+				
+		/*setTimeout(function()
+		{
+			console.log('ckeditor TIMEOUT? : ', 	document.querySelector('.cke_wysiwyg_frame'));
+			console.log('iframes: ', document.querySelectorAll('iframe'));
+		}, 1000);*/
+		/*document.querySelector('.cke_wysiwyg_frame').addEventListener('blur', function(ev)
+		{
+			console.log('lost focus from editor');
+		});*//*
+		
+		//.contentWindow.document.body')
+	});*/
+}(document));
