@@ -71,6 +71,7 @@
 			$inhandle = $changehandle ? qa_post_text('handle') : $useraccount['handle'];
 			$inemail = qa_post_text('email');
 			$inmessages = qa_post_text('messages');
+			$inmessagesemail = (int)qa_post_text('messages_email');
 			$inwallposts = qa_post_text('wall');
 			$inmailings = qa_post_text('mailings');
 			$inavatar = qa_post_text('avatar');
@@ -95,6 +96,10 @@
 
 					if ($doconfirms)
 						qa_send_new_confirm($userid);
+				}
+
+				if ($inmessagesemail !== $useraccount['pwemail'] && ($inmessagesemail === 0 || $inmessagesemail === 1)) {
+					qa_db_query_sub('UPDATE ^users SET pwemail=# WHERE userid=#', $inmessagesemail, $userid);
 				}
 
 				if (qa_opt('allow_private_messages'))
@@ -251,6 +256,14 @@
 				'type' => 'checkbox',
 				'value' => !($useraccount['flags'] & QA_USER_FLAGS_NO_MESSAGES),
 				'note' => qa_lang_html('users/private_messages_explanation'),
+			),
+
+			'messages_email' => array(
+				'label' => qa_lang_html('users/private_messages_email'),
+				'tags' => 'name="messages_email"',
+				'type' => 'checkbox',
+				'value' => $useraccount['pwemail'],
+				'note' => qa_lang_html('users/private_messages_email_explanation'),
 			),
 
 			'wall' => array(
