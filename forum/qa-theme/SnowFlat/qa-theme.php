@@ -838,6 +838,10 @@ public function sidebar()
 			$css[] = '@media (max-width: 1179px) {';
 			$css[] = ' body.qa-template-user.fixed, body[class*="qa-template-user-"].fixed { padding-top: 118px !important; }';
 			$css[] = ' body.qa-template-users.fixed { padding-top: 95px !important; }';
+
+			// hotfix/sidebar-bug: Issue#14
+			$css[] = '.qa-sidepanel { display:none; }';
+
 			$css[] = '}';
 			$css[] = '@media (min-width: 1180px) {';
 			$css[] = ' body.qa-template-users.fixed { padding-top: 105px !important;}';
