@@ -175,3 +175,88 @@ function qa_ajax_error()
 {
 	alert('Unexpected response from server - please try again or switch off Javascript.');
 }
+
+;(function (document)
+{
+	'use strict';
+	
+	/*
+ 	 *	!!!! IMPORTANT VARIABLE !!!!
+ 	 * 
+ 	 * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
+ 	 * 
+ 	 * !!!! IMPORTANT VARIABLE !!!!
+ 	 */
+ 	var numberOfLines = 30;
+	
+	// languages got from Forum site DOM
+  	var languages = {
+  		'brush:as3;' : 'actionscript',
+ 		'brush:applescript;' : 'applescript',
+ 		'brush:bash;' : 'bash-shell',
+ 		'brush:cf;' : 'coldfusion',
+ 		'brush:csharp;' : 'c#',
+ 		'brush:cpp;' : 'C++',
+ 		'brush:css;' : 'css',
+ 		'brush:delphi;' : 'delphi',
+ 		'brush:diff;' : 'diff',
+ 		'brush:erl;' : 'erlang',
+ 		'brush:groovy;' : 'groovy',
+ 		'brush:hx;' : 'haxe',
+ 		'brush:jscript;' : 'javascript',
+ 		'brush:java;' : 'java',
+ 		'brush:javafx;' : 'java-fx',
+ 		'brush:perl;' : 'perl',
+ 		'brush:php;' : 'php',
+ 		'brush:plain;' : 'plain-text',
+ 		'brush:ps;' : 'powershell',
+ 		'brush:python;' : 'python',
+ 		'brush:ruby;' : 'ruby',
+ 		'brush:scss;' : 'sass',
+ 		'brush:scala;' : 'scala',
+ 		'brush:sql;' : 'sql',
+ 		'brush:tap;' : 'tap',
+ 		'brush:ts;' : 'typescript',
+ 		'brush:vb;' : 'vb',
+ 		'brush:xml;' : 'xml-xhtml'
+ 	}
+	
+	// when DOM is ready
+	window.addEventListener('DOMContentLoaded', function()
+  	{
+		// get all <pre> tags which are wrappers for (CKEditor) code and loop them
+		Array.from(document.querySelectorAll('pre[class*="brush:"]')).forEach(function(block)
+		{			
+			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
+			block.setAttribute('data-lang', languages[block.classList[0]]);
+			
+			// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
+			if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
+			{
+				// add CSS class to do some styling
+				block.classList.add('collapsed');
+				// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
+				block.setAttribute('data-state', '-- Rozwiń --');
+
+				// when user clicks on code-block
+				block.addEventListener('click', function(ev)
+				{					
+					/*
+					 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
+					 * to notify user the state of code-block
+					 */
+					if (block.classList.contains('collapsed'))
+					{
+						block.classList.remove('collapsed');
+						block.setAttribute('data-state', '-- Zwiń --');
+					}
+					else
+					{
+						block.classList.add('collapsed');
+						block.setAttribute('data-state', '-- Rozwiń --');
+					}
+				});
+			}
+		});
+	});
+}(document));
