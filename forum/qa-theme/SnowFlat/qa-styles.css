@@ -4597,3 +4597,39 @@ a.sidebarnav:hover {
 .level-expert, .level-expert a {
 	color: #8a0fd1;
 }
+
+
+/* collapsing block-code */  
+pre[class*="brush:"]
+{
+	position: relative;
+}
+pre[class*="brush:"].collapsed
+{
+  	height: 30px;
+	overflow: hidden;
+ }
+  
+pre[class*="brush:"]:before
+{
+	content: attr(data-state);
+    color: white;
+    position: absolute;
+    padding: 0 5px;
+    border-radius: 5px;
+    background: #3498db;
+    top: 5px;
+    right: 240px;
+    font-size: 12px;
+}
+
+pre[class*="brush:"]:after
+{
+    content: attr(data-lang);
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    border: 1px solid #3498db;
+    padding: 0 5px;
+    background: white;
+}
