@@ -99,7 +99,9 @@
 		'password_to_set' => 'Ustaw na stronie swojego profilu',
 		'password_wrong' => 'Nieprawidłowe hasło',
 		'private_messages_explanation' => 'Pozwól innym użytkownikom na wysyłanie wiadomości do mnie (bez udostępniania mojego adresu)',
+		'private_messages_email_explanation' => 'Powiadamiaj mnie e-mailowo, gdy otrzymam wiadomość prywatną',
 		'private_messages' => 'Wiadomości prywatne:',
+		'private_messages_email' => 'Powiadomienia o wiadomościach prywatnych:',
 		'profile_saved' => 'Profil zapisany',
 		'wall_posts' => "Ściana Wpisów:",
 		'wall_posts_explanation' => "Zezwalaj użytkownikom na zamieszczanie wiadomości na ścianie (będziesz informowany o wpisie pocztą email)",
@@ -135,7 +137,7 @@
 		'x_ago_from_y' => '^1 temu z ^2',
 		'terms_not_accepted' => "Musisz to zaznaczyć.",
 	);
-	
+
 
 /*
 	Omit PHP closing tag to help avoid accidental output
