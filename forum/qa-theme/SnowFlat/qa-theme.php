@@ -550,12 +550,8 @@ TAG
             '<a href="//forum.pasja-informatyki.pl/questions/programowanie/arduino" class="sidebarnav">Arduino</a> ' .
             '<a href="//forum.pasja-informatyki.pl/questions/programowanie/inne-jezyki" class="sidebarnav">Inne języki programowania</a> ';
 
-        $sidebar .= '</div>' ;
-
-        $this->output_raw($sidebar);
+        $sidebar .= '</div>' . $this->output_raw($sidebar);
         $this->output('</div></div>', '');
-
-
     }
 
     /**
