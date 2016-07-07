@@ -3726,6 +3726,9 @@ input[type="submit"], button {
 .qa-main-wrapper {
 	overflow: hidden;
 	*zoom: 1;
+	
+	/* for Post Preview <div>*/
+	position: relative;
 }
 
 @media (min-width: 1180px) {
@@ -4632,4 +4635,110 @@ pre[class*="brush:"]:after
     border: 1px solid #3498db;
     padding: 0 5px;
     background: white;
+}
+
+/* post preview */
+/*.post-preview 
+{
+    position: absolute;
+    background: white;
+    border: 2px solid black;
+    z-index: 1;
+    right: 5px;
+    bottom: 0;
+    width: 585px;
+    padding: 20px;
+}*/
+
+/*.post-preview 
+{
+    position: fixed;
+    background: white;
+    border: 5px solid #AEE8AE;
+    border-radius: 10px;
+    z-index: 11;
+    width: 585px;
+    padding: 20px;
+    left: calc(50vw - 585px/2);
+}*/
+
+/*.post-preview::before
+{
+    content: "";
+    position: absolute;
+    left: -32px;
+    bottom: 180px;
+    width: 0;
+    height: 0;
+    border-top: 30px solid transparent;
+    border-bottom: 30px solid transparent;
+    border-right: 30px solid black;
+}*/
+
+/*.post-preview::after 
+{
+    content: "Kliknij, aby zamknąć";
+    position: absolute;
+    bottom: 10px;
+    letter-spacing: 1px;
+    color: black;
+    border: 3px solid #AEE8AE;
+    padding: 3px 7px;
+    background-color: #AEE8AE;
+    left: calc(50% - 184px/2);
+	/*
+	overflow-y: scroll;
+    max-height: 80vh;
+	*//*
+}*/
+
+.modal-background
+{
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background: rgba(180,180,180,0.8);
+    position: absolute;
+}
+
+/* new */
+.post-preview {
+    overflow-y: scroll;
+    max-height: 70vh;
+    width: 585px;
+}
+
+.post-preview-parent {
+    position: fixed;
+    background: white;
+    /*border: 5px solid #27AE60/*#3498DB; */;
+    z-index: 11;
+    padding: 40px 20px;
+    left: calc(50vw - 585px/2);
+    webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.5);
+}
+
+.post-preview-parent::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    background: black;
+    height: 2px;
+    width: calc(100% - 10px);
+    left: 5px;
+}
+
+.close-preview-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: white;
+    border-radius: 4px;
+    border: 2px solid white;
+    background-color: black;
+    padding: 4px 6px;
+    color: white;
+    font-weight: bold;
 }

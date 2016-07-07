@@ -176,7 +176,12 @@ function qa_ajax_error()
 	alert('Unexpected response from server - please try again or switch off Javascript.');
 }
 
-;(function (document)
+/*
+ * Feature: Collapsable blocks of code
+ * Author: ChrissP92 - https://github.com/ChrissP92
+ * Date: 05.07.2016r.
+ */
+/*;(*/function collapseBlocksOfCode(/*document*/)
 {
 	'use strict';
 	
@@ -220,13 +225,15 @@ function qa_ajax_error()
  		'brush:vb;' : 'vb',
  		'brush:xml;' : 'xml-xhtml'
  	}
+		
+	console.log('rozwin czy co: ' , document.querySelectorAll('pre[class*="brush:"]'));
 	
 	// when DOM is ready
-	window.addEventListener('DOMContentLoaded', function()
-  	{
+	/*window.addEventListener('DOMContentLoaded', function()
+  	{	*/	
 		// get all <pre> tags which are wrappers for (CKEditor) code and loop them
 		Array.from(document.querySelectorAll('pre[class*="brush:"]')).forEach(function(block)
-		{			
+		{						
 			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
 			block.setAttribute('data-lang', languages[block.classList[0]]);
 			
@@ -256,6 +263,87 @@ function qa_ajax_error()
 						block.setAttribute('data-state', '-- Rozwiń --');
 					}
 				});
+			}
+		});
+	////});
+}/*(document));*/
+
+
+/*
+ * Feature: Post content preview as Modal
+ * Author: ChrissP92 - https://github.com/ChrissP92
+ * Date: 07.07.2016r.
+ */
+
+;(function (document)
+{
+	'use strict';
+	
+	window.addEventListener('DOMContentLoaded', function()
+	{
+		var modalParent = document.querySelector('.qa-main-wrapper');
+		var showModalBtn = document.createElement('button');
+		var modalBackground = document.createElement('div');
+
+		modalBackground.classList.add('modal-background');
+		
+		showModalBtn.id = 'get-content-preview';
+		showModalBtn.innerHTML = 'Podgląd posta';
+		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
+		document.querySelectorAll('.qa-form-tall-buttons')[1].appendChild(showModalBtn);
+		
+		
+		function eventHandler(modalWrapper, closeBtn)
+		{
+			function hideModal(ev)
+			{
+				var parent = modalWrapper.parentNode;
+				
+				console.log('modal: ', ev.target);
+				
+				closeBtn.removeEventListener('click', hideModal);
+				
+				document.body.removeChild(modalBackground);
+				parent.removeChild(modalWrapper);
+			}
+			
+			closeBtn.addEventListener('click', hideModal);
+		}
+
+		
+		showModalBtn.addEventListener('click', function(ev)
+		{
+			ev.preventDefault();
+			
+			var modal = document.getElementById('content-preview-parent');
+			
+			if (!modal)
+			{
+				var modal = document.createElement('div');
+				var modalContent = document.createElement('div');
+				var closeModalBtn = document.createElement('button');
+				
+				////modalWrapper.id = 'content-preview-parent';
+				
+				modal.classList.add('post-preview-parent');
+				
+				// get current CKEditor content (provided by it's API) and insert it to <div>
+				modalContent.innerHTML = CKEDITOR.instances.a_content.getData();
+				modalContent.classList.add('post-preview');
+				
+				closeModalBtn.innerHTML = 'X';
+				closeModalBtn.classList.add('close-preview-btn');
+				
+				// invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
+				eventHandler(modal, closeModalBtn);
+				
+				document.body.insertBefore(modalBackground, document.body.firstChild);
+				modal.appendChild(closeModalBtn);
+				
+				////collapseBlocksOfCode();
+				
+				modal.appendChild(modalContent);
+				modalParent.appendChild(modal);
 			}
 		});
 	});

@@ -196,6 +196,10 @@
 					(method_exists($editor, 'update_script') ? $editor->update_script('content') : '').'"',
 				'label' => qa_lang_html('question/ask_button'),
 			),
+			'preview' => array(
+				'tags' => 'id="getContentPreview"',
+				'label' => 'Podgląd',
+			),
 		),
 
 		'hidden' => array(
