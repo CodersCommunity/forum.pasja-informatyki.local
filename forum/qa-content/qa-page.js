@@ -176,175 +176,200 @@ function qa_ajax_error()
 	alert('Unexpected response from server - please try again or switch off Javascript.');
 }
 
-/*
- * Feature: Collapsable blocks of code
- * Author: ChrissP92 - https://github.com/ChrissP92
- * Date: 05.07.2016r.
- */
-/*;(*/function collapseBlocksOfCode(/*document*/)
+
+(function(document)
 {
 	'use strict';
 	
 	/*
- 	 *	!!!! IMPORTANT VARIABLE !!!!
- 	 * 
- 	 * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
- 	 * 
- 	 * !!!! IMPORTANT VARIABLE !!!!
- 	 */
- 	var numberOfLines = 30;
+	 * Feature: Collapsable blocks of code
+	 * Author: ChrissP92 - https://github.com/ChrissP92
+	 * Date: 05.07.2016r.
+	 */
 	
-	// languages got from Forum site DOM
-  	var languages = {
-  		'brush:as3;' : 'actionscript',
- 		'brush:applescript;' : 'applescript',
- 		'brush:bash;' : 'bash-shell',
- 		'brush:cf;' : 'coldfusion',
- 		'brush:csharp;' : 'c#',
- 		'brush:cpp;' : 'C++',
- 		'brush:css;' : 'css',
- 		'brush:delphi;' : 'delphi',
- 		'brush:diff;' : 'diff',
- 		'brush:erl;' : 'erlang',
- 		'brush:groovy;' : 'groovy',
- 		'brush:hx;' : 'haxe',
- 		'brush:jscript;' : 'javascript',
- 		'brush:java;' : 'java',
- 		'brush:javafx;' : 'java-fx',
- 		'brush:perl;' : 'perl',
- 		'brush:php;' : 'php',
- 		'brush:plain;' : 'plain-text',
- 		'brush:ps;' : 'powershell',
- 		'brush:python;' : 'python',
- 		'brush:ruby;' : 'ruby',
- 		'brush:scss;' : 'sass',
- 		'brush:scala;' : 'scala',
- 		'brush:sql;' : 'sql',
- 		'brush:tap;' : 'tap',
- 		'brush:ts;' : 'typescript',
- 		'brush:vb;' : 'vb',
- 		'brush:xml;' : 'xml-xhtml'
- 	}
-		
-	console.log('rozwin czy co: ' , document.querySelectorAll('pre[class*="brush:"]'));
-	
-	// when DOM is ready
-	/*window.addEventListener('DOMContentLoaded', function()
-  	{	*/	
-		// get all <pre> tags which are wrappers for (CKEditor) code and loop them
-		Array.from(document.querySelectorAll('pre[class*="brush:"]')).forEach(function(block)
-		{						
-			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
-			block.setAttribute('data-lang', languages[block.classList[0]]);
-			
-			// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
-			if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
-			{
-				// add CSS class to do some styling
-				block.classList.add('collapsed');
-				// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
-				block.setAttribute('data-state', '-- Rozwiń --');
-
-				// when user clicks on code-block
-				block.addEventListener('click', function(ev)
-				{					
-					/*
-					 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
-					 * to notify user the state of code-block
-					 */
-					if (block.classList.contains('collapsed'))
-					{
-						block.classList.remove('collapsed');
-						block.setAttribute('data-state', '-- Zwiń --');
-					}
-					else
-					{
-						block.classList.add('collapsed');
-						block.setAttribute('data-state', '-- Rozwiń --');
-					}
-				});
-			}
-		});
-	////});
-}/*(document));*/
-
-
-/*
- * Feature: Post content preview as Modal
- * Author: ChrissP92 - https://github.com/ChrissP92
- * Date: 07.07.2016r.
- */
-
-;(function (document)
-{
-	'use strict';
-	
-	window.addEventListener('DOMContentLoaded', function()
+	/*;(*/function handleCollapsing(insidePreview /*document*/)
 	{
-		var modalParent = document.querySelector('.qa-main-wrapper');
-		var showModalBtn = document.createElement('button');
-		var modalBackground = document.createElement('div');
-
-		modalBackground.classList.add('modal-background');
+		'use strict';
 		
-		showModalBtn.id = 'get-content-preview';
-		showModalBtn.innerHTML = 'Podgląd posta';
-		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-		document.querySelectorAll('.qa-form-tall-buttons')[1].appendChild(showModalBtn);
+		/*
+		 *	!!!! IMPORTANT VARIABLE !!!!
+		 * 
+		 * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
+		 * 
+		 * !!!! IMPORTANT VARIABLE !!!!
+		 */
+		var numberOfLines = 30;
 		
-		
-		function eventHandler(modalWrapper, closeBtn)
-		{
-			function hideModal(ev)
-			{
-				var parent = modalWrapper.parentNode;
-				
-				console.log('modal: ', ev.target);
-				
-				closeBtn.removeEventListener('click', hideModal);
-				
-				document.body.removeChild(modalBackground);
-				parent.removeChild(modalWrapper);
-			}
-			
-			closeBtn.addEventListener('click', hideModal);
+		// languages got from Forum site DOM
+		var languages = {
+			'brush:as3;' : 'actionscript',
+			'brush:applescript;' : 'applescript',
+			'brush:bash;' : 'bash-shell',
+			'brush:cf;' : 'coldfusion',
+			'brush:csharp;' : 'c#',
+			'brush:cpp;' : 'C++',
+			'brush:css;' : 'css',
+			'brush:delphi;' : 'delphi',
+			'brush:diff;' : 'diff',
+			'brush:erl;' : 'erlang',
+			'brush:groovy;' : 'groovy',
+			'brush:hx;' : 'haxe',
+			'brush:jscript;' : 'javascript',
+			'brush:java;' : 'java',
+			'brush:javafx;' : 'java-fx',
+			'brush:perl;' : 'perl',
+			'brush:php;' : 'php',
+			'brush:plain;' : 'plain-text',
+			'brush:ps;' : 'powershell',
+			'brush:python;' : 'python',
+			'brush:ruby;' : 'ruby',
+			'brush:scss;' : 'sass',
+			'brush:scala;' : 'scala',
+			'brush:sql;' : 'sql',
+			'brush:tap;' : 'tap',
+			'brush:ts;' : 'typescript',
+			'brush:vb;' : 'vb',
+			'brush:xml;' : 'xml-xhtml'
 		}
-
+			
+		console.log('rozwin czy co: ' , document.querySelectorAll('pre[class*="brush:"]'));
 		
-		showModalBtn.addEventListener('click', function(ev)
+		function collapseOrExpand()
 		{
-			ev.preventDefault();
+			// get all <pre> tags which are wrappers for (CKEditor) code and loop them
+			Array.from(document.querySelectorAll('pre[class*="brush:"]')).forEach(function(block)
+			{						
+				// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
+				block.setAttribute('data-lang', languages[block.classList[0]]);
+				
+				// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
+				if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
+				{
+					// add CSS class to do some styling
+					block.classList.add('collapsed');
+					// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
+					block.setAttribute('data-state', '-- Rozwiń --');
+
+					// when user clicks on code-block
+					block.addEventListener('click', function(ev)
+					{					
+						/*
+						 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
+						 * to notify user the state of code-block
+						 */
+						if (block.classList.contains('collapsed'))
+						{
+							block.classList.remove('collapsed');
+							block.setAttribute('data-state', '-- Zwiń --');
+						}
+						else
+						{
+							block.classList.add('collapsed');
+							block.setAttribute('data-state', '-- Rozwiń --');
+						}
+					});
+				}
+			});
+		}
+		
+		if (insidePreview)
+		{
+			collapseOrExpand();
+		}
+		
+		else
+		{
+			// when DOM is ready invoke function, which will prepare blocks to collapse/expand
+			window.addEventListener('DOMContentLoaded', collapseOrExpand);
+		}
+		
+	}////(document));
+	
+	/*
+	 * Feature: Post content preview as Modal
+	 * Author: ChrissP92 - https://github.com/ChrissP92
+	 * Date: 07.07.2016r.
+	 */
+	 
+	/*;(*/function postPreview(/*document*/)
+	{
+		'use strict';
+		
+		window.addEventListener('DOMContentLoaded', function()
+		{
+			var modalParent = document.querySelector('.qa-main-wrapper');
+			var showModalBtn = document.createElement('button');
+			var modalBackground = document.createElement('div');
+
+			modalBackground.classList.add('modal-background');
 			
-			var modal = document.getElementById('content-preview-parent');
+			showModalBtn.id = 'get-content-preview';
+			showModalBtn.innerHTML = 'Podgląd posta';
+			showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
+			document.querySelectorAll('.qa-form-tall-buttons')[1].appendChild(showModalBtn);
 			
-			if (!modal)
+			
+			function eventHandler(modalWrapper, closeBtn)
 			{
-				var modal = document.createElement('div');
-				var modalContent = document.createElement('div');
-				var closeModalBtn = document.createElement('button');
+				function hideModal(ev)
+				{
+					var parent = modalWrapper.parentNode;
+					
+					console.log('modal: ', ev.target);
+					
+					closeBtn.removeEventListener('click', hideModal);
+					
+					document.body.removeChild(modalBackground);
+					parent.removeChild(modalWrapper);
+				}
 				
-				////modalWrapper.id = 'content-preview-parent';
-				
-				modal.classList.add('post-preview-parent');
-				
-				// get current CKEditor content (provided by it's API) and insert it to <div>
-				modalContent.innerHTML = CKEDITOR.instances.a_content.getData();
-				modalContent.classList.add('post-preview');
-				
-				closeModalBtn.innerHTML = 'X';
-				closeModalBtn.classList.add('close-preview-btn');
-				
-				// invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
-				eventHandler(modal, closeModalBtn);
-				
-				document.body.insertBefore(modalBackground, document.body.firstChild);
-				modal.appendChild(closeModalBtn);
-				
-				////collapseBlocksOfCode();
-				
-				modal.appendChild(modalContent);
-				modalParent.appendChild(modal);
+				closeBtn.addEventListener('click', hideModal);
 			}
+
+			
+			showModalBtn.addEventListener('click', function(ev)
+			{
+				ev.preventDefault();
+				
+				var modal = document.getElementById('content-preview-parent');
+				
+				if (!modal)
+				{
+					var modal = document.createElement('div');
+					var modalContent = document.createElement('div');
+					var closeModalBtn = document.createElement('button');
+					
+					////modalWrapper.id = 'content-preview-parent';
+					
+					modal.classList.add('post-preview-parent');
+					
+					// get current CKEditor content (provided by it's API) and insert it to <div>
+					modalContent.innerHTML = CKEDITOR.instances.a_content.getData();
+					modalContent.classList.add('post-preview');
+					
+					closeModalBtn.innerHTML = 'X';
+					closeModalBtn.classList.add('close-preview-btn');
+					
+					// invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
+					eventHandler(modal, closeModalBtn);
+					
+					document.body.insertBefore(modalBackground, document.body.firstChild);
+					modal.appendChild(closeModalBtn);
+					
+					/*
+					 * prepare blocks of code inside Preview to be collapsed/expanded
+					 * "true" parameter lets to display collapsing blocks inside Preview Modal
+					 */
+					handleCollapsing(true);
+					
+					modal.appendChild(modalContent);
+					modalParent.appendChild(modal);
+				}
+			});
 		});
-	});
+	}////(document));
+	
+	// run function, which maintain blocks of code collapsing and expanding
+	handleCollapsing();
+	
 }(document));
