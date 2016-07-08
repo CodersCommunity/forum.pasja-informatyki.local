@@ -236,7 +236,12 @@ function qa_ajax_error()
 								
 		function collapseOrExpand()
 		{
-			console.log('Found blocks of code: ' , document.querySelectorAll('pre[class*="brush:"]'));
+			/*Array.from(document.getElementsByTagName('pre')).forEach(function(elem)
+			{
+					if (elem.classList.contains())console.log('Found blocks of code: ' , document.querySelectorAll('pre[class*="brush:"]'));
+			});*/
+			
+			////setTimeout(function(){console.log('Found blocks of code: ' , /*document.querySelectorAll('pre[class*="brush:"]')*/ document.getElementsByTagName('pre'));}, 1);
 			
 			// buttons for actions like: Answer, Comment
 			/*var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
@@ -245,7 +250,7 @@ function qa_ajax_error()
 			console.log('all action btns: ', actionBtns);*/
 			
 			// get all <pre> tags which are wrappers for (CKEditor) code and loop them
-			Array.from(document.querySelectorAll('pre[class*="brush:"]')).forEach(function(block)
+			Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')/* document.getElementsByTagName('pre')*/).forEach(function(block)
 			{						
 				// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
 				block.setAttribute('data-lang', languages[block.classList[0]]);
@@ -288,7 +293,8 @@ function qa_ajax_error()
 		else
 		{
 			// when DOM is ready invoke function, which will prepare blocks to collapse/expand
-			window.addEventListener('DOMContentLoaded', collapseOrExpand);
+			////window.addEventListener('DOMContentLoaded', collapseOrExpand);
+			collapseOrExpand();
 		}
 		
 	}////(document));
@@ -299,7 +305,7 @@ function qa_ajax_error()
 	 * Date: 07.07.2016r.
 	 */
 	 
-	/*;(*/function postPreview(/*document*/)
+	/*;(*/function postPreview(placeForBtn/*document*/)
 	{
 		'use strict';
 		
@@ -316,9 +322,22 @@ function qa_ajax_error()
 			showModalBtn.id = 'get-content-preview';
 			showModalBtn.innerHTML = 'Podgląd posta';
 			showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-			document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"], .qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
 			
-			console.log('preview btn?: ', showModalBtn);
+			if (placeForBtn)
+			{				
+				placeForBtn.appendChild(showModalBtn);
+				
+				console.log('[RESPONSE preview] ', placeForBtn);
+			}			
+			
+			else
+			{
+				console.log('[ASK preview]');
+				
+				document.querySelector(/*'.qa-form-tall-buttons [value="Odpowiedz"], */'.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+			}
+			
+			////console.log('preview btn?: ', showModalBtn);
 			
 			function modalEventHandler(modalWrapper, closeBtn)
 			{
@@ -340,7 +359,7 @@ function qa_ajax_error()
 			
 			showModalBtn.addEventListener('click', function(ev)
 			{			
-				console.log('prevented?');
+				////console.log('prevented?');
 				
 				ev.preventDefault();
 				
@@ -357,7 +376,7 @@ function qa_ajax_error()
 					modal.classList.add('post-preview-parent');
 					
 					// get current CKEditor content (provided by it's API) and insert it to <div>
-					modalContent.innerHTML = CKEDITOR.instances.content.getData();
+					modalContent.innerHTML = CKEDITOR.instances[Object.keys(CKEDITOR.instances)[0]].getData();
 					modalContent.classList.add('post-preview');
 					
 					closeModalBtn.innerHTML = 'X';
@@ -369,14 +388,14 @@ function qa_ajax_error()
 					document.body.insertBefore(modalBackground, document.body.firstChild);
 					modal.appendChild(closeModalBtn);
 					
+					modal.appendChild(modalContent);
+					modalParent.appendChild(modal);
+					
 					/*
 					 * prepare blocks of code inside Preview to be collapsed/expanded
 					 * "true" parameter lets to display collapsing blocks inside Preview Modal
 					 */
 					handleCodeCollapsing(true);
-					
-					modal.appendChild(modalContent);
-					modalParent.appendChild(modal);
 				}
 			});
 		/*});*/
@@ -396,6 +415,40 @@ function qa_ajax_error()
 		function addListener(ev)
 		{
 			console.log('btn Parent: ', ev.target, '/' , ev.target.parentNode);
+			
+			checkCkeditor(ev.target);
+		}
+		
+		function checkCkeditor(btnLocation, ask)
+		{
+			CKEDITOR.on("instanceReady", function(ev)
+			{			 
+				if (btnLocation)
+				{
+					////console.log('CLICKED BUTTON: ', btnLocation);
+				 
+					var prepareCkeInstance = /*document.querySelector('[name="q_docomment"]')*/btnLocation.getAttribute('onclick');
+					var ckeInstanceName = prepareCkeInstance.slice(prepareCkeInstance.indexOf('(') + 2, -2);
+					var ckeInstanceDom;
+					var previewBtnLocation;
+					
+					if (ckeInstanceName === 'anew')
+						ckeInstanceName = 'a';
+					
+					ckeInstanceDom = document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
+					
+					console.log('CKEditor is ready... ', ev, '/', ckeInstanceName, '/DOM/' , ckeInstanceDom);
+					 
+					
+					previewBtnLocation = /*document.getElementById('cke_a_content')*//*ckeInstanceDom.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');*/	document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + 'a' + '"]').parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');
+					
+					console.log('previewBtnLocation: ', previewBtnLocation);
+					 
+					postPreview(previewBtnLocation);
+				}
+				
+				else postPreview();
+			});
 		}
 		
 		// when URL contains number - so user is on topic subsite (not on main or other forum site)
@@ -405,25 +458,20 @@ function qa_ajax_error()
 			var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
 			actionBtns.push( document.getElementById('q_doanswer') );
 			
-			console.log('all action btns: ', actionBtns);
+			////console.log('all action btns: ', actionBtns);
+						
+			handleCodeCollapsing();
 			
 			actionBtns.forEach(function(btn)
 			{
 				btn.addEventListener('click', addListener);
 			});
-			
-			handleCodeCollapsing();
 		}
 		else if (location.pathname.indexOf('ask') > 0)
 		{
-			CKEDITOR.on("instanceReady", function(event)
-			{
-				 console.log('CKEDITOR ready: ', event);
-				 
-				 postPreview();
-			});
+			checkCkeditor(false, true);
 		}
-		else console.log('not in topics');
+		else console.log('NOT in topics');
 		
 	});
 	
