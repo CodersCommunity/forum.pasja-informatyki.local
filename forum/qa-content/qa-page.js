@@ -177,7 +177,9 @@ function qa_ajax_error()
 }
 
 
-(function(document)
+/* NEW FEATURES */
+
+;(function(document)
 {
 	'use strict';
 	
@@ -187,7 +189,7 @@ function qa_ajax_error()
 	 * Date: 05.07.2016r.
 	 */
 	
-	/*;(*/function handleCollapsing(insidePreview /*document*/)
+	/*;(*/function handleCodeCollapsing(insidePreview /*document*/)
 	{
 		'use strict';
 		
@@ -231,11 +233,17 @@ function qa_ajax_error()
 			'brush:vb;' : 'vb',
 			'brush:xml;' : 'xml-xhtml'
 		}
-			
-		console.log('rozwin czy co: ' , document.querySelectorAll('pre[class*="brush:"]'));
-		
+								
 		function collapseOrExpand()
 		{
+			console.log('Found blocks of code: ' , document.querySelectorAll('pre[class*="brush:"]'));
+			
+			// buttons for actions like: Answer, Comment
+			/*var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
+			actionBtns.push( document.getElementById('q_doanswer') );
+			
+			console.log('all action btns: ', actionBtns);*/
+			
 			// get all <pre> tags which are wrappers for (CKEditor) code and loop them
 			Array.from(document.querySelectorAll('pre[class*="brush:"]')).forEach(function(block)
 			{						
@@ -295,9 +303,11 @@ function qa_ajax_error()
 	{
 		'use strict';
 		
-		window.addEventListener('DOMContentLoaded', function()
-		{
+		/*window.addEventListener('DOMContentLoaded', function()
+		{*/
+			// get <div> and set it as Modal parent
 			var modalParent = document.querySelector('.qa-main-wrapper');
+			
 			var showModalBtn = document.createElement('button');
 			var modalBackground = document.createElement('div');
 
@@ -306,10 +316,11 @@ function qa_ajax_error()
 			showModalBtn.id = 'get-content-preview';
 			showModalBtn.innerHTML = 'Podgląd posta';
 			showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-			document.querySelectorAll('.qa-form-tall-buttons')[1].appendChild(showModalBtn);
+			document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"], .qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
 			
+			console.log('preview btn?: ', showModalBtn);
 			
-			function eventHandler(modalWrapper, closeBtn)
+			function modalEventHandler(modalWrapper, closeBtn)
 			{
 				function hideModal(ev)
 				{
@@ -328,7 +339,9 @@ function qa_ajax_error()
 
 			
 			showModalBtn.addEventListener('click', function(ev)
-			{
+			{			
+				console.log('prevented?');
+				
 				ev.preventDefault();
 				
 				var modal = document.getElementById('content-preview-parent');
@@ -344,14 +357,14 @@ function qa_ajax_error()
 					modal.classList.add('post-preview-parent');
 					
 					// get current CKEditor content (provided by it's API) and insert it to <div>
-					modalContent.innerHTML = CKEDITOR.instances.a_content.getData();
+					modalContent.innerHTML = CKEDITOR.instances.content.getData();
 					modalContent.classList.add('post-preview');
 					
 					closeModalBtn.innerHTML = 'X';
 					closeModalBtn.classList.add('close-preview-btn');
 					
 					// invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
-					eventHandler(modal, closeModalBtn);
+					modalEventHandler(modal, closeModalBtn);
 					
 					document.body.insertBefore(modalBackground, document.body.firstChild);
 					modal.appendChild(closeModalBtn);
@@ -360,16 +373,58 @@ function qa_ajax_error()
 					 * prepare blocks of code inside Preview to be collapsed/expanded
 					 * "true" parameter lets to display collapsing blocks inside Preview Modal
 					 */
-					handleCollapsing(true);
+					handleCodeCollapsing(true);
 					
 					modal.appendChild(modalContent);
 					modalParent.appendChild(modal);
 				}
 			});
-		});
+		/*});*/
 	}////(document));
 	
 	// run function, which maintain blocks of code collapsing and expanding
-	handleCollapsing();
+	////handleCodeCollapsing();
+	window.addEventListener('DOMContentLoaded', function()
+	{	
+		// find number in URL - so it's sure that topic is being viewed/opened
+		var url = location.pathname.split('/')/*; 
+		/*var idx = url*/.findIndex(function(elem)
+		{
+			return Number(elem);
+		}); 
+		
+		function addListener(ev)
+		{
+			console.log('btn Parent: ', ev.target, '/' , ev.target.parentNode);
+		}
+		
+		// when URL contains number - so user is on topic subsite (not on main or other forum site)
+		if (/*idx*/ url > 0)
+		{			
+			// buttons for actions like: Answer, Comment
+			var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
+			actionBtns.push( document.getElementById('q_doanswer') );
+			
+			console.log('all action btns: ', actionBtns);
+			
+			actionBtns.forEach(function(btn)
+			{
+				btn.addEventListener('click', addListener);
+			});
+			
+			handleCodeCollapsing();
+		}
+		else if (location.pathname.indexOf('ask') > 0)
+		{
+			CKEDITOR.on("instanceReady", function(event)
+			{
+				 console.log('CKEDITOR ready: ', event);
+				 
+				 postPreview();
+			});
+		}
+		else console.log('not in topics');
+		
+	});
 	
 }(document));
