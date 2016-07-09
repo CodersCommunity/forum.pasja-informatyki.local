@@ -3727,7 +3727,7 @@ input[type="submit"], button {
 .qa-main-wrapper {
 	overflow: hidden;
 	*zoom: 1;
-	
+
 	/* for Post Preview <div>*/
 	position: relative;
 }
@@ -4603,7 +4603,21 @@ a.sidebarnav:hover {
 }
 
 
-/* collapsing block-code */  
+<<<<<<< HEAD
+/*
+ * for SPOJ detection
+ */
+.spoj-alert
+{
+    border: 2px solid red;
+    color: red;
+    padding: 5px 0;
+    margin-top: 5px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 20px;
+}
+/* collapsing block-code */
 pre[class*="brush:"]
 {
 	position: relative;
@@ -4613,7 +4627,7 @@ pre[class*="brush:"].collapsed
   	height: 110px;
 	overflow: hidden;
  }
-  
+
 pre[class*="brush:"]::before
 {
 	content: attr(data-state);
