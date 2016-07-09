@@ -234,14 +234,14 @@ function qa_ajax_error()
 			'brush:xml;' : 'xml-xhtml'
 		}
 								
-		function collapseOrExpand()
-		{
+		/*function collapseOrExpand()
+		{*/
 			/*Array.from(document.getElementsByTagName('pre')).forEach(function(elem)
 			{
 					if (elem.classList.contains())console.log('Found blocks of code: ' , document.querySelectorAll('pre[class*="brush:"]'));
 			});*/
 			
-			////setTimeout(function(){console.log('Found blocks of code: ' , /*document.querySelectorAll('pre[class*="brush:"]')*/ document.getElementsByTagName('pre'));}, 1);
+			
 			
 			// buttons for actions like: Answer, Comment
 			/*var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
@@ -249,8 +249,12 @@ function qa_ajax_error()
 			
 			console.log('all action btns: ', actionBtns);*/
 			
+			var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+			
+			console.log('Found blocks of code: ' , blocks, ' true/false ', insidePreview);
+			
 			// get all <pre> tags which are wrappers for (CKEditor) code and loop them
-			Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')/* document.getElementsByTagName('pre')*/).forEach(function(block)
+			/*Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')*/blocks/* document.getElementsByTagName('pre')*/.forEach(function(block)
 			{						
 				// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
 				block.setAttribute('data-lang', languages[block.classList[0]]);
@@ -282,8 +286,10 @@ function qa_ajax_error()
 						}
 					});
 				}
+				
+				console.log('Collapsed: ', block);
 			});
-		}
+		/*}
 		
 		if (insidePreview)
 		{
@@ -295,7 +301,7 @@ function qa_ajax_error()
 			// when DOM is ready invoke function, which will prepare blocks to collapse/expand
 			////window.addEventListener('DOMContentLoaded', collapseOrExpand);
 			collapseOrExpand();
-		}
+		}*/
 		
 	}////(document));
 	
@@ -390,6 +396,8 @@ function qa_ajax_error()
 					
 					modal.appendChild(modalContent);
 					modalParent.appendChild(modal);
+					
+					console.log('Post preview content: ', modal);
 					
 					/*
 					 * prepare blocks of code inside Preview to be collapsed/expanded
