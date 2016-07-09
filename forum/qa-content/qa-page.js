@@ -305,12 +305,16 @@ function qa_ajax_error()
 				var parent = modalWrapper.parentNode;
 				
 				closeBtn.removeEventListener('click', hideModal);
+				modalBackground.removeEventListener('click', hideModal);
 				
 				document.body.removeChild(modalBackground);
 				parent.removeChild(modalWrapper);
 			}
 			
+			// close Modal on btn click
 			closeBtn.addEventListener('click', hideModal);
+			// close Modal on background click
+			modalBackground.addEventListener('click', hideModal);
 		}
 		
 		showModalBtn.addEventListener('click', function(ev)
