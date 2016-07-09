@@ -311,7 +311,7 @@ function qa_ajax_error()
 	 * Date: 07.07.2016r.
 	 */
 	 
-	/*;(*/function postPreview(placeForBtn/*document*/)
+	/*;(*/function postPreview(ckeCurrentInstance, placeForBtn/*document*/)
 	{
 		'use strict';
 		
@@ -376,13 +376,21 @@ function qa_ajax_error()
 					var modal = document.createElement('div');
 					var modalContent = document.createElement('div');
 					var closeModalBtn = document.createElement('button');
+					var ckeFullInstanceName;
+
+					if (ckeCurrentInstance)
+						ckeFullInstanceName = ckeCurrentInstance + '_content';
+					else
+						ckeFullInstanceName = Object.keys(CKEDITOR.instances)[0];
 					
 					////modalWrapper.id = 'content-preview-parent';
 					
 					modal.classList.add('post-preview-parent');
 					
+					console.log('[Current instance] / only first / correct full: ', JSON.stringify(ckeCurrentInstance), '/', JSON.stringify(Object.keys(CKEDITOR.instances)[0]), '/', JSON.stringify(ckeFullInstanceName));
+					
 					// get current CKEditor content (provided by it's API) and insert it to <div>
-					modalContent.innerHTML = CKEDITOR.instances[Object.keys(CKEDITOR.instances)[0]].getData();
+					modalContent.innerHTML = CKEDITOR.instances[/*Object.keys(CKEDITOR.instances)[0]*/ /*ckeCurrentInstance*/ ckeFullInstanceName].getData();
 					modalContent.classList.add('post-preview');
 					
 					closeModalBtn.innerHTML = 'X';
@@ -422,7 +430,7 @@ function qa_ajax_error()
 		
 		function addListener(ev)
 		{
-			console.log('btn Parent: ', ev.target, '/' , ev.target.parentNode);
+			////console.log('btn Parent: ', ev.target, '/' , ev.target.parentNode);
 			
 			checkCkeditor(ev.target);
 		}
@@ -445,7 +453,7 @@ function qa_ajax_error()
 					if (ckeInstanceName === 'anew')
 						ckeInstanceName = 'a';
 					
-					console.log('Searching for ckeditor: ', ckeInstanceName);
+					////console.log('Searching for ckeditor: ', ckeInstanceName);
 					
 					////ckeInstanceDom = document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
 					
@@ -456,21 +464,16 @@ function qa_ajax_error()
 					
 					previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
 					
-					console.log('CKEditor is ready... ', ev, '/', ckeInstanceName, '/DOM/' , ckeInstanceDom);
+					console.log('CKEditor is ready... ', ckeInstanceName, '/ DOM /' , ckeInstanceDom, '/ Parent /', previewBtnLocation);
 					 
-					
-					////previewBtnLocation = /*document.getElementById('cke_a_content')*//*ckeInstanceDom.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');*/	document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + 'a' + '"]').parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');
-					
-					console.log('previewBtnLocation: ', previewBtnLocation);
-					 
-					postPreview(previewBtnLocation);
+					postPreview(ckeInstanceName, previewBtnLocation);
 				}
 				
 				else postPreview();
 			});
 		}
 		
-		// when URL contains number - so user is on topic subsite (not on main or other forum site)
+		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
 		if (/*idx*/ url > 0)
 		{			
 			// buttons for actions like: Answer, Comment
@@ -486,11 +489,13 @@ function qa_ajax_error()
 				btn.addEventListener('click', addListener);
 			});
 		}
+		
+		// when user is creating new question
 		else if (location.pathname.indexOf('ask') > 0)
 		{
 			checkCkeditor(false, true);
 		}
-		else console.log('NOT in topics');
+		else console.error('Unpredicted Forum URL: ', location.pathname);
 		
 	});
 	
