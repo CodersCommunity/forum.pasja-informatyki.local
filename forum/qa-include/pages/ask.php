@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html>
-	<style>
-
-	</style>
-<body>
-	<script>
-	
-	</script>
-</html>
-
 <?php
 /*
 	Question2Answer by Gideon Greenspan and contributors
