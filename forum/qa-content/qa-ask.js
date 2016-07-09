@@ -299,127 +299,154 @@ function set_category_description(idprefix)
 
 
 // check SPOJ content when User creates new topic (asks a question)
-(function (document)
+;(function (document)
 {
 	'use strict';
 	
 	window.addEventListener('load', function()
-	{
-		function detectSpoj(ev)
+	{			
+		var detected = false;
+		
+		var alertDiv = document.createElement('div');	
+		alertDiv.id = 'spoj-alert';
+		alertDiv.innerHTML = 'Twoje pytanie dotyczy zadania z serwisu SPOJ?<br>Nie psuj zabawy innym - nie umieszczaj całego kodu i zapoznaj się z <a href="http://forum.pasja-informatyki.pl/90416/spoj-zasady-umieszczania-postow?show=90416#q90416">tym tematem</a>.';
+		alertDiv.classList.add('spoj-alert');
+		
+		function detectSpoj(place, ev)
 		{
 			if (ev.target.id === 'title')
 			{
 				if (ev.target.value.toLowerCase().indexOf('spoj') > -1)
-				{
-						console.log('nie pytaj o SPOJ');
+				{						
+						/*ev.target.parentNode.classList.add('spoj-alert');*/
 						
-						ev.target.parentNode.classList.add('spoj-alert');
+						if (!document.getElementById(alertDiv))
+						{
+							// place spoj alert below CKEditor
+							place.appendChild(alertDiv);
+							
+							////detected = true;
+						}
 				}
 				else
 				{
-					if (ev.target.parentNode.classList.contains('spoj-alert'))
-						ev.target.parentNode.classList.remove('spoj-alert');
+					/*if (ev.target.parentNode.classList.contains('spoj-alert'))
+						ev.target.parentNode.classList.remove('spoj-alert');*/
+					
+					if (document.getElementById(alertDiv.id) /*&& detected*/)
+					{
+						// remove spoj alert warning
+						place.removeChild(alertDiv);
+						
+						////detected = false;
+					}
 				}
+				
+				console.log('[input] detected: ', detected);
 			}
 		}
-		
-		// when user clicks-off from topic title <input>
-		document.getElementById('title').addEventListener('input', detectSpoj);
-		
-		// searching for CKEditor
-		Array.from(document.querySelectorAll('.qa-form-tall-data')).forEach(function(elem)
+				
+		CKEDITOR.on('instanceReady', function(ev)
 		{			
-			/*
-			 * Mutation Observer is used, because it seems that CKEditor inside <iframe> is loading even later than 'load' event is fired at Window Object
-			 * so observing DOM parent element lets to find when CKEditor is ready to work on it's DOM
-			 * Example is taken from: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-			 */
-			var observer = new MutationObserver(function(mutations) 
+			////console.log('CKEditor is READY!!!!', /*CKEDITOR.instances, '/',*/ ev.editor, '/', CKEDITOR.instances[/*ev.editor*/ Object.keys(CKEDITOR.instances)[0]]);
+			
+			var iframe = document.querySelector('iframe[title="Edytor tekstu sformatowanego, content"]');
+			
+			// get CKEditor DOM from <iframe>
+			var ckeditor = iframe.contentWindow.document.body;
+			var editorFrame = /*document.querySelector('.qa-form-tall-data')*/ document.getElementById('cke_content').parentNode /*document.querySelector('.qa-form-tall-table')*/;
+			
+			// when user writes topic title
+			document.getElementById('title').addEventListener('input', function(ev)
 			{
-				  mutations.forEach(function(mutation) 
-				  {
-					// if CKEditor <iframe> is loaded and can be found inside DOM
-					if (elem.querySelector('iframe'))
-					{
-						var iframe = elem.querySelector('iframe');
-						
-						// get CKEditor DOM from <iframe>
-						var ckeditor = iframe.contentWindow.document.body;
-						
-						ckeditor.addEventListener('input', function()
-						{							
-							// when script detect that user wrote "pl.spoj.com" inside CKEditor
-							if (ckeditor.querySelector('p').textContent.indexOf('pl.spoj.com') > -1)
-							{							
-								console.log('-----', elem.querySelector('#cke_content'));
-								
-								// add warning to #cke_content DIV
-								elem.classList.add('spoj-alert');
-								
-								////console.log('NIE spojuj!! ', iframe);
-							}
-							else
-							{
-								if (elem.classList.contains('spoj-alert'))
-									elem.classList.remove('spoj-alert');
-							}
-						});
-					}
-				  });    
+				detectSpoj(editorFrame, ev);
 			});
 			
-			// configuration of the observer:
-			var config = { attributes: true, childList: true, characterData: true };
-			 
-			// pass in the target node, as well as the observer options
-			observer.observe(elem, config);
-		});
-	});
-	
-	
-	
-	
-	
-	// wait for DOM to load, because whole JS in Q2A is placed inside <head>
-	/*window.addEventListener('DOMContentLoaded', function()
-	{	
-		console.log('DOMContentLoaded!');
-		// when user clicks-off from topic title <input>
-		document.getElementById('title').addEventListener('blur', function(ev)
-		{
-			console.log(ev.target.value);
-		})
-		
-		console.log('ckeeeeee: ', document.querySelector('#cke_content'));
-		////console.log('ckeditor? : ', document.querySelector('.cke_wysiwyg_frame'), '/', document.querySelectorAll('.qa-form-tall-data'));
-		
-		var ckeditorParents = Array.from(document.querySelectorAll('.qa-form-tall-data')),
-			ckeditor = ckeditorParents.find(function(elem)
-			{
-				console.log('[p] ckeditor: ', elem, '/', elem.querySelector('.cke_1'));
-				
-				////return document.querySelector(elem);
+			ckeditor.addEventListener('input', function(evt)
+			{							
+				// when script detect that user wrote "pl.spoj.com" inside CKEditor
+				if (/*ckeditor.querySelector('p').textContent*/evt.target.innerHTML.indexOf('pl.spoj.com') > -1)
+				{							
+					console.log('-----', ev.editor.getData());
+					
+					/*// add warning to #cke_content DIV
+					editorFrame.classList.add('spoj-alert');*/
+					
+					if (!document.getElementById(alertDiv))
+					{
+						// place spoj alert below CKEditor
+						editorFrame.appendChild(alertDiv);
+						
+						////detected = true;
+					}
+					
+					////console.log('NIE spojuj!! ', iframe);
+				}
+				else
+				{
+					/*if (editorFrame.classList.contains('spoj-alert'))
+						editorFrame.classList.remove('spoj-alert');*/
+					
+					if (document.getElementById(alertDiv.id))
+					{
+						// remove spoj alert warning
+						editorFrame.removeChild(alertDiv);
+						
+						////detected = false;
+					}
+				}
 			});
-		
-		document.querySelector('.qa-form-tall-data').addEventListener('DOMSubtreeModified', function(ev)
-		{
-			console.log('??????? ', ev.target);
+			
+			console.log('[editor] detected: ', detected);
 		});
-		/*document.querySelector('.cke_wysiwyg_frame').addEventListener('load', function(ev)
-		{
-			console.log('ckeditor loaded ', ev.target);
-		});*/
-				
-		/*setTimeout(function()
-		{
-			console.log('ckeditor TIMEOUT? : ', 	document.querySelector('.cke_wysiwyg_frame'));
-			console.log('iframes: ', document.querySelectorAll('iframe'));
-		}, 1000);*/
-		/*document.querySelector('.cke_wysiwyg_frame').addEventListener('blur', function(ev)
-		{
-			console.log('lost focus from editor');
-		});*//*
 		
-		//.contentWindow.document.body')
-	});*/
+		// searching for CKEditor
+		// Array.from(document.querySelectorAll('.qa-form-tall-data')).forEach(function(elem)
+		// {			
+			// /*
+			 // * Mutation Observer is used, because it seems that CKEditor inside <iframe> is loading even later than 'load' event is fired at Window Object
+			 // * so observing DOM parent element lets to find when CKEditor is ready to work on it's DOM
+			 // * Example is taken from: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+			 // */
+			// var observer = new MutationObserver(function(mutations) 
+			// {
+				  // mutations.forEach(function(mutation) 
+				  // {
+					// // if CKEditor <iframe> is loaded and can be found inside DOM
+					// if (elem.querySelector('iframe'))
+					// {
+						// var iframe = elem.querySelector('iframe');
+						
+						// // get CKEditor DOM from <iframe>
+						// var ckeditor = iframe.contentWindow.document.body;
+						
+						// ckeditor.addEventListener('input', function()
+						// {							
+							// // when script detect that user wrote "pl.spoj.com" inside CKEditor
+							// if (ckeditor.querySelector('p').textContent.indexOf('pl.spoj.com') > -1)
+							// {							
+								// console.log('-----', elem.querySelector('#cke_content'));
+								
+								// // add warning to #cke_content DIV
+								// elem.classList.add('spoj-alert');
+								
+								// console.log('NIE spojuj!! ', iframe);
+							// }
+							// else
+							// {
+								// if (elem.classList.contains('spoj-alert'))
+									// elem.classList.remove('spoj-alert');
+							// }
+						// });
+					// }
+				  // });    
+			// });
+			
+			// // configuration of the observer:
+			// var config = { attributes: true, childList: true, characterData: true };
+			 
+			// // pass in the target node, as well as the observer options
+			// observer.observe(elem, config);
+		// });
+	});
 }(document));
