@@ -177,8 +177,13 @@ function qa_ajax_error()
 }
 
 
-/* NEW FEATURES */
-
+/*
+ * ////////////////////
+ * 
+ * NEW FEATURES
+ * 
+ * ////////////////////
+ */
 ;(function(document)
 {
 	'use strict';
@@ -187,12 +192,9 @@ function qa_ajax_error()
 	 * Feature: Collapsable blocks of code
 	 * Author: ChrissP92 - https://github.com/ChrissP92
 	 * Date: 05.07.2016r.
-	 */
-	
-	/*;(*/function handleCodeCollapsing(insidePreview /*document*/)
-	{
-		'use strict';
-		
+	 */	
+	function handleCodeCollapsing(insidePreview)
+	{		
 		/*
 		 *	!!!! IMPORTANT VARIABLE !!!!
 		 * 
@@ -208,230 +210,165 @@ function qa_ajax_error()
 			'brush:applescript;' : 'applescript',
 			'brush:bash;' : 'bash-shell',
 			'brush:cf;' : 'coldfusion',
-			'brush:csharp;' : 'c#',
+			'brush:csharp;' : 'C#',
 			'brush:cpp;' : 'C++',
-			'brush:css;' : 'css',
+			'brush:css;' : 'CSS',
 			'brush:delphi;' : 'delphi',
 			'brush:diff;' : 'diff',
 			'brush:erl;' : 'erlang',
 			'brush:groovy;' : 'groovy',
 			'brush:hx;' : 'haxe',
-			'brush:jscript;' : 'javascript',
-			'brush:java;' : 'java',
-			'brush:javafx;' : 'java-fx',
+			'brush:jscript;' : 'JavaScript',
+			'brush:java;' : 'Java',
+			'brush:javafx;' : 'Java-FX',
 			'brush:perl;' : 'perl',
-			'brush:php;' : 'php',
+			'brush:php;' : 'PHP',
 			'brush:plain;' : 'plain-text',
 			'brush:ps;' : 'powershell',
-			'brush:python;' : 'python',
-			'brush:ruby;' : 'ruby',
-			'brush:scss;' : 'sass',
+			'brush:python;' : 'Python',
+			'brush:ruby;' : 'Ruby',
+			'brush:scss;' : 'SASS',
 			'brush:scala;' : 'scala',
-			'brush:sql;' : 'sql',
+			'brush:sql;' : 'SQL',
 			'brush:tap;' : 'tap',
-			'brush:ts;' : 'typescript',
-			'brush:vb;' : 'vb',
-			'brush:xml;' : 'xml-xhtml'
+			'brush:ts;' : 'TypeScript',
+			'brush:vb;' : 'VB',
+			'brush:xml;' : 'XML-xHTML'
 		}
-								
-		/*function collapseOrExpand()
-		{*/
-			/*Array.from(document.getElementsByTagName('pre')).forEach(function(elem)
+										
+		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+		
+		// get all <pre> tags which are wrappers for (CKEditor) code and loop them
+		blocks.forEach(function(block)
+		{						
+			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
+			block.setAttribute('data-lang', languages[block.classList[0]]);
+			
+			// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
+			if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
 			{
-					if (elem.classList.contains())console.log('Found blocks of code: ' , document.querySelectorAll('pre[class*="brush:"]'));
-			});*/
-			
-			
-			
-			// buttons for actions like: Answer, Comment
-			/*var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
-			actionBtns.push( document.getElementById('q_doanswer') );
-			
-			console.log('all action btns: ', actionBtns);*/
-			
-			var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
-			
-			console.log('Found blocks of code: ' , blocks, ' true/false ', insidePreview);
-			
-			// get all <pre> tags which are wrappers for (CKEditor) code and loop them
-			/*Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')*/blocks/* document.getElementsByTagName('pre')*/.forEach(function(block)
-			{						
-				// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
-				block.setAttribute('data-lang', languages[block.classList[0]]);
-				
-				// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
-				if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
-				{
-					// add CSS class to do some styling
-					block.classList.add('collapsed');
-					// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
-					block.setAttribute('data-state', '-- Rozwiń --');
+				// add CSS class to do some styling
+				block.classList.add('collapsed');
+				// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
+				block.setAttribute('data-state', '-- Rozwiń --');
 
-					// when user clicks on code-block
-					block.addEventListener('click', function(ev)
-					{					
-						/*
-						 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
-						 * to notify user the state of code-block
-						 */
-						if (block.classList.contains('collapsed'))
-						{
-							block.classList.remove('collapsed');
-							block.setAttribute('data-state', '-- Zwiń --');
-						}
-						else
-						{
-							block.classList.add('collapsed');
-							block.setAttribute('data-state', '-- Rozwiń --');
-						}
-					});
-				}
-				
-				console.log('Collapsed: ', block);
-			});
-		/*}
-		
-		if (insidePreview)
-		{
-			collapseOrExpand();
-		}
-		
-		else
-		{
-			// when DOM is ready invoke function, which will prepare blocks to collapse/expand
-			////window.addEventListener('DOMContentLoaded', collapseOrExpand);
-			collapseOrExpand();
-		}*/
-		
-	}////(document));
+				// when user clicks on code-block
+				block.addEventListener('click', function(ev)
+				{					
+					/*
+					 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
+					 * to notify user the state of code-block
+					 */
+					if (block.classList.contains('collapsed'))
+					{
+						block.classList.remove('collapsed');
+						block.setAttribute('data-state', '-- Zwiń --');
+					}
+					else
+					{
+						block.classList.add('collapsed');
+						block.setAttribute('data-state', '-- Rozwiń --');
+					}
+				});
+			}
+		});	
+	}
 	
 	/*
 	 * Feature: Post content preview as Modal
 	 * Author: ChrissP92 - https://github.com/ChrissP92
 	 * Date: 07.07.2016r.
-	 */
-	 
-	/*;(*/function postPreview(ckeCurrentInstance, placeForBtn/*document*/)
-	{
-		'use strict';
+	 */	 
+	function postPreview(ckeCurrentInstance, placeForBtn)
+	{		
+		// get <div> and set it as Modal parent
+		var modalParent = document.querySelector('.qa-main-wrapper');
 		
-		/*window.addEventListener('DOMContentLoaded', function()
-		{*/
-			// get <div> and set it as Modal parent
-			var modalParent = document.querySelector('.qa-main-wrapper');
-			
-			var showModalBtn = document.createElement('button');
-			var modalBackground = document.createElement('div');
+		var showModalBtn = document.createElement('button');
+		var modalBackground = document.createElement('div');
 
-			modalBackground.classList.add('modal-background');
-			
-			showModalBtn.id = 'get-content-preview';
-			showModalBtn.innerHTML = 'Podgląd posta';
-			showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-			
-			if (placeForBtn)
-			{				
-				placeForBtn.appendChild(showModalBtn);
-				
-				console.log('[RESPONSE preview] ', placeForBtn);
-			}			
-			
-			else
+		modalBackground.classList.add('modal-background');
+		
+		showModalBtn.id = 'get-content-preview';
+		showModalBtn.innerHTML = 'Podgląd posta';
+		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
+		
+		if (placeForBtn)		
+			placeForBtn.appendChild(showModalBtn);		
+		else
+			document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+		
+		function modalEventHandler(modalWrapper, closeBtn)
+		{
+			function hideModal(ev)
 			{
-				console.log('[ASK preview]');
+				var parent = modalWrapper.parentNode;
 				
-				document.querySelector(/*'.qa-form-tall-buttons [value="Odpowiedz"], */'.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+				closeBtn.removeEventListener('click', hideModal);
+				
+				document.body.removeChild(modalBackground);
+				parent.removeChild(modalWrapper);
 			}
 			
-			////console.log('preview btn?: ', showModalBtn);
+			closeBtn.addEventListener('click', hideModal);
+		}
+		
+		showModalBtn.addEventListener('click', function(ev)
+		{	
+			ev.preventDefault();
 			
-			function modalEventHandler(modalWrapper, closeBtn)
+			var modal = document.getElementById('content-preview-parent');
+			
+			if (!modal)
 			{
-				function hideModal(ev)
-				{
-					var parent = modalWrapper.parentNode;
-					
-					console.log('modal: ', ev.target);
-					
-					closeBtn.removeEventListener('click', hideModal);
-					
-					document.body.removeChild(modalBackground);
-					parent.removeChild(modalWrapper);
-				}
+				var modal = document.createElement('div');
+				var modalContent = document.createElement('div');
+				var closeModalBtn = document.createElement('button');
+				var ckeFullInstanceName;
+
+				if (ckeCurrentInstance)
+					ckeFullInstanceName = ckeCurrentInstance + '_content';
+				else
+					ckeFullInstanceName = Object.keys(CKEDITOR.instances)[0];
 				
-				closeBtn.addEventListener('click', hideModal);
+				modal.classList.add('post-preview-parent');
+				
+				// get current CKEditor content (provided by it's API) and insert it to <div>
+				modalContent.innerHTML = CKEDITOR.instances[ckeFullInstanceName].getData();
+				modalContent.classList.add('post-preview');
+				
+				closeModalBtn.innerHTML = 'X';
+				closeModalBtn.classList.add('close-preview-btn');
+				
+				// invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
+				modalEventHandler(modal, closeModalBtn);
+				
+				document.body.insertBefore(modalBackground, document.body.firstChild);
+				modal.appendChild(closeModalBtn);
+				
+				modal.appendChild(modalContent);
+				modalParent.appendChild(modal);
+				
+				/*
+				 * prepare blocks of code inside Preview to be collapsed/expanded
+				 * "true" parameter lets to display collapsing blocks inside Preview Modal
+				 */
+				handleCodeCollapsing(true);
 			}
-
-			
-			showModalBtn.addEventListener('click', function(ev)
-			{			
-				////console.log('prevented?');
-				
-				ev.preventDefault();
-				
-				var modal = document.getElementById('content-preview-parent');
-				
-				if (!modal)
-				{
-					var modal = document.createElement('div');
-					var modalContent = document.createElement('div');
-					var closeModalBtn = document.createElement('button');
-					var ckeFullInstanceName;
-
-					if (ckeCurrentInstance)
-						ckeFullInstanceName = ckeCurrentInstance + '_content';
-					else
-						ckeFullInstanceName = Object.keys(CKEDITOR.instances)[0];
-					
-					////modalWrapper.id = 'content-preview-parent';
-					
-					modal.classList.add('post-preview-parent');
-					
-					console.log('[Current instance] / only first / correct full: ', JSON.stringify(ckeCurrentInstance), '/', JSON.stringify(Object.keys(CKEDITOR.instances)[0]), '/', JSON.stringify(ckeFullInstanceName));
-					
-					// get current CKEditor content (provided by it's API) and insert it to <div>
-					modalContent.innerHTML = CKEDITOR.instances[/*Object.keys(CKEDITOR.instances)[0]*/ /*ckeCurrentInstance*/ ckeFullInstanceName].getData();
-					modalContent.classList.add('post-preview');
-					
-					closeModalBtn.innerHTML = 'X';
-					closeModalBtn.classList.add('close-preview-btn');
-					
-					// invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
-					modalEventHandler(modal, closeModalBtn);
-					
-					document.body.insertBefore(modalBackground, document.body.firstChild);
-					modal.appendChild(closeModalBtn);
-					
-					modal.appendChild(modalContent);
-					modalParent.appendChild(modal);
-					
-					console.log('Post preview content: ', modal);
-					
-					/*
-					 * prepare blocks of code inside Preview to be collapsed/expanded
-					 * "true" parameter lets to display collapsing blocks inside Preview Modal
-					 */
-					handleCodeCollapsing(true);
-				}
-			});
-		/*});*/
-	}////(document));
+		});
+	}
 	
-	// run function, which maintain blocks of code collapsing and expanding
-	////handleCodeCollapsing();
+	// when Forum (sub)page DOM is ready
 	window.addEventListener('DOMContentLoaded', function()
 	{	
 		// find number in URL - so it's sure that topic is being viewed/opened
-		var url = location.pathname.split('/')/*; 
-		/*var idx = url*/.findIndex(function(elem)
+		var url = location.pathname.split('/').findIndex(function(elem)
 		{
 			return Number(elem);
 		}); 
 		
 		function addListener(ev)
-		{
-			////console.log('btn Parent: ', ev.target, '/' , ev.target.parentNode);
-			
+		{			
 			checkCkeditor(ev.target);
 		}
 		
@@ -441,10 +378,8 @@ function qa_ajax_error()
 			CKEDITOR.on("instanceReady", function(ev)
 			{			 
 				if (btnLocation)
-				{
-					////console.log('CLICKED BUTTON: ', btnLocation);
-				 
-					var prepareCkeInstance = /*document.querySelector('[name="q_docomment"]')*/btnLocation.getAttribute('onclick');
+				{				 
+					var prepareCkeInstance = btnLocation.getAttribute('onclick');
 					var ckeInstanceName = prepareCkeInstance.slice(prepareCkeInstance.indexOf('(') + 2, -2);
 					var ckeInstanceParent;
 					var ckeInstanceDom;
@@ -453,34 +388,27 @@ function qa_ajax_error()
 					if (ckeInstanceName === 'anew')
 						ckeInstanceName = 'a';
 					
-					////console.log('Searching for ckeditor: ', ckeInstanceName);
-					
-					////ckeInstanceDom = document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
-					
 					ckeInstanceParent = Array.from(document.querySelectorAll('.qa-form-tall-table')).find(function(elem)
 					{
 						return elem.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
 					});
 					
 					previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
-					
-					console.log('CKEditor is ready... ', ckeInstanceName, '/ DOM /' , ckeInstanceDom, '/ Parent /', previewBtnLocation);
 					 
 					postPreview(ckeInstanceName, previewBtnLocation);
 				}
 				
-				else postPreview();
+				else 
+					postPreview();
 			});
 		}
 		
 		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
-		if (/*idx*/ url > 0)
+		if (url > 0)
 		{			
 			// buttons for actions like: Answer, Comment
 			var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
 			actionBtns.push( document.getElementById('q_doanswer') );
-			
-			////console.log('all action btns: ', actionBtns);
 						
 			handleCodeCollapsing();
 			
@@ -495,8 +423,7 @@ function qa_ajax_error()
 		{
 			checkCkeditor(false, true);
 		}
-		else console.error('Unpredicted Forum URL: ', location.pathname);
+		////else console.error('Unpredicted Forum URL: ', location.pathname);
 		
-	});
-	
+	});	
 }(document));
