@@ -305,7 +305,10 @@ function set_category_description(idprefix)
 	
 	window.addEventListener('load', function()
 	{			
-		var detected = false;
+		var titleDetected = false;
+		var editorDetected = false;
+		
+		////var detected = false;
 		
 		var alertDiv = document.createElement('div');	
 		alertDiv.id = 'spoj-alert';
@@ -318,31 +321,32 @@ function set_category_description(idprefix)
 			{
 				if (ev.target.value.toLowerCase().indexOf('spoj') > -1)
 				{						
-						/*ev.target.parentNode.classList.add('spoj-alert');*/
+					/*ev.target.parentNode.classList.add('spoj-alert');*/
+					
+					if (!document.getElementById(alertDiv))
+					{
+						// place spoj alert below CKEditor
+						place.appendChild(alertDiv);
 						
-						if (!document.getElementById(alertDiv))
-						{
-							// place spoj alert below CKEditor
-							place.appendChild(alertDiv);
-							
-							////detected = true;
-						}
+						titleDetected = true;
+					}
 				}
 				else
 				{
 					/*if (ev.target.parentNode.classList.contains('spoj-alert'))
 						ev.target.parentNode.classList.remove('spoj-alert');*/
+					titleDetected = false;
 					
-					if (document.getElementById(alertDiv.id) /*&& detected*/)
+					if (document.getElementById(alertDiv.id) && !editorDetected)
 					{
 						// remove spoj alert warning
 						place.removeChild(alertDiv);
 						
-						////detected = false;
+						//////titleDetected = false;
 					}
 				}
 				
-				console.log('[input] detected: ', detected);
+				console.log('I [title / /editor] detected: ', titleDetected, '/', editorDetected);
 			}
 		}
 				
@@ -367,7 +371,7 @@ function set_category_description(idprefix)
 				// when script detect that user wrote "pl.spoj.com" inside CKEditor
 				if (/*ckeditor.querySelector('p').textContent*/evt.target.innerHTML.indexOf('pl.spoj.com') > -1)
 				{							
-					console.log('-----', ev.editor.getData());
+					////console.log('-----', ev.editor.getData());
 					
 					/*// add warning to #cke_content DIV
 					editorFrame.classList.add('spoj-alert');*/
@@ -377,7 +381,7 @@ function set_category_description(idprefix)
 						// place spoj alert below CKEditor
 						editorFrame.appendChild(alertDiv);
 						
-						////detected = true;
+						editorDetected = true;
 					}
 					
 					////console.log('NIE spojuj!! ', iframe);
@@ -387,17 +391,19 @@ function set_category_description(idprefix)
 					/*if (editorFrame.classList.contains('spoj-alert'))
 						editorFrame.classList.remove('spoj-alert');*/
 					
-					if (document.getElementById(alertDiv.id))
+					editorDetected = false;
+					
+					if (document.getElementById(alertDiv.id) && !titleDetected)
 					{
 						// remove spoj alert warning
 						editorFrame.removeChild(alertDiv);
 						
-						////detected = false;
+						//////editorDetected = false;
 					}
 				}
+				
+				console.log('E [title / /editor] detected: ', titleDetected, '/', editorDetected);
 			});
-			
-			console.log('[editor] detected: ', detected);
 		});
 		
 		// searching for CKEditor
