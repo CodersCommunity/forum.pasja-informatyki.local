@@ -429,6 +429,7 @@ function qa_ajax_error()
 		
 		function checkCkeditor(btnLocation, ask)
 		{
+			// CKEDITOR's API event, which indicates that editor is loaded
 			CKEDITOR.on("instanceReady", function(ev)
 			{			 
 				if (btnLocation)
@@ -437,18 +438,28 @@ function qa_ajax_error()
 				 
 					var prepareCkeInstance = /*document.querySelector('[name="q_docomment"]')*/btnLocation.getAttribute('onclick');
 					var ckeInstanceName = prepareCkeInstance.slice(prepareCkeInstance.indexOf('(') + 2, -2);
+					var ckeInstanceParent;
 					var ckeInstanceDom;
 					var previewBtnLocation;
 					
 					if (ckeInstanceName === 'anew')
 						ckeInstanceName = 'a';
 					
-					ckeInstanceDom = document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
+					console.log('Searching for ckeditor: ', ckeInstanceName);
+					
+					////ckeInstanceDom = document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
+					
+					ckeInstanceParent = Array.from(document.querySelectorAll('.qa-form-tall-table')).find(function(elem)
+					{
+						return elem.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
+					});
+					
+					previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
 					
 					console.log('CKEditor is ready... ', ev, '/', ckeInstanceName, '/DOM/' , ckeInstanceDom);
 					 
 					
-					previewBtnLocation = /*document.getElementById('cke_a_content')*//*ckeInstanceDom.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');*/	document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + 'a' + '"]').parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');
+					////previewBtnLocation = /*document.getElementById('cke_a_content')*//*ckeInstanceDom.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');*/	document.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + 'a' + '"]').parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('.qa-form-tall-buttons');
 					
 					console.log('previewBtnLocation: ', previewBtnLocation);
 					 
