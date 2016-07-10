@@ -4597,3 +4597,21 @@ a.sidebarnav:hover {
 .level-expert, .level-expert a {
 	color: #8a0fd1;
 }
+
+/*
+ *	Feature: inform user about marking best answer, when he wants to close a topic
+ */
+ .closing-topic-info 
+ {
+    border: 2px solid orange;
+    text-align: center;
+    padding: 5px 10px;
+    line-height: 18px;
+    color: orange;
+    font-weight: bold;
+}
+
+.closing-topic-info-bold 
+{
+    color: #2ecc71;
+}

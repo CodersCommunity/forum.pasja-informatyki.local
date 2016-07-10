@@ -175,3 +175,27 @@ function qa_ajax_error()
 {
 	alert('Unexpected response from server - please try again or switch off Javascript.');
 }
+
+
+/*
+ *	Feature: inform user about marking best answer, when he wants to close a topic
+ */
+ ;(function(document)
+ {
+	 'use strict';
+	 
+	window.addEventListener('DOMContentLoaded', function()
+	{
+		var parent = document.querySelector('.qa-c-form .qa-form-tall-table tbody');
+		var last = document.querySelector('.qa-c-form .qa-form-tall-table tbody tr:last-child');
+		var informParent = document.createElement('tr');
+		var inform  = document.createElement('td'); 
+
+		inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
+
+		inform.classList.add('closing-topic-info');
+		informParent.appendChild(inform);
+
+		parent.insertBefore(informParent, last);
+	});
+ }(document));
