@@ -410,14 +410,37 @@ function qa_ajax_error()
 		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
 		if (url > 0)
 		{			
-			// buttons for actions like: Answer, Comment
-			var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
-			actionBtns.push( document.getElementById('q_doanswer') );
+			console.log('SEARCHING for buttons... ', location.pathname, '/', location.href.indexOf('state=edit') > -1);
+			
+			var actionBtns = [];
+			
+			if (!location.href.indexOf('state=edit') > -1)
+			{
+				// buttons for actions like: Answer, Comment
+				Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
+				{
+					actionBtns.push( comment );
+				});
+				actionBtns.push( document.getElementById('q_doanswer') );
+			}
+			
+			else
+			{
+				// add Edit buttons to 'actionBtns' Array
+				Array.from(document.querySelectorAll('input[name*="_doedit"]')).forEach(function(edit)
+				{
+					actionBtns.push( edit );
+				});
+			}
 						
+			console.log('???: ', actionBtns);
+			
 			handleCodeCollapsing();
 			
 			actionBtns.forEach(function(btn)
 			{
+				////console.log('btn: ', btn);
+				
 				btn.addEventListener('click', addListener);
 			});
 		}
