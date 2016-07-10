@@ -300,7 +300,7 @@ function qa_ajax_error()
 		
 		else
 		{
-			var appendReference = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]') || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]');
+			var appendReference = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]') || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]') || document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"]');
 			////document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
 			appendReference.parentNode.appendChild(showModalBtn);
 		}
@@ -441,10 +441,16 @@ function qa_ajax_error()
 			
 			handleCodeCollapsing();
 			
-			actionBtns.forEach(function(btn)
-			{				
-				btn.addEventListener('click', addListener);
-			});
+			if (!document.querySelector('.answer'))
+				checkCkeditor(false);
+			
+			else 
+			{
+				actionBtns.forEach(function(btn)
+				{				
+					btn.addEventListener('click', addListener);
+				});
+			}
 		}
 		
 		// when user wants to edit his question/answer/comment
