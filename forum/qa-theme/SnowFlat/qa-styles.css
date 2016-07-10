@@ -69,7 +69,6 @@ a {
 a:active, a:focus {
 	color: #3498db;
 	text-decoration: none;
-	outline: 0;
 }
 a:visited {
 	color: #2980b9;
@@ -78,6 +77,16 @@ a:visited {
 a:hover {
 	color: #3498db;
 	text-decoration: underline;
+}
+
+a:focus *[data-info]::after {
+	opacity: 1;
+	top: 30px;
+	z-index: 9999;
+}
+
+a[href*="qa.rss"] {
+	outline-color: #ffffff;
 }
 
 h1 {
@@ -125,7 +134,7 @@ hr {
 img {
 	vertical-align: bottom;
 	max-width: 100%;
-	height: auto !important;
+	height: auto;
 }
 
 input, textarea, select {
@@ -156,8 +165,7 @@ pre {
 	border-left: 11px solid #3498db;
 	margin: 1.7em 0 1.7em 0.3em;
 	overflow: auto;
-	/*padding: 0.1em 0.5em 0.3em 0.7em;*/
-	padding: 2.25em 0.5em 0.3em 0.7em;
+	padding: 0.1em 0.5em 0.3em 0.7em;
 	width: 98%;
 }
 pre code {
@@ -195,16 +203,11 @@ blockquote p {
 
 .qa-search-field {
 	margin: 0 -40px 0 0;
-	padding: 0 40px 0 0;
-	vertical-align: bottom;
+	padding: 0 40px 0 7px;
 	width: 98%;
 	height: 36px;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #1ABC9C;
-}
-.qa-search-field:focus {
-	border-color: #e6e6e6;
+	border: 1px solid #1ABC9C;
+	outline-color: #126252;
 }
 
 .qa-search-button {
@@ -215,9 +218,14 @@ blockquote p {
 	height: 36px;
 	text-indent: 9999px;
 	width: 36px;
-	margin: 0 !important;
+	margin: 0;
 	border: none;
-	outline: none;
+	outline-color: #126252;
+	transition: background-color 0.2s;
+}
+.qa-search-button:hover,
+.qa-search-button:focus {
+	background-color: #178972 !important; /* sorry */
 }
 
 @media (max-width: 1179px) {
@@ -474,36 +482,14 @@ blockquote p {
 
 .qa-logo {
 	display: inline-block;
-	vertical-align: top;
 	font-size: 24px;
-	margin: 0 15px 0 15px;
-}
-
-.qa-logoA {
-	display: inline-block;
-	vertical-align: top;
-	font-size: 24px;
-	margin: 0 15px 0 15px;
-	background-color: #1F2B37;
-}
-
-.qa-logoA img {
-	max-height: 49px;
-	width: auto;
+	margin-right: -2px;
 }
 
 @media (max-width: 1179px) {
 
 .qa-logo {
-	display: inline-block;
-	vertical-align: top;
-	font-size: 24px;
-	margin: 0 5px 0 15px;
-	background-color: #2C3E50;
-	padding-left: 10px;
-	padding-right: 12px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	padding: 4px 12px 4px 10px;
 }
 
 .qa-logo:hover {
@@ -511,29 +497,7 @@ blockquote p {
 }
 
 .qa-logo img {
-	max-height: 55px;
-	width: auto;
-}
-
-.qa-logoA {
-	display: inline-block;
-	vertical-align: top;
-	font-size: 24px;
-	margin: 0 5px 0 15px;
-	background-color: #2C3E50;
-	padding-left: 10px;
-	padding-right: 12px;
-	padding-top: 4px;
-	padding-bottom: 4px;
-}
-
-.qa-logoA:hover {
-	background-color: #1F2B37;
-}
-
-.qa-logoA img {
-	max-height: 55px;
-	width: auto;
+	height: 55px;
 }
 
 .qa-header-menu {
@@ -544,13 +508,22 @@ blockquote p {
 }
 
 .qa-logo img {
-	max-height: 49px;
-	width: auto;
+	height: 48px;
 }
 
 .qa-logo-link {
-	line-height: 49px;
 	display: block;
+}
+
+.qa-logo-link dfn::after {
+	top: 15px;
+	left: -10px;
+	text-align: center;
+
+}
+.qa-logo-link dfn:hover::after {
+	top: 40px;
+
 }
 
 @media (min-width: 1180px) {
@@ -647,7 +620,7 @@ blockquote p {
 		text-align: center;
 	}
 }
-.qa-nav-main-link:hover {
+.qa-nav-main-link:hover, .qa-nav-main-link:focus {
 	text-decoration: none;
 	background: #1F2B37;
 }
@@ -1491,8 +1464,11 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 	text-decoration: none !important;
 	transition: all 0.75s ease-in-out 0s;
 }
+
+.qa-widget-side .qa-q-view-tag-item:hover,
+.qa-widget-side .qa-q-view-tag-item:focus,
 .qa-tag-link:hover,
-.qa-widget-side .qa-q-view-tag-item:hover {
+.qa-tag-link:focus {
 	background: #f39c12;
 	color: #fff !important;
 	transition: all 0.25s ease-in-out 0s;
@@ -1513,6 +1489,11 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 	content: url('images/star14.png');
 	background-color: #b94a00;
 }
+.qa-widget-side .qa-q-view-tag-item:focus,
+.qa-tag-link:focus {
+	outline-color: #21130C;
+}
+
 
 .qa-page-links-list {
 	margin: 0;
@@ -1913,12 +1894,10 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
 	background-color: #fff;
 	border-color: #3498db;
-	outline: 0;
 }
 input::-moz-focus-inner, textarea::-moz-focus-inner, select::-moz-focus-inner {
 	padding: 0;
 	border: 0;
-	outline: 0;
 }
 
 select:-moz-focusring {
@@ -2290,9 +2269,12 @@ input[type="submit"], button {
 	color: #fff;
 	border-bottom: 1px dotted #fff;
 }
-.qa-suggest-next a:hover {
+.qa-suggest-next a:hover, .qa-suggest-next a:focus {
 	color: #fff;
 	border-bottom: 0;
+}
+.qa-suggest-next a:focus {
+	outline-color: #ffffff;
 }
 
 /*------[ q-view ]------*/
@@ -3727,9 +3709,6 @@ input[type="submit"], button {
 .qa-main-wrapper {
 	overflow: hidden;
 	*zoom: 1;
-
-	/* for Post Preview <div>*/
-	position: relative;
 }
 
 @media (min-width: 1180px) {
@@ -4462,66 +4441,9 @@ dfn:hover::before {opacity: 1;}
 dfn:hover::after {top: 30px;}
 dfn:hover::before {top: 20px;}
 
-dfna {
-  font-style: normal;
-  position: relative;
+dfn.tooltip-right-position::after {
+	left: -104px;
 }
-dfna::after {
-  content: attr(data-info);
-  display: inline;
-  position: absolute;
-  top: 5px; left: -104px;
-  opacity: 0;
-  width: 155px;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.5em;
-  padding: 0.2em 0.1em;
-  background: rgba(31,43,55,0.95);
-  color: #fff;
-  pointer-events: none; /* This prevents the box from apearing when hovered. */
-  transition: opacity 250ms, top 250ms;
-}
-dfna::before {
-
-}
-dfna:hover {z-index: 2;} /* Keeps the info boxes on top of other elements */
-dfna:hover::after,
-dfna:hover::before {opacity: 1;}
-dfna:hover::after {top: 30px;}
-dfna:hover::before {top: 20px;}
-
-dfnl {
-  font-style: normal;
-  position: relative;
-}
-dfnl::after {
-  content: attr(data-info);
-  display: inline;
-  position: absolute;
-  top: 51px !important;
-  left: -10px !important;
-  opacity: 0;
-  width: 155px;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.5em;
-  padding: 0.2em 0.1em;
-  background: rgba(31,43,55,0.95);
-  color: #fff;
-  pointer-events: none; /* This prevents the box from apearing when hovered. */
-  transition: opacity 250ms, top 250ms;
-  text-align: center;
-}
-dfnl::before {
-
-}
-dfnl:hover {z-index: 2;} /* Keeps the info boxes on top of other elements */
-dfnl:hover::after,
-dfnl:hover::before {opacity: 1;}
-dfnl:hover::after {top: 30px;}
-dfnl:hover::before {top: 20px;}
-
 
 a.sidebarnav {
 	font-weight: 400 !important;
@@ -4602,8 +4524,6 @@ a.sidebarnav:hover {
 	color: #8a0fd1;
 }
 
-
-<<<<<<< HEAD
 /*
  * for SPOJ detection
  */

@@ -731,24 +731,10 @@
 		$logowidth=qa_opt('logo_width');
 		$logoheight=qa_opt('logo_height');
 
-		$adres = qa_path_absolute(qa_request());
-
-		if($adres=="http://forum.pasja-informatyki.pl/")
-		{
-			$qa_content['logo']='<a href="'.qa_path_html('').'" class="qa-logo-link">'.
-			'<dfnl data-info="Najnowsze pytania"><img src="'.qa_html(is_numeric(strpos($logourl, '://')) ? $logourl : qa_path_to_root().$logourl).'"'.
-			($logowidth ? (' width="'.$logowidth.'"') : '').($logoheight ? (' height="'.$logoheight.'"') : '').
-			' border="0" alt="'.qa_html(qa_opt('site_title')).'"/></dfnl></a>';
-
-		}
-		else
-		{
-			$qa_content['logo']='<a href="'.qa_path_html('').'" class="qa-logo-link">'.
-			'<dfnl data-info="Najnowsze pytania"><img src="'.qa_html(is_numeric(strpos($logourl, '://')) ? $logourl : qa_path_to_root().$logourl).'"'.
-			($logowidth ? (' width="'.$logowidth.'"') : '').($logoheight ? (' height="'.$logoheight.'"') : '').
-			' border="0" alt="'.qa_html(qa_opt('site_title')).'"/></dfnl></a>';
-		}
-
+		$qa_content['logo']='<a href="'.qa_path_html('').'" class="qa-logo-link">'.
+		'<dfn data-info="Najnowsze pytania"><img src="'.qa_html(is_numeric(strpos($logourl, '://')) ? $logourl : qa_path_to_root().$logourl).'"'.
+		($logowidth ? (' width="'.$logowidth.'"') : '').($logoheight ? (' height="'.$logoheight.'"') : '').
+		' border="0" alt="'.qa_html(qa_opt('site_title')).'"/></dfn></a>';
 
 		$topath=qa_get('to'); // lets user switch between login and register without losing destination page
 
