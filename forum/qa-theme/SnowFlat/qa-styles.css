@@ -165,7 +165,8 @@ pre {
 	border-left: 11px solid #3498db;
 	margin: 1.7em 0 1.7em 0.3em;
 	overflow: auto;
-	padding: 0.1em 0.5em 0.3em 0.7em;
+	/*padding: 0.1em 0.5em 0.3em 0.7em;*/
+	padding: 2.25em 0.5em 0.3em 0.7em;
 	width: 98%;
 }
 pre code {
@@ -3709,6 +3710,9 @@ input[type="submit"], button {
 .qa-main-wrapper {
 	overflow: hidden;
 	*zoom: 1;
+	
+	/* for Post Preview <div>*/
+ 	position: relative;
 }
 
 @media (min-width: 1180px) {
