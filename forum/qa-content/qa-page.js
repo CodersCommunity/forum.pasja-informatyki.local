@@ -294,9 +294,16 @@ function qa_ajax_error()
 		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
 		
 		if (placeForBtn)		
+		{
 			placeForBtn.appendChild(showModalBtn);		
+		}
+		
 		else
-			document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+		{
+			var appendReference = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]') || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]');
+			////document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+			appendReference.parentNode.appendChild(showModalBtn);
+		}
 		
 		function modalEventHandler(modalWrapper, closeBtn)
 		{
@@ -407,42 +414,43 @@ function qa_ajax_error()
 			});
 		}
 		
+		console.log('SEARCHING for buttons... ', location.pathname, '/', location.href.indexOf('state=edit') > -1);
+		
 		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
-		if (url > 0)
-		{			
-			console.log('SEARCHING for buttons... ', location.pathname, '/', location.href.indexOf('state=edit') > -1);
-			
+		if (url > 0 && !(location.href.indexOf('state=edit') > -1))
+		{		
+			// prepare Array for actions like: Answer, Comment, Edit
 			var actionBtns = [];
 			
-			if (!location.href.indexOf('state=edit') > -1)
-			{
-				// buttons for actions like: Answer, Comment
-				Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
-				{
-					actionBtns.push( comment );
-				});
-				actionBtns.push( document.getElementById('q_doanswer') );
-			}
+			// add Answer buttons
+			actionBtns.push( document.getElementById('q_doanswer') );
 			
-			else
+			// add Comment buttons
+			Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
 			{
-				// add Edit buttons to 'actionBtns' Array
-				Array.from(document.querySelectorAll('input[name*="_doedit"]')).forEach(function(edit)
-				{
-					actionBtns.push( edit );
-				});
-			}
+				actionBtns.push( comment );
+			});
+			
+			// add Edit buttons
+			Array.from(document.querySelectorAll('input[name*="_doedit"]')).forEach(function(edit)
+			{
+				actionBtns.push( edit );
+			});
 						
-			console.log('???: ', actionBtns);
+			console.log('btns: ', actionBtns);
 			
 			handleCodeCollapsing();
 			
 			actionBtns.forEach(function(btn)
-			{
-				////console.log('btn: ', btn);
-				
+			{				
 				btn.addEventListener('click', addListener);
 			});
+		}
+		
+		// when user wants to edit his question/answer/comment
+		else if (location.href.indexOf('state=edit') > -1)
+		{
+			checkCkeditor(false);
 		}
 		
 		// when user is creating new question
