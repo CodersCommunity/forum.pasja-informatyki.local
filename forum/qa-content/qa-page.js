@@ -234,7 +234,7 @@ function qa_ajax_error()
 			'brush:ts;' : 'TypeScript',
 			'brush:vb;' : 'VB',
 			'brush:xml;' : 'XML-xHTML'
-		}
+		};
 										
 		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
 		
@@ -272,7 +272,7 @@ function qa_ajax_error()
 				});
 			}
 		});	
-	}
+	};
 	
 	/*
 	 * Feature: Post content preview as Modal
@@ -367,7 +367,7 @@ function qa_ajax_error()
 				handleCodeCollapsing(true);
 			}
 		});
-	}
+	};
 	
 	// when Forum (sub)page DOM is ready
 	window.addEventListener('DOMContentLoaded', function()
