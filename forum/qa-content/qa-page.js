@@ -417,7 +417,7 @@ function qa_ajax_error()
 		console.log('SEARCHING for buttons... ', location.pathname, '/', location.href.indexOf('state=edit') > -1);
 		
 		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
-		if (url > 0 && !(location.href.indexOf('state=edit') > -1))
+		if (url > 0 && !(location.href.indexOf('state=') > -1))
 		{		
 			// prepare Array for actions like: Answer, Comment, Edit
 			var actionBtns = [];
@@ -437,7 +437,7 @@ function qa_ajax_error()
 				actionBtns.push( edit );
 			});
 						
-			console.log('btns: ', actionBtns);
+			////console.log('btns: ', actionBtns);
 			
 			handleCodeCollapsing();
 			
@@ -448,16 +448,16 @@ function qa_ajax_error()
 		}
 		
 		// when user wants to edit his question/answer/comment
-		else if (location.href.indexOf('state=edit') > -1)
+		else if (location.pathname.indexOf('ask') > -1 || location.href.indexOf('state=edit') > -1)
 		{
 			checkCkeditor(false);
 		}
 		
 		// when user is creating new question
-		else if (location.pathname.indexOf('ask') > 0)
+		/*else if (location.pathname.indexOf('ask') > 0)
 		{
 			checkCkeditor(false, true);
-		}
+		}*/
 		////else console.error('Unpredicted Forum URL: ', location.pathname);
 		
 	});	
