@@ -234,7 +234,7 @@ function qa_ajax_error()
 			'brush:ts;' : 'TypeScript',
 			'brush:vb;' : 'VB',
 			'brush:xml;' : 'XML-xHTML'
-		}
+		};
 										
 		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
 		
@@ -272,7 +272,7 @@ function qa_ajax_error()
 				});
 			}
 		});	
-	}
+	};
 	
 	/*
 	 * Feature: Post content preview as Modal
@@ -294,9 +294,16 @@ function qa_ajax_error()
 		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
 		
 		if (placeForBtn)		
+		{
 			placeForBtn.appendChild(showModalBtn);		
+		}
+		
 		else
-			document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+		{
+			var appendReference = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]') || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]') || document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"]');
+			
+			appendReference.parentNode.appendChild(showModalBtn);
+		}
 		
 		function modalEventHandler(modalWrapper, closeBtn)
 		{
@@ -360,7 +367,7 @@ function qa_ajax_error()
 				handleCodeCollapsing(true);
 			}
 		});
-	}
+	};
 	
 	// when Forum (sub)page DOM is ready
 	window.addEventListener('DOMContentLoaded', function()
@@ -408,26 +415,44 @@ function qa_ajax_error()
 		}
 		
 		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
-		if (url > 0)
-		{			
-			// buttons for actions like: Answer, Comment
-			var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
+		if (url > 0 && !(location.href.indexOf('state=') > -1))
+		{		
+			// prepare Array for actions like: Answer, Comment, Edit
+			var actionBtns = [];
+			
+			// add Answer buttons
 			actionBtns.push( document.getElementById('q_doanswer') );
-						
+			
+			// add Comment buttons
+			Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
+			{
+				actionBtns.push( comment );
+			});
+			
+			// add Edit buttons
+			Array.from(document.querySelectorAll('input[name*="_doedit"]')).forEach(function(edit)
+			{
+				actionBtns.push( edit );
+			});
+			
 			handleCodeCollapsing();
 			
-			actionBtns.forEach(function(btn)
+			if (!document.querySelector('.answer'))
+				checkCkeditor(false);
+			
+			else 
 			{
-				btn.addEventListener('click', addListener);
-			});
+				actionBtns.forEach(function(btn)
+				{				
+					btn.addEventListener('click', addListener);
+				});
+			}
 		}
 		
-		// when user is creating new question
-		else if (location.pathname.indexOf('ask') > 0)
+		// when user wants to add new question or edit his question/answer/comment
+		else if (location.pathname.indexOf('ask') > -1 || location.href.indexOf('state=edit') > -1)
 		{
-			checkCkeditor(false, true);
-		}
-		////else console.error('Unpredicted Forum URL: ', location.pathname);
-		
+			checkCkeditor(false);
+		}		
 	});	
 }(document));
