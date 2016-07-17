@@ -3710,7 +3710,7 @@ input[type="submit"], button {
 .qa-main-wrapper {
 	overflow: hidden;
 	*zoom: 1;
-	
+
 	/* for Post Preview <div>*/
  	position: relative;
 }
@@ -4529,8 +4529,23 @@ a.sidebarnav:hover {
 }
 
 /*
- * for SPOJ detection
+ *	Feature: inform user about marking best answer, when he wants to close a topic
  */
+ .closing-topic-info
+ {
+    border: 2px solid orange;
+    text-align: center;
+    padding: 5px 10px;
+    line-height: 18px;
+    color: orange;
+    font-weight: bold;
+}
+
+.closing-topic-info-bold
+{
+    color: #2ecc71;
+}
+/* for SPOJ detection */
 .spoj-alert
 {
     border: 2px solid red;
