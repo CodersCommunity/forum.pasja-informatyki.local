@@ -122,23 +122,30 @@
 					$messageid = null;
 
 				$canreply = !(qa_get_logged_in_flags() & QA_USER_FLAGS_NO_MESSAGES);
+				if ($toaccount['pwemail'] == 1) {
+					$more = strtr(qa_lang($canreply ? 'emails/private_message_reply' : 'emails/private_message_info'), array(
+						'^f_handle' => $fromhandle,
+						'^url' => qa_path_absolute($canreply ? ('message/'.$fromhandle) : ('user/'.$fromhandle)),
+					));
 
-				$more = strtr(qa_lang($canreply ? 'emails/private_message_reply' : 'emails/private_message_info'), array(
-					'^f_handle' => $fromhandle,
-					'^url' => qa_path_absolute($canreply ? ('message/'.$fromhandle) : ('user/'.$fromhandle)),
-				));
+					$subs = array(
+						'^message' => $inmessage,
+						'^f_handle' => $fromhandle,
+						'^f_url' => qa_path_absolute('user/'.$fromhandle),
+						'^more' => $more,
+						'^a_url' => qa_path_absolute('account'),
+					);
 
-				$subs = array(
-					'^message' => $inmessage,
-					'^f_handle' => $fromhandle,
-					'^f_url' => qa_path_absolute('user/'.$fromhandle),
-					'^more' => $more,
-					'^a_url' => qa_path_absolute('account'),
-				);
-
-				if (qa_send_notification($toaccount['userid'], $toaccount['email'], $toaccount['handle'],
-						qa_lang('emails/private_message_subject'), qa_lang('emails/private_message_body'), $subs))
-					$messagesent = true;
+					qa_send_notification(
+						$toaccount['userid'],
+						$toaccount['email'],
+						$toaccount['handle'],
+						qa_lang('emails/private_message_subject'),
+						qa_lang('emails/private_message_body'),
+						$subs
+					);
+				}
+				$messagesent = true;
 
 				qa_report_event('u_message', $loginuserid, qa_get_logged_in_handle(), qa_cookie_get(), array(
 					'userid' => $toaccount['userid'],

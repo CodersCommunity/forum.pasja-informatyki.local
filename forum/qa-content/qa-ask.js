@@ -296,3 +296,92 @@ function set_category_description(idprefix)
 		n.innerHTML=desc;
 	}
 }
+
+
+/*
+ * check SPOJ content when User creates new topic (asks a question)
+ */
+;(function (document)
+{
+	'use strict';
+
+	window.addEventListener('load', function()
+	{
+		var titleDetected = false;
+		var editorDetected = false;
+
+		var alertDiv = document.createElement('div');
+		alertDiv.id = 'spoj-alert';
+		alertDiv.innerHTML = 'Twoje pytanie dotyczy zadania z serwisu SPOJ?<br>Nie psuj zabawy innym - nie umieszczaj całego kodu i zapoznaj się z <a href="http://forum.pasja-informatyki.pl/90416/spoj-zasady-umieszczania-postow?show=90416#q90416" target="_blank">tym tematem</a>.';
+		alertDiv.classList.add('spoj-alert');
+
+		function detectSpoj(place, ev)
+		{
+			if (ev.target.id === 'title')
+			{
+				if (ev.target.value.toLowerCase().indexOf('spoj') > -1)
+				{
+					if (!document.getElementById(alertDiv))
+					{
+						// place spoj alert below CKEditor
+						place.appendChild(alertDiv);
+
+						titleDetected = true;
+					}
+				}
+				else
+				{
+					titleDetected = false;
+
+					if (document.getElementById(alertDiv.id) && !editorDetected)
+					{
+						// remove spoj alert warning
+						place.removeChild(alertDiv);
+					}
+				}
+				////console.log('I [title / /editor] detected: ', titleDetected, '/', editorDetected);
+			}
+		}
+
+		CKEDITOR.on('instanceReady', function(ev)
+		{
+			var iframe = document.querySelector('iframe[title="Edytor tekstu sformatowanego, content"]');
+
+			// get CKEditor DOM from <iframe>
+			var ckeditor = iframe.contentWindow.document.body;
+			var editorFrame = document.getElementById('cke_content').parentNode;
+
+			// when user writes topic title
+			document.getElementById('title').addEventListener('input', function(ev)
+			{
+				detectSpoj(editorFrame, ev);
+			});
+
+			ckeditor.addEventListener('input', function(evt)
+			{
+				// when script detect that user wrote "pl.spoj.com" inside CKEditor
+				if (evt.target.innerHTML.indexOf('pl.spoj.com') > -1)
+				{
+					if (!document.getElementById(alertDiv))
+					{
+						// place spoj alert below CKEditor
+						editorFrame.appendChild(alertDiv);
+
+						editorDetected = true;
+					}
+				}
+				else
+				{
+					editorDetected = false;
+
+					if (document.getElementById(alertDiv.id) && !titleDetected)
+					{
+						editorFrame.removeChild(alertDiv);
+					}
+				}
+				
+				////console.log('E [title / /editor] detected: ', titleDetected, '/', editorDetected);
+			});
+		});
+	});
+}(document));

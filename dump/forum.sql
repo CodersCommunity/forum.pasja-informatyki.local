@@ -1052,6 +1052,7 @@ CREATE TABLE `qa_users` (
   `sessioncode` char(8) CHARACTER SET ascii NOT NULL DEFAULT '',
   `sessionsource` varchar(16) CHARACTER SET ascii DEFAULT '',
   `flags` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `pwemail` smallint(5) unsigned NOT NULL DEFAULT '1',
   `wallposts` mediumint(9) NOT NULL DEFAULT '0',
   `oemail` varchar(80) DEFAULT NULL,
   PRIMARY KEY (`userid`),
@@ -1068,7 +1069,7 @@ CREATE TABLE `qa_users` (
 
 LOCK TABLES `qa_users` WRITE;
 /*!40000 ALTER TABLE `qa_users` DISABLE KEYS */;
-INSERT INTO `qa_users` VALUES (1,'2016-05-16 19:07:12',3232264193,'superadmin@example.com','superadmin',NULL,NULL,NULL,'ej9ygqwm1r2vmetq','\"â\\èc_x«Ç`\\{¨ENí\rE„',120,'2016-05-16 20:25:59',3232264193,'2016-05-16 20:17:59',3232264193,'','xgb3w1k0',NULL,0,0,NULL),(2,'2016-05-16 20:03:13',3232264193,'admin@example.com','admin',NULL,NULL,NULL,'7tys2ocm8ed0k5kg','}—◊Ø\ZﬂøâãŒ∆üò√˙M\Z¯8',100,'2016-05-16 20:04:55',3232264193,'2016-05-16 20:05:23',3232264193,'','xzolja3l',NULL,0,0,NULL),(3,'2016-05-16 20:06:30',3232264193,'moderator@example.com','moderator',NULL,NULL,NULL,'pdboxxge4xzn3p82','Åˆ°$‡‹Æòä{å”^·º',80,'2016-05-16 20:06:30',3232264193,'2016-05-16 20:06:47',3232264193,'','mynnvaft',NULL,0,0,NULL),(4,'2016-05-16 20:07:05',3232264193,'redaktor@example.com','redaktor',NULL,NULL,NULL,'yzxqtbvtpynomair','ª≥¬√<˛ÛfW8˜Wåº≤T≤Åö',50,'2016-05-16 20:07:05',3232264193,'2016-05-16 20:07:29',3232264193,'','mav5hhhz',NULL,0,0,NULL),(5,'2016-05-16 20:07:49',3232264193,'ekspert@example.com','ekspert',NULL,NULL,NULL,'zz80g8had7kjgyo2','$	m!Ûæ9]cV4ôßv6WñX3',20,'2016-05-16 20:07:49',3232264193,'2016-05-16 20:08:04',3232264193,'','q1ppwkra',NULL,0,0,NULL),(6,'2016-05-16 20:08:28',3232264193,'ekspertkategoria@example.com','ekspertkategoria',NULL,NULL,NULL,'bw1jyz4ms35w552p','~5ü\"2Ø˘“∂‰º»DSøŸ\0',0,'2016-05-16 20:08:28',3232264193,'2016-05-16 20:08:52',3232264193,'','o58vm26q',NULL,0,0,NULL),(7,'2016-05-16 20:18:58',3232264193,'user@example.com','user',NULL,NULL,NULL,'vocuht4kfzgvuq6g','ŒÆzÂÂ∂ƒ∞´fÌ2é`E®∂û<',0,'2016-05-16 20:18:58',3232264193,'2016-05-16 20:19:12',3232264193,'','nbowefw3',NULL,0,0,NULL);
+INSERT INTO `qa_users` VALUES (1,'2016-05-16 19:07:12',3232264193,'superadmin@example.com','superadmin',NULL,NULL,NULL,'ej9ygqwm1r2vmetq','\"â\\èc_x«Ç`\\{¨ENí\rE„',120,'2016-05-16 20:25:59',3232264193,'2016-05-16 20:17:59',3232264193,'','xgb3w1k0',NULL,0,1,0,NULL),(2,'2016-05-16 20:03:13',3232264193,'admin@example.com','admin',NULL,NULL,NULL,'7tys2ocm8ed0k5kg','}—◊Ø\ZﬂøâãŒ∆üò√˙M\Z¯8',100,'2016-05-16 20:04:55',3232264193,'2016-05-16 20:05:23',3232264193,'','xzolja3l',NULL,0,1,0,NULL),(3,'2016-05-16 20:06:30',3232264193,'moderator@example.com','moderator',NULL,NULL,NULL,'pdboxxge4xzn3p82','Åˆ°$‡‹Æòä{å”^·º',80,'2016-05-16 20:06:30',3232264193,'2016-05-16 20:06:47',3232264193,'','mynnvaft',NULL,0,1,0,NULL),(4,'2016-05-16 20:07:05',3232264193,'redaktor@example.com','redaktor',NULL,NULL,NULL,'yzxqtbvtpynomair','ª≥¬√<˛ÛfW8˜Wåº≤T≤Åö',50,'2016-05-16 20:07:05',3232264193,'2016-05-16 20:07:29',3232264193,'','mav5hhhz',NULL,0,1,0,NULL),(5,'2016-05-16 20:07:49',3232264193,'ekspert@example.com','ekspert',NULL,NULL,NULL,'zz80g8had7kjgyo2','$	m!Ûæ9]cV4ôßv6WñX3',20,'2016-05-16 20:07:49',3232264193,'2016-05-16 20:08:04',3232264193,'','q1ppwkra',NULL,0,1,0,NULL),(6,'2016-05-16 20:08:28',3232264193,'ekspertkategoria@example.com','ekspertkategoria',NULL,NULL,NULL,'bw1jyz4ms35w552p','~5ü\"2Ø˘“∂‰º»DSøŸ\0',0,'2016-05-16 20:08:28',3232264193,'2016-05-16 20:08:52',3232264193,'','o58vm26q',NULL,0,1,0,NULL),(7,'2016-05-16 20:18:58',3232264193,'user@example.com','user',NULL,NULL,NULL,'vocuht4kfzgvuq6g','ŒÆzÂÂ∂ƒ∞´fÌ2é`E®∂û<',0,'2016-05-16 20:18:58',3232264193,'2016-05-16 20:19:12',3232264193,'','nbowefw3',NULL,0,1,0,NULL);
 /*!40000 ALTER TABLE `qa_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1166,4 +1167,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-16 20:34:10
+-- Dump completed on 2016-07-04 21:37:19
