@@ -908,14 +908,14 @@ TAG
         foreach ($categories as $category => $value) {
             $isActiveCategory = $this->isActiveCategory($adres, $category);
             $currentPosition++;
-            $tooltipPosition = (!in_array($currentPosition, [3, 4, 7, 8, 11, 12]) ? '' : 'a');
+            $tooltipPosition = (!in_array($currentPosition, [3, 4, 7, 8, 11, 12]) ? '' : 'tooltip-right-position');
 
             $sidebar .= <<<EOF
 <div class="qa-nav-main-item">
     <a href="http://forum.pasja-informatyki.pl/questions/{$category}" class="qa-nav-main-link {$isActiveCategory['selected']} {$currentPosition}">
-        <dfn{$tooltipPosition} data-info="{$value['tooltip']}">
+        <dfn class="{$tooltipPosition}" data-info="{$value['tooltip']}">
             <img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/{$value['icon']}{$isActiveCategory['hover']}.png" alt="{$value['tooltip']}" onmouseover="this.src='//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/{$value['icon']}1.png'" onmouseout="this.src='//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/{$value['icon']}0.png'" />
-        </dfn{$tooltipPosition}>
+        </dfn>
     </a>
 </div>
 EOF;
