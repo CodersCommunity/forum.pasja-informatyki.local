@@ -4604,30 +4604,33 @@ a.sidebarnav:hover {
 
 
 /* collapsing block-code */  
-pre[class*="brush:"]
+
+.syntaxhighlighter-parent, 
+/*pre[class*="brush:"]*/.syntaxhighlighter
 {
 	position: relative;
 }
-pre[class*="brush:"].collapsed
+/*pre[class*="brush:"]*/.syntaxhighlighter.collapsed-block
 {
   	height: 110px;
 	overflow: hidden;
  }
   
-pre[class*="brush:"]::before
+/*pre[class*="brush:"]*/.syntaxhighlighter-button/*::before*/
 {
-	content: attr(data-state);
+	/*content: attr(data-state);*/
     color: white;
-    position: absolute;
+    /*position: absolute;*/
     padding: 0 5px;
     border-radius: 5px;
     background: #3498db;
-    top: 5px;
-    right: 240px;
+    /*top: 5px;
+    right: 240px;*/
     font-size: 12px;
+	margin-left: 45%;
 }
 
-pre[class*="brush:"]::after
+/*pre[class*="brush:"]*/.syntaxhighlighter::after
 {
     content: attr(data-lang);
     position: absolute;

@@ -206,70 +206,85 @@ function qa_ajax_error()
 		
 		// languages got from Forum site DOM
 		var languages = {
-			'brush:as3;' : 'actionscript',
-			'brush:applescript;' : 'applescript',
-			'brush:bash;' : 'bash-shell',
-			'brush:cf;' : 'coldfusion',
-			'brush:csharp;' : 'C#',
-			'brush:cpp;' : 'C++',
-			'brush:css;' : 'CSS',
-			'brush:delphi;' : 'delphi',
-			'brush:diff;' : 'diff',
-			'brush:erl;' : 'erlang',
-			'brush:groovy;' : 'groovy',
-			'brush:hx;' : 'haxe',
-			'brush:jscript;' : 'JavaScript',
-			'brush:java;' : 'Java',
-			'brush:javafx;' : 'Java-FX',
-			'brush:perl;' : 'perl',
-			'brush:php;' : 'PHP',
-			'brush:plain;' : 'plain-text',
-			'brush:ps;' : 'powershell',
-			'brush:python;' : 'Python',
-			'brush:ruby;' : 'Ruby',
-			'brush:scss;' : 'SASS',
-			'brush:scala;' : 'scala',
-			'brush:sql;' : 'SQL',
-			'brush:tap;' : 'tap',
-			'brush:ts;' : 'TypeScript',
-			'brush:vb;' : 'VB',
-			'brush:xml;' : 'XML-xHTML'
+			'as3' : 'actionscript',
+			'applescript' : 'applescript',
+			'bash' : 'bash-shell',
+			'cf' : 'coldfusion',
+			'csharp' : 'C#',
+			'cpp' : 'C++',
+			'css' : 'CSS',
+			'delphi' : 'delphi',
+			'diff' : 'diff',
+			'erl' : 'erlang',
+			'groovy' : 'groovy',
+			'hx' : 'haxe',
+			'jscript' : 'JavaScript',
+			'java' : 'Java',
+			'javafx' : 'Java-FX',
+			'perl' : 'perl',
+			'php' : 'PHP',
+			'plain' : 'plain-text',
+			'ps' : 'powershell',
+			'python' : 'Python',
+			'ruby' : 'Ruby',
+			'scss' : 'SASS',
+			'scala' : 'scala',
+			'sql' : 'SQL',
+			'tap' : 'tap',
+			'ts' : 'TypeScript',
+			'vb' : 'VB',
+			'xml' : 'XML-xHTML'
 		};
 										
-		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll(/*'pre[class*="brush:"]'*/ '.syntaxhighlighter'));
+		
+		console.log('Blocks: ', blocks);
 		
 		// get all <pre> tags which are wrappers for (CKEditor) code and loop them
 		blocks.forEach(function(block)
-		{						
+		{									
 			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
-			block.setAttribute('data-lang', languages[block.classList[0]]);
+			block.setAttribute('data-lang', languages[block.classList[1]]);
 			
 			// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
-			if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
+			if (block.querySelectorAll('.line').length >= numberOfLines)
+			////if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
 			{
+				var blockButton = document.createElement('button');
+				blockButton.classList.add('syntaxhighlighter-button');
+				blockButton.textContent = '-- Rozwiń --';
+				
 				// add CSS class to do some styling
-				block.classList.add('collapsed');
+				block.classList.add('collapsed-block');
 				// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
-				block.setAttribute('data-state', '-- Rozwiń --');
+				////block.setAttribute('data-state', '-- Rozwiń --');
 
 				// when user clicks on code-block
-				block.addEventListener('click', function(ev)
+				blockButton.addEventListener('click', function(ev)
 				{					
+					// prevent... dummy (refresh page) default action of button
+					ev.preventDefault();
+					
 					/*
 					 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
 					 * to notify user the state of code-block
 					 */
-					if (block.classList.contains('collapsed'))
+					if (block.classList.contains('collapsed-block'))
 					{
-						block.classList.remove('collapsed');
-						block.setAttribute('data-state', '-- Zwiń --');
+						block.classList.remove('collapsed-block');
+						////block.setAttribute('data-state', '-- Zwiń --');
+						blockButton.textContent = '-- Zwiń --';
 					}
 					else
 					{
-						block.classList.add('collapsed');
-						block.setAttribute('data-state', '-- Rozwiń --');
+						block.classList.add('collapsed-block');
+						////block.setAttribute('data-state', '-- Rozwiń --');
+						blockButton.textContent = '-- Rozwiń --';
 					}
 				});
+				
+				block.parentNode.classList.add('syntaxhighlighter-parent');
+				block.parentNode.insertBefore(blockButton, block);
 			}
 		});	
 	};
@@ -370,7 +385,7 @@ function qa_ajax_error()
 	};
 	
 	// when Forum (sub)page DOM is ready
-	window.addEventListener('DOMContentLoaded', function()
+	window.addEventListener(/*'DOMContentLoaded'*/ 'load', function()
 	{	
 		// find number in URL - so it's sure that topic is being viewed/opened
 		var url = location.pathname.split('/').findIndex(function(elem)
@@ -387,7 +402,8 @@ function qa_ajax_error()
 		{
 			// CKEDITOR's API event, which indicates that editor is loaded
 			CKEDITOR.on("instanceReady", function(ev)
-			{			 
+			{			 				
+				console.log('?????????');
 				if (btnLocation)
 				{				 
 					var prepareCkeInstance = btnLocation.getAttribute('onclick');
@@ -434,7 +450,7 @@ function qa_ajax_error()
 			{
 				actionBtns.push( edit );
 			});
-			
+						
 			handleCodeCollapsing();
 			
 			if (!document.querySelector('.answer'))
