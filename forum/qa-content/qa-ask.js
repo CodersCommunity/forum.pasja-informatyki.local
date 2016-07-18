@@ -296,3 +296,49 @@ function set_category_description(idprefix)
 		n.innerHTML=desc;
 	}
 }
+
+/*
+ * Feature - Remove unnecessary # from tags, when creating new post (question)
+ */ 
+ ;(function (document)
+ {
+	 'use strict';
+	 
+	 window.addEventListener('DOMContentLoaded', function()
+	 {
+		var tags = document.getElementById('tags');
+		var askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"]');
+		
+		/*tags.addEventListener('blur', function()
+		{
+			
+		});*/
+		
+		askQuestionBtn.addEventListener('click', function(ev)
+		{
+			////
+			ev.preventDefault();
+			////
+			
+			var hashTags =  tags.value.split(' ');
+			
+			var filteredTags = hashTags.filter(function(hash)
+			{
+				if (hash.indexOf('#') < 0 || hash.toLowerCase().indexOf('c#') > -1)
+				{
+					console.log('OK: ', hash);
+					
+					return hash;					
+				} else console.log('REMOVED: ', hash);
+					
+			});
+			
+			console.log('splitted: ', hashTags, ' >> ', filteredTags);
+			
+			tags.value = filteredTags.join(' ');
+		});
+	 });
+	 
+	 
+	 
+ }(document));
