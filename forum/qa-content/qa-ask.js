@@ -304,41 +304,28 @@ function set_category_description(idprefix)
  {
 	 'use strict';
 	 
+	 // wait for DOM to load
 	 window.addEventListener('DOMContentLoaded', function()
 	 {
+		// get DOM elements: "tags" input and button "Zadaj pytanie"
 		var tags = document.getElementById('tags');
 		var askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"]');
 		
-		/*tags.addEventListener('blur', function()
-		{
-			
-		});*/
-		
+		// when user clicks "Zadaj pytanie"
 		askQuestionBtn.addEventListener('click', function(ev)
-		{
-			////
-			ev.preventDefault();
-			////
+		{					
+			// get written tags and split them
+			var allTags =  tags.value.split(' ');
 			
-			var hashTags =  tags.value.split(' ');
-			
-			var filteredTags = hashTags.filter(function(hash)
+			// filter tags, accept only those without # and those like "C#"
+			var filteredTags = allTags.filter(function(hash)
 			{
 				if (hash.indexOf('#') < 0 || hash.toLowerCase().indexOf('c#') > -1)
-				{
-					console.log('OK: ', hash);
-					
 					return hash;					
-				} else console.log('REMOVED: ', hash);
-					
 			});
 			
-			console.log('splitted: ', hashTags, ' >> ', filteredTags);
-			
+			// put filtered tags into "tags" input - separated by blank space (' ')
 			tags.value = filteredTags.join(' ');
 		});
-	 });
-	 
-	 
-	 
+	 });	 
  }(document));
