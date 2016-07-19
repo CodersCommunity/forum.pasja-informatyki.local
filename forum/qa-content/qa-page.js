@@ -186,6 +186,11 @@ function qa_ajax_error()
  */
 ;(function(document)
 {
+	////
+	// clear console (for devloping purposes - clears errors from console)
+	console.clear();
+	////
+	
 	'use strict';
 	
 	/*
@@ -244,47 +249,63 @@ function qa_ajax_error()
 		blocks.forEach(function(block)
 		{									
 			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
-			block.setAttribute('data-lang', languages[block.classList[1]]);
+			////block.setAttribute('data-lang', languages[block.classList[1]]);
 			
 			// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
-			if (block.querySelectorAll('.line').length >= numberOfLines)
+			////if (block.querySelectorAll('.line').length >= numberOfLines)
 			////if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
 			{
+				var additionalDiv = document.createElement('div');
 				var blockButton = document.createElement('button');
-				blockButton.classList.add('syntaxhighlighter-button');
-				blockButton.textContent = '-- Rozwiń --';
+				var languageInfo = document.createElement('div');
+								
+				additionalDiv.classList.add('syntaxhighlighter-additional');
 				
-				// add CSS class to do some styling
-				block.classList.add('collapsed-block');
-				// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
-				////block.setAttribute('data-state', '-- Rozwiń --');
-
-				// when user clicks on code-block
-				blockButton.addEventListener('click', function(ev)
-				{					
-					// prevent... dummy (refresh page) default action of button
-					ev.preventDefault();
+				languageInfo.classList.add('syntaxhighlighter-language');
+								
+				if (block.querySelectorAll('.line').length >= numberOfLines)
+				{
+					blockButton.classList.add('syntaxhighlighter-button');
+					blockButton.textContent = '-- Rozwiń --';
 					
-					/*
-					 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
-					 * to notify user the state of code-block
-					 */
-					if (block.classList.contains('collapsed-block'))
-					{
-						block.classList.remove('collapsed-block');
-						////block.setAttribute('data-state', '-- Zwiń --');
-						blockButton.textContent = '-- Zwiń --';
-					}
-					else
-					{
-						block.classList.add('collapsed-block');
-						////block.setAttribute('data-state', '-- Rozwiń --');
-						blockButton.textContent = '-- Rozwiń --';
-					}
-				});
+					// add CSS class to do some styling
+					block.classList.add('collapsed-block');
+					// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
+					////block.setAttribute('data-state', '-- Rozwiń --');
+					
+					// when user clicks on code-block
+					blockButton.addEventListener('click', function(ev)
+					{					
+						// prevent... dummy (refresh page) default action of button
+						ev.preventDefault();
+						
+						/*
+						* when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
+						* to notify user the state of code-block
+						*/
+						if (block.classList.contains('collapsed-block'))
+						{
+							block.classList.remove('collapsed-block');
+							////block.setAttribute('data-state', '-- Zwiń --');
+							blockButton.textContent = '-- Zwiń --';
+						}
+						else
+						{
+							block.classList.add('collapsed-block');
+							////block.setAttribute('data-state', '-- Rozwiń --');
+							blockButton.textContent = '-- Rozwiń --';
+						}
+					});
+				}
+				
+				languageInfo.textContent = languages[block.classList[1]];
+				
+				additionalDiv.appendChild(blockButton);
+				additionalDiv.appendChild(languageInfo);
 				
 				block.parentNode.classList.add('syntaxhighlighter-parent');
-				block.parentNode.insertBefore(blockButton, block);
+				////block.parentNode.insertBefore(blockButton, block);
+				block.parentNode.insertBefore(additionalDiv, block);
 			}
 		});	
 	};

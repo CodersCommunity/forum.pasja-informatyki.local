@@ -4609,6 +4609,7 @@ a.sidebarnav:hover {
 /*pre[class*="brush:"]*/.syntaxhighlighter
 {
 	position: relative;
+	/*min-height: 40px;*/
 }
 /*pre[class*="brush:"]*/.syntaxhighlighter.collapsed-block
 {
@@ -4616,7 +4617,13 @@ a.sidebarnav:hover {
 	overflow: hidden;
  }
   
-/*pre[class*="brush:"]*/.syntaxhighlighter-button/*::before*/
+.syntaxhighlighter-additional
+{
+	background: orange;
+	padding: 2px 0;
+}
+  
+  /*pre[class*="brush:"]*/.syntaxhighlighter-button/*::before*/
 {
 	/*content: attr(data-state);*/
     color: white;
@@ -4630,12 +4637,13 @@ a.sidebarnav:hover {
 	margin-left: 45%;
 }
 
-/*pre[class*="brush:"]*/.syntaxhighlighter::after
+/*pre[class*="brush:"]*/.syntaxhighlighter-language/*::after*/
 {
-    content: attr(data-lang);
+    /*content: attr(data-lang);*/
+	font-size: 12px;
     position: absolute;
     right: 5px;
-    top: 2px;
+    top: 4px;
     border: 1px solid #3498db;
     padding: 0 5px;
     background: white;
