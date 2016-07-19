@@ -27,6 +27,8 @@ Po zainstalowaniu powyższego oprogramowania pozostaje nam ściągnąć projekt 
 I ostatnim krokiem jest wykonanie w katalogu projektu:
 ```vagrant up```
 
+Inną możliwością jest skorzystanie z programu **XAMPP** lub podobnego, oferującego serwer ```Apache``` i postępowanie zgodnie z niniejszą instrukcją: https://drive.google.com/file/d/0B_0lVIhwL9LWMjV1eGJyTk0yMTQ/view?pref=2&pli=1
+
 ### Ustawienie /etc/hosts
 Ponieważ mamy do czynienia z **wirtualną maszyną**, będziemy musieli zapewnić z nią wygodną komunikację. Domyślnym adresem, pod którym jest dostępny *mirror* forum jest ```192.168.122.122```.
 W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka w pliku ```/etc/hosts```, dopisując to na samym końcu tego pliku:
