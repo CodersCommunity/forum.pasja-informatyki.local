@@ -296,11 +296,12 @@ function qa_ajax_error()
 							blockButton.textContent = '-- Rozwiń --';
 						}
 					});
+					
+					additionalDiv.appendChild(blockButton);
 				}
 				
 				languageInfo.textContent = languages[block.classList[1]];
 				
-				additionalDiv.appendChild(blockButton);
 				additionalDiv.appendChild(languageInfo);
 				
 				block.parentNode.classList.add('syntaxhighlighter-parent');

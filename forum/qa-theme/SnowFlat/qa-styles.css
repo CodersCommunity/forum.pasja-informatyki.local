@@ -4619,22 +4619,28 @@ a.sidebarnav:hover {
   
 .syntaxhighlighter-additional
 {
-	background: orange;
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#6ce26c+0,6ce26c+50,6ce26c+100&0.75+0,1+50,0.75+100 */
+	background: -moz-linear-gradient(left,  rgba(108,226,108,0.75) 0%, rgba(108,226,108,1) 50%, rgba(108,226,108,0.75) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left,  rgba(108,226,108,0.75) 0%,rgba(108,226,108,1) 50%,rgba(108,226,108,0.75) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right,  rgba(108,226,108,0.75) 0%,rgba(108,226,108,1) 50%,rgba(108,226,108,0.75) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf6ce26c', endColorstr='#bf6ce26c',GradientType=1 ); /* IE6-9 */
+	
+	/*background: orange;*/
 	padding: 2px 0;
+	height: 28px;
 }
   
   /*pre[class*="brush:"]*/.syntaxhighlighter-button/*::before*/
 {
 	/*content: attr(data-state);*/
     color: white;
-    /*position: absolute;*/
+    position: absolute;
     padding: 0 5px;
     border-radius: 5px;
     background: #3498db;
-    /*top: 5px;
-    right: 240px;*/
+    top: 5px;
+	left: 50%;
     font-size: 12px;
-	margin-left: 45%;
 }
 
 /*pre[class*="brush:"]*/.syntaxhighlighter-language/*::after*/
@@ -4642,7 +4648,7 @@ a.sidebarnav:hover {
     /*content: attr(data-lang);*/
 	font-size: 12px;
     position: absolute;
-    right: 5px;
+    left: 10px;
     top: 4px;
     border: 1px solid #3498db;
     padding: 0 5px;
