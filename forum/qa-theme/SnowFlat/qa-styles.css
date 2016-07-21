@@ -4624,10 +4624,13 @@ a.sidebarnav:hover {
 	background: -webkit-linear-gradient(left,  rgba(108,226,108,0.75) 0%,rgba(108,226,108,1) 50%,rgba(108,226,108,0.75) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to right,  rgba(108,226,108,0.75) 0%,rgba(108,226,108,1) 50%,rgba(108,226,108,0.75) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf6ce26c', endColorstr='#bf6ce26c',GradientType=1 ); /* IE6-9 */
-	
-	/*background: orange;*/
-	padding: 2px 0;
-	height: 28px;
+
+    padding: 2px 0;
+    height: 28px;
+    width: calc(100% - (45px/1.20));
+    position: relative;
+    left: calc(45px/2);
+    border-radius: 50px 50px 1px 1px;
 }
   
   /*pre[class*="brush:"]*/.syntaxhighlighter-button/*::before*/
@@ -4635,24 +4638,29 @@ a.sidebarnav:hover {
 	/*content: attr(data-state);*/
     color: white;
     position: absolute;
-    padding: 0 5px;
+    padding: 2px 10px;
     border-radius: 5px;
     background: #3498db;
-    top: 5px;
-	left: 50%;
+    top: 4px;
+    left: 45%;
     font-size: 12px;
+    border: 1px solid white;
+    font-weight: bold;
 }
 
 /*pre[class*="brush:"]*/.syntaxhighlighter-language/*::after*/
 {
     /*content: attr(data-lang);*/
-	font-size: 12px;
+    font-size: 12px;
     position: absolute;
-    left: 10px;
+    left: 23px;
     top: 4px;
     border: 1px solid #3498db;
+    border-radius: 10px 0;
     padding: 0 5px;
     background: white;
+    font-weight: bold;
+    color: #3498db;
 }
 
 /* post content preview */
@@ -4665,13 +4673,15 @@ a.sidebarnav:hover {
     position: absolute;
 }
 
-.post-preview {
+.post-preview 
+{
     overflow-y: scroll;
     max-height: 70vh;
     width: 585px;
 }
 
-.post-preview-parent {
+.post-preview-parent 
+{
     position: fixed;
     background: white;
     z-index: 11;
@@ -4682,7 +4692,8 @@ a.sidebarnav:hover {
     box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.5);
 }
 
-.close-preview-btn {
+.close-preview-btn 
+{
     position: absolute;
     top: -10px;
     right: -10px;
@@ -4693,4 +4704,30 @@ a.sidebarnav:hover {
     padding: 4px 6px;
     color: white;
     font-weight: bold;
+}
+
+/*
+ *	Source: http://stackoverflow.com/a/30810322/4983840
+ */
+.content-copy
+{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 2em;
+	height: 2em;
+	padding: 0;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background: transparent;
+}
+
+.content-copy-btn
+{
+	background: red;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
 }

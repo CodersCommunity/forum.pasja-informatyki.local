@@ -193,12 +193,93 @@ function qa_ajax_error()
 	
 	'use strict';
 	
+	// boolean flag, to check if browser supports 'copy' command
+	var prepareClipboardCopying = document.queryCommandSupported('copy');
+	
+	/*
+	 *	Testing "copy to clipboard" feature
+	 */
+	function copyToClipboard(ev)
+	{
+		// check whether browser support 'copy' command
+		////if (document.queryCommandSupported('copy'))
+		{
+			console.log('[CTRL + C] So let\'s copy some text!');
+			
+			// prevent page refresh (or something weird) as default button action
+			ev.preventDefault();
+			
+			var code = [];
+			var t = ev.target;
+			var parent = t.parentNode.parentNode;
+			
+			// get block of code content - practically all lines of code inside
+			Array.from(parent.querySelector('.code .container').children).forEach(function(lineOfCode)
+			{
+				code.push(lineOfCode.textContent);
+			});
+			
+			/*
+			 *	In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
+			 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
+			 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
+			 * That's why below code creates <textarea> and insert there code content from block, copy it to clipboard and removes it (so user can't really see temporary <textarea> element blink) after whole process.
+			 */
+			var textArea = document.createElement("textarea");
+			textArea.classList.add('content-copy');
+			
+			////console.log('codee: ', code);
+			code.forEach(function(singleLineOfCode)
+			{
+				/*var p = document.createElement('p');
+				
+				p.innerHTML = singleLineOfCode;*/
+				
+				////console.log('PPP: ', p);
+				textArea.value += singleLineOfCode + '\r\n';
+			});
+			
+			document.body.appendChild(textArea);
+			////console.log('textArea: ', textArea.value);
+			
+			// if anything on the page is selected (a.k.a highlighted) - clear the selection
+			if (window.getSelection().rangeCount)
+				window.getSelection().removeAllRanges();
+			
+			/*
+			 *	Below code will select given DOM elements
+			 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
+			 */
+			/*if (document.selection) 
+			{
+				var range = document.body.createTextRange();
+				range.moveToElementText(document.getElementById(containerid));
+				range.select();
+			}
+
+			else */ //if (window.getSelection) 
+			{
+				// Create Range Object, so that text content can be selected (a.k.a highlighted)
+				var range = document.createRange();
+				range.selectNode( textArea );
+				window.getSelection().addRange(range);
+			}
+			
+			// copy content that is select inside Document - so that is only textarea
+			document.execCommand('copy');
+			
+			// remove <textarea> from DOM
+			document.body.removeChild(textArea);
+		}
+	}
+	
+	
 	/*
 	 * Feature: Collapsable blocks of code
 	 * Author: ChrissP92 - https://github.com/ChrissP92
 	 * Date: 05.07.2016r.
 	 */	
-	function handleCodeCollapsing(insidePreview)
+	function handleCodeCollapsing(insidePreview, addCopyBtn)
 	{		
 		/*
 		 *	!!!! IMPORTANT VARIABLE !!!!
@@ -258,6 +339,11 @@ function qa_ajax_error()
 				var additionalDiv = document.createElement('div');
 				var blockButton = document.createElement('button');
 				var languageInfo = document.createElement('div');
+				var copyCodeBtn = document.createElement('button');
+				
+				copyCodeBtn.textContent = 'Kopiuj';
+				copyCodeBtn.classList.add('content-copy-btn');
+				copyCodeBtn.addEventListener('click', copyToClipboard);
 								
 				additionalDiv.classList.add('syntaxhighlighter-additional');
 				
@@ -303,6 +389,11 @@ function qa_ajax_error()
 				languageInfo.textContent = languages[block.classList[1]];
 				
 				additionalDiv.appendChild(languageInfo);
+				
+				if (addCopyBtn)
+					additionalDiv.appendChild(copyCodeBtn);
+				else
+					additionalDiv.classList.add('content-copy-disabled');
 				
 				block.parentNode.classList.add('syntaxhighlighter-parent');
 				////block.parentNode.insertBefore(blockButton, block);
@@ -457,7 +548,7 @@ function qa_ajax_error()
 		{		
 			// prepare Array for actions like: Answer, Comment, Edit
 			var actionBtns = [];
-			
+
 			// add Answer buttons
 			actionBtns.push( document.getElementById('q_doanswer') );
 			
@@ -472,8 +563,12 @@ function qa_ajax_error()
 			{
 				actionBtns.push( edit );
 			});
-						
-			handleCodeCollapsing();
+
+			/*
+			 * 1st argument notify function that the page is not /ask.html - so different blocks of code collapsing method will be used
+			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
+			 */
+			handleCodeCollapsing(false, prepareClipboardCopying);
 			
 			if (!document.querySelector('.answer'))
 				checkCkeditor(false);
