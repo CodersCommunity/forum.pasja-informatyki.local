@@ -4625,11 +4625,11 @@ a.sidebarnav:hover {
 	background: linear-gradient(to right,  rgba(52,152,219,0.75) 0%,rgba(52,152,219,1) 50%,rgba(52,152,219,0.75) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
 
-    padding: 2px 0;
-    height: 28px;
-    width: calc(100% - (45px/1.20));
-    position: relative;
-    left: calc(45px/2);
+    /*padding: 2px 0;*/
+    height: 24px;
+    width: /*calc(100% - (45px/1.20))*/ 100%;
+    /*position: relative;*/
+    /*left: calc(45px/2);*/
     border-radius: 50px 50px 1px 1px;
 }
   
@@ -4641,11 +4641,15 @@ a.sidebarnav:hover {
     padding: 2px 10px;
     border-radius: 5px;
     background: #3498db;
-    top: 4px;
-    left: 45%;
+    top: 2px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 85px;
     font-size: 12px;
     border: 1px solid white;
     font-weight: bold;
+	outline: none;
 }
 
 
@@ -4653,8 +4657,8 @@ a.sidebarnav:hover {
 {
     font-size: 12px;
     position: absolute;
-    left: 23px;
-    top: 4px;
+    left: /*23px*/ 1.25%;
+    top: 2px;
     border-radius: 17px 2px;
     padding: 1px 15px;
     font-weight: bold;
@@ -4726,11 +4730,12 @@ a.sidebarnav:hover {
 	background: #2c3e50;
     position: absolute;
     color: white;
-    right: 23px;
-    top: 5px;
-    border-radius: 2px 17px;
+    right: /*23px*/ 1.25%;
+    top: 3px;
+    border-radius: 2px /*17px*/ 30px;
     padding: 2px 15px;
     font-size: 12px;
     font-weight: bold;
     border: none;
+	outline: none;
 }
