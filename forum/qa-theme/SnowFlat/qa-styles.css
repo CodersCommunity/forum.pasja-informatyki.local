@@ -4619,11 +4619,11 @@ a.sidebarnav:hover {
   
 .syntaxhighlighter-additional
 {
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#6ce26c+0,6ce26c+50,6ce26c+100&0.75+0,1+50,0.75+100 */
-	background: -moz-linear-gradient(left,  rgba(108,226,108,0.75) 0%, rgba(108,226,108,1) 50%, rgba(108,226,108,0.75) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(left,  rgba(108,226,108,0.75) 0%,rgba(108,226,108,1) 50%,rgba(108,226,108,0.75) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to right,  rgba(108,226,108,0.75) 0%,rgba(108,226,108,1) 50%,rgba(108,226,108,0.75) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf6ce26c', endColorstr='#bf6ce26c',GradientType=1 ); /* IE6-9 */
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
+	background: -moz-linear-gradient(left,  rgba(52,152,219,0.75) 0%, rgba(52,152,219,1) 50%, rgba(52,152,219,0.75) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left,  rgba(52,152,219,0.75) 0%,rgba(52,152,219,1) 50%,rgba(52,152,219,0.75) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right,  rgba(52,152,219,0.75) 0%,rgba(52,152,219,1) 50%,rgba(52,152,219,0.75) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
 
     padding: 2px 0;
     height: 28px;
@@ -4648,19 +4648,17 @@ a.sidebarnav:hover {
     font-weight: bold;
 }
 
+
 /*pre[class*="brush:"]*/.syntaxhighlighter-language/*::after*/
 {
-    /*content: attr(data-lang);*/
     font-size: 12px;
     position: absolute;
     left: 23px;
     top: 4px;
-    border: 1px solid #3498db;
-    border-radius: 10px 0;
-    padding: 0 5px;
-    background: white;
+    border-radius: 17px 2px;
+    padding: 1px 15px;
     font-weight: bold;
-    color: #3498db;
+    color: white;
 }
 
 /* post content preview */
@@ -4725,9 +4723,14 @@ a.sidebarnav:hover {
 
 .content-copy-btn
 {
-	background: red;
-	position: absolute;
-	right: 0;
-	top: 0;
-}
+	background: #2c3e50;
+    position: absolute;
+    color: white;
+    right: 23px;
+    top: 5px;
+    border-radius: 2px 17px;
+    padding: 2px 15px;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
 }

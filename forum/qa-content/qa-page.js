@@ -193,84 +193,66 @@ function qa_ajax_error()
 	
 	'use strict';
 	
-	// boolean flag, to check if browser supports 'copy' command
-	var prepareClipboardCopying = document.queryCommandSupported('copy');
+	// boolean flag, to check if browser supports 'select()' and 'copy' command
+	var prepareClipboardCopying;
+	
+	if (window.getSelection && document.queryCommandSupported('copy'))
+		prepareClipboardCopying = true;
+	else 
+		prepareClipboardCopying = false;
 	
 	/*
-	 *	Testing "copy to clipboard" feature
+	 *	Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
 	 */
 	function copyToClipboard(ev)
 	{
-		// check whether browser support 'copy' command
-		////if (document.queryCommandSupported('copy'))
+		// prevent page refresh (or something weird) as default button action
+		ev.preventDefault();
+		
+		var code = [];
+		var t = ev.target;
+		var parent = t.parentNode.parentNode;
+		
+		// get block of code content - practically all lines of code inside
+		Array.from(parent.querySelector('.code .container').children).forEach(function(lineOfCode)
 		{
-			console.log('[CTRL + C] So let\'s copy some text!');
-			
-			// prevent page refresh (or something weird) as default button action
-			ev.preventDefault();
-			
-			var code = [];
-			var t = ev.target;
-			var parent = t.parentNode.parentNode;
-			
-			// get block of code content - practically all lines of code inside
-			Array.from(parent.querySelector('.code .container').children).forEach(function(lineOfCode)
-			{
-				code.push(lineOfCode.textContent);
-			});
-			
-			/*
-			 *	In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
-			 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
-			 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
-			 * That's why below code creates <textarea> and insert there code content from block, copy it to clipboard and removes it (so user can't really see temporary <textarea> element blink) after whole process.
-			 */
-			var textArea = document.createElement("textarea");
-			textArea.classList.add('content-copy');
-			
-			////console.log('codee: ', code);
-			code.forEach(function(singleLineOfCode)
-			{
-				/*var p = document.createElement('p');
-				
-				p.innerHTML = singleLineOfCode;*/
-				
-				////console.log('PPP: ', p);
-				textArea.value += singleLineOfCode + '\r\n';
-			});
-			
-			document.body.appendChild(textArea);
-			////console.log('textArea: ', textArea.value);
-			
-			// if anything on the page is selected (a.k.a highlighted) - clear the selection
-			if (window.getSelection().rangeCount)
-				window.getSelection().removeAllRanges();
-			
-			/*
-			 *	Below code will select given DOM elements
-			 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
-			 */
-			/*if (document.selection) 
-			{
-				var range = document.body.createTextRange();
-				range.moveToElementText(document.getElementById(containerid));
-				range.select();
-			}
-
-			else */ //if (window.getSelection) 
-			{
-				// Create Range Object, so that text content can be selected (a.k.a highlighted)
-				var range = document.createRange();
-				range.selectNode( textArea );
-				window.getSelection().addRange(range);
-			}
-			
-			// copy content that is select inside Document - so that is only textarea
-			document.execCommand('copy');
-			
-			// remove <textarea> from DOM
-			document.body.removeChild(textArea);
-		}
+			code.push(lineOfCode.textContent);
+		});
+		
+		/*
+		 *	In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
+		 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
+		 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
+		 * That's why below code creates <textarea> and insert there code content from block, copy it to clipboard and removes it (so user can't really see temporary <textarea> element blink) after whole process.
+		 */
+		var textArea = document.createElement("textarea");
+		textArea.classList.add('content-copy');
+		
+		code.forEach(function(singleLineOfCode)
+		{
+			textArea.value += singleLineOfCode + '\r\n';
+		});
+		
+		document.body.appendChild(textArea);
+		
+		// if anything on the page is selected (a.k.a highlighted) - clear the selection
+		if (window.getSelection().rangeCount)
+			window.getSelection().removeAllRanges();
+		
+		/*
+		 *	Below code will select given DOM elements
+		 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
+		 */
+		// Create Range Object, so that text content can be selected (a.k.a highlighted)
+		var range = document.createRange();
+		range.selectNode( textArea );
+		window.getSelection().addRange(range);
+		
+		// copy content that is select inside Document - so that is only textarea
+		document.execCommand('copy');
+		
+		// remove <textarea> from DOM
+		document.body.removeChild(textArea);
 	}
 	
 	
