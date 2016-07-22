@@ -304,7 +304,7 @@ function qa_ajax_error()
 			'xml' : 'XML-xHTML'
 		};
 										
-		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll(/*'pre[class*="brush:"]'*/ '.syntaxhighlighter'));
+		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent .syntaxhighlighter' /*pre[class*="brush:"]'*/)) : Array.from(document.querySelectorAll(/*'pre[class*="brush:"]'*/ '.syntaxhighlighter'));
 		
 		console.log('Blocks: ', blocks);
 		
@@ -368,6 +368,8 @@ function qa_ajax_error()
 					additionalDiv.appendChild(blockButton);
 				}
 				
+				////console.log('Block classList: ', block.classList);
+				
 				languageInfo.textContent = languages[block.classList[1]];
 				
 				additionalDiv.appendChild(languageInfo);
@@ -402,6 +404,8 @@ function qa_ajax_error()
 		showModalBtn.id = 'get-content-preview';
 		showModalBtn.innerHTML = 'Podgląd posta';
 		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
+		
+		console.log('preview');
 		
 		if (placeForBtn)		
 		{
@@ -470,11 +474,14 @@ function qa_ajax_error()
 				modal.appendChild(modalContent);
 				modalParent.appendChild(modal);
 				
+				// use forum built-in plugin to make Modal blocks of code highlighted
+				SyntaxHighlighter.highlight();
+				
 				/*
 				 * prepare blocks of code inside Preview to be collapsed/expanded
 				 * "true" parameter lets to display collapsing blocks inside Preview Modal
 				 */
-				handleCodeCollapsing(true);
+				handleCodeCollapsing(true, prepareClipboardCopying);
 			}
 		});
 	};
@@ -498,7 +505,7 @@ function qa_ajax_error()
 			// CKEDITOR's API event, which indicates that editor is loaded
 			CKEDITOR.on("instanceReady", function(ev)
 			{			 				
-				console.log('?????????');
+				console.log('CKEditor is ready');
 				if (btnLocation)
 				{				 
 					var prepareCkeInstance = btnLocation.getAttribute('onclick');
