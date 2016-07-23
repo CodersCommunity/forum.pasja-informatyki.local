@@ -4740,3 +4740,40 @@ a.sidebarnav:hover {
     border: none;
 	outline: none;
 }
+
+form div[class$="-item-content"],
+form div.qa-q-view-content
+{
+	position: relative;
+}
+
+.codepen-snippet
+{
+	position: absolute;
+	right: -15px;
+    top: -15px;
+	width: 0;
+	height: 0;
+	/*background: black;*/
+	/*background: url(https://assets.codepen.io/assets/logos/codepen-logo-9c0933e8569e634b75ac2eb808da908d.svg) no-repeat 18px 21px;*/
+	/*width: 125px;
+	height: 50px;*/
+}
+
+.codepen-snippet:hover
+{
+    cursor: pointer;
+}
+
+.codepen-snippet img,
+.codepen-snippet input[type="image"]
+{
+	background: black;
+	border-radius: 10px;
+	padding: 10px;
+	vertical-align: middle;
+	transform: scale(0.5);
+	width: 140px;
+    position: absolute;
+    right: -10px;
+}

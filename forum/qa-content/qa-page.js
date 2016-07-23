@@ -201,6 +201,90 @@ function qa_ajax_error()
 	else 
 		prepareClipboardCopying = false;
 	
+	
+	/*
+	 * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
+	 */
+	 function previewFrontEnd()
+	 {
+		 ﻿var posts = Array.from(document.querySelectorAll('.entry-content'));
+		var postsWithBlocks = [];
+		posts.forEach(function(post)
+		{
+		   var query = post.querySelectorAll('.syntaxhighlighter-parent');
+		   if (query.length)
+		   {
+			  //// postsWithBlocks.push(Array.from(query));
+
+			 var blocksInPost = {};
+			 var data = {};
+			 var htmlCode = '';
+			 var cssCode = '';
+			 var jsCode = '';
+			 var parent = Array.from(query)[0].parentNode.parentNode;
+
+			 Array.from(query).forEach(function(block, index)
+			 {
+				var code = '';
+				Array.from(block.querySelectorAll('.code .line')).forEach(function(line)
+				{
+					code += line.textContent + '\r\n';
+				});
+				blocksInPost[block.firstElementChild.nextSibling.classList[1]] = code /*block.firstElementChild.nextSibling*/;
+			 });
+			 ////postsWithBlocks.push(blocksInPost);
+			 Object.keys(blocksInPost).forEach(function(language)
+			 {       
+				switch (language)
+				{
+				   case 'css' : cssCode += blocksInPost.css;
+								data.css = cssCode;
+								break;
+				   case 'xml' : htmlCode += blocksInPost.xml;
+								data.html = htmlCode;
+								break;
+				   case 'jscript' : jsCode += blocksInPost.jscript;
+								data.js = jsCode;
+								break;
+				}
+			 });
+
+			var JSONstring = 
+		  JSON.stringify(data)
+			// Quotes will screw up the JSON
+			.replace(/"/g, "&​quot;") // careful copy and pasting, I had to use a zero-width space here to get markdown to post this.
+			.replace(/'/g, "&apos;");
+
+			  var form = document.createElement('form');
+			  form.action = 'http://codepen.io/pen/define';
+			  form.method = 'POST';
+			  form.target= '_blank';
+			  form.style.backgroundColor = 'red';
+
+			  var input1 = document.createElement('input');
+			  input1.type = 'hidden';
+			  input1.name = 'data';
+			  input1.value = JSONstring;
+
+			  var input2 = document.createElement('input');
+			  input2.type = 'image';
+			  input2.src = 'http://s.cdpn.io/3/cp-arrow-right.svg';
+			  input2.width = 40;
+			  input2.height = 40;
+			  input2.value = 'Create new CODEPEN';
+
+			  form.appendChild(input1);
+			  form.appendChild(input2);
+
+		  ////var parent = document.querySelector('.qa-q-view-content');
+			  var before = parent.firstElementChild;
+
+			  parent.appendChild(form);
+
+		   }
+		});
+	 }
+	
 	/*
 	 *	Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
 	 */
