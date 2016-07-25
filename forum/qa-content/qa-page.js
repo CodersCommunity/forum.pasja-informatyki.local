@@ -487,8 +487,10 @@ function qa_ajax_error()
 		{
 			console.log('cke is ready...');
 			
+			// watch when user will click beyond CKEDITOR - it'll loose focus
 			document.querySelector('iframe.cke_wysiwyg_frame').contentDocument.body.addEventListener('blur', function(ev)
 			{
+				// get data from current CKEDITOR instance
 				var editorData = CKEDITOR.instances[Object.keys(CKEDITOR.instances)].getData();
 				
 				console.log('[cke] OFF: ', editorData);
