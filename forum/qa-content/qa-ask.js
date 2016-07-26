@@ -301,7 +301,7 @@ function set_category_description(idprefix)
  * Feature - Remove unnecessary # from tags, when creating new post (question)
  */ 
  ;(function (document)
- {
+ {	 
 	 'use strict';
 	 
 	 // wait for DOM to load
@@ -319,9 +319,8 @@ function set_category_description(idprefix)
 			
 			// filter tags, accept only those without # and those like "C#"
 			var filteredTags = allTags.filter(function(hash)
-			{
-				if (hash.indexOf('#') < 0 || hash.toLowerCase().indexOf('c#') > -1)
-					return hash;					
+			{				
+				return hash.indexOf('#') < 0 || hash.indexOf('#') === 1;
 			});
 			
 			// put filtered tags into "tags" input - separated by blank space (' ')
