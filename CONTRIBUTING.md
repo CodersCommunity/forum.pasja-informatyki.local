@@ -38,3 +38,33 @@ W skrócie:
 * Tytuł, tak jak w podstawówce uczono, nie posiada na końcu kropki
 * Tytuł powinien być zapisany z wykorzystaniem bezokoliczników (używamy form: REFACTOR, UPDATE, REMOVE, RELEASE, MERGE, FIX)
 * Użyj ciała commita, aby wyjaśnić WWH - What Why How
+
+
+# Kilka drobnych wskazówek:
+Te wskazówki przydadzą się również osobom zatwierdzającym zmiany.
+
+### Etykiety:
+* **"Assigned"** - oznacza, że Twoje isse/PR zostało zatwierdzone, a Ty wiesz, że jest sens pracować nad tym dalej.
+* **"Bug"** - dostaje issue, które dotyczy jakiegoś błędu w kodzie
+* **"Dublicate"** - należy dodać, oraz zamknąć issue linkując do poprzedniego.
+* **"Feature"** - Jest to jakiś nowy ficzer.
+* **"Need Review"** - Skończyłeś zmiany, czekaj na CodeReview.
+* **"Question"** - Jeżeli Twoje issue to pytanie 
+* **"Ready to Merge"** -  Gotowy, otestowany, do zmergowania.
+* **"Testing"** - Aktualnie trwa testowanie zmian.
+* **"Work in progress"** - aktualnie pracujesz nad czymś.
+ 
+### Sposób dawania etykiet:
+Przykładowa kolejność dla Pull Requestów.
+
+1. Assigned (do issue zazwyczaj) / Duplicate / Question 
+2. Feature / Bug
+3. Work in progress
+4. Testing
+5. + Need Review | - Work in progress
+6. Ready to merge
+
+Dodatkowo, nie zapomniaj, o tym aby podlinkować issue do swojego PR np. 
+Ta zmiana pochodzi z #19    
+
+
