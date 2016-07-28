@@ -270,53 +270,24 @@
 				);
 			}
 
-		$adres = qa_path_absolute(qa_request());
-
-		if($adres=="http://forum.pasja-informatyki.pl/activity")
-		$qa_content['navigation']['main']['nav1']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/ask")
-		$qa_content['navigation']['main']['nav2']['selected'] = true;
-
-		else if(substr($adres, 0, 39)=="http://forum.pasja-informatyki.pl/user/")
-		$qa_content['navigation']['main']['nav3']['selected'] = true;
-
-		else if(substr($adres, 0, 39)=="http://forum.pasja-informatyki.pl/users")
-		$qa_content['navigation']['main']['nav4']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/badges")
-		$qa_content['navigation']['main']['nav5']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/zasady-przyznawania-punktow")
-		$qa_content['navigation']['main']['nav6']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/zasluzeni-pasjonaci-hall-of-fame")
-		$qa_content['navigation']['main']['nav7']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/categories")
-		$qa_content['navigation']['main']['nav8']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/tags")
-		$qa_content['navigation']['main']['nav9']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/faq")
-		$qa_content['navigation']['main']['nav10']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/polls")
-		$qa_content['navigation']['main']['nav11']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/chat-irc")
-		$qa_content['navigation']['main']['nav12']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/messages")
-		$qa_content['navigation']['main']['nav13']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/regulamin-forum")
-		$qa_content['navigation']['main']['nav14']['selected'] = true;
-
-		else if($adres=="http://forum.pasja-informatyki.pl/ksiazki-informatyczne-warte-uwagi")
-		$qa_content['navigation']['main']['nav15']['selected'] = true;
-
+		$page = explode('/', qa_request())[0];
+		$activPages = [
+			'activity' => 'nav1',
+			'unanswered' => 'nav2',
+			'ask' => 'nav3',
+			'categories' => 'nav4',
+			'tags' => 'nav5',
+			'user' => 'nav6',
+			'users' => 'nav6',
+			'zasluzeni-pasjonaci-hall-of-fame' => 'nav7',
+			'chat-irc' => 'nav8',
+			'faq' => 'nav9',
+			'regulamin-forum' => 'nav10',
+			'ksiazki-informatyczne-warte-uwagi' => 'nav11',
+		];
+		if (isset($activPages[$page])) {
+			$qa_content['navigation']['main'][$activPages[$page]]['selected'] = true;
+		}
 
 	//	Handle maintenance mode
 
@@ -731,10 +702,12 @@
 		$logowidth=qa_opt('logo_width');
 		$logoheight=qa_opt('logo_height');
 
-		$qa_content['logo']='<a href="'.qa_path_html('').'" class="qa-logo-link">'.
-		'<dfn data-info="Najnowsze pytania"><img src="'.qa_html(is_numeric(strpos($logourl, '://')) ? $logourl : qa_path_to_root().$logourl).'"'.
-		($logowidth ? (' width="'.$logowidth.'"') : '').($logoheight ? (' height="'.$logoheight.'"') : '').
-		' border="0" alt="'.qa_html(qa_opt('site_title')).'"/></dfn></a>';
+		$path = qa_request();
+		$qa_content['logo']='<a href="'.qa_path_html('').'" class="qa-logo-link'.(empty($path) ? ' qa-logo-activ' : '').'">'.
+ 		'<dfn data-info="Najnowsze pytania"><img src="'.qa_html(is_numeric(strpos($logourl, '://')) ? $logourl : qa_path_to_root().$logourl).'"'.
+ 		($logowidth ? (' width="'.$logowidth.'"') : '').($logoheight ? (' height="'.$logoheight.'"') : '').
+ 		' border="0" alt="'.qa_html(qa_opt('site_title')).'"/></dfn></a>';
+
 
 		$topath=qa_get('to'); // lets user switch between login and register without losing destination page
 
