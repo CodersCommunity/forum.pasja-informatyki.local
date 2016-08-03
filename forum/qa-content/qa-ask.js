@@ -300,31 +300,30 @@ function set_category_description(idprefix)
 /*
  * Feature - Remove unnecessary # from tags, when creating new post (question)
  */ 
- ;(function (document)
- {	 
+ ;( function ( document )
+ {	 	 
 	 'use strict';
 	 
 	 // wait for DOM to load
-	 window.addEventListener('DOMContentLoaded', function()
-	 {
+	 window.addEventListener( 'DOMContentLoaded', ( ) => {
 		// get DOM elements: "tags" input and button "Zadaj pytanie"
-		var tags = document.getElementById('tags');
-		var askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"]');
+		const tags = document.getElementById( 'tags' );
+		const askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
 		
 		// when user clicks "Zadaj pytanie"
-		askQuestionBtn.addEventListener('click', function(ev)
-		{					
+		askQuestionBtn.addEventListener( 'click', ( ev ) => {
 			// get written tags and split them
-			var allTags =  tags.value.split(' ');
+			const allTags = tags.value.split( ' ' );
 			
 			// filter tags, accept only those without # and those like "C#"
-			var filteredTags = allTags.filter(function(hash)
-			{				
-				return hash.indexOf('#') < 0 || hash.indexOf('#') === 1;
-			});
+			let filteredTags = [];
+			
+			allTags.forEach( ( hash ) => { 
+				hash.indexOf( '#' ) === 0 ? filteredTags.push( hash.slice( 1 ) ) : filteredTags.push( hash );
+			} );
 			
 			// put filtered tags into "tags" input - separated by blank space (' ')
-			tags.value = filteredTags.join(' ');
-		});
-	 });	 
- }(document));
+			tags.value = filteredTags.join( ' ' );
+		} );
+	 } );	 
+ } ( document ) );
