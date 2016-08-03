@@ -300,18 +300,17 @@ function set_category_description(idprefix)
 /*
  * Feature - Remove unnecessary # from tags, when creating new post (question)
  */ 
- ;( function ( document )
- {	 	 
-	 'use strict';
+ ;( ( document ) => {	 
+	'use strict';
 	 
-	 // wait for DOM to load
-	 window.addEventListener( 'DOMContentLoaded', ( ) => {
+	// wait for DOM to load
+	window.addEventListener( 'DOMContentLoaded', ( ) => {		
 		// get DOM elements: "tags" input and button "Zadaj pytanie"
 		const tags = document.getElementById( 'tags' );
 		const askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
 		
 		// when user clicks "Zadaj pytanie"
-		askQuestionBtn.addEventListener( 'click', ( ev ) => {
+		askQuestionBtn.addEventListener( 'click', ( ev ) => {		
 			// get written tags and split them
 			const allTags = tags.value.split( ' ' );
 			
@@ -324,6 +323,6 @@ function set_category_description(idprefix)
 			
 			// put filtered tags into "tags" input - separated by blank space (' ')
 			tags.value = filteredTags.join( ' ' );
-		} );
+		} );		
 	 } );	 
- } ( document ) );
+ } ) ( document );
