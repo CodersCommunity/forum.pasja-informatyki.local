@@ -180,22 +180,32 @@ function qa_ajax_error()
 /*
  *	Feature: inform user about marking best answer, when he wants to close a topic
  */
- ;(function(document)
+ ;( function( document )
  {
-	 'use strict';
 	 
-	window.addEventListener('DOMContentLoaded', function()
-	{
-		var parent = document.querySelector('.qa-c-form .qa-form-tall-table tbody');
-		var last = document.querySelector('.qa-c-form .qa-form-tall-table tbody tr:last-child');
-		var informParent = document.createElement('tr');
-		var inform  = document.createElement('td'); 
+	'use strict';
+	 
+	const closingTopicState = location.href.indexOf( 'state=close' );
+	
+	if ( closingTopicState > 0 ) {
+		
+		window.addEventListener('DOMContentLoaded', ( ) => {
+			
+			const last = document.querySelector( '.qa-c-form .qa-form-tall-table tbody tr:last-child' );
+			
+			let informParent = document.createElement( 'tr' );			
+			let parent = document.querySelector( '.qa-c-form .qa-form-tall-table tbody' );
+			let inform  = document.createElement( 'td' );
 
-		inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
+			inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
 
-		inform.classList.add('closing-topic-info');
-		informParent.appendChild(inform);
+			inform.classList.add( 'closing-topic-info' );
+			informParent.appendChild( inform );
 
-		parent.insertBefore(informParent, last);
-	});
- }(document));
+			parent.insertBefore( informParent, last );
+			
+		});
+		
+	}
+	
+ } ( document) );
