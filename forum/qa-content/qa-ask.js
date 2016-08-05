@@ -297,32 +297,38 @@ function set_category_description(idprefix)
 	}
 }
 
-/*
+/**
  * Feature - Remove unnecessary # from tags, when creating new post (question)
  */ 
- ;( ( document ) => {	 
+{	 
+	
 	'use strict';
 	 
 	// wait for DOM to load
 	window.addEventListener( 'DOMContentLoaded', ( ) => {		
+	
 		// get DOM elements: "tags" input and button "Zadaj pytanie"
 		const tags = document.getElementById( 'tags' );
 		const askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
 		
 		// when user clicks "Zadaj pytanie"
-		askQuestionBtn.addEventListener( 'click', ( ev ) => {		
-			// get written tags and split them
-			const allTags = tags.value.split( ' ' );
+		askQuestionBtn.addEventListener( 'click', ( ) => {		
 			
-			// filter tags, accept only those without # and those like "C#"
-			let filteredTags = [];
+			let allTags = tags.value.split( ' ' );
 			
-			allTags.forEach( ( hash ) => { 
-				hash.indexOf( '#' ) === 0 ? filteredTags.push( hash.slice( 1 ) ) : filteredTags.push( hash );
-			} );
+			/*
+			 * Filter tags: when a single tag has # character on 0 position, remove it
+			 * For example: "#problem" will be filtered to "problem"
+			 */
+			for ( let i = 0, len = allTags.length; i < len; i++ ) {
+				
+				if ( allTags[ i ].indexOf( '#' ) === 0 )
+					allTags[ i ] = allTags[ i ].slice( 1 );
+				
+			}
 			
-			// put filtered tags into "tags" input - separated by blank space (' ')
-			tags.value = filteredTags.join( ' ' );
 		} );		
+		
 	 } );	 
- } ) ( document );
+	 
+ };
