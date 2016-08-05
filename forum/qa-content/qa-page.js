@@ -179,8 +179,8 @@ function qa_ajax_error()
 
 /*
  *	Feature: inform user about marking best answer, when he wants to close a topic
- */
- ;( ( document ) => {
+ */ 
+{
 	 
 	'use strict';
 	 
@@ -207,4 +207,4 @@ function qa_ajax_error()
 		
 	}
 	
- } ) ( document );
+ };
