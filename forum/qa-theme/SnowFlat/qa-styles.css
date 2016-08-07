@@ -165,8 +165,7 @@ pre {
 	border-left: 11px solid #3498db;
 	margin: 1.7em 0 1.7em 0.3em;
 	overflow: auto;
-	/*padding: 0.1em 0.5em 0.3em 0.7em;*/
-	padding: 2.25em 0.5em 0.3em 0.7em;
+	padding: 0.3em 0.5em 0.3em 0.7em;
 	width: 98%;
 }
 pre code {
@@ -4561,41 +4560,92 @@ a.sidebarnav:hover {
     line-height: 20px;
 }
 /* collapsing block-code */
-pre[class*="brush:"]
+pre[class*="brush:"],
+.syntaxhighlighter-parent,
+.syntaxhighlighter
 {
 	position: relative;
 }
-pre[class*="brush:"].collapsed
+.syntaxhighlighter.collapsed-block,
+pre[class*="brush:"].collapsed-block
 {
   	height: 110px;
 	overflow: hidden;
  }
 
+
+ .post-preview.syntaxhighlighter-parent pre[class*="brush:"]
+ {
+	 margin: 1px 0;
+	 width: 100%;
+ }
 pre[class*="brush:"]::before
 {
 	content: attr(data-state);
-    color: white;
-    position: absolute;
-    padding: 0 5px;
-    border-radius: 5px;
-    background: #3498db;
-    top: 5px;
-    right: 240px;
-    font-size: 12px;
+	color: white;
+	position: absolute;
+	padding: 0 5px;
+	border-radius: 5px;
+	background: #3498db;
+	top: 5px;
+	right: 240px;
+	font-size: 12px;
 }
 
 pre[class*="brush:"]::after
 {
-    content: attr(data-lang);
-    position: absolute;
-    right: 5px;
-    top: 2px;
-    border: 1px solid #3498db;
-    padding: 0 5px;
-    background: white;
+	content: attr(data-lang);
+	position: absolute;
+	right: 5px;
+	top: 2px;
+	border: 1px solid #3498db;
+	padding: 0 5px;
+	background: white;
+}
+.syntaxhighlighter-block-bar
+{
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
+	background: -moz-linear-gradient(left,  rgba(52,152,219,0.45) 0%, rgba(52,152,219,0.75) 50%, rgba(52,152,219,0.45) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
+
+	height: 24px;
+	width: 100%;
+	position: relative;
+	border-radius: 50px 50px 1px 1px;
 }
 
-/* post content preview */
+.syntaxhighlighter-button
+{
+	color: white;
+	position: absolute;
+	border-radius: 5px;
+	background: #3498db;
+	top: 2px;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 85px;
+	font-size: 12px;
+	border: 1px solid white;
+	font-weight: bold;
+	outline: none;
+}
+
+
+.syntaxhighlighter-language
+{
+	font-size: 12px;
+	position: absolute;
+	left: 1.25%;
+	top: 2px;
+	border-radius: 17px 2px;
+	padding: 1px 15px;
+	font-weight: bold;
+	color: white;
+}
+
 .modal-background
 {
     z-index: 10;
@@ -4605,24 +4655,28 @@ pre[class*="brush:"]::after
     position: absolute;
 }
 
-.post-preview {
-    overflow-y: scroll;
+.post-preview
+{
+    overflow-y: auto;
     max-height: 70vh;
     width: 585px;
 }
 
-.post-preview-parent {
+.post-preview-parent
+{
     position: fixed;
     background: white;
     z-index: 11;
     padding: 40px;
+	top: 10vh;
     left: calc(50vw - 585px/2);
-    webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
     -moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
     box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.5);
 }
 
-.close-preview-btn {
+.close-preview-btn
+{
     position: absolute;
     top: -10px;
     right: -10px;
@@ -4633,4 +4687,142 @@ pre[class*="brush:"]::after
     padding: 4px 6px;
     color: white;
     font-weight: bold;
+}
+
+/*
+ *	Source: http://stackoverflow.com/a/30810322/4983840
+ */
+.content-copy
+{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 2em;
+	height: 2em;
+	padding: 0;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background: transparent;
+}
+
+.content-copy-btn
+{
+	background: #2c3e50;
+    position: absolute;
+    color: white;
+    right: 1.25%;
+    top: 3px;
+    border-radius: 2px 30px;
+    padding: 2px 15px;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+	outline: none;
+}
+
+.content-copy-btn-disabled
+{
+	background: lightgray;
+	color: gray;
+	cursor: auto;
+}
+
+.content-copy-btn-disabled:hover::before
+{
+    content: "Kopiowanie niedostępne";
+    position: absolute;
+    background: black;
+    color: white;
+    font-size: 10px;
+    top: -20px;
+    right: -7px;
+    width: 125px;
+    height: 15px;
+    line-height: 15px;
+    font-weight: normal;
+    border-radius: 5px;
+}
+
+.content-copy-btn-disabled:hover::after
+{
+	content: "";
+    width: 0;
+    height: 0;
+    top: -5px;
+    right: 30px;
+    border-top: 8px solid black;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+    position: absolute;
+}
+
+form div[class$="-item-content"],
+form div.qa-q-view-content
+{
+	position: relative;
+}
+
+.snippets-parent
+{
+	position: absolute;
+	top: -20px;
+	right: 0;
+}
+
+.codepen-snippet
+{
+	position: absolute;
+	right: 0;
+    top: 0;
+	width: 0;
+	height: 0;
+}
+
+.codepen-snippet:hover
+{
+    cursor: pointer;
+}
+
+.codepen-snippet img,
+.codepen-snippet input[type="image"]
+{
+    background: black;
+    border-radius: 10px;
+    margin: 0;
+    padding: 10px;
+    vertical-align: middle;
+    transform: scale(0.40);
+    width: 140px;
+    position: absolute;
+    right: 5px;
+    top: -11px;
+}
+
+.jsfiddle-snippet
+{
+	width: 0;
+	height: 0;
+	position: absolute;
+	top: 0;
+    right: 0;
+}
+
+.jsfiddle-snippet input[type="submit"]
+{
+	border-radius: 6px;
+    background: #4679A4;
+    color: white;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 1px;
+    font-size: 8px;
+    padding: 4px;
+}
+
+.jsfiddle-snippet select,
+.jsfiddle-snippet textarea
+{
+	display: none;
 }

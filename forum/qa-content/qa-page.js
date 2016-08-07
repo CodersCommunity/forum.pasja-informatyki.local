@@ -203,23 +203,261 @@ function qa_ajax_error()
  /* ////////////////////
  *
  * NEW FEATURES
- *
+ * 
  * ////////////////////
  */
 ;(function(document)
 {
 	'use strict';
 
+	// check if browser supports 'select()' and 'copy' commands
+	var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy'));
+
+	/*
+	 * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
+	 */
+	 function viewHtmlCssJs()
+	 {
+		/*
+		 * Adapted code from Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
+		 */
+		function createCodepenSnippet(codepenData)
+		{
+			var codeAsJSON = JSON.stringify(codepenData)
+				// Quotes will screw up the JSON
+				.replace(/"/g, "&​quot;") // careful copy and pasting, I had to use a zero-width space here to get markdown to post this.
+				.replace(/'/g, "&apos;");
+
+			var codepenSnippetForm = document.createElement('form');
+			codepenSnippetForm.action = 'http://codepen.io/pen/define';
+			codepenSnippetForm.method = 'POST';
+			codepenSnippetForm.target= '_blank';
+			codepenSnippetForm.classList.add('codepen-snippet');
+
+			var dataCarrierInput = document.createElement('input');
+			dataCarrierInput.type = 'hidden';
+			dataCarrierInput.name = 'data';
+			dataCarrierInput.value = codeAsJSON;
+
+			var submitSnippet = document.createElement('input');
+			submitSnippet.type = 'image';
+			submitSnippet.src = 'https://assets.codepen.io/assets/logos/codepen-logo-9c0933e8569e634b75ac2eb808da908d.svg';
+			submitSnippet.value = 'Create new CODEPEN';
+
+			codepenSnippetForm.appendChild(dataCarrierInput);
+			codepenSnippetForm.appendChild(submitSnippet);
+
+			return codepenSnippetForm;
+		}
+
+		/*
+		 * Adapted code from JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
+		 */
+		function createJsfiddleSnippet(jsfiddleData)
+		{
+			var jsfiddleSnippetForm = document.createElement('form');
+			jsfiddleSnippetForm.action = 'http://jsfiddle.net/api/post/library/pure/';
+			jsfiddleSnippetForm.method = 'POST';
+			jsfiddleSnippetForm.target = '_blank';
+			jsfiddleSnippetForm.classList = 'jsfiddle-snippet';
+
+			var htmlTxt = document.createElement('textarea');
+			htmlTxt.name = 'html';
+			htmlTxt.value = jsfiddleData.html || '';
+
+			var cssTxt = document.createElement('textarea');
+			cssTxt.name = 'css';
+			cssTxt.value = jsfiddleData.css || '';
+
+			var jsTxt = document.createElement('textarea');
+			jsTxt.name = 'js';
+			jsTxt.value = jsfiddleData.js || '';
+
+            var selectHTML = document.createElement('select');
+            selectHTML.name = 'panel_html';
+			var selectCSS = document.createElement('select');
+            selectCSS.name = 'panel_css';
+            var selectJS = document.createElement('select');
+            selectJS.name = 'panel_js';
+
+            var htmlVersion = document.createElement('option');
+            htmlVersion.value = 0;
+            htmlVersion.textContent = 'HTML';
+            htmlVersion.setAttribute('selected', 'selected');
+
+            var cssCleanVersion = document.createElement('option');
+            cssCleanVersion.value = 0;
+            cssCleanVersion.textContent = 'CSS';
+            cssCleanVersion.setAttribute('selected', 'selected');
+            var cssPreProcessorVersion = document.createElement('option');
+            cssPreProcessorVersion.value = 1;
+            cssPreProcessorVersion.textContent = 'SCSS';
+
+            var jsCleanVersion = document.createElement('option');
+            jsCleanVersion.value = 0;
+            jsCleanVersion.textContent = 'JavaScript';
+            jsCleanVersion.setAttribute('selected', 'selected');
+            var jsCoffeeVersion = document.createElement('option');
+            jsCoffeeVersion.value = 1;
+            jsCoffeeVersion.textContent = 'CoffeeScript';
+            var jsOldVersion = document.createElement('option');
+            jsOldVersion.value = 2;
+            jsOldVersion.textContent = 'JavaScript 1.7';
+
+			var submitSnippet = document.createElement('input');
+			submitSnippet.type = 'submit';
+			submitSnippet.value = 'JSFIDDLE';
+
+            selectHTML.appendChild(htmlVersion);
+            selectCSS.appendChild(cssCleanVersion);
+            selectCSS.appendChild(cssPreProcessorVersion);
+            selectJS.appendChild(jsCleanVersion);
+            selectJS.appendChild(jsCoffeeVersion);
+            selectJS.appendChild(jsOldVersion);
+
+            jsfiddleSnippetForm.appendChild(selectHTML);
+            jsfiddleSnippetForm.appendChild(selectCSS);
+            jsfiddleSnippetForm.appendChild(selectJS);
+			jsfiddleSnippetForm.appendChild(submitSnippet);
+
+			jsfiddleSnippetForm.appendChild(htmlTxt);
+			jsfiddleSnippetForm.appendChild(cssTxt);
+			jsfiddleSnippetForm.appendChild(jsTxt);
+
+			return jsfiddleSnippetForm;
+		}
+
+		// add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
+		function addSnippets(data, parent)
+		{
+			var codepenSnippet = createCodepenSnippet(data);
+			var jsfiddleSnippet = createJsfiddleSnippet(data);
+
+			var snippetsParent = document.createElement('div');
+			snippetsParent.classList.add('snippets-parent');
+			snippetsParent.appendChild(codepenSnippet);
+			snippetsParent.appendChild(jsfiddleSnippet);
+
+			parent.appendChild(snippetsParent);
+		}
+
+		var posts = Array.from(document.querySelectorAll('.entry-content'));
+
+		posts.forEach(function(post)
+		{
+		   var blockOfCodeParents = post.querySelectorAll('.syntaxhighlighter-parent');
+		   var canAddSnippets = true;
+
+		   if (blockOfCodeParents.length)
+		   {
+				 var blocksInPost = {};
+				 var data = {};
+				 var htmlCode = '';
+				 var cssCode = '';
+				 var jsCode = '';
+				 var parent = Array.from(blockOfCodeParents)[0].parentNode.parentNode;
+
+				 Array.from(blockOfCodeParents).forEach(function(block)
+				 {
+					var code = '';
+
+					Array.from(block.querySelectorAll('.code .line')).forEach(function(line)
+					{
+						code += line.textContent + '\r\n';
+					});
+
+					blocksInPost[block.firstElementChild.nextSibling.classList[1]] = code;
+				 });
+
+				 Object.keys(blocksInPost).forEach(function(language)
+				 {
+					switch (language)
+					{
+						case 'css' : cssCode += blocksInPost.css;
+                                    data.css = cssCode;
+                                    break;
+						case 'xml' : htmlCode += blocksInPost.xml;
+                                    data.html = htmlCode;
+                                    break;
+						case 'jscript' : jsCode += blocksInPost.jscript;
+                                        data.js = jsCode;
+                                    break;
+						default : canAddSnippets = false;
+                                    break;
+					}
+				 });
+
+				 if (canAddSnippets)
+					 addSnippets(data, parent);
+		   }
+		});
+	 }
+
+	/*
+	 *	Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
+	 */
+	function copyToClipboard(ev)
+	{
+		// prevent page refresh (or something weird) as default button action
+		ev.preventDefault();
+
+		var code = [];
+		var t = ev.target;
+		var blockOfCodeBar = t.parentNode.parentNode;
+
+		// get block of code content - practically all lines of code inside
+		Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
+		{
+			code.push(lineOfCode.textContent);
+		});
+
+		/*
+		 * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
+		 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
+		 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
+		 * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
+		 * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
+		 */
+		var textArea = document.createElement("textarea");
+		textArea.classList.add('content-copy');
+
+		code.forEach(function(singleLineOfCode)
+		{
+			textArea.value += singleLineOfCode + '\r\n';
+		});
+
+		document.body.appendChild(textArea);
+
+		// if anything on the page is selected (a.k.a highlighted) - clear the selection
+		if (window.getSelection().rangeCount)
+			window.getSelection().removeAllRanges();
+
+		/*
+		 * Below code will select given DOM elements
+		 * and create Range Object, so that text content can be selected (a.k.a highlighted)
+		 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
+		 */
+		var range = document.createRange();
+		range.selectNode( textArea );
+		window.getSelection().addRange(range);
+
+		// copy content that is select inside Document - so that is only textarea
+		document.execCommand('copy');
+
+		// remove <textarea> from DOM
+		document.body.removeChild(textArea);
+	}
+
+
 	/*
 	 * Feature: Collapsable blocks of code
-	 * Author: ChrissP92 - https://github.com/ChrissP92
 	 * Date: 05.07.2016r.
-	 */
-	function handleCodeCollapsing(insidePreview)
-	{
+	 */	
+	function handleCodeCollapsing(insidePreview, addCopyBtn)
+	{		
 		/*
-		 *	!!!! IMPORTANT VARIABLE !!!!
-		 *
+		 * !!!! IMPORTANT VARIABLE !!!!
+		 * 
 		 * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
 		 *
 		 * !!!! IMPORTANT VARIABLE !!!!
@@ -228,109 +466,150 @@ function qa_ajax_error()
 
 		// languages got from Forum site DOM
 		var languages = {
-			'brush:as3;' : 'actionscript',
-			'brush:applescript;' : 'applescript',
-			'brush:bash;' : 'bash-shell',
-			'brush:cf;' : 'coldfusion',
-			'brush:csharp;' : 'C#',
-			'brush:cpp;' : 'C++',
-			'brush:css;' : 'CSS',
-			'brush:delphi;' : 'delphi',
-			'brush:diff;' : 'diff',
-			'brush:erl;' : 'erlang',
-			'brush:groovy;' : 'groovy',
-			'brush:hx;' : 'haxe',
-			'brush:jscript;' : 'JavaScript',
-			'brush:java;' : 'Java',
-			'brush:javafx;' : 'Java-FX',
-			'brush:perl;' : 'perl',
-			'brush:php;' : 'PHP',
-			'brush:plain;' : 'plain-text',
-			'brush:ps;' : 'powershell',
-			'brush:python;' : 'Python',
-			'brush:ruby;' : 'Ruby',
-			'brush:scss;' : 'SASS',
-			'brush:scala;' : 'scala',
-			'brush:sql;' : 'SQL',
-			'brush:tap;' : 'tap',
-			'brush:ts;' : 'TypeScript',
-			'brush:vb;' : 'VB',
-			'brush:xml;' : 'XML-xHTML'
-		}
+			'as3' : 'actionscript',
+			'applescript' : 'applescript',
+			'bash' : 'bash-shell',
+			'cf' : 'coldfusion',
+			'csharp' : 'C#',
+			'cpp' : 'C++',
+			'css' : 'CSS',
+			'delphi' : 'delphi',
+			'diff' : 'diff',
+			'erl' : 'erlang',
+			'groovy' : 'groovy',
+			'hx' : 'haxe',
+			'jscript' : 'JavaScript',
+			'java' : 'Java',
+			'javafx' : 'Java-FX',
+			'perl' : 'perl',
+			'php' : 'PHP',
+			'plain' : 'plain-text',
+			'ps' : 'powershell',
+			'python' : 'Python',
+			'ruby' : 'Ruby',
+			'scss' : 'SASS',
+			'scala' : 'scala',
+			'sql' : 'SQL',
+			'tap' : 'tap',
+			'ts' : 'TypeScript',
+			'vb' : 'VB',
+			'xml' : 'XML-xHTML'
+		};
 
-		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent pre[class*="brush:"]')) : Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+		var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent .syntaxhighlighter')) : Array.from(document.querySelectorAll('.syntaxhighlighter'));
 
-		// get all <pre> tags which are wrappers for (CKEditor) code and loop them
+		// when 'blocks' are still unavailable - it probably is happening on /ask page (with preview modal displayed). Then check for <pre> tags
+		if (!blocks.length)
+			blocks = Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+
 		blocks.forEach(function(block)
 		{
-			// set each block attribute 'data-lang' to let CSS add :after pseudo elements with language name written inside block
-			block.setAttribute('data-lang', languages[block.classList[0]]);
+			var blockBar = document.createElement('div');
+			var blockButton = document.createElement('button');
+			var languageName = document.createElement('div');
+			var copyCodeBtn = document.createElement('button');
 
-			// when code-block has new lines and their number is greater than maximum number of lines before being collapsed
-			if (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines)
+			blockBar.classList.add('syntaxhighlighter-block-bar');
+
+            languageName.classList.add('syntaxhighlighter-language');
+
+            /*
+             * Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
+             */
+            var isLongCodeAtReply = block.querySelectorAll('.line').length >= numberOfLines;
+            var isLongCodeAtAsk = (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines);
+
+			if (isLongCodeAtReply || isLongCodeAtAsk)
 			{
-				// add CSS class to do some styling
-				block.classList.add('collapsed');
-				// add attribute to let CSS :before pseudo element set it's content to appropriate state of code-block
-				block.setAttribute('data-state', '-- Rozwiń --');
+				blockButton.classList.add('syntaxhighlighter-button');
+				blockButton.textContent = '-- Rozwiń --';
 
-				// when user clicks on code-block
-				block.addEventListener('click', function(ev)
+				block.classList.add('collapsed-block');
+
+				blockButton.addEventListener('click', function(ev)
 				{
+					// prevent... dummy (refresh page) default action of button
+					ev.preventDefault();
+
 					/*
-					 * when block-code is collapsed or not - change <pre> attribute and add/remove CSS class
-					 * to notify user the state of code-block
-					 */
-					if (block.classList.contains('collapsed'))
+					* when block-code is collapsed or not - write info on button and add/remove CSS class
+					* to notify user the state of code-block
+					*/
+					if (block.classList.contains('collapsed-block'))
 					{
-						block.classList.remove('collapsed');
-						block.setAttribute('data-state', '-- Zwiń --');
+						block.classList.remove('collapsed-block');
+						blockButton.textContent = '-- Zwiń --';
 					}
 					else
 					{
-						block.classList.add('collapsed');
-						block.setAttribute('data-state', '-- Rozwiń --');
+						block.classList.add('collapsed-block');
+						blockButton.textContent = '-- Rozwiń --';
 					}
 				});
+
+				blockBar.appendChild(blockButton);
 			}
+
+			// based on each code-block CSS class - find out what language is used inside it
+            languageName.textContent = languages[block.classList[1]] || languages[block.classList[0].slice(block.classList[0].indexOf(':') + 1, -1)];
+
+			blockBar.appendChild(languageName);
+
+			copyCodeBtn.textContent = 'Kopiuj';
+			copyCodeBtn.classList.add('content-copy-btn');
+
+			if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter'))
+				copyCodeBtn.addEventListener('click', copyToClipboard);
+			else
+				copyCodeBtn.classList.add('content-copy-btn-disabled');
+
+			blockBar.appendChild(copyCodeBtn);
+
+			block.parentNode.classList.add('syntaxhighlighter-parent');
+			block.parentNode.insertBefore(blockBar, block);
+
 		});
 	}
 
 	/*
 	 * Feature: Post content preview as Modal
-	 * Author: ChrissP92 - https://github.com/ChrissP92
 	 * Date: 07.07.2016r.
 	 */
 	function postPreview(ckeCurrentInstance, placeForBtn)
 	{
-		// get <div> and set it as Modal parent
 		var modalParent = document.querySelector('.qa-main-wrapper');
 
 		var showModalBtn = document.createElement('button');
-		var modalBackground = document.createElement('div');
 
+		var modalBackground = document.createElement('div');
 		modalBackground.classList.add('modal-background');
 
 		showModalBtn.id = 'get-content-preview';
 		showModalBtn.innerHTML = 'Podgląd posta';
 		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-
+		
 		if (placeForBtn)
 			placeForBtn.appendChild(showModalBtn);
 		else
-			document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]').parentNode.appendChild(showModalBtn);
+		{
+			var alternativePlaceForBtn = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]')
+                                        || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]')
+                                        || document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"]');
 
+            alternativePlaceForBtn.parentNode.appendChild(showModalBtn);
+		}
+		
 		function modalEventHandler(modalWrapper, closeBtn)
 		{
-			function hideModal(ev)
+			function hideModal()
 			{
-				var parent = modalWrapper.parentNode;
-
+				var modalWrapperParent = modalWrapper.parentNode;
+				
 				closeBtn.removeEventListener('click', hideModal);
 				modalBackground.removeEventListener('click', hideModal);
 
 				document.body.removeChild(modalBackground);
-				parent.removeChild(modalWrapper);
+                modalWrapperParent.removeChild(modalWrapper);
 			}
 
 			// close Modal on btn click
@@ -347,16 +626,12 @@ function qa_ajax_error()
 
 			if (!modal)
 			{
-				var modal = document.createElement('div');
 				var modalContent = document.createElement('div');
 				var closeModalBtn = document.createElement('button');
-				var ckeFullInstanceName;
+				var ckeFullInstanceName = ckeCurrentInstance ? ckeCurrentInstance + '_content' : Object.keys(CKEDITOR.instances)[0];
 
-				if (ckeCurrentInstance)
-					ckeFullInstanceName = ckeCurrentInstance + '_content';
-				else
-					ckeFullInstanceName = Object.keys(CKEDITOR.instances)[0];
-
+                modal = document.createElement('div');
+				
 				modal.classList.add('post-preview-parent');
 
 				// get current CKEditor content (provided by it's API) and insert it to <div>
@@ -375,81 +650,113 @@ function qa_ajax_error()
 				modal.appendChild(modalContent);
 				modalParent.appendChild(modal);
 
+				if (window.hasOwnProperty('SyntaxHighlighter'))
+				    SyntaxHighlighter.highlight();
+
 				/*
 				 * prepare blocks of code inside Preview to be collapsed/expanded
 				 * "true" parameter lets to display collapsing blocks inside Preview Modal
 				 */
-				handleCodeCollapsing(true);
+				handleCodeCollapsing(true, isClipboardSupported);
 			}
 		});
 	}
-
-	// when Forum (sub)page DOM is ready
-	window.addEventListener('DOMContentLoaded', function()
+	
+	// when Forum (sub)page DOM with it's CSSes and synchronously loaded scripts (excluding CKEDITOR, which needs separate Event Handling) are ready
+	window.addEventListener('load', function()
 	{
-		// find number in URL - so it's sure that topic is being viewed/opened
-		var url = location.pathname.split('/').findIndex(function(elem)
-		{
-			return Number(elem);
-		});
-
 		function addListener(ev)
 		{
 			checkCkeditor(ev.target);
 		}
-
-		function checkCkeditor(btnLocation, ask)
+		
+		function checkCkeditor(btnLocation)
 		{
-			// CKEDITOR's API event, which indicates that editor is loaded
-			CKEDITOR.on("instanceReady", function(ev)
+			/*
+			 * Explicit CKEDITOR EventHandling
+			 * When editor is available: get it's instance, then get place for preview-button location based on it.
+			 */
+			CKEDITOR.on("instanceReady", function()
 			{
 				if (btnLocation)
 				{
 					var prepareCkeInstance = btnLocation.getAttribute('onclick');
 					var ckeInstanceName = prepareCkeInstance.slice(prepareCkeInstance.indexOf('(') + 2, -2);
-					var ckeInstanceParent;
-					var ckeInstanceDom;
-					var previewBtnLocation;
 
 					if (ckeInstanceName === 'anew')
 						ckeInstanceName = 'a';
 
-					ckeInstanceParent = Array.from(document.querySelectorAll('.qa-form-tall-table')).find(function(elem)
+					var ckeInstanceParent = Array.from(document.querySelectorAll('.qa-form-tall-table')).find(function(elem)
 					{
 						return elem.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
 					});
-
-					previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
-
+					
+					var previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
+					 
 					postPreview(ckeInstanceName, previewBtnLocation);
 				}
-
 				else
 					postPreview();
 			});
 		}
 
-		// when URL contains number - so user is on topic subsite (not on main or other forum subsite nor asking the new question)
-		if (url > 0)
+        /*
+         * In the following Forum link example: "http://forum.pasja-informatyki.pl/153635/pracujmy-razem-nad-kodem-forum"
+         * , the number between slashes (as above it's: "/153635/") allows to be sure, that opened subpage is displaying some Topic.
+         * So to recognize if opened page is Topic indeed - let's find number in URL
+         */
+        var numFoundInLink = location.pathname.split('/').findIndex(function(elem)
+        {
+            return Number(elem);
+        });
+
+        var inTopic = numFoundInLink > 0;
+        var inPostEdit = location.href.indexOf('state=') > -1;
+        var inCreatingQuestion = location.pathname.indexOf('ask') > -1;
+
+		if (inTopic && !inPostEdit)
 		{
-			// buttons for actions like: Answer, Comment
-			var actionBtns = Array.from(document.querySelectorAll('input[name*="_docomment"]'));
+			// prepare Array for actions like: Answer, Comment, Edit
+			var actionBtns = [];
+
 			actionBtns.push( document.getElementById('q_doanswer') );
 
-			handleCodeCollapsing();
-
-			actionBtns.forEach(function(btn)
+			Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
 			{
-				btn.addEventListener('click', addListener);
+				actionBtns.push( comment );
 			});
+
+			Array.from(document.querySelectorAll('input[name*="_doedit"]')).forEach(function(edit)
+			{
+				actionBtns.push( edit );
+			});
+
+			/*
+			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
+			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
+			 */
+			handleCodeCollapsing(false, isClipboardSupported);
+
+			var foundAnyAnswerInTopic = document.querySelector('.answer');
+
+            if (!foundAnyAnswerInTopic)
+				checkCkeditor(false);
+			else
+			{
+				actionBtns.forEach(function(btn)
+				{
+					btn.addEventListener('click', addListener);
+				});
+			}
+
+			// run function that will add buttons to dynamically make codepen.io/jsfiddle.net snippets for HTML/CSS/JavaScript
+			viewHtmlCssJs();
 		}
 
-		// when user is creating new question
-		else if (location.pathname.indexOf('ask') > 0)
+		// when user wants to add new question or edit his question/answer/comment
+		else if (inCreatingQuestion || inPostEdit)
 		{
-			checkCkeditor(false, true);
+			checkCkeditor(false);
 		}
-		////else console.error('Unpredicted Forum URL: ', location.pathname);
-
-	});
+	});	
 }(document));
