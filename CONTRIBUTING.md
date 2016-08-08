@@ -9,7 +9,7 @@ Jeśli znalazłeś błąd w projekcie (i nie wiesz jak go naprawić), masz pytan
 ## Wskazówki odnośnie `issue`
 
  * **Sprawdź czy już ktoś wystawił podobne `issue`** do Twojego. Nie ma sensu duplikować tych samych informacji (zgodnie z zasadą DRY), ponieważ wprowadza to niepotrzebny zamęt. Jeśli już istnieje zamknięte `issue`, a Ty dalej nie masz rozwiązania tego problemu - nic nie szkodzi. Zawsze możesz je ponownie otworzyć. 
- * **Bądź dokładny** w opisywaniu problemu lub nowej funkcjonalności. Jakiego zachowania się spodziewałeś, jakie otrzymałeś? A może wiesz jak rozwiazać ten problem? W takim razie napisz nam w jaki sposób można to zrobić. 
+ * **Bądź dokładny** w opisywaniu problemu lub nowej funkcjonalności. Jakiego zachowania się spodziewałeś, jakie otrzymałeś? A może wiesz jak rozwiązać ten problem? W takim razie napisz nam w jaki sposób można to zrobić.
  * **Podeślij nam linki do `demo`** - jeśli naprawiłeś buga w naszym forum, jeśli stworzyłeś jakąś funkcjonalność - podeślij właśnie w tym issue demo działania lub zrzuty ekranu.
  * **Podaj informacje o swoim systemie i środowisku**, takie jak nazwa i wersja przeglądarki, system operacyjny - cokolwiek, co pozwoli nam się skupić na danym problemie.
  * **Dołącz treść błędu** jeśli taką otrzymujesz.
@@ -46,7 +46,7 @@ Te wskazówki przydadzą się również osobom zatwierdzającym zmiany.
 ### Etykiety:
 * **"Assigned"** - oznacza, że Twoje isse/PR zostało zatwierdzone, a Ty wiesz, że jest sens pracować nad tym dalej.
 * **"Bug"** - dostaje issue, które dotyczy jakiegoś błędu w kodzie
-* **"Dublicate"** - należy dodać, oraz zamknąć issue linkując do poprzedniego.
+* **"Duplicate"** - należy dodać, oraz zamknąć issue linkując do poprzedniego.
 * **"Feature"** - Jest to jakiś nowy ficzer.
 * **"Need Review"** - Skończyłeś zmiany, czekaj na CodeReview.
 * **"Question"** - Jeżeli Twoje issue to pytanie 

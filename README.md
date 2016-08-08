@@ -1,5 +1,5 @@
 # Opis
-To repozytorium zawiera skonfigurowaną **wirtualną maszynę** przygotowaną specjalnie do tego, aby nie dokonwyać zmian bezpośrednio na serwerze **produkcyjnym**.
+To repozytorium zawiera skonfigurowaną **wirtualną maszynę** przygotowaną specjalnie do tego, aby nie dokonywać zmian bezpośrednio na serwerze **produkcyjnym**.
 Grupa **CodersCommunity** postanowiła stworzyć środowisko developerskie naszego forum.
 
 # Informacje techniczne
