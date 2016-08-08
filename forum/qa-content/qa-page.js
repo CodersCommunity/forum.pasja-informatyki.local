@@ -760,3 +760,68 @@ function qa_ajax_error()
 		}
 	});	
 }(document));
+
+/*
+ * Feature: recognize if user wrote some code, but haven't placed it into block code
+ */
+ ;(function (document)
+ {
+	 ////////
+	 console.clear();
+	 ////////
+	 
+	 'use strict';
+	 
+	 // taken from shBrushJScript.js
+	 var jsKeywords =	[
+		'break', 'case', 'catch', 'continue', 'default', 'delete',
+		'do', 'else', 'false', 'for', 'function', 'if', 'in', 'instanceof',
+		'new', 'null', 'return', 'super', 'switch', 'this', 'throw', 'true',
+		'try', 'typeof', 'var', 'while', 'with', '=', '==', '===', '{', '}'
+	];
+	 	 
+	 // when Forum (sub)page DOM is ready
+	window.addEventListener('DOMContentLoaded', function()
+	{
+		// find number in URL - so it's sure that topic is being viewed/opened
+		var url = location.pathname.split('/').findIndex(function(elem)
+		{
+			return Number(elem);
+		});
+		
+				
+		CKEDITOR.on('instanceReady', function(ev)
+		{
+			console.log('cke is ready...');
+			
+			// watch when user will click beyond CKEDITOR - it'll loose focus
+			document.querySelector('iframe.cke_wysiwyg_frame').contentDocument.body.addEventListener('blur', function(ev)
+			{
+				// get data from current CKEDITOR instance
+				var editorData = CKEDITOR.instances[Object.keys(CKEDITOR.instances)].getData();
+				
+				console.log('[cke] OFF: ', editorData);
+				
+				var splittedData = editorData.split('\n\n');
+				var cleanedSplittedData = splittedData.map(function(textRow)
+				{
+					return textRow.slice(textRow.indexOf('>') + 1, textRow.lastIndexOf('<'));
+				});
+				
+				var recognizedCode = cleanedSplittedData.filter(function(dataRow)
+				{
+					var code = jsKeywords.filter(function(keyword)
+					{
+						return dataRow.indexOf(keyword) > -1;
+					});
+					
+					return code.length;
+					////console.log('founded code: ', foundedCode);
+				});
+				
+				console.log('recognized: ', recognizedCode);
+			});
+		});
+		
+	});	 
+ }(document));
