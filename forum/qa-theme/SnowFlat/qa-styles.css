@@ -4826,3 +4826,15 @@ form div.qa-q-view-content
 {
 	display: none;
 }
+
+.qa-q-view-meta,
+.qa-a-item-meta,
+.qa-c-item-meta {
+	padding-bottom: 1px;
+}
+
+.topic-author {
+	border: 1px solid #bdc3c7;
+	border-radius: 5px;
+	padding: 0px 2px;
+}

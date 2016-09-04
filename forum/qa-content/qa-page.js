@@ -760,3 +760,37 @@ function qa_ajax_error()
 		}
 	});	
 }(document));
+
+/**
+ * Feature: Make the topic's author nick style different from other users
+ */
+// ES6 IIFE Antipattern
+{
+	'use strict';
+
+	window.addEventListener( 'DOMContentLoaded', styleTopicAuthor );
+
+	function styleTopicAuthor() {
+
+		const author = document.querySelector( '.qa-q-view-who-data .nickname' );
+		const authorNick = author.textContent;
+		author.classList.add( 'topic-author' );
+
+		const repliesData = {
+			answerQuery: '.qa-a-item-who-data',
+			commentQuery: '.qa-c-item-who-data',
+			answersAndComments: function ( query, replyType ) {
+
+				Array.from( document.querySelectorAll( query ) ).forEach( replyType => {
+					const nick = replyType.querySelector( '.nickname' );
+
+					if ( nick.textContent === authorNick ) nick.classList.add( 'topic-author' );
+				} )
+
+			}
+		};
+		repliesData.answersAndComments( repliesData.answerQuery, 'answer' );
+		repliesData.answersAndComments( repliesData.commentQuery, 'comment' );
+
+	}
+}
