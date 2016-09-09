@@ -739,7 +739,7 @@ function qa_ajax_error() {
 /**
  * Feature: Make the topic's author nick style different from other users
  */
-(function ( document ) {
+( function ( document ) {
 
     'use strict';
 
@@ -789,10 +789,7 @@ function qa_ajax_error() {
 
                 let usersResponsesList;
 
-                if ( ev.target.name === 'q_doanswer' ) {
-                    console.log('clicked answer btn: ', ev.target);
-                    usersResponsesList = topicMainContent.querySelector( '#a_list'/*'.qa-part-a-list'*/ );
-                }
+                if ( ev.target.name === 'q_doanswer' ) usersResponsesList = topicMainContent.querySelector( '#a_list' );
                 else if ( ev.target.value === 'skomentuj' ) usersResponsesList = ev.target.parentNode.nextElementSibling;
                 else if ( ev.target.value === 'odpowiedz' ) {
                     let idNumber = ev.target.name;
@@ -801,24 +798,18 @@ function qa_ajax_error() {
                     usersResponsesList = topicMainContent.querySelector( `[id*="${idNumber}_list"]` );
                 }
 
-                const addCommentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
-                const answerBtn = /*document.getElementById( 'q_doanswer' )*/ topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
+                const commentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
+                const answerBtn = topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
 
-                console.log('BTNSSS: ', addCommentBtn, ' / ', answerBtn);
-
-                const responseBtn = ev.target.name === 'q_doanswer' ? answerBtn : addCommentBtn;
+                const responseBtn = ev.target.name === 'q_doanswer' ? answerBtn : commentBtn;
 
                 CKEDITOR.on( 'instanceReady', () => {
-                    console.info('CKE?? resp btn: ', responseBtn, ' /list ', usersResponsesList);
-
                     responseBtn.addEventListener( 'click', () => {
                         /**
-                         * MutationObserver will watch for new comment to be added.
-                         * It will update style of author nickname, when he in fact will make a comment.
+                         * MutationObserver will watch for new comments and/or answer to be added.
+                         * It will update style of author nickname, when he in fact will make a comment or answer.
                          * */
-                        var observer = new MutationObserver( ( mutations ) => {
-                            console.info('MUTation');
-
+                        const observer = new MutationObserver( ( mutations ) => {
                             mutations.forEach( () => {
                                 styleTopicAuthor();
 
@@ -827,16 +818,12 @@ function qa_ajax_error() {
                             } );
                         } );
 
-                        var config = { childList: true };
+                        const config = { childList: true };
                         observer.observe( usersResponsesList, config );
-
-                        //// JUST for testing
-                        //alert( 'Adding response' );
-                        ////
                     } );
                 } )
             }
         } );
     }
 
-}( document ) );
+} ( document ) );
