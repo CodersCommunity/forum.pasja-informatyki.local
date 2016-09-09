@@ -780,30 +780,45 @@ function qa_ajax_error() {
             const repondToComment = 'Odpowiedz na ten komentarz';
             const commentToAnswer = 'Skomentuj tę odpowiedź';
             const commentToQuestion = 'Skomentuj to pytanie';
+            const answerToQuestion = 'Odpowiedz na to pytanie';
 
             if ( ev.target.title === repondToComment ||
                 ev.target.title === commentToAnswer ||
-                ev.target.title === commentToQuestion ) {
+                ev.target.title === commentToQuestion ||
+                ev.target.title === answerToQuestion) {
 
-                let commentList;
+                let usersResponsesList;
 
-                if ( ev.target.value === 'skomentuj' ) commentList = ev.target.parentNode.nextElementSibling;
+                if ( ev.target.name === 'q_doanswer' ) {
+                    console.log('clicked answer btn: ', ev.target);
+                    usersResponsesList = topicMainContent.querySelector( '#a_list'/*'.qa-part-a-list'*/ );
+                }
+                else if ( ev.target.value === 'skomentuj' ) usersResponsesList = ev.target.parentNode.nextElementSibling;
                 else if ( ev.target.value === 'odpowiedz' ) {
                     let idNumber = ev.target.name;
                     idNumber = idNumber.slice( 1, idNumber.indexOf( '_' ) );
 
-                    commentList = topicMainContent.querySelector( `[id*="${idNumber}_list"]` );
+                    usersResponsesList = topicMainContent.querySelector( `[id*="${idNumber}_list"]` );
                 }
 
-                const addCommentBtn = commentList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
+                const addCommentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
+                const answerBtn = /*document.getElementById( 'q_doanswer' )*/ topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
+
+                console.log('BTNSSS: ', addCommentBtn, ' / ', answerBtn);
+
+                const responseBtn = ev.target.name === 'q_doanswer' ? answerBtn : addCommentBtn;
 
                 CKEDITOR.on( 'instanceReady', () => {
-                    addCommentBtn.addEventListener( 'click', () => {
+                    console.info('CKE?? resp btn: ', responseBtn, ' /list ', usersResponsesList);
+
+                    responseBtn.addEventListener( 'click', () => {
                         /**
                          * MutationObserver will watch for new comment to be added.
                          * It will update style of author nickname, when he in fact will make a comment.
                          * */
                         var observer = new MutationObserver( ( mutations ) => {
+                            console.info('MUTation');
+
                             mutations.forEach( () => {
                                 styleTopicAuthor();
 
@@ -813,10 +828,10 @@ function qa_ajax_error() {
                         } );
 
                         var config = { childList: true };
-                        observer.observe( commentList, config );
+                        observer.observe( usersResponsesList, config );
 
                         //// JUST for testing
-                        alert( 'Adding comment' );
+                        //alert( 'Adding response' );
                         ////
                     } );
                 } )
