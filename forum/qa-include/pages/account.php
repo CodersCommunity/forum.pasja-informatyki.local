@@ -72,6 +72,7 @@
 			$inemail = qa_post_text('email');
 			$inmessages = qa_post_text('messages');
 			$inmessagesemail = (int)qa_post_text('messages_email');
+			$inactivityemail = (int)qa_post_text('activity_email');
 			$inwallposts = qa_post_text('wall');
 			$inmailings = qa_post_text('mailings');
 			$inavatar = qa_post_text('avatar');
@@ -100,6 +101,10 @@
 
 				if ($inmessagesemail !== $useraccount['pwemail'] && ($inmessagesemail === 0 || $inmessagesemail === 1)) {
 					qa_db_query_sub('UPDATE ^users SET pwemail=# WHERE userid=#', $inmessagesemail, $userid);
+				}
+
+				if ($inactivityemail !== $useraccount['activityemail'] && ($inactivityemail === 0 || $inactivityemail === 1)) {
+					qa_db_query_sub('UPDATE ^users SET activityemail=# WHERE userid=#', $inactivityemail, $userid);
 				}
 
 				if (qa_opt('allow_private_messages'))
@@ -264,6 +269,14 @@
 				'type' => 'checkbox',
 				'value' => $useraccount['pwemail'],
 				'note' => qa_lang_html('users/private_messages_email_explanation'),
+			),
+
+			'activity_email' => array(
+				'label' => qa_lang_html('users/activity_email_notifications'),
+				'tags' => 'name="activity_email"',
+				'type' => 'checkbox',
+				'value' => $useraccount['activityemail'],
+				'note' => qa_lang_html('users/activity_email_notifications_explanation'),
 			),
 
 			'wall' => array(

@@ -102,6 +102,8 @@
 		'private_messages_email_explanation' => 'Powiadamiaj mnie e-mailowo, gdy otrzymam wiadomość prywatną',
 		'private_messages' => 'Wiadomości prywatne:',
 		'private_messages_email' => 'Powiadomienia o wiadomościach prywatnych:',
+		'activity_email_notifications' => 'Powiadomienia e-mail o aktywnościach:',
+		'activity_email_notifications_explanation' => 'Domyślnie zaznaczaj opcję wysyłania powiadomień na e-mail (dostępna w momencie pisania posta) o nowej aktywności do Twoich postów',
 		'profile_saved' => 'Profil zapisany',
 		'wall_posts' => "Ściana Wpisów:",
 		'wall_posts_explanation' => "Zezwalaj użytkownikom na zamieszczanie wiadomości na ścianie (będziesz informowany o wpisie pocztą email)",
