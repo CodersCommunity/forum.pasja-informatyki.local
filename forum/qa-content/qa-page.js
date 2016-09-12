@@ -802,20 +802,22 @@ function qa_ajax_error()
         const topicMainContent = document.querySelector( '.qa-main' );
 
         topicMainContent.addEventListener( 'click', ev => {
-            const repondToComment = 'Odpowiedz na ten komentarz';
-            const commentToAnswer = 'Skomentuj tę odpowiedź';
-            const commentToQuestion = 'Skomentuj to pytanie';
-            const answerToQuestion = 'Odpowiedz na to pytanie';
 
-            if ( ev.target.title === repondToComment ||
-                ev.target.title === commentToAnswer ||
-                ev.target.title === commentToQuestion ||
-                ev.target.title === answerToQuestion) {
+	        const activity = [
+                'Odpowiedz na ten komentarz',
+                'Skomentuj tę odpowiedź',
+                'Skomentuj to pytanie',
+                'Odpowiedz na to pytanie'
+            ];
+
+            if ( activity.includes( ev.target.title ) ) {
 
                 let usersResponsesList;
 
-                if ( ev.target.name === 'q_doanswer' ) usersResponsesList = topicMainContent.querySelector( '#a_list' );
-                else if ( ev.target.value === 'skomentuj' ) usersResponsesList = ev.target.parentNode.nextElementSibling;
+                if ( ev.target.name === 'q_doanswer' )
+                    usersResponsesList = topicMainContent.querySelector( '#a_list' );
+                else if ( ev.target.value === 'skomentuj' )
+                    usersResponsesList = ev.target.parentNode.nextElementSibling;
                 else if ( ev.target.value === 'odpowiedz' ) {
                     let idNumber = ev.target.name;
                     idNumber = idNumber.slice( 1, idNumber.indexOf( '_' ) );
