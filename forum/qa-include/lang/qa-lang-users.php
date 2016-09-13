@@ -102,6 +102,8 @@
 		'private_messages_email' => 'Private message notifications:',
 		'private_messages_explanation' => 'Allow users to email you (without seeing your address)',
 		'private_messages_email_explanation' => 'Notify me by e-mail when we receive a private message',
+		'activity_email_notifications' => 'E-mail notifications about activity:',
+		'activity_email_notifications_explanation' => 'Default select the option to send notifications by e-mail (available while writing post) about new activity to your posts',
 		'profile_saved' => 'Profile saved',
 		'register_button' => 'Register',
 		'register_limit' => 'Too many registrations - please try again in an hour',

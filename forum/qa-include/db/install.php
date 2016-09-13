@@ -117,7 +117,8 @@
 				'sessioncode' => 'CHAR(8) CHARACTER SET ascii NOT NULL DEFAULT \'\'', // for comparing against session cookie in browser
 				'sessionsource' => 'VARCHAR (16) CHARACTER SET ascii DEFAULT \'\'', // e.g. facebook, openid, etc...
 				'flags' => 'SMALLINT UNSIGNED NOT NULL DEFAULT 0', // see constants at top of qa-app-users.php
-				'pwemail' => 'SMALLINT UNSIGNED NOT NULL DEFAULT 1',
+				'pwemail' => 'TINYINT UNSIGNED NOT NULL DEFAULT 1',
+				'activityemail' => 'TINYINT UNSIGNED NOT NULL DEFAULT 0',
 				'wallposts' => 'MEDIUMINT NOT NULL DEFAULT 0', // cached count of wall posts
 				'PRIMARY KEY (userid)',
 				'KEY email (email)',

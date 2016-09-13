@@ -1720,8 +1720,9 @@
 	Pass $fieldprefix to add a prefix to the form field names and IDs used.
 */
 	{
+		$send = qa_get_logged_in_user_field('activityemail');
 		$fields['notify']=array(
-			'tags' => 'name="'.$fieldprefix.'notify"',
+			'tags' => 'name="'.$fieldprefix.'notify"'.($send ? ' checked="checked"' : ''),
 			'type' => 'checkbox',
 			'value' => qa_html($innotify),
 		);
