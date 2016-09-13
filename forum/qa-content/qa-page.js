@@ -760,3 +760,97 @@ function qa_ajax_error()
 		}
 	});	
 }(document));
+
+/**
+ * Feature: Make the topic's author nick style different from other users
+ */
+( function ( document ) {
+
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+
+        styleTopicAuthor();
+        lookForUpdates();
+
+    } );
+
+    function styleTopicAuthor() {
+
+        const author = document.querySelector( '.qa-q-view-who-data .nickname' );
+        const authorNick = author.textContent;
+        author.classList.add( 'topic-author' );
+
+        const repliesData = {
+            answerQuery: '.qa-a-item-who-data',
+            commentQuery: '.qa-c-item-who-data',
+            answersAndComments: function ( query, replyType ) {
+                Array.from( document.querySelectorAll( query ) ).forEach( replyType => {
+                    const nick = replyType.querySelector( '.nickname' );
+
+                    if ( nick.textContent === authorNick ) nick.classList.add( 'topic-author' );
+                } )
+            }
+        };
+        repliesData.answersAndComments( repliesData.answerQuery, 'answer' );
+        repliesData.answersAndComments( repliesData.commentQuery, 'comment' );
+    }
+
+    /** When anybody add a comment, then styleTopicAuthor() will run again */
+    function lookForUpdates() {
+
+        const topicMainContent = document.querySelector( '.qa-main' );
+
+        topicMainContent.addEventListener( 'click', ev => {
+
+	        const activity = [
+                'Odpowiedz na ten komentarz',
+                'Skomentuj tę odpowiedź',
+                'Skomentuj to pytanie',
+                'Odpowiedz na to pytanie'
+            ];
+
+            if ( activity.includes( ev.target.title ) ) {
+
+                let usersResponsesList;
+
+                if ( ev.target.name === 'q_doanswer' )
+                    usersResponsesList = topicMainContent.querySelector( '#a_list' );
+                else if ( ev.target.value === 'skomentuj' )
+                    usersResponsesList = ev.target.parentNode.nextElementSibling;
+                else if ( ev.target.value === 'odpowiedz' ) {
+                    let idNumber = ev.target.name;
+                    idNumber = idNumber.slice( 1, idNumber.indexOf( '_' ) );
+
+                    usersResponsesList = topicMainContent.querySelector( `[id*="${idNumber}_list"]` );
+                }
+
+                const commentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
+                const answerBtn = topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
+
+                const responseBtn = ev.target.name === 'q_doanswer' ? answerBtn : commentBtn;
+
+                CKEDITOR.on( 'instanceReady', () => {
+                    responseBtn.addEventListener( 'click', () => {
+                        /**
+                         * MutationObserver will watch for new comments and/or answer to be added.
+                         * It will update style of author nickname, when he in fact will make a comment or answer.
+                         * */
+                        const observer = new MutationObserver( ( mutations ) => {
+                            mutations.forEach( () => {
+                                styleTopicAuthor();
+
+                                /** stop observing */
+                                observer.disconnect();
+                            } );
+                        } );
+
+                        const config = { childList: true };
+                        observer.observe( usersResponsesList, config );
+                    } );
+                } )
+            }
+        } );
+    }
+
+} ( document ) );
