@@ -168,36 +168,36 @@
 		function c_item_main($c_item)
 		{
 			global $topage;
-			if(qa_opt('voting_on_cs') && is_array($this->comment_votes) && isset($c_item['content']) && !isset($c_item['url']) && !strpos($c_item['content'],'question-closed-message')) {
+			if(qa_opt('voting_on_cs') && isset($c_item['content']) && !isset($c_item['url']) && !strpos($c_item['content'],'question-closed-message')) {
 				$vote=0;
 				$flag=0;
-				foreach($this->comment_votes as $vote) {
-					if($vote['postid'] == $c_item['raw']['postid']) {
-						$vote = (int)$vote['vote'];
-						break;
+				if(is_array($this->comment_votes)) {
+					foreach($this->comment_votes as $vote) {
+						if($vote['postid'] == $c_item['raw']['postid']) {
+							$vote = (int)$vote['vote'];
+							break;
+						}
 					}
 				}
 				$netvotes = ($c_item['raw']['netvotes']!=0?$c_item['raw']['netvotes']:'');
 				
 				if(qa_permit_check('permit_vote_c')) {
 					$this->output('<table class="comment-votable-container"><tr><td class="comment-vote-container">');
-					switch($vote) {
-						case 1:
-							$up = 0;
-							$up_type = '-selected';
-							$down_type = false;
-							break;
-						case -1:
-							$down = 0;
-							$down_type = '-selected';
-							$up_type = false;
-							break;
-						default:
-							$up = 1;
-							$down = -1;
-							$up_type = '';
-							$down_type = '';
-							break;
+					if($netvotes > 0) {
+						$up = 0;
+						$up_type = '-selected';
+						$down_type = false;
+					}
+					if($netvotes == 0) {
+						$up = 1;
+						$down = -1;
+						$up_type = '';
+						$down_type = '';
+					}
+					if($netvotes < 0) {
+						$down = 0;
+						$down_type = '-selected';
+						$up_type = false;
 					}
 					
 					if(!qa_opt('voting_down_cs') && $vote != -1) $down_type = false;
@@ -214,12 +214,11 @@
 					qa_html_theme_base::c_item_main($c_item);
 					$this->output('</td></tr></table>');
 				}
-				else if ($netvotes){
+				else {
 					$this->output('<table class="comment-votable-container"><tr><td class="comment-vote-container"><div id="voting_'.$c_item['raw']['postid'].'">'.$netvotes.'</div></td><td>');
 					qa_html_theme_base::c_item_main($c_item);
 					$this->output('</td></tr></table>');
 				}
-				else qa_html_theme_base::c_item_main($c_item);
 			}
 			else qa_html_theme_base::c_item_main($c_item);
 		}
