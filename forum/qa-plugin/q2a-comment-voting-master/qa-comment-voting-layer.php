@@ -183,21 +183,23 @@
 				
 				if(qa_permit_check('permit_vote_c')) {
 					$this->output('<table class="comment-votable-container"><tr><td class="comment-vote-container">');
-					if($netvotes > 0) {
-						$up = 0;
-						$up_type = '-selected';
-						$down_type = false;
-					}
-					if($netvotes == 0) {
-						$up = 1;
-						$down = -1;
-						$up_type = '';
-						$down_type = '';
-					}
-					if($netvotes < 0) {
-						$down = 0;
-						$down_type = '-selected';
-						$up_type = false;
+					switch($vote) {
+						case 1:
+							$up = 0;
+							$up_type = '-selected';
+							$down_type = false;
+							break;
+						case -1:
+							$down = 0;
+							$down_type = '-selected';
+							$up_type = false;
+							break;
+						default:
+							$up = 1;
+							$down = -1;
+							$up_type = '';
+							$down_type = '';
+							break;
 					}
 					
 					if(!qa_opt('voting_down_cs') && $vote != -1) $down_type = false;

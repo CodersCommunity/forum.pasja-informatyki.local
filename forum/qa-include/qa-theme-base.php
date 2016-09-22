@@ -692,6 +692,51 @@ class qa_html_theme_base
 
 		$this->widgets('main', 'bottom');
 
+		/* Script for hide comments under question */
+		echo "<script type='text/javascript'>
+	$(document).ready(function() {
+		var list = document.getElementsByName('question-comments-list');
+		var shown = ".qa_opt('show_fewer_cs_count').";
+		//for (i = 0; i < list.length; i++) { // Loop doesn't work
+			if (list[0] != undefined)
+				if (list[0].children.length > shown) {
+					var show_more_button = '<div class=\"qa-c-list-button\">Pokaż ' + (list[0].children.length - shown) + ' poprzednich komentarzy</div>';
+					for (j = 0; j < list[0].children.length - shown; j++)
+						list[0].children[j].style.display = 'none';
+					$(list[0]).prepend(show_more_button);
+				}
+			if (list[1] != undefined)
+				if (list[1].children.length > shown) {
+					var show_more_button = '<div class=\"qa-c-list-button\">Pokaż ' + (list[1].children.length - shown) + ' poprzednich komentarzy</div>';
+					for (j = 0; j < list[1].children.length - shown; j++)
+						list[1].children[j].style.display = 'none';
+					$(list[1]).prepend(show_more_button);
+				}
+		//}
+	});
+</script>";
+		/* Script for show comments under question */
+		echo "<script type='text/javascript'>
+	$(document).ready(function() {
+		var list = document.getElementsByName('question-comments-list');
+		//for (i = 0; i < list.length; i++) { // Loop doesn't work
+			var shown = ".qa_opt('show_fewer_cs_count').";
+			if (list[0] != undefined)
+				list[0].firstChild.onclick = function() {
+					for (j = 0; j < list[0].children.length - shown; j++)
+						list[0].children[j].style.display = 'block';
+					list[0].firstChild.style.display = 'none';
+				}
+			if (list[1] != undefined)
+				list[1].firstChild.onclick = function() {
+					for (j = 0; j < list[1].children.length - shown; j++)
+						list[1].children[j].style.display = 'block';
+					list[1].firstChild.style.display = 'none';
+				}
+		//}
+	});
+</script>";
+		/* --------------------------------------- */
 		$this->output('</div> <!-- END qa-main -->', '');
 	}
 
@@ -2281,7 +2326,7 @@ class qa_html_theme_base
 	public function c_list($c_list, $class)
 	{
 		if (!empty($c_list)) {
-			$this->output('', '<div class="'.$class.'-c-list"'.(@$c_list['hidden'] ? ' style="display:none;"' : '').' '.@$c_list['tags'].'>');
+			$this->output('', '<div class="'.$class.'-c-list"'.(@$c_list['hidden'] ? ' style="display:none;"' : '').' '.@$c_list['tags'].' name="question-comments-list">');
 			$this->c_list_items($c_list['cs']);
 			$this->output('</div> <!-- END qa-c-list -->', '');
 		}
