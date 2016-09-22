@@ -156,12 +156,16 @@
 		}
 
 	// theme replacement functions
-
-		function q_view($q_view)
+		function q_view_votes()
 		{
 			if(qa_opt('voting_on_cs')) {
 				$this->comment_votes = $this->logged_in_userid?qa_db_read_all_assoc(qa_db_query_sub('SELECT ^uservotes.vote AS vote, ^uservotes.postid AS postid  FROM ^posts,^uservotes WHERE ^uservotes.vote<>0 AND ^uservotes.userid=# AND ^uservotes.postid=^posts.postid AND ^posts.type=$',$this->logged_in_userid, 'C')):null;
 			}
+		}
+
+		function q_view($q_view)
+		{
+			$this->q_view_votes();
 			qa_html_theme_base::q_view($q_view);
 		}
 
@@ -171,6 +175,10 @@
 			if(qa_opt('voting_on_cs') && isset($c_item['content']) && !isset($c_item['url']) && !strpos($c_item['content'],'question-closed-message')) {
 				$vote=0;
 				$flag=0;
+
+				$this->logged_in_userid = qa_get_logged_in_userid();
+				$this->q_view_votes();
+
 				if(is_array($this->comment_votes)) {
 					foreach($this->comment_votes as $vote) {
 						if($vote['postid'] == $c_item['raw']['postid']) {
@@ -179,6 +187,7 @@
 						}
 					}
 				}
+
 				$netvotes = ($c_item['raw']['netvotes']!=0?$c_item['raw']['netvotes']:'');
 				
 				if(qa_permit_check('permit_vote_c')) {

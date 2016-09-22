@@ -697,13 +697,8 @@
 				$showcomments[$commentfollowid]=$commentfollow;
 
 		$countshowcomments=count($showcomments);
-		/* Show all comments */
-		$skipfirst = 0;
-		/* ----------------- */
-		/*if ( (!$alwaysfull) && ($countshowcomments > qa_opt('show_fewer_cs_from')) )
-			$skipfirst=$countshowcomments-qa_opt('show_fewer_cs_count');
-		else
-			$skipfirst=0;*/
+
+		$skipfirst = 0; // Show all comments
 
 		if ($skipfirst==$countshowcomments) { // showing none
 			if ($skipfirst==1)
