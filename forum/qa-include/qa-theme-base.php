@@ -2281,7 +2281,7 @@ class qa_html_theme_base
 	public function c_list($c_list, $class)
 	{
 		if (!empty($c_list)) {
-			$this->output('', '<div class="'.$class.'-c-list"'.(@$c_list['hidden'] ? ' style="display:none;"' : '').' '.@$c_list['tags'].'>');
+			$this->output('', '<div class="'.$class.'-c-list"'.(@$c_list['hidden'] ? ' style="display:none;"' : '').' '.@$c_list['tags'].' name="question-comments-list">');
 			$this->c_list_items($c_list['cs']);
 			$this->output('</div> <!-- END qa-c-list -->', '');
 		}
