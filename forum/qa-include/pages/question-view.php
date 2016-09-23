@@ -698,7 +698,10 @@
 
 		$countshowcomments=count($showcomments);
 
-		$skipfirst = 0; // Show all comments
+		if ( (!$alwaysfull) && ($countshowcomments > qa_opt('show_fewer_cs_from')) )
+			$skipfirst=$countshowcomments-qa_opt('show_fewer_cs_count');
+		else
+			$skipfirst=0;
 
 		if ($skipfirst==$countshowcomments) { // showing none
 			if ($skipfirst==1)
