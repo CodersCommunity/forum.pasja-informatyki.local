@@ -37,8 +37,7 @@
 						;
 
 		this.regexList = [
-			{ regex: SyntaxHighlighter.regexLib.singleLineCComments,	css: 'comments' },
-			{ regex: SyntaxHighlighter.regexLib.multiLineCComments,		css: 'comments' },
+			{ regex: /(\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/)|(\/\/.*)/gm,								css: 'comments' },	// multi line
 			{ regex: SyntaxHighlighter.regexLib.singleQuotedString,		css: 'string' },
 			{ regex: SyntaxHighlighter.regexLib.doubleQuotedString,		css: 'string' },
 			{ regex: /(-?\.?)(\b(\d*\.?\d+|\d+\.?\d*)(e[+-]?\d+)?|0x[a-f\d]+)\b\.?/gi, css: 'color2' },	// numbers
