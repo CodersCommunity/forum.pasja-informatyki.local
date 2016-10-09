@@ -3,9 +3,9 @@
 	Plugin Name: CKEditor4
 	Plugin URI: 
 	Plugin Description: Wrapper for CKEditor4 WYSIWYG rich text editor
-	Plugin Version: 1.4 (RC)
+	Plugin Version: 1.6
 	Plugin Date: 2015-02-13
-	Plugin Author: sama55@CMSBOX
+	Plugin Author: sama55@CMSBOX mod efik <pazdurk@gmail.com>
 	Plugin Author URI: http://www.cmsbox.jp/
 	Plugin License: GPLv2
 	Plugin Minimum Question2Answer Version: 1.5.1
