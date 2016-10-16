@@ -354,12 +354,6 @@ h1 {
 		float: right;
 		margin: 0 20px 0 0;
 	}
-
-	.qa-q-view:after {
-		content: "";
-		clear: both;
-		display: block;
-	}
 }
 
 .qa-q-view-closed {
