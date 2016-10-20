@@ -2461,7 +2461,6 @@ input[type="submit"], button {
 
 @media (max-width: 1179px) {
 	.qa-q-view-main {
-		padding: 20px;
 		background-color: white;
 		width: 100%;
 	}
@@ -2472,11 +2471,11 @@ input[type="submit"], button {
 		display: block;
 	}
 }
+
 @media (min-width: 1180px) {
 	.qa-q-view-main {
 		float: left;
 		background-color: white;
-		padding: 20px;
 		margin: 0 0 0 20px;
 		width: 81%;
 	}
@@ -2716,7 +2715,7 @@ input[type="submit"], button {
 
 /*------[ c-list ]------*/
 .qa-q-view-c-list, .qa-a-item-c-list {
-	margin-top: 20px;
+	margin: 20px 0;
 	font-size: 14px;
 }
 
