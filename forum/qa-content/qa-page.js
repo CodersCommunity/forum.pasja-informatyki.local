@@ -876,7 +876,7 @@ function qa_ajax_error()
                 var commentNumber = ev.target.name.split( '_' )[ 0 ].slice( 1 );
                 console.info( 'commentNumber: ', commentNumber );
 
-                CKEDITOR.on( 'instanceReady', function () {
+                CKEDITOR.on( 'instanceReady', function ( evt ) {
 
                     var chosenCommentAuthor = eTarget.parentNode.parentNode.parentNode.querySelector( '.qa-c-item-who .vcard.author' ).textContent;
                     var chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( function ( instance ) {
@@ -885,8 +885,39 @@ function qa_ajax_error()
                     var ckeCurrentInstance = CKEDITOR.instances[ chosenCommentCKEInstance ];
 
                     /** Automatic add adnotation to comment author that user clicked on */
-                    ckeCurrentInstance.document.$.querySelector( 'p' ).textContent = '@' + chosenCommentAuthor;
-                    console.log( 'parent: ', chosenCommentAuthor, ' /cke: ', ckeCurrentInstance.document.$.querySelector( 'p' ) );
+                    var ckeTxt = ckeCurrentInstance.document.$.querySelector( 'p' );
+                    //ckeTxt.focus();
+                    //var end = ckeTxt.selectionEnd;
+                    var ckeTxtContent = ckeTxt.textContent = '@' + chosenCommentAuthor + ' ';
+
+
+                    evt.editor.focus();
+                    var r = evt.editor.getSelection().getRanges()[0];
+                    var node = new CKEDITOR.dom.node(ckeTxt);
+                    var newRange = new CKEDITOR.dom.range(r.document);
+                    newRange.moveToPosition(node, CKEDITOR.POSITION_AFTER_END);
+                    newRange.select();
+                    ////r.moveToPosition(node, 1);//CKEDITOR.POSITION_AFTER_END);
+
+                    //var sel = evt.editor.getSelection();
+                    //var element = ckeTxt;
+                    //sel.selectElement(element);
+                    //
+                    //var ranges = editor.getSelection().getRanges();
+                    //ranges[0].setStart(element.getFirst(), 0);
+                    //ranges[0].setEnd(element.getFirst(), 0); //cursor
+
+                    //evt.editor.focus();
+                    //var selection = evt.editor.getSelection();
+                    //var range = selection.getRanges()[0];
+                    ////var pCon = range.startContainer.getAscendant({p:2},true); //getAscendant('p',true);
+                    //var newRange = new CKEDITOR.dom.range(range.document);
+                    //newRange.setEndAt( ckeTxt, CKEDITOR.POSITION_AFTER_END );
+                    //newRange.select();
+
+                    console.log( 'editor: ', evt.editor.getSelection(),'/cke: ', ckeCurrentInstance.document.$.querySelector( 'p' ), '/ranges: ', r.endContainer.$, ' ?: ', node.$);
+
+
 
                 } );
 
