@@ -385,3 +385,40 @@ function set_category_description(idprefix)
 		});
 	});
 }(document));
+
+/**
+ * Feature - Remove unnecessary # from tags, when creating new post (question)
+ */
+;( function(document) {
+
+    'use strict';
+
+    // wait for DOM to load
+    window.addEventListener('DOMContentLoaded', function()
+    {
+        // get DOM elements: "tags" input and button "Zadaj pytanie"
+        var tags = document.getElementById( 'tags' );
+        var askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
+
+        // when user clicks "Zadaj pytanie"
+        askQuestionBtn.addEventListener( 'click', function() {
+
+            var allTags = tags.value.split( ' ' );
+
+            /*
+             * Filter tags: when a single tag has # character on 0 position, remove it
+             * For example: "#problem" will be filtered to "problem"
+             */
+            for ( var i = 0, len = allTags.length; i < len; i++ ) {
+
+                if ( allTags[ i ].indexOf( '#' ) === 0 ) {
+                    allTags[ i ] = allTags[ i ].slice( 1 );
+                }
+
+            }
+
+        } );
+
+    } );
+
+} ( document ) );
