@@ -304,9 +304,9 @@ function set_category_description(idprefix)
 	
 	'use strict';
 	 
-	// wait for DOM to load
-	window.addEventListener( 'DOMContentLoaded', function() {
-	
+	 // wait for DOM to load
+	 window.addEventListener('DOMContentLoaded', function()
+	 {
 		// get DOM elements: "tags" input and button "Zadaj pytanie"
 		var tags = document.getElementById( 'tags' );
 		var askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
