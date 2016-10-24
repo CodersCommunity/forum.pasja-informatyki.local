@@ -184,20 +184,21 @@ function qa_ajax_error()
  {
 	 'use strict';
 
-	window.addEventListener('DOMContentLoaded', function()
-	{
-		var parent = document.querySelector('.qa-c-form .qa-form-tall-table tbody');
-		var last = document.querySelector('.qa-c-form .qa-form-tall-table tbody tr:last-child');
-		var informParent = document.createElement('tr');
-		var inform  = document.createElement('td');
+     if (location.href.indexOf('state=close') > 0) {
+         window.addEventListener( 'DOMContentLoaded', function () {
+             var parent = document.querySelector( '.qa-c-form .qa-form-tall-table tbody' );
+             var last = document.querySelector( '.qa-c-form .qa-form-tall-table tbody tr:last-child' );
+             var informParent = document.createElement( 'tr' );
+             var inform = document.createElement( 'td' );
 
-		inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
+             inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
 
-		inform.classList.add('closing-topic-info');
-		informParent.appendChild(inform);
+             inform.classList.add( 'closing-topic-info' );
+             informParent.appendChild( inform );
 
-		parent.insertBefore(informParent, last);
-	});
+             parent.insertBefore( informParent, last );
+         } );
+     }
  }(document));
 
  /* ////////////////////
@@ -768,12 +769,16 @@ function qa_ajax_error()
 
     'use strict';
 
-    window.addEventListener( 'DOMContentLoaded', () => {
+    const isTopicPage = !!Number( location.pathname.split( '/' )[ 1 ] );
 
-        styleTopicAuthor();
-        lookForUpdates();
+    if ( isTopicPage ) {
+        window.addEventListener( 'DOMContentLoaded', function() {
 
-    } );
+            styleTopicAuthor();
+            lookForUpdates();
+
+        } );
+    }
 
     function styleTopicAuthor() {
 
@@ -852,5 +857,55 @@ function qa_ajax_error()
             }
         } );
     }
+
+} ( document ) );
+
+/*
+ * Feature: add @adnotation with nick of user, to whom current comment is added to
+ */
+;( function( document ) {
+
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', function() {
+        document.querySelector('.qa-main' ).addEventListener( 'click' , function( ev ) {
+            var eTarget = ev.target;
+
+            if ( eTarget.title === 'Odpowiedz na ten komentarz' ) {
+
+                var commentNumber = ev.target.name.split( '_' )[ 0 ].slice( 1 );
+                //console.info( 'commentNumber: ', commentNumber );
+
+                CKEDITOR.on( 'instanceReady', function ( evt ) {
+
+                    var chosenCommentAuthor = eTarget.parentNode.parentNode.parentNode.querySelector( '.qa-c-item-who .vcard.author' ).textContent;
+                    var chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( function ( instance ) {
+                        return instance.indexOf( commentNumber ) > -1;
+                    } );
+                    var ckeCurrentInstance = CKEDITOR.instances[ chosenCommentCKEInstance ];
+
+                    /**
+                     * Automatically add adnotation to comment author that user clicked on
+                     **/
+                    var ckeTxt = ckeCurrentInstance.document.$.querySelector( 'p' );
+                    ckeTxt.innerHTML = '@' + chosenCommentAuthor + ',&nbsp';
+
+                    /**
+                     * Set cursor to end of adnotation
+                     */
+                    evt.editor.focus();
+                    var currentRange = evt.editor.getSelection().getRanges()[ 0 ];
+                    var ckeNode = new CKEDITOR.dom.node( ckeTxt );
+                    var newRange = new CKEDITOR.dom.range( currentRange.document );
+                    newRange.moveToPosition( ckeNode, CKEDITOR.POSITION_BEFORE_END );
+                    newRange.select();
+
+                    //console.log( 'editor: ', evt.editor.getSelection(),'/cke: ', ckeCurrentInstance.document.$.querySelector( 'p' ), '/ranges: ', ckeNode.getParent());
+
+                } );
+
+            }
+        } );
+    } );
 
 } ( document ) );
