@@ -345,14 +345,14 @@ function set_category_description(idprefix)
 
 		CKEDITOR.on('instanceReady', function(ev)
 		{
-			var iframe = document.querySelector('iframe[title="Edytor tekstu sformatowanego, content"]');
+			 var iframe = document.querySelector('iframe[title^="Edytor tekstu sformatowanego"]');
 
 			// get CKEditor DOM from <iframe>
 			var ckeditor = iframe.contentWindow.document.body;
-			var editorFrame = document.getElementById('cke_content').parentNode;
+			var editorFrame = ( document.getElementById( 'cke_content' ) || document.getElementById( 'cke_q_content' ) ).parentNode;
 
 			// when user writes topic title
-			document.getElementById('title').addEventListener('input', function(ev)
+			( document.querySelector( 'input[name="q_title"]' ) || document.getElementById('title') ).addEventListener('input', function(ev)
 			{
 				detectSpoj(editorFrame, ev);
 			});
@@ -379,7 +379,7 @@ function set_category_description(idprefix)
 						editorFrame.removeChild(alertDiv);
 					}
 				}
-				
+
 				////console.log('E [title / /editor] detected: ', titleDetected, '/', editorDetected);
 			});
 		});
