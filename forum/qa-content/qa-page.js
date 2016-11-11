@@ -184,26 +184,29 @@ function qa_ajax_error()
  {
 	 'use strict';
 
-	window.addEventListener('DOMContentLoaded', function()
-	{
-		var parent = document.querySelector('.qa-c-form .qa-form-tall-table tbody');
-		var last = document.querySelector('.qa-c-form .qa-form-tall-table tbody tr:last-child');
-		var informParent = document.createElement('tr');
-		var inform  = document.createElement('td');
+	 if (location.href.indexOf('state=close') > 0)
+ 	{
+		window.addEventListener('DOMContentLoaded', function()
+		{
+			var parent = document.querySelector('.qa-c-form .qa-form-tall-table tbody');
+			var last = document.querySelector('.qa-c-form .qa-form-tall-table tbody tr:last-child');
+			var informParent = document.createElement('tr');
+			var inform  = document.createElement('td');
 
-		inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
+			inform.innerHTML = 'Jeśli otrzymałeś odpowiedź, która rozwiązała Twój problem - oznacz ją jako <span class="closing-topic-info-bold">"najlepsza"</span>. Pomoże to odwiedzającym ten temat znaleźć rozwiązanie opisanego problemu.';
 
-		inform.classList.add('closing-topic-info');
-		informParent.appendChild(inform);
+			inform.classList.add('closing-topic-info');
+			informParent.appendChild(inform);
 
-		parent.insertBefore(informParent, last);
-	});
+			parent.insertBefore(informParent, last);
+		});
+	}
  }(document));
 
  /* ////////////////////
  *
  * NEW FEATURES
- * 
+ *
  * ////////////////////
  */
 ;(function(document)
@@ -211,7 +214,7 @@ function qa_ajax_error()
 	'use strict';
 
 	// check if browser supports 'select()' and 'copy' commands
-	var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy'));
+	var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
 
 	/*
 	 * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
@@ -339,6 +342,11 @@ function qa_ajax_error()
 			snippetsParent.appendChild(jsfiddleSnippet);
 
 			parent.appendChild(snippetsParent);
+			if ( parent.classList.contains( 'qa-c-item-content' ) )
+			{
+				snippetsParent.classList.add( 'inside-comment' );
+				snippetsParent.parentNode.querySelector('.entry-content').classList.add('below-snippets');
+			}
 		}
 
 		var posts = Array.from(document.querySelectorAll('.entry-content'));
@@ -400,6 +408,7 @@ function qa_ajax_error()
 	{
 		// prevent page refresh (or something weird) as default button action
 		ev.preventDefault();
+		if ( !ev.defaultPrevented ) { return false; }
 
 		var code = [];
 		var t = ev.target;
@@ -452,12 +461,12 @@ function qa_ajax_error()
 	/*
 	 * Feature: Collapsable blocks of code
 	 * Date: 05.07.2016r.
-	 */	
+	 */
 	function handleCodeCollapsing(insidePreview, addCopyBtn)
-	{		
+	{
 		/*
 		 * !!!! IMPORTANT VARIABLE !!!!
-		 * 
+		 *
 		 * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
 		 *
 		 * !!!! IMPORTANT VARIABLE !!!!
@@ -555,6 +564,7 @@ function qa_ajax_error()
 
 			blockBar.appendChild(languageName);
 
+			copyCodeBtn.setAttribute('type', 'button');
 			copyCodeBtn.textContent = 'Kopiuj';
 			copyCodeBtn.classList.add('content-copy-btn');
 
@@ -587,24 +597,24 @@ function qa_ajax_error()
 		showModalBtn.id = 'get-content-preview';
 		showModalBtn.innerHTML = 'Podgląd posta';
 		showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-		
-		if (placeForBtn)
-			placeForBtn.appendChild(showModalBtn);
-		else
+
+		if (!placeForBtn)
 		{
 			var alternativePlaceForBtn = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]')
                                         || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]')
                                         || document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"]');
+			alternativePlaceForBtn.parentNode.appendChild(showModalBtn);
+		} else if ( placeForBtn.querySelector( '#' + showModalBtn.id ) )
+			return;
+		else if (placeForBtn)
+			placeForBtn.appendChild(showModalBtn);
 
-            alternativePlaceForBtn.parentNode.appendChild(showModalBtn);
-		}
-		
 		function modalEventHandler(modalWrapper, closeBtn)
 		{
 			function hideModal()
 			{
 				var modalWrapperParent = modalWrapper.parentNode;
-				
+
 				closeBtn.removeEventListener('click', hideModal);
 				modalBackground.removeEventListener('click', hideModal);
 
@@ -631,7 +641,7 @@ function qa_ajax_error()
 				var ckeFullInstanceName = ckeCurrentInstance ? ckeCurrentInstance + '_content' : Object.keys(CKEDITOR.instances)[0];
 
                 modal = document.createElement('div');
-				
+
 				modal.classList.add('post-preview-parent');
 
 				// get current CKEditor content (provided by it's API) and insert it to <div>
@@ -661,7 +671,7 @@ function qa_ajax_error()
 			}
 		});
 	}
-	
+
 	// when Forum (sub)page DOM with it's CSSes and synchronously loaded scripts (excluding CKEDITOR, which needs separate Event Handling) are ready
 	window.addEventListener('load', function()
 	{
@@ -669,7 +679,7 @@ function qa_ajax_error()
 		{
 			checkCkeditor(ev.target);
 		}
-		
+
 		function checkCkeditor(btnLocation)
 		{
 			/*
@@ -690,9 +700,9 @@ function qa_ajax_error()
 					{
 						return elem.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
 					});
-					
+
 					var previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
-					 
+
 					postPreview(ckeInstanceName, previewBtnLocation);
 				}
 				else
@@ -719,7 +729,10 @@ function qa_ajax_error()
 			// prepare Array for actions like: Answer, Comment, Edit
 			var actionBtns = [];
 
-			actionBtns.push( document.getElementById('q_doanswer') );
+			var mainAnswerBtn = document.getElementById('q_doanswer');
+			/** Be sure there is answer button. It's not available when topic is closed */
+			if ( mainAnswerBtn )
+				actionBtns.push( mainAnswerBtn );
 
 			Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
 			{
@@ -758,7 +771,7 @@ function qa_ajax_error()
 		{
 			checkCkeditor(false);
 		}
-	});	
+	});
 }(document));
 
 /**
@@ -768,28 +781,31 @@ function qa_ajax_error()
 
     'use strict';
 
-    window.addEventListener( 'DOMContentLoaded', () => {
-
-        styleTopicAuthor();
-        lookForUpdates();
-
+    window.addEventListener( 'DOMContentLoaded', function() {
+        var isTopicPage = !!Number( location.pathname.split( '/' )[ 1 ] );
+        if ( isTopicPage ) {
+            styleTopicAuthor();
+            lookForUpdates();
+        }
     } );
 
     function styleTopicAuthor() {
 
-        const author = document.querySelector( '.qa-q-view-who-data .nickname' );
-        const authorNick = author.textContent;
+        var author = document.querySelector( '.qa-q-view-who-data .nickname' );
+        var authorNick = author.textContent;
         author.classList.add( 'topic-author' );
 
-        const repliesData = {
+        var repliesData = {
             answerQuery: '.qa-a-item-who-data',
             commentQuery: '.qa-c-item-who-data',
             answersAndComments: function ( query, replyType ) {
-                Array.from( document.querySelectorAll( query ) ).forEach( replyType => {
-                    const nick = replyType.querySelector( '.nickname' );
+                [].slice.call( document.querySelectorAll( query ) ).forEach( function( replyType ) {
+                    var nick = replyType.querySelector( '.nickname' );
 
-                    if ( nick.textContent === authorNick ) nick.classList.add( 'topic-author' );
-                } )
+                    if ( nick.textContent === authorNick ) {
+                        nick.classList.add( 'topic-author' );
+                    }
+                } );
             }
         };
         repliesData.answersAndComments( repliesData.answerQuery, 'answer' );
@@ -799,45 +815,45 @@ function qa_ajax_error()
     /** When anybody add a comment, then styleTopicAuthor() will run again */
     function lookForUpdates() {
 
-        const topicMainContent = document.querySelector( '.qa-main' );
+        var topicMainContent = document.querySelector( '.qa-main' );
 
-        topicMainContent.addEventListener( 'click', ev => {
+        topicMainContent.addEventListener( 'click', function( ev ) {
 
-	        const activity = [
+            var activity = [
                 'Odpowiedz na ten komentarz',
                 'Skomentuj tę odpowiedź',
                 'Skomentuj to pytanie',
                 'Odpowiedz na to pytanie'
             ];
 
-            if ( activity.includes( ev.target.title ) ) {
+            if ( activity.indexOf( ev.target.title ) > -1 ) {
 
-                let usersResponsesList;
+                var usersResponsesList;
 
-                if ( ev.target.name === 'q_doanswer' )
+                if ( ev.target.name === 'q_doanswer' ) {
                     usersResponsesList = topicMainContent.querySelector( '#a_list' );
-                else if ( ev.target.value === 'skomentuj' )
+                } else if ( ev.target.value === 'skomentuj' ) {
                     usersResponsesList = ev.target.parentNode.nextElementSibling;
-                else if ( ev.target.value === 'odpowiedz' ) {
-                    let idNumber = ev.target.name;
+                } else if ( ev.target.value === 'odpowiedz' ) {
+                    var idNumber = ev.target.name;
                     idNumber = idNumber.slice( 1, idNumber.indexOf( '_' ) );
 
-                    usersResponsesList = topicMainContent.querySelector( `[id*="${idNumber}_list"]` );
+                    usersResponsesList = topicMainContent.querySelector( '[id*="' + idNumber + '_list"]' );
                 }
 
-                const commentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
-                const answerBtn = topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
+                var commentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
+                var answerBtn = topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
 
-                const responseBtn = ev.target.name === 'q_doanswer' ? answerBtn : commentBtn;
+                var responseBtn = ev.target.name === 'q_doanswer' ? answerBtn : commentBtn;
 
-                CKEDITOR.on( 'instanceReady', () => {
-                    responseBtn.addEventListener( 'click', () => {
+                CKEDITOR.on( 'instanceReady', function() {
+                    responseBtn.addEventListener( 'click', function() {
                         /**
                          * MutationObserver will watch for new comments and/or answer to be added.
                          * It will update style of author nickname, when he in fact will make a comment or answer.
                          * */
-                        const observer = new MutationObserver( ( mutations ) => {
-                            mutations.forEach( () => {
+                        var observer = new MutationObserver( function( mutations ) {
+                            mutations.forEach( function() {
                                 styleTopicAuthor();
 
                                 /** stop observing */
@@ -845,7 +861,7 @@ function qa_ajax_error()
                             } );
                         } );
 
-                        const config = { childList: true };
+                        var config = { childList: true };
                         observer.observe( usersResponsesList, config );
                     } );
                 } )

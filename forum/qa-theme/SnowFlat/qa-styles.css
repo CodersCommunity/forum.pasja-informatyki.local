@@ -4767,7 +4767,7 @@ form div.qa-q-view-content
 {
 	position: absolute;
 	top: -20px;
-	right: 0;
+	right: 5px;
 }
 
 .codepen-snippet
@@ -4825,6 +4825,16 @@ form div.qa-q-view-content
 .jsfiddle-snippet textarea
 {
 	display: none;
+}
+
+.snippets-parent.inside-comment
+{
+	top: -10px;
+}
+
+.entry-content.below-snippets
+{
+	padding-top: 10px;
 }
 
 .qa-q-view-meta,
