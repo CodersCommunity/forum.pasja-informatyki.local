@@ -1,0 +1,12 @@
+{
+    "name": "asyncNotifiations",
+    "uri": "",
+    "description": "asyncNotifiations compatible with https://github.com/q2apro/q2apro-on-site-notifications",
+    "version": "1.0",
+    "date": "2016-11-11",
+    "author": "Argeento & Arkadiusz Waluk",
+    "author_uri": "http://forum.pasja-informatyki.pl",
+    "license": "",
+    "update_uri": "",
+    "min_q2a": "1.5"
+}
