@@ -1,7 +1,7 @@
 {
-    "name": "asyncNotifiations",
+    "name": "asyncNotifications",
     "uri": "",
-    "description": "asyncNotifiations compatible with https://github.com/q2apro/q2apro-on-site-notifications",
+    "description": "asyncNotifications compatible with https://github.com/q2apro/q2apro-on-site-notifications",
     "version": "1.0",
     "date": "2016-11-11",
     "author": "Argeento & Arkadiusz Waluk",

@@ -1,9 +1,9 @@
 <?php
 
 /*
-	Plugin Name: asyncNotifiations
+	Plugin Name: asyncNotifications
 	Plugin URI:
-	Plugin Description: asyncNotifiations compatible with https://github.com/q2apro/q2apro-on-site-notifications
+	Plugin Description: asyncNotifications compatible with https://github.com/q2apro/q2apro-on-site-notifications
 	Plugin Version: 1.0
 	Plugin Date: 2016-11-11
 	Plugin Author: Argeento & Arkadiusz Waluk
@@ -18,5 +18,5 @@ if (!defined('QA_VERSION')) {
 	exit;
 }
 
-qa_register_plugin_layer('async-notifications-layer.php', 'asyncNotifiations layer');
-qa_register_plugin_module('page', 'async-notifications-page.php', 'async_notifications_page', 'asyncNotifiations page');
+qa_register_plugin_layer('async-notifications-layer.php', 'asyncNotifications layer');
+qa_register_plugin_module('page', 'async-notifications-page.php', 'async_notifications_page', 'asyncNotifications page');
