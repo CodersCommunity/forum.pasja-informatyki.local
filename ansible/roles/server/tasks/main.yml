@@ -14,7 +14,10 @@
 - name: Install Extra Packages
   sudo: yes
   apt: pkg={{ item }} state=latest
-  with_items: server.packages
+  with_items:
+    - htop
+    - imagemagick
+    - git
   when: server.packages is defined
 
 - name: Configure the timezone
@@ -28,4 +31,3 @@
 - name: Set default system language pack
   shell: locale-gen {{server.locale}}
   sudo: yes
-

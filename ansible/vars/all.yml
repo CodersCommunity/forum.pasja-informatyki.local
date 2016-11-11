@@ -1,7 +1,6 @@
 ---
 server:
     install: '1'
-    packages: [htop, imagemagick, git]
     timezone: Europe/Warsaw
     locale: pl_PL.UTF-8
 vagrant_local:
@@ -20,10 +19,8 @@ mysql:
     dump: 'dump/forum.sql'
 php:
     install: '1'
-    ppa: php5-5.6
-    packages: [php5-cli, php5-intl, php5-mcrypt, php5-curl, php5-imagick, php5-common, php5-memcache, php5-mysql, php5-readline, php5-sqlite, php5-gd]
+    ppa: php
 xdebug:
     install: '1'
 composer:
     install: '1'
-

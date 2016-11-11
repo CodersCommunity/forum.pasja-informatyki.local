@@ -18,7 +18,18 @@
 - name: Install PHP Packages
   sudo: yes
   apt: pkg={{ item }} state=latest
-  with_items: php.packages
+  with_items:
+    - php5-cli
+    - php5-intl
+    - php5-mcrypt
+    - php5-curl
+    - php5-imagick
+    - php5-common
+    - php5-memcache
+    - php5-mysql
+    - php5-readline
+    - php5-sqlite
+    - php5-gd
   when: php.packages is defined
 
 - include: configure.yml
