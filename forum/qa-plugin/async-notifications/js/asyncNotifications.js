@@ -2,7 +2,8 @@ window.addEventListener('load', function() {
 
 	var notifications = {
 
-		box: document.querySelector('.osn-new-events-link .notifybub'),
+		box: document.querySelector('.osn-new-events-link'),
+		boxContent: document.querySelector('.osn-new-events-link .notifybub'),
 
 		update: function() {
 
@@ -17,9 +18,6 @@ window.addEventListener('load', function() {
 			xhr.addEventListener('load', xhrOnLoad);
 			xhr.open('GET', '/async-notifications');
 			xhr.send();
-
-			setTimeout(notifications.update, 1000 * 60);
-			
 		},
 
 		setNotifications: function(nr) {
@@ -44,17 +42,20 @@ window.addEventListener('load', function() {
 
 			// notification box in navbar
 			if (nr === 0) {
-				this.box.classList.add('ntfy-event-nill');
-				this.box.classList.remove('ntfy-event-new');
+				this.boxContent.classList.add('ntfy-event-nill');
+				this.boxContent.classList.remove('ntfy-event-new');
 			} else {
-				this.box.classList.remove('ntfy-event-nill');
-				this.box.classList.add('ntfy-event-new');
+				this.boxContent.classList.remove('ntfy-event-nill');
+				this.boxContent.classList.add('ntfy-event-new');
 			}
 			
-			this.box.textContent = nr;
+			this.boxContent.textContent = nr;
 		}
 	};
 
 	notifications.update();
+	notifications.box.addEventListener('click', notifications.update);
+
+	setInterval(notifications.update, 1000 * 60);
 });
 
