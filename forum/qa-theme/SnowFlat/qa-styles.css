@@ -1039,27 +1039,8 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 	padding: 0;
 }
 .entry-content ul > li, .qa-c-item-content ul > li {
-	list-style: none;
 	margin: .4em 0;
 	position: relative;
-}
-.entry-content ul > li:before, .qa-c-item-content ul > li:before {
-	font-family: "fontello";
-	font-style: normal;
-	font-weight: normal;
-	speak: none;
-	content: '\e82c';
-	position: absolute;
-	left: -1.6em;
-	top: 4px;
-	display: inline-block;
-	text-decoration: inherit;
-	width: 1em;
-	margin: 0 .2em;
-	text-align: center;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1em;
 }
 .entry-content ul > li > ul, .qa-c-item-content ul > li > ul {
 	margin: 0 0 0 20px;
