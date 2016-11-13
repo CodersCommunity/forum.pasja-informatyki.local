@@ -522,33 +522,29 @@ TAG
         $categories = $this->getMainCategories();
         $sidebar = $this->prepareSidebar($categories, $adres, $sidebar);
 
-        $sidebar .= $this->setDiscussionCategoryHeader();
-        $categories = $this->getDiscussionCategories();
-        $sidebar = $this->prepareSidebar($categories, $adres, $sidebar);
-
         $sidebar .= '<div style="height:3px;"></div><div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white;">Programowanie</div>';
 
         $sidebar = $sidebar . '<div style="padding:10px; text-align:justify; line-height: 115%;">' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/c-plus-plus" class="sidebarnav">C i C++</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/html-css" class="sidebarnav">HTML i CSS</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/javascript-jquery-ajax" class="sidebarnav">JS, jQuery, AJAX</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/php-symfony-zend" class="sidebarnav">PHP, Symfony, Zend</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/mysql-bazy-danych" class="sidebarnav">SQL, bazy danych</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/hosting-domeny" class="sidebarnav">Hostingi, domeny</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/spoj" class="sidebarnav">SPOJ</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/systemy-cms" class="sidebarnav">Systemy CMS</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/pascal-delphi" class="sidebarnav">Pascal, Delphi</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/c-sharp-dot-net" class="sidebarnav">C# i .NET</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/java" class="sidebarnav">Java</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/python-django" class="sidebarnav">Python, &nbsp;Django </a>' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/assembler" class="sidebarnav">Assembler</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/ruby-i-ruby-on-rails" class="sidebarnav">Ruby, Ruby On Rails</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/visual-basic" class="sidebarnav">Visual Basic</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/android-ios-swift-symbian" class="sidebarnav">Android, Swift, Symbian</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/opengl-unity" class="sidebarnav">OpenGL, Unity</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/algorytmy" class="sidebarnav">Algorytmy</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/arduino" class="sidebarnav">Arduino</a> ' .
-            '<a href="//forum.pasja-informatyki.pl/questions/programowanie/inne-jezyki" class="sidebarnav">Inne języki programowania</a> ';
+            '<a href="/questions/programowanie/c-plus-plus" class="sidebarnav">C i C++</a> ' .
+            '<a href="/questions/programowanie/html-css" class="sidebarnav">HTML i CSS</a> ' .
+            '<a href="/questions/programowanie/javascript-jquery-ajax" class="sidebarnav">JS, jQuery, AJAX</a> ' .
+            '<a href="/questions/programowanie/php-symfony-zend" class="sidebarnav">PHP, Symfony, Zend</a> ' .
+            '<a href="/questions/programowanie/mysql-bazy-danych" class="sidebarnav">SQL, bazy danych</a> ' .
+            '<a href="/questions/programowanie/hosting-domeny" class="sidebarnav">Hostingi, domeny</a> ' .
+            '<a href="/questions/programowanie/spoj" class="sidebarnav">SPOJ</a> ' .
+            '<a href="/questions/programowanie/systemy-cms" class="sidebarnav">Systemy CMS</a> ' .
+            '<a href="/questions/programowanie/pascal-delphi" class="sidebarnav">Pascal, Delphi</a> ' .
+            '<a href="/questions/programowanie/c-sharp-dot-net" class="sidebarnav">C# i .NET</a> ' .
+            '<a href="/questions/programowanie/java" class="sidebarnav">Java</a> ' .
+            '<a href="/questions/programowanie/python-django" class="sidebarnav">Python, &nbsp;Django </a>' .
+            '<a href="/questions/programowanie/assembler" class="sidebarnav">Assembler</a> ' .
+            '<a href="/questions/programowanie/ruby-i-ruby-on-rails" class="sidebarnav">Ruby, Ruby On Rails</a> ' .
+            '<a href="/questions/programowanie/visual-basic" class="sidebarnav">Visual Basic</a> ' .
+            '<a href="/questions/programowanie/android-ios-swift-symbian" class="sidebarnav">Android, Swift, Symbian</a> ' .
+            '<a href="/questions/programowanie/opengl-unity" class="sidebarnav">OpenGL, Unity</a> ' .
+            '<a href="/questions/programowanie/algorytmy" class="sidebarnav">Algorytmy</a> ' .
+            '<a href="/questions/programowanie/arduino" class="sidebarnav">Arduino</a> ' .
+            '<a href="/questions/programowanie/inne-jezyki" class="sidebarnav">Inne języki programowania</a> ';
 
         $sidebar .= '</div>' . $this->output_raw($sidebar);
         $this->output('</div></div>', '');
@@ -842,27 +838,13 @@ TAG
             'bezpieczenstwo-hacking' => ['tooltip' => 'Bezpieczeństwo, hacking', 'icon' => 'key'],
             'rozwoj-zawodowy' => ['tooltip' => 'Rozwój zawodowy, nauka, praca', 'icon' => 'stu'],
             'egzaminy-e12-e13-e14' => ['tooltip' => 'Egzaminy zawodowe E12, E13, E14', 'icon' => 'egz'],
+            'matematyka-fizyka-logika' => ['tooltip' => 'Matematyka, fizyka, logika', 'icon' => 'ruler'],
+            'grafika-i-multimedia' => ['tooltip' => 'Grafika i multimedia', 'icon' => 'brush'],
+            'ogloszenia-zlecenia' => ['tooltip' => 'Ogłoszenia, zlecenia', 'icon' => 'note'],
             'nasze-projekty' => ['tooltip' => 'Nasze projekty', 'icon' => 'new'],
             'nasze-poradniki' => ['tooltip' => 'Nasze poradniki', 'icon' => 'tut'],
             'sprawy-forum' => ['tooltip' => 'Sprawy forum', 'icon' => 'for'],
-            'dyskusje' => ['tooltip' => 'Dyskusje', 'icon' => 'tea']
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    private function getDiscussionCategories()
-    {
-        return [
-            'dyskusje/gry-pc-konsole' => [ 'tooltip' => 'Gry PC i konsole', 'icon' => 'game' ],
-            'dyskusje/muzyka' => ['tooltip' => 'Muzyka', 'icon' => 'music'],
-            'dyskusje/filmy-i-seriale' => ['tooltip' => 'Filmy i seriale', 'icon' => 'mov'],
-            'dyskusje/sport-i-zdrowie' => ['tooltip' => 'Sport i zdrowie', 'icon' => 'spo'],
-            'dyskusje/ksiazki' => ['tooltip' => 'Książki', 'icon' => 'book'],
-            'dyskusje/grafika-i-fotografia' => ['tooltip' => 'Grafika, fotografia', 'icon' => 'foto'],
-            'dyskusje/heheszki' => ['tooltip' => 'Heheszki', 'icon' => 'hehe'],
-            'dyskusje/off-topic' => ['tooltip' => 'Offtop', 'icon' => 'off']
+            'offtop' => ['tooltip' => 'Offtop', 'icon' => 'off']
         ];
     }
 
@@ -871,7 +853,7 @@ TAG
      */
     private function setMainCategoryHeader()
     {
-        return '<div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white; margin-bottom: 10px;">Główne kategorie pytań</div>';
+        return '<div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white; margin-bottom: 10px;">Kategorie pytań</div>';
     }
 
     /**
@@ -912,22 +894,14 @@ TAG
 
             $sidebar .= <<<EOF
 <div class="qa-nav-main-item">
-    <a href="http://forum.pasja-informatyki.pl/questions/{$category}" class="qa-nav-main-link {$isActiveCategory['selected']} {$currentPosition}">
+    <a href="/questions/{$category}" class="qa-nav-main-link {$isActiveCategory['selected']} {$currentPosition}">
         <dfn class="{$tooltipPosition}" data-info="{$value['tooltip']}">
-            <img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/{$value['icon']}{$isActiveCategory['hover']}.png" alt="{$value['tooltip']}" onmouseover="this.src='//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/{$value['icon']}1.png'" onmouseout="this.src='//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/{$value['icon']}0.png'" />
+            <img src="/qa-theme/SnowFlat/icons/{$value['icon']}{$isActiveCategory['hover']}.png" alt="{$value['tooltip']}" onmouseover="this.src='/qa-theme/SnowFlat/icons/{$value['icon']}1.png'" onmouseout="this.src='/qa-theme/SnowFlat/icons/{$value['icon']}0.png'" />
         </dfn>
     </a>
 </div>
 EOF;
         }
         return $sidebar;
-    }
-
-    /**
-     * @return string
-     */
-    private function setDiscussionCategoryHeader()
-    {
-        return '<div style="height:5px; clear:both;"></div><div style="width:100%; text-align: center; font-size:1em; padding:5px; border-bottom: 1px solid white; margin-bottom: 10px;">Luźniejsze dyskusje</div>';
     }
 }
