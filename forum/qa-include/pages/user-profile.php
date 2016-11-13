@@ -593,7 +593,7 @@
 					$qa_content['form_profile']['fields']['level']['value'] .= '<br/>'.
 						strtr(qa_lang_html('users/level_for_category'), array(
 							'^1' => $showcategorylevel,
-							'^2' => '<a href="'.qa_path_html(implode('/', array_reverse(explode('/', $userlevel['backpath'])))).'">'.qa_html($userlevel['title']).'</a>',
+							'^2' => '<a href="'.qa_path_html(implode('/', array_reverse(explode('/', $userlevel['backpath'])))).'" class="category-level-link">'.qa_html($userlevel['title']).'</a>',
 						));
 				}
 			}

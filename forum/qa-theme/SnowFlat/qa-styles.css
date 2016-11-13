@@ -4838,3 +4838,15 @@ form div.qa-q-view-content
 	border-radius: 5px;
 	padding: 0px 2px;
 }
+#level .qa-form-wide-static a.category-level-link {
+	color: #2980b9;
+	text-decoration: none;
+	background: none;
+	border: 0;
+	padding: 0;
+	font-weight: bold;
+}
+#level .qa-form-wide-static a.category-level-link:hover {
+	color: #3498db;
+	text-decoration: underline;
+}
