@@ -68,7 +68,7 @@
 		'level_admin' => 'Administrator',
 		'level_editor' => 'Redaktor',
 		'level_expert' => 'Ekspert',
-		'level_for_category' => "^1 na ^2",
+		'level_for_category' => "^1 w kategorii ^2",
 		'level_in_general' => "generalnie",
 		'level_moderator' => 'Moderator',
 		'level_super' => 'Superadministrator',
