@@ -1,32 +1,32 @@
-	s1 = new Image(48,48);   s1.src="/qa-theme/SnowFlat/icons/code0.png";
-	s1a = new Image(48,48); s1a.src="/qa-theme/SnowFlat/icons/code1.png";
-	s2 = new Image(48,48);   s2.src="/qa-theme/SnowFlat/icons/net0.png";
-	s2a = new Image(48,48); s2a.src="/qa-theme/SnowFlat/icons/net1.png";
-	s3 = new Image(48,48);   s3.src="/qa-theme/SnowFlat/icons/os0.png";
-	s3a = new Image(48,48); s3a.src="/qa-theme/SnowFlat/icons/os1.png";
-	s4 = new Image(48,48);   s4.src="/qa-theme/SnowFlat/icons/eth0.png";
-	s4a = new Image(48,48); s4a.src="/qa-theme/SnowFlat/icons/eth1.png";
-	s5 = new Image(48,48);   s5.src="/qa-theme/SnowFlat/icons/ph0.png";
-	s5a = new Image(48,48); s5a.src="/qa-theme/SnowFlat/icons/ph1.png";
-	s6 = new Image(48,48);   s6.src="/qa-theme/SnowFlat/icons/key0.png";
-	s6a = new Image(48,48); s6a.src="/qa-theme/SnowFlat/icons/key1.png";
-	s7 = new Image(48,48);   s7.src="/qa-theme/SnowFlat/icons/stu0.png";
-	s7a = new Image(48,48); s7a.src="/qa-theme/SnowFlat/icons/stu1.png";
-	s8 = new Image(48,48);   s8.src="/qa-theme/SnowFlat/icons/egz0.png";
-	s8a = new Image(48,48); s8a.src="/qa-theme/SnowFlat/icons/egz1.png";
-	s9 = new Image(48,48);   s9.src="/qa-theme/SnowFlat/icons/new0.png";
-	s9a = new Image(48,48); s9a.src="/qa-theme/SnowFlat/icons/new1.png";
-	s10 = new Image(48,48);   s10.src="/qa-theme/SnowFlat/icons/tut0.png";
-	s10a = new Image(48,48); s10a.src="/qa-theme/SnowFlat/icons/tut1.png";
-	s11 = new Image(48,48);   s11.src="/qa-theme/SnowFlat/icons/for0.png";
-	s11a = new Image(48,48); s11a.src="/qa-theme/SnowFlat/icons/for1.png";
-	s12 = new Image(48,48);   s12.src="/qa-theme/SnowFlat/icons/tea0.png";
-	s12a = new Image(48,48); s12a.src="/qa-theme/SnowFlat/icons/tea1.png";
-	s14 = new Image(48,48);   s14.src="/qa-theme/SnowFlat/icons/ruler0.png";
-	s14a = new Image(48,48); s14a.src="/qa-theme/SnowFlat/icons/ruler1.png";
-	s15 = new Image(48,48);   s15.src="/qa-theme/SnowFlat/icons/note0.png";
-	s15a = new Image(48,48); s15a.src="/qa-theme/SnowFlat/icons/note1.png";
-	s16 = new Image(48,48);   s16.src="/qa-theme/SnowFlat/icons/brush0.png";
-	s16a = new Image(48,48); s16a.src="/qa-theme/SnowFlat/icons/brush1.png";
-	s17 = new Image(48,48);   s17.src="/qa-theme/SnowFlat/icons/off0.png";
-	s17a = new Image(48,48); s17a.src="/qa-theme/SnowFlat/icons/off1.png";
+(function() {
+
+	var iconsFolderURL = '/qa-theme/SnowFlat/icons/';
+	var icons = [
+		'code1.png',
+		'net1.png',
+		'os1.png',
+		'eth1.png',
+		'ph1.png',
+		'key1.png',
+		'stu1.png',
+		'egz1.png',
+		'new1.png',
+		'tut1.png',
+		'for1.png',
+		'tea1.png',
+		'ruler1.png',
+		'note1.png',
+		'brush1.png',
+		'off1.png'
+	];
+
+	window.addEventListener('load', function() {
+		
+		icons.forEach(function(icon) {
+			var asyncImg = new Image();
+			asyncImg.src = iconsFolderURL + icon;
+		});
+
+	});
+	
+})();
