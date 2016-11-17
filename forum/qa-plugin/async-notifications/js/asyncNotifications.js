@@ -2,7 +2,7 @@ window.addEventListener('load', function() {
 
 	var notifications = {
 
-		box: document.querySelector('.osn-new-events-link'),
+		box: document.querySelector('#osnbox'),
 		boxContent: document.querySelector('.osn-new-events-link .notifybub'),
 
 		update: function() {
@@ -54,7 +54,9 @@ window.addEventListener('load', function() {
 	};
 
 	notifications.update();
-	notifications.box.addEventListener('click', notifications.update);
+	notifications.box.addEventListener('click', function() {
+		notifications.setNotifications(0);
+	});
 
 	setInterval(notifications.update, 1000 * 60);
 });
