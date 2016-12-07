@@ -9,18 +9,27 @@
 
 - name: Install php5
   sudo: yes
-  apt: pkg=php5 state=latest
+  apt: pkg=php5.6 state=latest
 
 - name: Install php5-fpm
   sudo: yes
-  apt: pkg=php5-fpm state=latest
+  apt: pkg=php5.6-fpm state=latest
 
 - name: Install PHP Packages
   sudo: yes
   apt: pkg={{ item }} state=latest
-  with_items: php.packages
-  when: php.packages is defined
-
+  with_items: 
+   - php5.6-cli
+   - php5.6-intl
+   - php5.6-mcrypt
+   - php5.6-curl
+   - php5.6-imagick
+   - php5.6-common 
+   - php5.6-memcache
+   - php5.6-mysql 
+   - php5.6-readline
+   - php5.6-sqlite3
+   - php5.6-gd
 - include: configure.yml
 - include: pecl.yml
 - include:  php_ini_configure.yml
