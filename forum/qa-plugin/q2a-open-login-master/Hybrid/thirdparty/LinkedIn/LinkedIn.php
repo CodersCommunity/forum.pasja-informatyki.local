@@ -1579,13 +1579,14 @@ class LinkedIn {
       // no recipients, and/or bad data
       throw new LinkedInException('LinkedIn->message(): at least one message recipient required.');
     }
-    
+
+    $endRange = count($recipients);
     // construct the xml data
 		$data   = '<?xml version="1.0" encoding="UTF-8"?>
 		           <mailbox-item>
 		             <recipients>';
     $data  .=     ($copy_self) ? '<recipient><person path="/people/~"/></recipient>' : '';
-                  for($i = 0; $i < count($recipients); $i++) {
+                  for($i = 0; $i < $endRange; $i++) {
                     if(is_string($recipients[$i])) {
                       $data .= '<recipient><person path="/people/' . trim($recipients[$i]) . '"/></recipient>';
                     } else {
@@ -1604,7 +1605,8 @@ class LinkedIn {
 		/**
 	   * Check for successful request (a 201 response from LinkedIn server) 
 	   * per the documentation linked in method comments above.
-	   */ 
+	   */
+	unset($endRange);
     return $this->checkResponse(201, $response);
 	}
 	

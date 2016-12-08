@@ -1172,7 +1172,9 @@
 
 			$keypages[1]=true;
 
-			for ($page=max(2, min($thispage, $lastpage)-$prevnext); $page<=min($thispage+$prevnext, $lastpage); $page++)
+            $startRange = max(2, min($thispage, $lastpage)-$prevnext);
+            $endRange = min($thispage+$prevnext, $lastpage);
+			for ($page = $startRange; $page<=$endRange; $page++)
 				$keypages[$page]=true;
 
 			$keypages[$lastpage]=true;
@@ -1210,6 +1212,7 @@
 		} else
 			$links=null;
 
+        unset($startRange,$endRange);
 		return $links;
 	}
 
