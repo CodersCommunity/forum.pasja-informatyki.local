@@ -430,7 +430,7 @@
 
 		//	echo '<pre style="text-align:left;">'.htmlspecialchars($functionsphp).'</pre>'; // to debug munged code
 
-			qa_eval_from_file($functionsphp, $filename);
+			qa_require_cached($functionsphp, $filename);
 		}
 	}
 
@@ -577,35 +577,23 @@
 	}
 
 
-//	Low-level functions used throughout Q2A
+    //	Low-level functions used throughout Q2A
 
-	/**
-	 * Calls eval() on the PHP code in $eval which came from the file $filename. It supplements PHP's regular error reporting by
-	 * displaying/logging (as appropriate) the original source filename, if an error occurred when evaluating the code.
-	 */
-	function qa_eval_from_file($eval, $filename)
-	{
-		// could also use ini_set('error_append_string') but apparently it doesn't work for errors logged on disk
+    /**
+     * Calls require to load cached files
+     * or generate new if they are not exists.
+     */
 
-		global $php_errormsg;
+    function qa_require_cached($eval, $filename)
+    {
+        $fileHash = md5($filename);
+        $cachedFile = __DIR__ . "/../cache/{$fileHash}";
 
-		$oldtrackerrors=@ini_set('track_errors', 1);
-		$php_errormsg=null;
-
-		eval('?'.'>'.$eval);
-
-		if (strlen($php_errormsg)) {
-			switch (strtolower(@ini_get('display_errors'))) {
-				case 'on': case '1': case 'yes': case 'true': case 'stdout': case 'stderr':
-					echo ' of '.qa_html($filename)."\n";
-					break;
-			}
-
-			@error_log('PHP Question2Answer more info: '.$php_errormsg." in eval()'d code from ".qa_html($filename));
-		}
-
-		@ini_set('track_errors', $oldtrackerrors);
-	}
+        if (!file_exists($cachedFile)) {
+            file_put_contents($cachedFile, $eval);
+        }
+        require $cachedFile;
+    }
 
 
 	/**

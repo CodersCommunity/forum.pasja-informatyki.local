@@ -1,5 +1,6 @@
 .idea/
 .vagrant/
 *.retry
-
+forum/cache/
+!forum/cache/.htaccess
 /vendor/

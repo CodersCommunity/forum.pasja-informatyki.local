@@ -1864,7 +1864,7 @@
 
 			//	echo '<pre style="text-align:left;">'.htmlspecialchars($layerphp).'</pre>'; // to debug munged code
 
-				qa_eval_from_file($layerphp, $filename);
+				qa_require_cached($layerphp, $filename);
 
 				$classname=$newclassname;
 			}
