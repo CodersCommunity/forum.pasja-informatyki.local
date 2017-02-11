@@ -4841,3 +4841,14 @@ form div.qa-q-view-content
 	color: #3498db;
 	text-decoration: underline;
 }
+
+.share-button {
+	color: green;
+	font-weight: bold;
+	padding: 5px;
+}
+
+.share-popup {
+	border: 2px solid orange;
+	display: inline-block;
+}

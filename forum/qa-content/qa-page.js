@@ -892,7 +892,7 @@ window.initializeCopyToClipboard = ( function() {
 	if ( !!copyToClipboard ) {
 		var shareMethodPopup = ( function() {
 			var popup = document.createElement( 'div' );
-			popup.classList.add( 'share-button-popup' );
+			popup.classList.add( 'share-popup' );
             popup.id = 'share-popup';
 
 			var shareLinkField = document.createElement( 'input' );
