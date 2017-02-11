@@ -186,22 +186,13 @@ window.initializeCopyToClipboard = ( function() {
 	// check if browser supports 'select()' and 'copy' commands
 	var isClipboardSupported = ( window.getSelection && document.queryCommandSupported( 'copy' ) && navigator.userAgent.indexOf( 'Firefox' ) === -1 );
 
-	function copyToClipBoard( ev ) {
-		console.warn( 'wtf ev: ', ev );
+	function copyToClipBoard( ev, contentToCopy ) {
 		// prevent page refresh (or something weird) as default button action
 		ev.preventDefault();
 
 		if ( !ev.defaultPrevented ) {
 			return false;
 		}
-
-		var eTarget= ev.target;
-		var blockOfCodeBar = eTarget.parentNode.parentNode;
-
-		// get block of code content - practically all lines of code inside
-		var code = Array.from( blockOfCodeBar.querySelector( '.code .container' ).children ).map( function( lineOfCode ) {
-			return lineOfCode.textContent;
-		} );
 
 		/*
 		 * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
@@ -212,10 +203,7 @@ window.initializeCopyToClipboard = ( function() {
 		 */
 		var textArea = document.createElement( "textarea" );
 		textArea.classList.add( 'content-copy' );
-
-		code.forEach( function( singleLineOfCode ) {
-			textArea.value += singleLineOfCode + '\r\n';
-		} );
+		textArea.value = contentToCopy;
 
 		document.body.appendChild( textArea );
 
@@ -576,7 +564,18 @@ window.initializeCopyToClipboard = ( function() {
 			copyCodeBtn.classList.add('content-copy-btn');
 
 			if (!!copyToClipboard && window.hasOwnProperty('SyntaxHighlighter'))
-				copyCodeBtn.addEventListener('click', copyToClipboard);
+				copyCodeBtn.addEventListener('click', function( ev ) {
+					var eTarget = ev.target;
+
+					var blockOfCodeBar = eTarget.parentNode.parentNode;
+
+					// get block of code content - practically all lines of code inside
+					var codeContent = Array.from( blockOfCodeBar.querySelector( '.code .container' ).children ).map( function( lineOfCode ) {
+						return lineOfCode.textContent  + '\r\n';
+					} ).join( '' );
+
+					copyToClipboard( ev, codeContent );
+				});
 			else
 				copyCodeBtn.classList.add('content-copy-btn-disabled');
 
@@ -888,32 +887,80 @@ window.initializeCopyToClipboard = ( function() {
 
 	var copyToClipboard = window.initializeCopyToClipboard;
 
-	function addShareButton() {
-		var topicActionButtonsBar = document.querySelector( '.qa-q-view-buttons' );
-		var answersActionButtonsBar = Array.from( document.querySelectorAll( '.qa-a-item-buttons' ) );
-		var commentsActionButtonsBar = Array.from( document.querySelectorAll( '.qa-c-item-buttons' ) );
+    console.info( 'copyToClipboard: ', copyToClipboard, ' /boolean: ' , !!copyToClipboard );
 
-		var allActionButtonsBar = answersActionButtonsBar.concat( commentsActionButtonsBar );
-		allActionButtonsBar.push( topicActionButtonsBar );
+	if ( !!copyToClipboard ) {
+		var shareMethodPopup = ( function() {
+			var popup = document.createElement( 'div' );
+			popup.classList.add( 'share-button-popup' );
 
-		for ( var i = 0, len = allActionButtonsBar.length; i < len; i++ ) {
-			var shareButton = document.createElement( 'button' );
-			shareButton.textContent = 'Udostępnij';
-			shareButton.classList = 'share-button';
+			var shareLinkField = document.createElement( 'input' );
+			shareLinkField.type = 'text';
+			shareLinkField.readonly = true;
+            shareLinkField.id = 'shareLinkField';
+			shareLinkField.value = '';
 
-			allActionButtonsBar[ i ].appendChild( shareButton );
-		}
+			var copyLinkBtn = document.createElement( 'button' );
+			copyLinkBtn.type = 'button';
+            copyLinkBtn.textContent = 'Kopiuj link';
+            copyLinkBtn.classList.add( 'copy-shared-link' );
 
-		var mainParent = document.querySelector( '.qa-main' );
-		mainParent.addEventListener( 'click ', function( ev ) {
-			if ( ev.target.classList.contains( 'share-button' ) ) {
-				copyToClipboard( ev );
+			popup.appendChild( shareLinkField );
+			popup.appendChild( copyLinkBtn );
+
+			return {
+                popup: popup,
+                shareLinkField: shareLinkField
+            };
+		}() );
+
+		var addShareButton = function() {
+
+			var topicActionButtonsBar = document.querySelector( '.qa-q-view-buttons' );
+			var answersActionButtonsBar = Array.from( document.querySelectorAll( '.qa-a-item-buttons' ) );
+			var commentsActionButtonsBar = Array.from( document.querySelectorAll( '.qa-c-item-buttons' ) );
+
+			var allActionButtonsBar = answersActionButtonsBar.concat( commentsActionButtonsBar );
+			allActionButtonsBar.push( topicActionButtonsBar );
+
+			for ( var i = 0, len = allActionButtonsBar.length; i < len; i++ ) {
+				var shareButton = document.createElement( 'button' );
+                shareButton.type = 'button';
+				shareButton.textContent = 'Udostępnij';
+				shareButton.classList.add( 'share-button' );
+
+				allActionButtonsBar[ i ].appendChild( shareButton );
 			}
-		} );
 
-		console.info( 'buttons bar: ', allActionButtonsBar );//, ' /answers: ', document.querySelectorAll( '.qa-a-item-buttons' ), ' /comments: ', document.querySelectorAll( '.qa-c-item-buttons' ) );
+            var popupParentRef = {};
+
+            var mainParent = document.querySelector( '.qa-main' );
+			mainParent.addEventListener( 'click', function( ev ) {
+                var eTarget = ev.target;
+                var eClassList = eTarget.classList;
+                var parentRef = eTarget.parentNode;
+
+                if ( eClassList.contains( 'share-button' ) ) {
+                    var topicContentGroup = eTarget.parentNode.classList[ 0 ].split( '-' )[ 2 ];
+                    var olderParentRef = topicContentGroup === 'item' ? parentRef.parentNode.parentNode : parentRef.parentNode;
+                    popupParentRef = parentRef;
+
+                    console.warn( 'wtf??: ', topicContentGroup, ' /grand parent: ', olderParentRef, ' />>> ', olderParentRef.querySelector( '[class*="-' + topicContentGroup + '-meta"]') );
+                    var url = olderParentRef.querySelector( '[class*="-' + topicContentGroup + '-meta"] a' ).href;
+                    console.log( 'share url: ', url );
+
+                    shareMethodPopup.shareLinkField.value = url;
+                    parentRef.appendChild( shareMethodPopup.popup );
+				} else if ( eClassList.contains( 'copy-shared-link' ) ) {
+                    copyToClipboard( ev, location.href );
+                    popupParentRef.removeChild( shareMethodPopup.popup );
+                }
+			} );
+
+			console.info( 'buttons bar: ', allActionButtonsBar );//, ' /answers: ', document.querySelectorAll( '.qa-a-item-buttons' ), ' /comments: ', document.querySelectorAll( '.qa-c-item-buttons' ) );
+		};
+
+		document.addEventListener( 'DOMContentLoaded', addShareButton );
 	}
-
-	document.addEventListener( 'DOMContentLoaded', addShareButton );
 
 }( document ) );
