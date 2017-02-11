@@ -893,6 +893,7 @@ window.initializeCopyToClipboard = ( function() {
 		var shareMethodPopup = ( function() {
 			var popup = document.createElement( 'div' );
 			popup.classList.add( 'share-button-popup' );
+            popup.id = 'share-popup';
 
 			var shareLinkField = document.createElement( 'input' );
 			shareLinkField.type = 'text';
@@ -944,20 +945,23 @@ window.initializeCopyToClipboard = ( function() {
                     var topicContentGroup = eTarget.parentNode.classList[ 0 ].split( '-' )[ 2 ];
                     var olderParentRef = topicContentGroup === 'item' ? parentRef.parentNode.parentNode : parentRef.parentNode;
                     popupParentRef = parentRef;
+                    var sharePopupElem = document.getElementById( 'share-popup' );
 
-                    console.warn( 'wtf??: ', topicContentGroup, ' /grand parent: ', olderParentRef, ' />>> ', olderParentRef.querySelector( '[class*="-' + topicContentGroup + '-meta"]') );
-                    var url = olderParentRef.querySelector( '[class*="-' + topicContentGroup + '-meta"] a' ).href;
-                    console.log( 'share url: ', url );
+                    if ( !sharePopupElem ) {
+                        var url = olderParentRef.querySelector( '[class*="-' + topicContentGroup + '-meta"] a' ).href;
 
-                    shareMethodPopup.shareLinkField.value = url;
-                    parentRef.appendChild( shareMethodPopup.popup );
+                        shareMethodPopup.shareLinkField.value = url;
+                        parentRef.appendChild( shareMethodPopup.popup );
+                    } else if ( sharePopupElem ) {
+                        sharePopupElem.parentNode.removeChild( shareMethodPopup.popup );
+                    }
 				} else if ( eClassList.contains( 'copy-shared-link' ) ) {
-                    copyToClipboard( ev, location.href );
+                    var url = eTarget.previousElementSibling.value;
+
+                    copyToClipboard( ev, url );
                     popupParentRef.removeChild( shareMethodPopup.popup );
                 }
 			} );
-
-			console.info( 'buttons bar: ', allActionButtonsBar );//, ' /answers: ', document.querySelectorAll( '.qa-a-item-buttons' ), ' /comments: ', document.querySelectorAll( '.qa-c-item-buttons' ) );
 		};
 
 		document.addEventListener( 'DOMContentLoaded', addShareButton );
