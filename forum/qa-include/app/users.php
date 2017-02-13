@@ -141,6 +141,8 @@
 			@ini_set('session.gc_maxlifetime', 86400); // worth a try, but won't help in shared hosting environment
 			@ini_set('session.use_trans_sid', false); // sessions need cookies to work, since we redirect after login
 			@ini_set('session.cookie_domain', QA_COOKIE_DOMAIN);
+			@ini_set('session.cookie_secure', QA_COOKIE_SECURE);
+			@ini_set('session.cookie_httponly', QA_COOKIE_HTTPONLY);
 
 			if (!isset($_SESSION))
 				session_start();
@@ -180,7 +182,7 @@
 			if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
 
 			// if $remember is true, store in browser for a month, otherwise store only until browser is closed
-			setcookie('qa_session', $handle.'/'.$sessioncode.'/'.($remember ? 1 : 0), $remember ? (time()+2592000) : 0, '/', QA_COOKIE_DOMAIN);
+			setcookie('qa_session', $handle.'/'.$sessioncode.'/'.($remember ? 1 : 0), $remember ? (time()+2592000) : 0, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
 		}
 
 
@@ -191,7 +193,7 @@
 		{
 			if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
 
-			setcookie('qa_session', false, 0, '/', QA_COOKIE_DOMAIN);
+			setcookie('qa_session', false, 0, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
 		}
 
 
@@ -1051,7 +1053,7 @@ in a category for which they have elevated privileges).
 				$_COOKIE['qa_key']=qa_random_alphanum(QA_FORM_KEY_LENGTH);
 			}
 
-			setcookie('qa_key', $_COOKIE['qa_key'], time()+2*QA_FORM_EXPIRY_SECS, '/', QA_COOKIE_DOMAIN); // extend on every page request
+			setcookie('qa_key', $_COOKIE['qa_key'], time()+2*QA_FORM_EXPIRY_SECS, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY); // extend on every page request
 		}
 	}
 

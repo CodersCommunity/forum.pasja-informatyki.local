@@ -208,6 +208,8 @@
 	//	Default values if not set in qa-config.php
 
 		@define('QA_COOKIE_DOMAIN', '');
+		@define('QA_COOKIE_SECURE', false);
+		@define('QA_COOKIE_HTTPONLY', true);
 		@define('QA_HTML_COMPRESSION', true);
 		@define('QA_MAX_LIMIT_START', 19999);
 		@define('QA_IGNORED_WORDS_FREQ', 10000);

@@ -91,6 +91,16 @@
 */
 
 /*
+    Secure flag for cookies and session cookie - set true if you use https
+    define('QA_COOKIE_SECURE', false);
+*/
+
+/*
+    httponly flag for cookies and session cookie
+    define('QA_COOKIE_HTTPONLY', true);
+*/
+
+/*
 	If you wish, you can define an array $QA_CONST_PATH_MAP to modify the URLs used in your Q2A site.
 	The key of each array element should be the standard part of the path, e.g. 'questions',
 	and the value should be the replacement for that standard part, e.g. 'topics'. If you edit this

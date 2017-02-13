@@ -32,7 +32,7 @@
 
 	else {
 		if ($noticeid=='visitor')
-			setcookie('qa_noticed', 1, time()+86400*3650, '/', QA_COOKIE_DOMAIN);
+			setcookie('qa_noticed', 1, time()+86400*3650, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
 
 		else {
 			$userid=qa_get_logged_in_userid();
