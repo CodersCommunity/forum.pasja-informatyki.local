@@ -90,7 +90,7 @@ class qa_html_theme extends qa_html_theme_base
         }
 
         // add Ubuntu font CSS file
-        $this->content['css_src'][] = 'http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic';
+        $this->content['css_src'][] = 'https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic';
 
         qa_html_theme_base::head_css();
 
@@ -253,13 +253,13 @@ class qa_html_theme extends qa_html_theme_base
             'polls',
             'updates',
             'unanswered',
-            'questions',
             'messages',
             'message'
         ];
         if (in_array($request[0], $pages)
         || ($request[0] === 'users' && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR)
-        || ($request[0] === 'user' && qa_get_logged_in_handle() !== $request[1])) {
+        || ($request[0] === 'user' && qa_get_logged_in_handle() !== $request[1])
+        || ($request[0] === 'questions' && !isset($request[1]))) {
             $this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
         } else {
             $this->output('<div class="qa-body-wrapper">', '');
@@ -571,7 +571,7 @@ TAG
         $this->output(
             '<div class="qa-q-item-title">',
             // add closed note in title
-            empty($q_item['closed']) ? '' : '<img src="' . $this->rooturl . $this->icon_url . '/closed-q-list.png" class="qam-q-list-close-icon" alt="question-closed" title="' . qa_lang('main/closed') . '" />',
+            empty($q_item['closed']) ? '' : '<img src="/qa-theme/SnowFlat/images/icons/closed-q-list.png" class="qam-q-list-close-icon" alt="question-closed" title="' . qa_lang('main/closed') . '" />',
             '<a href="' . $q_item['url'] . '">' . $q_item['title'] . '</a>', '</div>'
         );
     }

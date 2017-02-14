@@ -232,7 +232,7 @@ function qa_ajax_error()
 				.replace(/'/g, "&apos;");
 
 			var codepenSnippetForm = document.createElement('form');
-			codepenSnippetForm.action = 'http://codepen.io/pen/define';
+			codepenSnippetForm.action = 'https://codepen.io/pen/define';
 			codepenSnippetForm.method = 'POST';
 			codepenSnippetForm.target= '_blank';
 			codepenSnippetForm.classList.add('codepen-snippet');
@@ -259,7 +259,7 @@ function qa_ajax_error()
 		function createJsfiddleSnippet(jsfiddleData)
 		{
 			var jsfiddleSnippetForm = document.createElement('form');
-			jsfiddleSnippetForm.action = 'http://jsfiddle.net/api/post/library/pure/';
+			jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
 			jsfiddleSnippetForm.method = 'POST';
 			jsfiddleSnippetForm.target = '_blank';
 			jsfiddleSnippetForm.classList = 'jsfiddle-snippet';
