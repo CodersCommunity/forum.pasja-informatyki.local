@@ -247,11 +247,8 @@ class qam_snow_theme
 		if (qa_is_logged_in()) {
 			$userpoints = qa_get_logged_in_points();
 			$pointshtml = ($userpoints == 1) ? qa_lang_html_sub('main/1_point', '1', '1') : qa_html(number_format($userpoints));
-			$points     = '<DIV CLASS="qam-logged-in-points"><a href="/users">Punkty</a>: </span>' . $pointshtml . '</DIV>';
-
-			return $points;
+            return '<div class="qam-logged-in-points"><a href="/users">Punkty</a>: </span>'.$pointshtml.'</div>';
 		}
-
 		return null;
 	}
 

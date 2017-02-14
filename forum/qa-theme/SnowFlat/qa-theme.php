@@ -247,29 +247,19 @@ class qa_html_theme extends qa_html_theme_base
         $this->widgets('full', 'top');
         $this->header();
 
-        $request = qa_request();
-        $divideRequest = explode('/', $request);
+        $request = explode('/', qa_request());
         $pages = [
             '',
             'polls',
             'updates',
             'unanswered',
             'questions',
-        ];
-        $partPages = [
             'messages',
             'message'
         ];
-        $removeMargin = false;
-        if (in_array($request, $pages) || in_array($divideRequest[0], $partPages)) {
-            $removeMargin = true;
-        } elseif ($divideRequest[0] === 'users' && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR) {
-            $removeMargin = true;
-        } elseif ($divideRequest[0] === 'user' && qa_get_logged_in_handle() !== $divideRequest[1]) {
-            $removeMargin = true;
-        }
-
-        if ($removeMargin) {
+        if (in_array($request[0], $pages)
+        || ($request[0] === 'users' && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR)
+        || ($request[0] === 'user' && qa_get_logged_in_handle() !== $request[1])) {
             $this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
         } else {
             $this->output('<div class="qa-body-wrapper">', '');

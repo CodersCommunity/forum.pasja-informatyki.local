@@ -207,17 +207,17 @@
 
 	//	Default values if not set in qa-config.php
 
-		@define('QA_COOKIE_DOMAIN', '');
-		@define('QA_COOKIE_SECURE', false);
-		@define('QA_COOKIE_HTTPONLY', true);
-		@define('QA_HTML_COMPRESSION', true);
-		@define('QA_MAX_LIMIT_START', 19999);
-		@define('QA_IGNORED_WORDS_FREQ', 10000);
-		@define('QA_ALLOW_UNINDEXED_QUERIES', false);
-		@define('QA_OPTIMIZE_LOCAL_DB', false);
-		@define('QA_OPTIMIZE_DISTANT_DB', false);
-		@define('QA_PERSISTENT_CONN_DB', false);
-		@define('QA_DEBUG_PERFORMANCE', false);
+        defined('QA_COOKIE_DOMAIN') || define('QA_COOKIE_DOMAIN', '');
+        defined('QA_COOKIE_SECURE') || define('QA_COOKIE_SECURE', false);
+        defined('QA_COOKIE_HTTPONLY') || define('QA_COOKIE_HTTPONLY', true);
+        defined('QA_HTML_COMPRESSION') || define('QA_HTML_COMPRESSION', true);
+        defined('QA_MAX_LIMIT_START') || define('QA_MAX_LIMIT_START', 19999);
+        defined('QA_IGNORED_WORDS_FREQ') || define('QA_IGNORED_WORDS_FREQ', 10000);
+        defined('QA_ALLOW_UNINDEXED_QUERIES') || define('QA_ALLOW_UNINDEXED_QUERIES', false);
+        defined('QA_OPTIMIZE_LOCAL_DB') || define('QA_OPTIMIZE_LOCAL_DB', false);
+        defined('QA_OPTIMIZE_DISTANT_DB') || define('QA_OPTIMIZE_DISTANT_DB', false);
+        defined('QA_PERSISTENT_CONN_DB') || define('QA_PERSISTENT_CONN_DB', false);
+        defined('QA_DEBUG_PERFORMANCE') || define('QA_DEBUG_PERFORMANCE', false);
 
 	//	Start performance monitoring
 
