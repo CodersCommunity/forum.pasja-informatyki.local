@@ -11,7 +11,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 		options.firstLine=editor.config.syntaxhighlight_firstLine;
 		options.highlightChecked=String(editor.config.syntaxhighlight_highlightChecked).toLowerCase()==='true';
 		options.highlight=editor.config.syntaxhighlight_highlight;
-		options.lang=(validLangs.indexOf(editor.config.syntaxhighlight_lang)>-1) ? editor.config.syntaxhighlight_lang : 'as3';
+		options.lang=(validLangs.indexOf(editor.config.syntaxhighlight_lang)>-1) ? editor.config.syntaxhighlight_lang : 'plain';
 		options.code=editor.config.syntaxhighlight_code;
 		return options
 	};
