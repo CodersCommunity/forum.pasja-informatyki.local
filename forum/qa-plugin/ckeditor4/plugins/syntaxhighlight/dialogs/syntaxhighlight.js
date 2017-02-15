@@ -149,7 +149,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 									['Bash (Shell)','bash'],
 									['ColdFusion','cf'],
 									['C#','csharp'],
-									['C++','cpp'],
+									['C/C++','cpp'],
 									['CSS','css'],
 									['Delphi','delphi'],
 									['Diff','diff'],
@@ -169,7 +169,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 									['Scala','scala'],
 									['SQL','sql'],
 									['TAP','tap'],
-									['TypeScript','ts'],
 									['VB','vb'],
 									['XML/XHTML','xml']
 								],
