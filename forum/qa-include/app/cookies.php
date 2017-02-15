@@ -54,7 +54,7 @@
 		else
 			$cookieid=qa_db_cookie_create(qa_remote_ip_address());
 
-		setcookie('qa_id', $cookieid, time()+86400*365, '/', QA_COOKIE_DOMAIN);
+		setcookie('qa_id', $cookieid, time()+86400*365, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
 		$_COOKIE['qa_id']=$cookieid;
 
 		return $cookieid;

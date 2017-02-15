@@ -90,7 +90,7 @@ class qa_html_theme extends qa_html_theme_base
         }
 
         // add Ubuntu font CSS file
-        $this->content['css_src'][] = 'http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic';
+        $this->content['css_src'][] = 'https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic';
 
         qa_html_theme_base::head_css();
 
@@ -247,38 +247,20 @@ class qa_html_theme extends qa_html_theme_base
         $this->widgets('full', 'top');
         $this->header();
 
-        $address = qa_path_absolute(qa_request());
+        $request = explode('/', qa_request());
         $pages = [
-            'http://forum.pasja-informatyki.pl/',
-            'http://forum.pasja-informatyki.pl/users',
-            'http://forum.pasja-informatyki.pl/polls',
-            'http://forum.pasja-informatyki.pl/messages',
-            'http://forum.pasja-informatyki.pl/messages/sent',
-            'http://forum.pasja-informatyki.pl/updates',
-            'http://forum.pasja-informatyki.pl/questions',
-            'http://forum.pasja-informatyki.pl/questions?sort=hot',
-            'http://forum.pasja-informatyki.pl/questions?sort=votes',
-            'http://forum.pasja-informatyki.pl/questions?sort=answers',
-            'http://forum.pasja-informatyki.pl/questions?sort=views',
-            'http://forum.pasja-informatyki.pl/questions?sort=hot',
-            'http://forum.pasja-informatyki.pl/users/special',
-            'http://forum.pasja-informatyki.pl/users/blocked'
+            '',
+            'polls',
+            'updates',
+            'unanswered',
+            'messages',
+            'message'
         ];
-        if (in_array($address, $pages) || (substr($address, 0, 42) === 'http://forum.pasja-informatyki.pl/message/')) {
-            $usersPages = [
-                'http://forum.pasja-informatyki.pl/users',
-                'http://forum.pasja-informatyki.pl/users/special',
-                'http://forum.pasja-informatyki.pl/users/blocked'
-            ];
-            if (in_array($address,
-                    $usersPages) && qa_is_logged_in() && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR
-            ) {
-                $this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
-            } elseif (!in_array($address, $usersPages)) {
-                $this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
-            } else {
-                $this->output('<div class="qa-body-wrapper">', '');
-            }
+        if (in_array($request[0], $pages)
+        || ($request[0] === 'users' && qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR)
+        || ($request[0] === 'user' && qa_get_logged_in_handle() !== $request[1])
+        || ($request[0] === 'questions' && !isset($request[1]))) {
+            $this->output('<div class="qa-body-wrapper" style="margin: -3px auto !important;">', '');
         } else {
             $this->output('<div class="qa-body-wrapper">', '');
         }
@@ -336,8 +318,8 @@ class qa_html_theme extends qa_html_theme_base
         $this->nav('sub');
 
 
-        $adres = qa_path_absolute(qa_request());
-        if ($adres === 'http://forum.pasja-informatyki.pl/') {
+        $adres = qa_request();
+        if ($adres === '') {
             $this->output(<<<'TAG'
 <div class="qa-nav-sub">
 					<ul class="qa-nav-sub-list">
@@ -563,7 +545,7 @@ TAG
         $this->output($qam_snow->footer_custom_content);
         $this->output('<div class="qam-footer-box">');
 
-        $this->output('<div class="qam-footer-row"><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Fanpage na Facebooku</h3><div style="margin-bottom: 10px;" class="fb-page" data-href="https://www.facebook.com/pasjainformatykifanpage" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/pasjainformatykifanpage"><a href="https://www.facebook.com/pasjainformatykifanpage">pasja-informatyki.pl</a></blockquote></div></div></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Cenne informacje</h3><a href="http://forum.pasja-informatyki.pl/faq"> &rarr; Jak korzystać z Forum? Częste pytania</a><a href="http://forum.pasja-informatyki.pl/ksiazki-informatyczne-warte-uwagi"> &rarr; Książki informatyczne warte uwagi</a><a href="http://forum.pasja-informatyki.pl/manifest-pasjonata"> &rarr; Po co nam Forum? Manifest</a><a href="http://forum.pasja-informatyki.pl/regulamin-forum"> &rarr; Regulamin tego miejsca</a><a href="http://forum.pasja-informatyki.pl/zasluzeni-pasjonaci-hall-of-fame"> &rarr; Zasłużeni Pasjonaci</a><a href="http://forum.pasja-informatyki.pl/zasady-przyznawania-punktow"> &rarr; Zasady przyznawania punktów</a></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Polecane miejsca w sieci</h3><ul class="qam-footer-links qam-social-links">
+        $this->output('<div class="qam-footer-row"><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Fanpage na Facebooku</h3><div style="margin-bottom: 10px;" class="fb-page" data-href="https://www.facebook.com/pasjainformatykifanpage" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/pasjainformatykifanpage"><a href="https://www.facebook.com/pasjainformatykifanpage">pasja-informatyki.pl</a></blockquote></div></div></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Cenne informacje</h3><a href="/faq"> &rarr; Jak korzystać z Forum? Częste pytania</a><a href="/ksiazki-informatyczne-warte-uwagi"> &rarr; Książki informatyczne warte uwagi</a><a href="/manifest-pasjonata"> &rarr; Po co nam Forum? Manifest</a><a href="/regulamin-forum"> &rarr; Regulamin tego miejsca</a><a href="/zasluzeni-pasjonaci-hall-of-fame"> &rarr; Zasłużeni Pasjonaci</a><a href="/zasady-przyznawania-punktow"> &rarr; Zasady przyznawania punktów</a></div><div class="qam-footer-col"><h3 class="qam-footer-col-heading">Polecane miejsca w sieci</h3><ul class="qam-footer-links qam-social-links">
 			<li title="GitHub CodersCommunity"><a href="https://github.com/CodersCommunity/" target="_blank" class="ei"><i class="icon-github-circled"></i></a></li>
 			<li title="Shell dla użytkowników forum"><a href="https://syntax-shell.me/" target="_blank" class="gplus"><i class="icon-terminal"></i></a></li>
 			<li title="Pasja informatyki na YouTube"><a href="https://www.youtube.com/pasjainformatykitutoriale" target="_blank" class="wordpress"><i class="icon-youtube"></i></a></li>
@@ -589,7 +571,7 @@ TAG
         $this->output(
             '<div class="qa-q-item-title">',
             // add closed note in title
-            empty($q_item['closed']) ? '' : '<img src="' . $this->rooturl . $this->icon_url . '/closed-q-list.png" class="qam-q-list-close-icon" alt="question-closed" title="' . qa_lang('main/closed') . '" />',
+            empty($q_item['closed']) ? '' : '<img src="/qa-theme/SnowFlat/images/icons/closed-q-list.png" class="qam-q-list-close-icon" alt="question-closed" title="' . qa_lang('main/closed') . '" />',
             '<a href="' . $q_item['url'] . '">' . $q_item['title'] . '</a>', '</div>'
         );
     }
