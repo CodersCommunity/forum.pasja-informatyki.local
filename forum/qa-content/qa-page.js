@@ -480,7 +480,7 @@ function qa_ajax_error()
 			'bash' : 'bash-shell',
 			'cf' : 'coldfusion',
 			'csharp' : 'C#',
-			'cpp' : 'C++',
+			'cpp' : 'C/C++',
 			'css' : 'CSS',
 			'delphi' : 'delphi',
 			'diff' : 'diff',
@@ -500,7 +500,6 @@ function qa_ajax_error()
 			'scala' : 'scala',
 			'sql' : 'SQL',
 			'tap' : 'tap',
-			'ts' : 'TypeScript',
 			'vb' : 'VB',
 			'xml' : 'XML-xHTML'
 		};
