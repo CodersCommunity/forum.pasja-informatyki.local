@@ -1,0 +1,15 @@
+.qa-page-links {
+	margin-top: 10px;
+}
+.qa-page-links-item {
+
+}
+.qa-page-links-item a, .qa-page-links-item span, .qa-page-links-label {
+	background: $bcg-dark;
+	color: $color;
+}
+
+span.qa-page-selected {
+	background: $bcg;
+	border: 1px solid $border;
+}

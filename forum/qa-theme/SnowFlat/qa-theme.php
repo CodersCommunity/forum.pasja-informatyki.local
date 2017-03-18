@@ -280,6 +280,11 @@ class qa_html_theme extends qa_html_theme_base
         $this->footer();
 
         $this->body_suffix();
+
+		// temporary css / livereload include
+		$this->output('<link href="/qa-custom-theme/dark/build/main.css" rel="stylesheet">');
+		$this->output('<script src="http://localhost:3001/livereload.js"></script>');
+		// temporary css / livereload include
     }
 
     /**

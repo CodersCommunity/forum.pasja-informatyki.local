@@ -1,0 +1,17 @@
+{
+  "name": "fpi-dark-theme",
+  "version": "1.0.0",
+  "description": "Forum Pasja Informatyki dark theme",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Argeento",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-livereload": "^3.8.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sass": "^3.1.0"
+  }
+}

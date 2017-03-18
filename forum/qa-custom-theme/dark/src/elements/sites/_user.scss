@@ -1,0 +1,54 @@
+[class^="qa-part-form"], [class^="qa-part-custom"] {
+	background: $bcg;
+	color: $color;
+}
+
+.qa-form-wide-label, .qa-form-wide-data, .qa-form-tall-spacer {
+	border-top: 1px solid $border-light;
+	border-bottom: 1px solid $border-light;
+	padding: 10px 5px;
+}
+
+.qa-form-wide-label {
+	color: $color;
+}
+
+.level-expert {
+	color: $violet;
+}
+
+.qa-form-wide-static a {
+	margin: 0;
+}
+
+.qa-part-form-activity .qa-form-wide-static {
+	color: $color-dark !important;
+}
+
+.qa-uf-user-downvotes {
+	color: $red !important;
+}
+
+#level .qa-form-wide-static a.category-level-link {
+	color: $link;
+	&:visited, &:hover, &:focus {
+		color: $link;
+	}
+}
+
+// badges
+.badge-bronze {
+    background-color: #926f4d;
+    border: 1px solid #3a2109;
+    color: #efefef;
+}
+
+.badge-silver {
+    background-color: #5d5d5d;
+    border: 1px solid #585858;
+    color: #ececec;
+}
+
+.badge-gold {
+    color: #2f2c04;
+}
