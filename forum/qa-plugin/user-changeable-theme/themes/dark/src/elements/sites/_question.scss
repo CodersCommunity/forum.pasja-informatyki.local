@@ -1,0 +1,62 @@
+.qa-part-q-view {
+	background-color: $bcg;
+	color: $color;
+	line-height: 1.5em;
+
+	.social-wrapper { display: none }
+
+	.qa-q-view-buttons, .qa-q-view-meta {
+		border-color: $border-light;
+	}
+}
+
+.qa-a-list-item {
+	background: $bcg;
+	color: $color;
+
+}
+.qa-c-list-item {
+	background: $bcg-dark;
+	color: $color;
+	border: 1px solid $border;
+
+}
+.qa-c-item-meta, .qa-a-item-meta, .qa-q-view-meta  {
+	border-color: $border-light;
+	color: darken($grey, 10%);
+	a { color: lighten($grey, 20%) }
+}
+.qa-c-item-buttons, .qa-a-item-buttons {
+	border-color: $border-light;
+}
+
+.topic-author {
+	border: none;
+	border-radius: 0;
+	border-bottom: 1px solid;
+	border-color: darken($blue, 15%);
+}
+
+.qa-part-a-form .qa-form-tall-label {
+	font-size: 14px;
+}
+
+
+// highlighter
+.syntaxhighlighter-block-bar {
+	border-radius: 0;
+	border: 1px solid $border;
+	border-bottom: none;
+
+	margin: 0;
+
+	height: 30px;
+
+	background: $bcg-dark;
+}
+
+.syntaxhighlighter {
+	margin-top: 0 !important;
+	border: 1px solid $border;
+	border-top: none;
+}

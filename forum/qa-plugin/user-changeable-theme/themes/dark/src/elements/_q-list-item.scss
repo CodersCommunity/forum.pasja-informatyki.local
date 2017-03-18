@@ -1,0 +1,63 @@
+.qa-q-list-item {
+	background-color: $bcg;
+	border: 1px solid $border;
+	border-top: none;
+
+	&:first-child {
+		border-top: 1px solid $border;
+	}
+	margin: 0;
+
+	a, a:visited {
+		color: lighten($blue, 5%);
+	}
+}
+
+.qa-q-item-meta {
+	color: darken($grey, 10%);
+
+	a, a:visited {
+		color: lighten($grey, 20%);
+	}
+}
+
+.qa-a-count-zero {
+	background-color: $bcg-dark;
+	color: darken($color, 20%)
+}
+
+.qa-a-count-selected {
+	//background-color: $green;
+}
+
+.qa-voting {
+	background-color: darken($grey, 40%);
+	color: darken($color, 10%)
+}
+
+.qa-tag-link, .qa-tag-link:visited {
+	background-color: $bcg-dark;
+	color: darken($color, 10%) !important;
+	border-left: 2px solid transparent;
+
+	transition: all 0.1s !important;
+
+	&:hover, &:focus {
+		background-color: $bcg-dark;
+		border-left: 2px solid $blue;
+	}
+}
+
+.qa-tag-link.qa-tag-favorited:before, .qa-widget-side .qa-q-view-tag-item.qa-tag-favorited:before {
+	background-color: transparent;
+}
+
+.qa-q-item-meta .qa-category-link.qa-cat-favorited:before {
+	content: '';
+	background: url(http://forum.pasja-informatyki.pl/qa-theme/SnowFlat/images/star14.png);
+	background-size: cover;
+	display: block;
+	width: 14px;
+	height: 14px;
+
+}
