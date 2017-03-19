@@ -34,6 +34,9 @@ class qa_html_theme_layer extends qa_html_theme_base
     public function head_lines()
     {
         if (qa_opt('user_theme_enable')) {
+            if (isset($_POST['select_theme'])) {
+                $this->save_theme($_POST['select_theme']);
+            }
             $this->content['head_lines'][] = '<style>
 
             </style>';
@@ -49,23 +52,5 @@ class qa_html_theme_layer extends qa_html_theme_base
             }
         }
         qa_html_theme_base::head_css();
-    }
-
-    public function nav_item($key, $navlink, $class, $level = null)
-    {
-        qa_html_theme_base::nav_item($key, $navlink, $class, $level = null);
-        if (qa_opt('user_theme_enable')) {
-            if (isset($_POST['select_theme'])) {
-                $this->save_theme($_POST['select_theme']);
-            }
-            if ($class === 'nav-user' && ($key === 'logout' || $key === 'register')) {
-                $this->output('<li class="qa-'.$class.'-item">Motyw:
-                    <form action="/'.qa_request().'" method="post">
-                        <button name="select_theme" value="0">Jasny</button>
-                        <button name="select_theme" value="1">Ciemny</button>
-                    </form>
-                </li>');
-            }
-        }
     }
 }

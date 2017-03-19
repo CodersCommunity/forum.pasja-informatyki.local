@@ -20,3 +20,4 @@ if (!defined('QA_VERSION')) {
 
 qa_register_plugin_layer('user-theme-layer.php', 'User changeable theme layer');
 qa_register_plugin_module('event', 'user-theme-event.php', 'user_theme_event', 'User changeable theme event');
+qa_register_plugin_module('widget', 'user-theme-widget.php', 'user_theme_widget', 'User changeable theme widget');
