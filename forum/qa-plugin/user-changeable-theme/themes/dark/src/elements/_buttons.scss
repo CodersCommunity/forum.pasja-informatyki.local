@@ -1,0 +1,46 @@
+.qa-form-light-button, .qa-c-list-item .qa-form-light-button {
+	background-color: #3a404b;
+	color: $color;
+
+	transition: all 0.1s;
+
+	&:hover, &:focus {
+		background-color: $blue;
+		color: white;
+	}
+}
+
+.qa-form-light-button-answer {
+	background-color: #3a404b;
+	color: $color;
+
+	&:hover, &:focus {
+		background-color: #2ecc71;
+		color: white;
+	}
+}
+
+form .widget-select-theme {
+
+	&__button {
+		border-color: $border;
+
+		&--light {
+			background: $bcg;
+			color: $color;
+			pointer-events: auto;
+
+			&:hover, &:focus {
+				background: $blue;
+				color: white;
+			}
+		}
+
+		&--dark {
+			pointer-events: auto;
+			background: $bcg-dark;
+			color: $color;
+			pointer-events: none;
+		}
+	}
+}

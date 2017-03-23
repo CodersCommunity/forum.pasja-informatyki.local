@@ -13,7 +13,7 @@ a {
 
 input, textarea, select {
 	padding: 6px 10px;
-	margin: 2px 8px;
+	margin: 2px 0 15px;
 	background-color: $bcg-input;
 	border: 1px solid $border;
 	color: $color;
@@ -31,12 +31,15 @@ input:focus, textarea:focus, select:focus {
 .level-expert, .level-expert a {
 	color: $violet !important;
 }
+
 .level-administrator, .level-administrator a {
 	color: #f36767 !important;
 }
+
 .level-moderator, .level-moderator a {
 	color: $green !important;
 }
+
 .level-editor, .level-editor a {
 	color: #dcc461 !important;
 }
@@ -48,4 +51,33 @@ input:focus, textarea:focus, select:focus {
 	display: block;
 	width: 14px;
 	height: 14px;
+}
+
+// advertisements
+.qa-widget-main.qa-widget-main-high, .qa-widget-main.qa-widget-main-low {
+	div {
+		background: $bcg !important;
+		border: 1px solid $border;
+	}
+
+	iframe {
+		opacity: 0.7;
+		filter: grayscale(50%);
+
+		transition: all 0.1s;
+
+		&:hover {
+			opacity: 1;
+			filter: grayscale(0);
+		}
+	}
+}
+
+.qa-widget-main.qa-widget-main-low div{
+	border-top: none;
+}
+
+.qa-widget-main.qa-widget-main-high div {
+	margin-bottom: 0px !important;
+	border-bottom: none;
 }

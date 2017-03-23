@@ -7,10 +7,17 @@
 		color: $color;
 
 		.icon-rss {
-			display: none;
+			color: $color-dark;
+
+			transition: all 0.1s;
+
+			&:hover, &:focus {
+				color: $blue;
+			}
 		}
 	}
 }
+
 .qa-body-wrapper {
 	margin: -3px auto !important;
 }

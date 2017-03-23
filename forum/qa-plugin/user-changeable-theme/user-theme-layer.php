@@ -38,7 +38,58 @@ class qa_html_theme_layer extends qa_html_theme_base
                 $this->save_theme($_POST['select_theme']);
             }
             $this->content['head_lines'][] = '<style>
+				.widget-select-theme {
+					display: -webkit-flex;
+					display: -ms-flexbox;
+					display: flex;
+					-webkit-justify-content: center;
+					-ms-flex-pack: center;
+					        justify-content: center;
+					-webkit-align-items: center;
+					-ms-flex-align: center;
+					        align-items: center
+				}
 
+				.widget-select-theme__text {
+					margin: 0 10px 2px 0;
+				}
+
+				.widget-select-theme__button {
+					background: none;
+					color: #34495e;
+					background: white;
+					border: 1px solid #34495e;
+					width: 80px;
+					padding: 10px 0;
+					transition: all 0.2s;
+					outline: none;
+				}
+
+				.widget-select-theme__button--dark {
+					background: #34495e;
+					color: white;
+					border-left: none;
+				}
+
+				.widget-select-theme__button--dark:hover, .widget-select-theme__button--dark:focus {
+					background: #1e2f40;
+				}
+
+				.widget-select-theme__button--light {
+					pointer-events: none;
+				}
+
+				/* force to display theme buttons (mobile) */
+				@media (max-width: 1179px) {
+					.qa-sidepanel {
+						width: 100% !important;
+						display: block !important;
+					}
+
+					.qa-sidepanel > div:not(.qa-widgets-side-bottom) {
+						display: none;
+					}
+				}
             </style>';
         }
         qa_html_theme_base::head_lines();

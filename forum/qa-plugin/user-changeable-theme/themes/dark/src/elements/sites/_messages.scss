@@ -12,12 +12,15 @@
 .qa-part-message-list {
 	background: $bcg;
 }
+
 .qa-message-item {
 	&:nth-child(even) {
 		background: $bcg-dark;
 	}
+
 	border-bottom-color: $border;
 }
+
 .qa-message-content {
 	border-bottom-color: transparent;
 }

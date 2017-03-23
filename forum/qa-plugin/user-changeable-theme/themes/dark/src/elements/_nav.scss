@@ -7,6 +7,7 @@
 .qa-nav-main {
 	background-color: $bcg-dark;
 }
+
 .qa-nav-main-link, .qa-logo-link {
 	background-color: $bcg-dark;
 	opacity: 1;
@@ -21,6 +22,7 @@
 		img { filter: grayscale(0%) }
 	}
 }
+
 .qa-nav-main-selected {
 	opacity: 1;
 	background: transparent !important;
@@ -36,16 +38,60 @@
 
 
 // account
-.notifybub {
+.notifybub.ntfy-event-nill {
 	border-color: $border;
 	background-color: $bcg;
 	color: $color;
+
+	transition: all 0.2s;
+
+	&:hover, &:focus {
+		background-color: $bcg-input;
+	}
 }
+
 .ntfy-event-new {
 	color: black;
 }
 
 #qam-account-toggle {
 	border-color: $border;
-	background-color: $border;
+	background-color: $bcg;
+
+	transition: all 0.2s;
+
+	&:hover, &:focus {
+		background: #3a404b !important; // sorry
+	}
+}
+
+dfn::after {
+    background: $blue;
+    color: white;
+    border: 1px solid $border;
+}
+
+// panel
+.qam-account-items {
+	background: $bcg !important;
+	border: 1px solid $border;
+}
+
+.qa-nav-user-item, .qa-nav-user-item {
+    padding: 0 20px;
+    border-bottom: 1px solid $border;
+}
+
+.qa-logged-in, .qam-logged-in-points {
+	border-bottom: 1px solid $border;
+}
+
+.qa-nav-user-item, .qa-nav-user-item, .qa-logged-in, .qam-logged-in-points {
+	&:hover, &:focus {
+		background: $bcg-dark
+	}
+}
+
+.qa-nav-user *:before {
+	background-color: $bcg !important;
 }

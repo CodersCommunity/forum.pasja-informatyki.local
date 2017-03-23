@@ -41,6 +41,24 @@
 	font-size: 14px;
 }
 
+#a_list_title, .qa-widget-main h2:first-of-type {
+	background: $bcg;
+	color: $color;
+}
+
+.qa-a-select-button, .qa-a-unselect-button, .qa-a-selected {
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAASFBMVEUAAAAoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDQoLDTI83MkAAAAF3RSTlMAAvYQgulDGPK+gAnUIQjtHuKHt2gnFLDJB8sAAADzSURBVFjD7dbLCsIwFEXRJm36VFvro///p4IkbCGEC8eJSM78LsruJM3x5SpQgQpIgN/PcbtXAN+1rnlv6SRgapu4VgLC4OL9Mnuhwdine9ePQkQ/X9L9EIS/4DsCTAeAGBBADAggBgQQAwKIAQHEgABiQAAxIIAYEEAMCCAGBBADAogBAcSAAGLAHDilGQFLwHVxcbdSQAto4oZQCGgAzwS4bTUDMhqsm0MwAmYAAh9sBwTIk/WjGRCATR83wQgIUPjtfRbQBujGCGgDuUBAG8gFAlpAQSCgDZQFAtoAwuwIKD2ywsPF3cffe+ZVoAJ/C7wAlyQ+YcQObFIAAAAASUVORK5CYII=')
+}
+
+blockquote {
+	background-color: #3a404b;
+    border-left: 7px solid #3498db;
+
+	p {
+		color: $color;
+	}
+}
+
 
 // highlighter
 .syntaxhighlighter-block-bar {
