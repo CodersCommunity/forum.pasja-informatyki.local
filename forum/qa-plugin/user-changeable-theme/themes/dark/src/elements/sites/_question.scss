@@ -79,6 +79,21 @@ blockquote {
 	border-color: $border;
 }
 
+.qa-q-view-closed {
+	background-color: $bcg-dark;
+	border-color: $border;
+
+	transition: all 0.1s;
+
+	&:before {
+		content: url('/qa-theme/SnowFlat/images/icons/closed-note-white.png');
+		background-color: #3a404b;
+		opacity: 0.8;
+
+		transition: all 0.1s;
+	}
+}
+
 div#qa-poll-div {
 	background-color: $bcg-dark;
 	border-color: $border;
