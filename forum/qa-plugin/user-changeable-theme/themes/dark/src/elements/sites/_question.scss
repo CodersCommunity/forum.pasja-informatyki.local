@@ -79,6 +79,11 @@ blockquote {
 	border-color: $border;
 }
 
+div#qa-poll-div {
+	background-color: $bcg-dark;
+	border-color: $border;
+}
+
 // highlighter
 .syntaxhighlighter-block-bar {
 	border-radius: 0;
