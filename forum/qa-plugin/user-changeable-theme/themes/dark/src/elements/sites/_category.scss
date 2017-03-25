@@ -12,7 +12,9 @@
 		line-height: 1.5;
 	}
 
-	.qa-browse-cat-link {
-
+	.qa-browse-cat-note a {
+		&:hover, &:focus {
+			color: white;
+		}
 	}
 }
