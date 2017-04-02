@@ -1,0 +1,37 @@
+.qa-sidebar.wet-asphalt  {
+	background: $bcg;
+	color: $color;
+
+	* {
+		border-bottom-color: $border-light !important;
+	}
+
+	a {
+		color: darken($color, 15%);
+		transition: all 0.1s;
+
+		img {
+			filter: grayscale(50%);
+			transition: all 0.2s;
+		}
+
+		&:hover, &:focus {
+			color: white;
+			background: $bcg-dark;
+
+			img {
+				filter: grayscale(0%);
+			}
+		}
+	}
+
+	div:first-child {
+		color: $color;
+		border-color: $border-light !important;
+	}
+
+	.qa-nav-main-item {
+		margin: 0;
+		padding: 1px;
+	}
+}

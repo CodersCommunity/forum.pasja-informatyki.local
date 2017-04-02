@@ -1,0 +1,26 @@
+.qa-part-form-message {
+	background: $bcg;
+	color: $color;
+}
+
+.qa-form-tall-data {
+	textarea {
+		padding: 10px;
+	}
+}
+
+.qa-part-message-list {
+	background: $bcg;
+}
+
+.qa-message-item {
+	&:nth-child(even) {
+		background: $bcg-dark;
+	}
+
+	border-bottom-color: $border;
+}
+
+.qa-message-content {
+	border-bottom-color: transparent;
+}

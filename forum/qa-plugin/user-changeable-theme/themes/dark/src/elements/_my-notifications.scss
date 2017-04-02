@@ -1,0 +1,46 @@
+#osnbox {
+	.nfyWrap {
+		box-shadow: 0px 0px 15px #1d1d1d;
+		border: 1px solid $border;
+		border-top: none;
+	}
+
+	.nfyWrap .nfyContainer {
+		background: $bcg;
+	}
+
+	.nfyWrap .itemBox, .nfyWrap .itemBox-new {
+		border-bottom: 1px dashed $border;
+		background: $bcg;
+		color: $color;
+	}
+	.nfyWrap .nfyFooter, .nfyWrap .nfyTop {
+		background: $bcg-dark;
+		color: $color;
+		border-color: $border;
+	}
+
+	.nfyWrap .nfyItemLine {
+		color: #c5c5c5;
+	}
+
+	#nfyReadClose {
+		color: $color;
+	}
+
+	.nfyWrap .itemBox:hover {
+	    background: #3a404b;
+	}
+
+	.qam-account-items-wrapper .nfyWrap, .qam-account-items-wrapper .nfyWrap .nfyContainer p {
+		color: $color;
+	}
+
+	.nfyWrap .nfyItemLine a {
+		color: $blue;
+
+		&:hover, &:focus {
+			color: $link;
+		}
+	}
+}

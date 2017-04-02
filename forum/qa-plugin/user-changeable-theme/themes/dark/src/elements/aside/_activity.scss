@@ -1,0 +1,27 @@
+.qa-sidepanel {
+	.qa-activity-count-item {
+		color: $color;
+
+		.qa-activity-count-data {
+			font-size: 26px;
+		}
+
+		&:nth-child(1) {
+			background-color: $bcg-dark;
+		}
+		&:nth-child(2) {
+			background-color: $bcg;
+		}
+		&:nth-child(3) {
+			background-color: $bcg;
+		}
+		&:nth-child(4) {
+			background-color: $bcg-dark;
+		}
+	}
+
+	.qa-widget-side {
+		background: $bcg-dark;
+		border: 1px solid $border;
+	}
+}

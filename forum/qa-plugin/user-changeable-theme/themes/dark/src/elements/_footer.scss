@@ -1,0 +1,22 @@
+.qam-footer-box {
+	background: $bcg;
+	color: $color;
+
+	margin-top: 30px;
+	padding: 10px;
+
+	border-top: 1px solid $border;
+}
+.qa-footer {
+	border-top: 1px solid $border;
+	background: $bcg-dark;
+	color: $color;
+}
+
+.qam-footer-row .qam-footer-links.qam-social-links li:nth-child(odd) a {
+  background-color: $bcg;
+}
+
+.qam-footer-row .qam-footer-links.qam-social-links li:nth-child(even) a {
+  background-color: $bcg-dark;
+}

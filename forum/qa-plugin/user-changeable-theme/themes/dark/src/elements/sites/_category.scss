@@ -1,0 +1,20 @@
+.qa-part-nav-list {
+	background: $bcg;
+	border: 1px solid $border;
+
+	.qa-browse-cat-item {
+		margin-bottom: 10px;
+		border-bottom-color: $border-light;
+	}
+
+	.qa-browse-cat-note {
+		margin: 10px 0;
+		line-height: 1.5;
+	}
+
+	.qa-browse-cat-note a {
+		&:hover, &:focus {
+			color: white;
+		}
+	}
+}

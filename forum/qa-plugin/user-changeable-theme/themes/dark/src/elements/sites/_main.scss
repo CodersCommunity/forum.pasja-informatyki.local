@@ -1,0 +1,33 @@
+.qa-main {
+	h1 {
+		border: none;
+		padding: 10px 20px;
+		margin-bottom: 0px;
+		background-color: $bcg-dark;
+		color: $color;
+
+		.icon-rss {
+			color: $color-dark;
+
+			transition: all 0.1s;
+
+			&:hover, &:focus {
+				color: $blue;
+			}
+		}
+	}
+}
+
+.qa-body-wrapper {
+	margin: -3px auto !important;
+}
+
+.qa-suggest-next {
+	color: $color;
+	background-color: $bcg-dark;
+
+	a {
+		text-decoration: none;
+		border-bottom: none;
+	}
+}

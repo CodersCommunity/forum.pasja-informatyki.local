@@ -1,0 +1,19 @@
+.qa-nav-sub {
+	background-color: $bcg-dark;
+	max-height: 300px;
+}
+
+.qa-nav-sub-link {
+	color: $color-dark !important;
+	border-bottom: 1px solid transparent;
+}
+
+.qa-nav-sub-selected {
+	background-color: transparent !important;
+	color: $color !important;
+	font-weight: 700;
+}
+
+.qa-nav-sub-item {
+	box-shadow: none !important;
+}

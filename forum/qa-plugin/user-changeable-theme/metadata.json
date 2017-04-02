@@ -1,0 +1,12 @@
+{
+    "name": "User changeable theme",
+    "uri": "",
+    "description": "Plugin lets change theme colours by user, compatible with SnowFlat theme",
+    "version": "1.0",
+    "date": "2017-03-18",
+    "author": "Argeento & Arkadiusz Waluk",
+    "author_uri": "https://forum.pasja-informatyki.pl",
+    "license": "",
+    "update_uri": "",
+    "min_q2a": "1.5"
+}
