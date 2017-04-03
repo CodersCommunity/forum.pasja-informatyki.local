@@ -34,7 +34,6 @@ class original_images_page
      */
     function process_request($request)
     {
-        //@todo remove it after they fix multiple request for one pages
         /** @var $module \qa_ckeditor4_upload */
         if ($module = qa_load_module('page', CKE_MODULE_NAME)) {
             $module->process_request($request);
