@@ -1,0 +1,12 @@
+{
+    "name": "original images",
+    "uri": "",
+    "description": "Allow to upload full size images via CKEditor",
+    "version": "1.0",
+    "date": "2017-04-02",
+    "author": "Xandros",
+    "author_uri": "https://github.com/xandros15",
+    "license": "MIT",
+    "update_uri": "",
+    "min_q2a": "1.7"
+}
