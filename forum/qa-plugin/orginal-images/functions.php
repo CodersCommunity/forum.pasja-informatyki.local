@@ -13,7 +13,7 @@ if (!defined('QA_VERSION')) {
  * @param $beforePluginName
  * @param $newPluginParams
  */
-function register_before($beforePluginName, $newPluginParams)
+function register_before($beforePluginName, array $newPluginParams)
 {
     global $qa_modules;
     if (isset($qa_modules[$newPluginParams['type']][$beforePluginName])) {
