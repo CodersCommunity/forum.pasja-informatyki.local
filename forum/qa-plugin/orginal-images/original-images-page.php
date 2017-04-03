@@ -6,11 +6,18 @@ namespace Xandros15;
 class original_images_page
 {
     const REQUEST_NAME = 'wysiwyg-editor-upload';
-    const MAX_FILE_SIZE = 1024 * 1024 * 3; //3MB
+
+    /**
+     * Max file size is chosing depence of value original_images_page::MAX_FILE_SIZE or
+     * qa_opt('ckeditor4_upload_max_size') or qa_get_max_upload_size()
+     * system chose what is lower
+     */
+    const MAX_FILE_SIZE = (int) 1024 * 1024 * 1.5; //1.5MB
     const UPLOAD_FUNCTIONS_FILE = \QA_INCLUDE_DIR . 'qa-app-upload.php';
 
     const CKE_OPT_UPLOAD_IMAGES = 'ckeditor4_upload_images';
     const CKE_OPT_UPLOAD_ALL = 'ckeditor4_upload_all';
+    const CKE_OPT_UPLOAD_MAX_SIZE = 'ckeditor4_upload_max_size';
 
     const QA_OPT_ONLY_IMAGE = 'qa_only_image';
 
@@ -40,10 +47,13 @@ class original_images_page
 
         require_once self::UPLOAD_FUNCTIONS_FILE;
 
-        $upload = qa_upload_file_one(
+        $maxFileSize = min(
             self::MAX_FILE_SIZE,
-            qa_get(self::QA_OPT_ONLY_IMAGE) || !qa_opt(self::CKE_OPT_UPLOAD_ALL)
+            qa_opt(self::CKE_OPT_UPLOAD_MAX_SIZE),
+            qa_get_max_upload_size()
         );
+
+        $upload = qa_upload_file_one($maxFileSize, true);
 
         if (!empty($upload['bloburl'])) {
             echo $this->render_js($upload['bloburl']);
