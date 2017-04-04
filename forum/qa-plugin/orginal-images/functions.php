@@ -21,20 +21,14 @@ function register_before($beforePluginName, array $newPluginParams)
         $module = $qa_modules[$newPluginParams['type']][$beforePluginName];
         unset($qa_modules[$newPluginParams['type']][$beforePluginName]);
 
-        qa_register_plugin_module(
-            $newPluginParams['type'],
-            $newPluginParams['include'],
-            $newPluginParams['class'],
-            $newPluginParams['name']
-        );
-
         $qa_modules[$newPluginParams['type']][$beforePluginName] = $module;
-    } else {
-        qa_register_plugin_module(
-            $newPluginParams['type'],
-            $newPluginParams['include'],
-            $newPluginParams['class'],
-            $newPluginParams['name']
-        );
     }
+    
+    qa_register_plugin_module(
+        $newPluginParams['type'],
+        $newPluginParams['include'],
+        $newPluginParams['class'],
+        $newPluginParams['name']
+    );
+    
 }
