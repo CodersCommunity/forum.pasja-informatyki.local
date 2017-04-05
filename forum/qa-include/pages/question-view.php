@@ -121,7 +121,7 @@
 		$rules['answerbutton']=($post['type']=='Q') && ($permiterror_post_a!='level') && (!$rules['closed']) &&
 			(qa_opt('allow_self_answer') || !$rules['isbyuser']);
 
-		$rules['commentbutton']=(($post['type']=='Q') || ($post['type']=='A')) &&
+		$rules['commentbutton']=(!$rules['closed']) && (($post['type']=='Q') || ($post['type']=='A')) &&
 			($permiterror_post_c!='level') && qa_opt(($post['type']=='Q') ? 'comment_on_qs' : 'comment_on_as');
 		$rules['commentable']=$rules['commentbutton'] && !$permiterror_post_c;
 
@@ -534,7 +534,7 @@
 					'popup' => qa_lang_html('question/follow_a_popup'),
 				);
 
-			if ($answer['commentbutton'])
+			if ($question['closed'] !== true && $answer['commentbutton'])
 				$buttons['comment']=array(
 					'tags' => 'name="'.$prefix.'docomment" onclick="return qa_toggle_element(\'c'.$answerid.'\')"',
 					'label' => qa_lang_html('question/comment_button'),
