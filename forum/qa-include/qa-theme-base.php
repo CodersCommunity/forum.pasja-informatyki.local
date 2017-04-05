@@ -120,7 +120,7 @@ class qa_html_theme_base
 	}
 
 
-	public function output_split($parts, $class, $outertag='span', $innertag='span', $extraclass=null)
+	public function output_split($parts, $class, $outertag='span', $innertag='span', $extraclass=null, $attributes = null)
 /*
 	Output the three elements ['prefix'], ['data'] and ['suffix'] of $parts (if they're defined),
 	with appropriate CSS classes based on $class, using $outertag and $innertag in the markup.
@@ -130,7 +130,7 @@ class qa_html_theme_base
 			return;
 
 		$this->output(
-			'<'.$outertag.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'">',
+			'<'.$outertag.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'"'.(!empty($attributes) ? (' '.$attributes) : '').'>',
 			(strlen(@$parts['prefix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['prefix'].'</'.$innertag.'>') : '').
 			(strlen(@$parts['data']) ? ('<'.$innertag.' class="'.$class.'-data">'.$parts['data'].'</'.$innertag.'>') : '').
 			(strlen(@$parts['suffix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['suffix'].'</'.$innertag.'>') : ''),
@@ -1712,10 +1712,35 @@ class qa_html_theme_base
 
 	public function a_count($post)
 	{
-		// You can also use $post['answers_raw'] to get a raw integer count of answers
+		$comments_attr = null;
+		if (qa_request() === 'activity') {
+			$comments = 0;
+			$answers_comments = '';
+			$postid = $post['raw']['postid'];
+			$sql = 'SELECT postid, type FROM ^posts WHERE parentid=# AND (type="C" OR type="A")';
+			$question_posts = qa_db_read_all_assoc(qa_db_query_sub($sql, $postid));
+			foreach ($question_posts as $qpost) {
+				if (!empty($qpost['postid'])) {
+					if ($qpost['type'] === 'C') {
+						$comments++;
+					} else {
+						$answers_comments .= (!empty($answers_comments) ? ',' : '').$qpost['postid'];
+					}
+				}
+			}
+			if (!empty($answers_comments)) {
+				$sql = 'SELECT COUNT(postid) AS comments FROM ^posts WHERE parentid IN ('.$answers_comments.') AND type="C"';
+				$answers_comments = qa_db_read_all_assoc(qa_db_query_sub($sql));
+				if (isset($answers_comments[0])) {
+					$comments += $answers_comments[0]['comments'];
+				}
+			}
+			$comments_attr = 'data-comments="'.$comments.'"';
+		}
 
+		// You can also use $post['answers_raw'] to get a raw integer count of answers
 		$this->output_split(@$post['answers'], 'qa-a-count', 'span', 'span',
-			@$post['answer_selected'] ? 'qa-a-count-selected' : (@$post['answers_raw'] ? null : 'qa-a-count-zero'));
+			@$post['answer_selected'] ? 'qa-a-count-selected' : (@$post['answers_raw'] ? null : 'qa-a-count-zero'), $comments_attr);
 	}
 
 	public function view_count($post)
