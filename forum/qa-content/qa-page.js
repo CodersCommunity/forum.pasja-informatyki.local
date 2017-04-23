@@ -262,7 +262,7 @@ function qa_ajax_error()
 			jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
 			jsfiddleSnippetForm.method = 'POST';
 			jsfiddleSnippetForm.target = '_blank';
-			jsfiddleSnippetForm.classList = 'jsfiddle-snippet';
+			jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
 
 			var htmlTxt = document.createElement('textarea');
 			htmlTxt.name = 'html';
