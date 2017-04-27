@@ -565,7 +565,7 @@
 		if (qa_is_http_post())
 			foreach ($_POST as $field => $value)
 				if (strpos($field, 'admin_')===0) {
-					@list($dummy, $entityid, $action)=explode('_', $field);
+                    @list($dummy, $entityid, $action)=explode('_', $field);
 
 					if (strlen($entityid) && strlen($action)) {
 						if (!qa_check_form_security_code('admin/click', qa_post_text('code')))
