@@ -12,7 +12,7 @@ class original_images_page
      * qa_opt('ckeditor4_upload_max_size') or qa_get_max_upload_size()
      * system chose what is lower
      */
-    const MAX_FILE_SIZE = (int) 1024 * 1024 * 1.5; //1.5MB
+    const MAX_FILE_SIZE = 1024 * 1536; //1.5MB
     const UPLOAD_FUNCTIONS_FILE = \QA_INCLUDE_DIR . 'qa-app-upload.php';
 
     const CKE_OPT_UPLOAD_IMAGES = 'ckeditor4_upload_images';
