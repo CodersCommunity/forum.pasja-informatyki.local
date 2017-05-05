@@ -32,7 +32,7 @@ class original_images_page
     /**
      * @inheritdoc
      */
-    function process_request($request)
+    public function process_request($request)
     {
         /** @var $module \qa_ckeditor4_upload */
         if ($module = qa_load_module('page', CKE_MODULE_NAME)) {
