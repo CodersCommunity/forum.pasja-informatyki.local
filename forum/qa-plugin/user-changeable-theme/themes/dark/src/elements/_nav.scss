@@ -95,3 +95,16 @@ dfn::after {
 .qa-nav-user *:before {
 	background-color: $bcg !important;
 }
+
+.qa-logged-in{
+	.qa-logged-in-pad{
+		color: none;
+	}
+	.qam-logged-in-points{
+		color: none;
+	}
+}
+
+.qa-nav-user-link{
+	color: $link !important;
+}
