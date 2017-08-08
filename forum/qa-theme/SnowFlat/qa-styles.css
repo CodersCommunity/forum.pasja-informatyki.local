@@ -1206,6 +1206,11 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 	position: relative;
 }
 
+/* disable voting in questions lists */
+.qa-q-list-item .qa-vote-buttons {
+	display: none;
+}
+
 .qa-vote-up-button, .qa-vote-down-button, .qa-voted-up-button, .qa-voted-down-button, .qa-vote-up-disabled, .qa-vote-down-disabled {
 	text-indent: -9999px;
 	background: url('images/vote-buttons.png');
