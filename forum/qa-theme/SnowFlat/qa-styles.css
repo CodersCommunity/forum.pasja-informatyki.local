@@ -1108,7 +1108,7 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 
 /*------[ q-list ]------*/
 .qa-q-list-item {
-	padding: 10px;
+	padding: 8px;
 	margin-bottom: 5px;
 	background: #fefefe;
 }
@@ -1342,7 +1342,7 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 
 .qa-q-item-title {
 	font-weight: bold;
-	font-size: 1.125em;
+	font-size: 1.1em;
 	line-height: 1.46667em;
 	display: block;
 }
