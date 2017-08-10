@@ -30,6 +30,7 @@
 	require_once QA_INCLUDE_DIR.'app/limits.php';
 	require_once QA_INCLUDE_DIR.'db/selects.php';
 	require_once QA_INCLUDE_DIR.'util/sort.php';
+	require_once QA_INCLUDE_DIR.'util/send-to-websocket-server.php';
 
 
 //	Check whether this is a follow-on question and get some info we need from the database
@@ -141,6 +142,14 @@
 				$questionid=qa_question_create($followanswer, $userid, qa_get_logged_in_handle(), $cookieid,
 					$in['title'], $in['content'], $in['format'], $in['text'], isset($in['tags']) ? qa_tags_to_tagstring($in['tags']) : '',
 					$in['notify'], $in['email'], $in['categoryid'], $in['extra'], $in['queued'], $in['name']);
+
+				send_to_websocket_server('question', array(
+					'id' => $questionid,
+					'nick' => qa_get_logged_in_handle(),
+					'title' => $in['title'],
+					'category' => $categories[$in['categoryid']]['title'],
+					'tags' => isset($in['tags']) ? qa_tags_to_tagstring($in['tags']) : ''
+				));
 
 				qa_redirect(qa_q_request($questionid, $in['title'])); // our work is done here
 			}
