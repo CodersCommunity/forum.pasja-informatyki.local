@@ -20,3 +20,5 @@ gulp.task('watch', () => {
 	live.listen(3001)
 	gulp.watch('src/**', ['sass'])
 })
+
+gulp.task('default', ['sass'])
