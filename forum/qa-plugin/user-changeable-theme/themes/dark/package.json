@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Forum Pasja Informatyki dark theme",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+	"gulp": "gulp"
+  },
   "author": "Argeento",
   "license": "MIT",
   "devDependencies": {

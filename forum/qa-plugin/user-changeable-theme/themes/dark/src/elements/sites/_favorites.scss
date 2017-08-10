@@ -1,0 +1,41 @@
+.qa-part-ranking-users{
+	margin-top: 10px;
+	background-color: $bcg;
+}
+
+.qa-part-ranking-tags{
+	background-color: $bcg;
+	.qa-top-tags-table{
+		background-color: $bcg;
+	}
+}
+
+
+.qa-part-nav-list-categories{
+	line-height: 1.5;
+	background-color: $bcg;
+
+	.qa-browse-cat-item{
+		line-height: 1.5;
+		border-bottom:  1px solid $bcg-dark;
+	}
+}
+
+.qa-favorite-image{
+	padding: 0px;
+}
+
+.qa-browse-cat-note a{
+	color: white;
+}
+
+[class*='qa-browse-cat-']{
+	color: white;
+}
+
+.qa-browse-cat-note{
+	margin-top: 5px;
+	a{
+		color: white;
+	}
+}

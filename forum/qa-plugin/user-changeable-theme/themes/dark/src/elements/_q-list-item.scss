@@ -7,10 +7,6 @@
 		border-top: 1px solid $border;
 	}
 	margin: 0;
-
-	a, a:visited {
-		color: lighten($blue, 5%);
-	}
 }
 
 .qa-q-item-meta {
@@ -63,7 +59,6 @@
 
 .qa-q-item-title {
 	margin-right: 20px;
-
 	a {
 		white-space: nowrap;
 		overflow: hidden;
@@ -71,6 +66,19 @@
 		display: block;
 	}
 }
+
+@media only screen and (max-width: 500px) {
+	.qa-q-item-title{
+		a {
+			width: 100%;
+			white-space: pre-line;
+			overflow: hidden;
+			display: block;
+		}
+	}
+}
+
+
 
 div.qa-q-list-item-featured {
     background-color: #1d2025;
