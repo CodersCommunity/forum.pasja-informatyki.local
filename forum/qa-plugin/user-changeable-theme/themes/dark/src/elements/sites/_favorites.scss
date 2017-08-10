@@ -1,41 +1,46 @@
-.qa-part-ranking-users{
+.qa-part-ranking-users {
 	margin-top: 10px;
 	background-color: $bcg;
 }
 
-.qa-part-ranking-tags{
+.qa-part-ranking-tags {
 	background-color: $bcg;
-	.qa-top-tags-table{
+	.qa-top-tags-table {
 		background-color: $bcg;
 	}
 }
 
 
-.qa-part-nav-list-categories{
+.qa-part-nav-list-categories {
 	line-height: 1.5;
 	background-color: $bcg;
 
-	.qa-browse-cat-item{
+	.qa-browse-cat-item {
 		line-height: 1.5;
-		border-bottom:  1px solid $bcg-dark;
+		border-bottom: 1px solid $bcg-dark;
 	}
 }
 
-.qa-favorite-image{
+.qa-favorite-image {
 	padding: 0px;
 }
 
-.qa-browse-cat-note a{
+.qa-browse-cat-note a {
 	color: white;
 }
 
-[class*='qa-browse-cat-']{
+[class*='qa-browse-cat-'] {
 	color: white;
 }
 
-.qa-browse-cat-note{
+.qa-browse-cat-note {
 	margin-top: 5px;
-	a{
+	a {
 		color: white;
 	}
+}
+
+.qa-template-favorites h2 {
+	background: $bcg;
+	color: $color;
 }

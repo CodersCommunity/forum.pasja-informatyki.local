@@ -2,6 +2,10 @@
 	background-color: $bcg-dark;
 	border-bottom: 1px solid $border;
 	margin-bottom: 3px;
+
+	a {
+		color: $link;
+	}
 }
 
 .qa-nav-main {
@@ -72,14 +76,19 @@ dfn::after {
 }
 
 // panel
+
+.qa-nav-user-register .qa-nav-user-link {
+	color: #fff !important
+}
+
 .qam-account-items {
 	background: $bcg !important;
 	border: 1px solid $border;
 }
 
 .qa-nav-user-item, .qa-nav-user-item {
-    padding: 0 20px;
-    border-bottom: 1px solid $border;
+	padding: 0 20px;
+	border-bottom: 1px solid $border;
 }
 
 .qa-logged-in, .qam-logged-in-points {
@@ -96,15 +105,15 @@ dfn::after {
 	background-color: $bcg !important;
 }
 
-.qa-logged-in{
-	.qa-logged-in-pad{
+.qa-logged-in {
+	.qa-logged-in-pad {
 		color: none;
 	}
-	.qam-logged-in-points{
+	.qam-logged-in-points {
 		color: none;
 	}
 }
 
-.qa-nav-user-link{
+.qa-nav-user-link {
 	color: $link !important;
 }
