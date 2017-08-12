@@ -7,6 +7,10 @@
 		border-top: 1px solid $border;
 	}
 	margin: 0;
+
+	a, a:visited {
+		color: lighten($blue, 5%);
+	}
 }
 
 .qa-q-item-meta {

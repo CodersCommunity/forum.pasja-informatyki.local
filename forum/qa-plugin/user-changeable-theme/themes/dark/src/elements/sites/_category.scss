@@ -13,7 +13,7 @@
 	}
 
 	.qa-browse-cat-note a {
-		&:hover, &:focus {
+		&:hover, &:focus, &:visited {
 			color: white;
 		}
 	}
