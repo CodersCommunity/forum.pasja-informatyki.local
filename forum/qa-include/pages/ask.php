@@ -143,13 +143,7 @@
 					$in['title'], $in['content'], $in['format'], $in['text'], isset($in['tags']) ? qa_tags_to_tagstring($in['tags']) : '',
 					$in['notify'], $in['email'], $in['categoryid'], $in['extra'], $in['queued'], $in['name']);
 
-				send_to_websocket_server('question', array(
-					'id' => $questionid,
-					'nick' => qa_get_logged_in_handle(),
-					'title' => $in['title'],
-					'category' => $categories[$in['categoryid']]['title'],
-					'tags' => isset($in['tags']) ? qa_tags_to_tagstring($in['tags']) : ''
-				));
+				send_to_websocket_server('add-question');
 
 				qa_redirect(qa_q_request($questionid, $in['title'])); // our work is done here
 			}
