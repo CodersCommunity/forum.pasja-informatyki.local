@@ -15,14 +15,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	socket.addEventListener('message', function(event) {
 
 		var data = window.JSON.parse(event.data)
-
-		console.log(data);
-
-		if (data.action === 'add-question') {
-			$questionList.hide().html(data.html).fadeIn(500)
-		} else {
-			$questionList.html(data.html)
-		}
+		$questionList.html(data.html)
 
 	})
 })
