@@ -19,6 +19,7 @@
 
 	More about this license: http://www.question2answer.org/license.php
 */
+	require_once QA_INCLUDE_DIR.'util/send-to-websocket-server.php';
 
 	if (!defined('QA_VERSION')) { // don't allow this page to be requested directly from browser
 		header('Location: ../');
@@ -36,6 +37,8 @@
 			'VALUES (#, $, #, $, #, INET_ATON($), $, $, $, $, $, $, NOW())',
 			$categoryid, $type, $parentid, $userid, $cookieid, $ip, $title, $content, $format, $tagstring, $notify, $name
 		);
+
+		send_to_websocket_server('add-post');
 
 		return qa_db_last_insert_id();
 	}

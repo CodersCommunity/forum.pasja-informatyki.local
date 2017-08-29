@@ -31,7 +31,6 @@
 	require_once QA_INCLUDE_DIR.'db/selects.php';
 	require_once QA_INCLUDE_DIR.'util/sort.php';
 
-
 //	Check whether this is a follow-on question and get some info we need from the database
 
 	$in=array();

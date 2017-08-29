@@ -1108,7 +1108,7 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 
 /*------[ q-list ]------*/
 .qa-q-list-item {
-	padding: 10px;
+	padding: 8px;
 	margin-bottom: 5px;
 	background: #fefefe;
 }
@@ -1204,6 +1204,11 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 	height: 60px;
 	width: 20px;
 	position: relative;
+}
+
+/* disable voting in questions lists */
+.qa-q-list-item .qa-vote-buttons {
+	display: none;
 }
 
 .qa-vote-up-button, .qa-vote-down-button, .qa-voted-up-button, .qa-voted-down-button, .qa-vote-up-disabled, .qa-vote-down-disabled {
@@ -1337,7 +1342,7 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 
 .qa-q-item-title {
 	font-weight: bold;
-	font-size: 1.125em;
+	font-size: 1.1em;
 	line-height: 1.46667em;
 	display: block;
 }
