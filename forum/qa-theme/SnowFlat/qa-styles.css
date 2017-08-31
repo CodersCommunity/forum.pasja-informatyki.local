@@ -1439,8 +1439,21 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 	padding: 0;
 }
 
-.qa-q-item-tag-item, .qa-q-view-tag-item {
+.qa-q-item-tag-list {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
+}
+
+.qa-q-view-tag-item {
 	display: inline;
+}
+
+.qa-q-item-tag-item {
+	margin-right: 5px;
+	margin-bottom: 2px;
 }
 
 .qa-tag-link,
