@@ -389,7 +389,7 @@ function set_category_description(idprefix)
 // Protect from multiple ask form submit
 
 window.addEventListener('load', function() {
-	$("form").submit(function() {
+	$("#__ask-form").submit(function() {
     $(this).submit(function() {
         return false;
     });
