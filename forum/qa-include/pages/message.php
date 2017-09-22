@@ -171,7 +171,7 @@
 	$qa_content['error'] = @$pageerror;
 
 	$qa_content['form_message'] = array(
-		'tags' => 'method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__message-form" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -242,6 +242,15 @@
 
 	$qa_content['raw']['account'] = $toaccount; // for plugin layers to access
 
+	// Add script for protect from send multiple private message
+	$qa_content['script_onloads'][] =
+	'$("#__message-form").submit(function() {'.
+    '$(this).submit(function() {'.
+    'return false;'.
+    '});'.
+    'return true;'.
+	'});';
+	
 	return $qa_content;
 
 
