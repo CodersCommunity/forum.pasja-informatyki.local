@@ -171,7 +171,7 @@
 	$qa_content['error'] = @$pageerror;
 
 	$qa_content['form_message'] = array(
-		'tags' => 'method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__message-form" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -242,6 +242,8 @@
 
 	$qa_content['raw']['account'] = $toaccount; // for plugin layers to access
 
+	$qa_content['script_rel'][] = 'qa-content/qa-message.js';
+	
 	return $qa_content;
 
 
