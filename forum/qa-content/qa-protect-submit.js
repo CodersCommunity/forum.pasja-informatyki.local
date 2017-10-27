@@ -1,8 +1,8 @@
-// Protect from multiple feedback send
+// Protect from multiple form submit
 
 window.addEventListener('DOMContentLoaded', function()
 {
-	$("#__feedback-form").submit(function()
+	$("#__form").submit(function()
 	{
 		$(this).submit(function()
 		{

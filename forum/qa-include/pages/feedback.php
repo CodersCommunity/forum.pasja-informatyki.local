@@ -122,7 +122,7 @@
 	$qa_content['error']=@$pageerror;
 
 	$qa_content['form']=array(
-		'tags' => 'id="__feedback-form" method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__form" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -176,7 +176,7 @@
 		unset($qa_content['form']['buttons']);
 	}
 
-	$qa_content['script_rel'][] = 'qa-content/qa-feedback.js';
+	$qa_content['script_rel'][] = 'qa-content/qa-protect-submit.js';
 
 	return $qa_content;
 

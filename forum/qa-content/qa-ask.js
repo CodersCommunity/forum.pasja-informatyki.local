@@ -385,19 +385,3 @@ function set_category_description(idprefix)
 		});
 	});
 }(document));
-
-
-// Protect from multiple ask form submit
-
-window.addEventListener('DOMContentLoaded', function()
-{
-	$("#__ask-form").submit(function()
-	{
-		$(this).submit(function()
-		{
-			return false;
-		});
-		
-		return true;
-	});
-});

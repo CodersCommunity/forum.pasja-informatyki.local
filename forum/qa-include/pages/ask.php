@@ -164,7 +164,7 @@
 	$custom=qa_opt('show_custom_ask') ? trim(qa_opt('custom_ask')) : '';
 
 	$qa_content['form']=array(
-		'tags' => 'id="__ask-form" name="ask" method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__form" name="ask" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -279,7 +279,8 @@
 	}
 
 	$qa_content['focusid']='title';
-
+	
+	$qa_content['script_rel'][] = 'qa-content/qa-protect-submit.js';
 
 	return $qa_content;
 
