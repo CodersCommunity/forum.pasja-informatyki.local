@@ -2455,9 +2455,9 @@ input[type="submit"], button {
 }
 
 .qa-q-view:after {
-		content: "";
-		clear: both;
-		display: block;
+	content: "";
+	clear: both;
+	display: block;
 }
 
 @media (max-width: 1179px) {
