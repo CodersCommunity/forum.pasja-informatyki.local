@@ -17,6 +17,11 @@ if (!defined('QA_VERSION')) { // don't allow this page to be requested directly 
 	exit;
 }
 
+qa_register_plugin_layer(
+  'tips-widget-layer.php',
+  'Tips Widget Layer'
+);
+
 qa_register_plugin_module(
   'page',
   'tips-widget-page.php',
