@@ -2424,7 +2424,7 @@ input[type="submit"], button {
 }
 
 .qa-part-q-view {
-	padding: 20px;
+	padding: 0px;
 	margin-bottom: 5px;
 	background: #fff;
 	position: relative;
@@ -2446,6 +2446,20 @@ input[type="submit"], button {
 	border-bottom: 1px solid #bdc3c7;
 	display: block;
 }
+
+.qa-q-view {
+	background-color: white;
+	padding-bottom: 10px;
+	margin-bottom: 5px;
+	padding: 20px;
+}
+
+.qa-q-view:after {
+	content: "";
+	clear: both;
+	display: block;
+}
+
 @media (max-width: 1179px) {
 	.qa-q-view-meta {
 		clear: left;
