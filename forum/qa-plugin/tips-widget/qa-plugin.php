@@ -23,6 +23,13 @@ qa_register_plugin_layer(
 );
 
 qa_register_plugin_module(
+  'module',
+  'tips-widget-admin.php',
+  'tips_widget_admin',
+  'Tips Widget Admin'
+);
+
+qa_register_plugin_module(
   'page',
   'tips-widget-page.php',
   'tips_widget_page',
@@ -34,11 +41,4 @@ qa_register_plugin_module(
   'tips-widget-widget.php',
   'tips_widget_widget',
   'Tips Widget Widget'
-);
-
-qa_register_plugin_module(
-  'module',
-  'tips-widget-admin.php',
-  'tips_widget_admin',
-  'Tips Widget Admin'
 );

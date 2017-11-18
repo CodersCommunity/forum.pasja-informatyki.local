@@ -2,42 +2,48 @@
 
 class tips_widget_page
 {
-	function match_request($request)
+	public function match_request($request)
 	{
-		if ($request == 'tips')
-			return true;
-		
-		return false;
+		return $request === 'tips';
 	}
 	
-	function suggest_requests()
+	public function suggest_requests()
 	{
-		return [['title'   => 'Porady nie od parady',
-		          'request' => 'tips',
-		          'nav'     => null]];
+		return [[
+			'title'   => 'Porady nie od parady',
+			'request' => 'tips',
+			'nav'     => null
+		]];
 	}
 	
-	function process_request($request)
+	public function process_request($request)
 	{
 		if (!qa_opt('tips-enable'))
 		{
-			return include QA_INCLUDE_DIR.'qa-page-not-found.php';
+			return include QA_INCLUDE_DIR . 'qa-page-not-found.php';
 		}
 		
 		$qa_content = qa_content_prepare();
 		
 		$qa_content['title'] = 'Porady nie od parady';
 		
-		$tips_list = explode('!NEW!', qa_opt('tips-widget-content'));
-		$tips_list_content = "\t<ul>\n";
-		foreach ($tips_list as $element)
-		{
-			$tips_list_content .= "\t\t<li>".$element."</li>\n";
-		}
-		$tips_list_content .= "\t</ul>";
-		
-		$qa_content['custom'] = str_replace('!TIPS!', $tips_list_content, qa_opt('tips-page-content'));
+		$qa_content['custom'] = str_replace('!TIPS!', $this->prepareTipsList(), qa_opt('tips-page-content'));
 		
 		return $qa_content;
+	}
+	
+	public function prepareTipsList()
+	{
+		$tips_list_content = "\t<ul>\n";
+		
+		$tips_list = explode('!NEW!', qa_opt('tips-widget-content'));
+		foreach ($tips_list as $element)
+		{
+			$tips_list_content .= "\t\t<li>" . $element . "</li>\n";
+		}
+		
+		$tips_list_content .= "\t</ul>";
+		
+		return $tips_list_content;
 	}
 }
