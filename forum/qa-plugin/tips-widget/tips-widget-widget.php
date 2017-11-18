@@ -5,35 +5,41 @@ class tips_widget_widget
 	public $random;
 	private $tips_list;
 	
-	public function __construct()
+	function __construct()
 	{
-		if (!qa_opt('tips-enable')) {
-            return;
-        }
+		if (!qa_opt('tips-enable'))
+			return;
 		
 		$this->tips_list = explode('!NEW!', qa_opt('tips-widget-content'));
 		$prev_random = isset($_COOKIE['prev_random']) ? $_COOKIE['prev_random'] : -1;
 		
-		do {
-			$this->random = mt_rand(0, count($this->tips_list) - 1);
-		} while ($this->random === $prev_random);
+		do
+		{
+			$this->random = rand(0, count($this->tips_list) - 1);
+			
+		} while ($this->random == $prev_random);
 	}
 	
-	public function allow_template($template)
+	function allow_template($template)
 	{
-		return !qa_opt('tips-enable');
+		if (!qa_opt('tips-enable'))
+			return false;
+		
+		return true;
 	}
 	
-	public function allow_region($region)
+	function allow_region($region)
 	{
-		return mb_strtolower($region) === 'side';
+		if ($region == 'side')
+			return true;
+		
+		return false;
 	}
 	
-	public function output_widget($region, $place, $themeobject, $template, $request, $qa_content)
+	function output_widget($region, $place, $themeobject, $template, $request, $qa_content)
 	{
-		if (!qa_opt('tips-enable')) {
-            return;
-        }
+		if (!qa_opt('tips-enable'))
+			return;
 		
 		$themeobject->output('<div style="margin-bottom: 10px;"><b>Porady nie od parady</b></div>');
 		$themeobject->output('<div style="font-size: 13px;">', $this->tips_list[$this->random], '</div>');
