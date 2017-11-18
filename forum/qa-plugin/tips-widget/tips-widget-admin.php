@@ -26,7 +26,7 @@ class tips_widget_admin
 	{	
 		$saved = qa_clicked('tips-save');
 		
-		if ($saved)
+		if ($saved === true)
 		{
 			qa_opt('tips-enable', (bool)qa_post_text('tips-enable'));
 		
