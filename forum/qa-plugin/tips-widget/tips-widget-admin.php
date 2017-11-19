@@ -39,7 +39,7 @@ class tips_widget_admin
 			'fields'  => $this->prepareFields(),
 			'buttons' => [[
 				'label' => 'Save',
-				'tags' => 'NAME="tips-save"'
+				'tags' => 'name="tips-save"'
 			]]
 		];
 		
@@ -51,14 +51,14 @@ class tips_widget_admin
 		return [
 			[
 				'label' => 'Enable plugin',
-				'tags'  => 'NAME="tips-enable"',
+				'tags'  => 'name="tips-enable"',
 				'value' =>  qa_opt('tips-enable'),
 				'type'  => 'checkbox'
 			],
 			
 			[
 				'label' => 'Enter tips. Separate them with !NEW! phrase',
-				'tags'  => 'NAME="tips-widget-content"',
+				'tags'  => 'name="tips-widget-content"',
 				'value' => qa_opt('tips-widget-content'),
 				'rows'  =>  20,
 				'type'  => 'textarea'
@@ -66,7 +66,7 @@ class tips_widget_admin
 			
 			[
 				'label' => 'Enter page content. Mark a place to insert tips list with !TIPS! phrase',
-				'tags'  => 'NAME="tips-page-content"',
+				'tags'  => 'name="tips-page-content"',
 				'value' => qa_opt('tips-page-content'),
 				'rows'  =>  20,
 				'type'  => 'textarea'

@@ -3,8 +3,8 @@
   Plugin Name: Tips Widget
   Plugin URI:
   Plugin Description: Simple plugin for displaying random tip about forum as widget in sidebar
-  Plugin Version: 0.1
-  Plugin Date: 2017-11-05
+  Plugin Version: 0.2
+  Plugin Date: 2017-11-19
   Plugin Author: Patrycjerz
   Plugin Author URI:
   Plugin License: GPLv2
