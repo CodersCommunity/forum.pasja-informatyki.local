@@ -869,3 +869,113 @@ function qa_ajax_error()
     }
 
 } ( document ) );
+
+/*
+ * Feature: add @adnotation with nick of user, to whom current comment is added to
+ */
+;( function( document ) {
+
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+        console.clear();
+        ////
+        console.warn( '>Annotating commented user started<' );
+        document.querySelector( '.qa-main' ).addEventListener( 'click', function( ev ) {
+            const eTarget = ev.target;
+
+            if ( eTarget.value === 'skomentuj' || eTarget.value === 'odpowiedz' ) {
+                console.warn( 'eTarget: ', eTarget, ' /element form: ', eTarget.form.action );
+                const matchedInstanceName = findCkeInstancePrefix( eTarget.name, eTarget.form.action );
+                console.warn(
+                    '(click) matchedInstanceName: ', matchedInstanceName, ' /eTarget.name: ', eTarget.name,
+                    ' /raw author: ', eTarget.parentNode.parentNode.parentNode.querySelector( '.vcard.author' ).textContent
+                );
+
+                if ( matchedInstanceName === null ) {
+                    // Stop here, because we do not want to annotate the question Author when we give an answer
+                    return;
+                }
+
+                const chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( ( instanceName ) => {
+                    console.log( '....instanceName: ', instanceName, ' /matchedInstanceName: ', matchedInstanceName );
+                    return instanceName.includes( matchedInstanceName );
+                } );
+                console.warn(
+                    'chosenCommentCKEInstance: ', chosenCommentCKEInstance,
+                    ' /Object.keys( CKEDITOR.instances ): ', Object.keys( CKEDITOR.instances )
+                );
+                console.warn(
+                    //' /cke: ', CKEDITOR.instances[ chosenCommentCKEInstance ].document.$.querySelector( 'p' )
+                );
+
+                if ( chosenCommentCKEInstance ) {
+                    CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'instanceReady', ( ckeEvt ) => {
+                        handleCkeInstance( ckeEvt /*CKEDITOR.instances[ chosenCommentCKEInstance ].editable.editor*/, chosenCommentCKEInstance, eTarget );
+                    } );
+                } else {
+                    CKEDITOR.on( 'instanceReady', ( ckeEvt ) => {
+                        handleCkeInstance( ckeEvt, matchedInstanceName, eTarget );
+                    } );
+                }
+            }
+        } );
+
+        const findCkeInstancePrefix = ( instanceSource, ancestorFormAction ) => {
+            const isAnswer = instanceSource === 'q_doanswer';
+
+            if ( isAnswer ) {
+                return null;
+            }
+
+            const isQuestionComment = instanceSource === 'q_docomment';
+
+            if ( isQuestionComment ) {
+                return `c${ ancestorFormAction.split( '/' ).find( ( urlPart ) => Number( urlPart ) ) }`;
+            } else {
+                return `c${ instanceSource.slice( 1, instanceSource.indexOf( '_' ) ) }`;
+            }
+        };
+
+        const handleCkeInstance = ( evt, chosenCommentCKEInstance, eTarget ) => {
+            const ckeTxt = addAnnotationToCommentedUser( eTarget.parentNode.parentNode.parentNode, CKEDITOR.instances[ chosenCommentCKEInstance ] );
+            setCursorToAnnotationEnd( evt.editor, ckeTxt );
+
+            if ( evt.removeListener ) {
+                evt.removeListener();
+            }
+
+            console.warn(
+                'editor: ', evt.editor.getSelection()
+            );
+        };
+
+        const addAnnotationToCommentedUser = ( relativeDomRef, ckeCurrentInstance ) => {
+            console.warn(
+                'relativeDomRef: ', relativeDomRef,
+                ' /ckeCurrentInstance: ', ckeCurrentInstance
+            );
+            console.warn(
+                ' /author: ', relativeDomRef.querySelector( '.vcard.author' ).textContent
+            );
+            const chosenCommentAuthor = relativeDomRef.querySelector( '.vcard.author' ).textContent;
+            const ckeTxt = ckeCurrentInstance.document.$.querySelector( 'p' );
+            ckeTxt.innerHTML = `@${ chosenCommentAuthor },&nbsp`;
+
+            return ckeTxt;
+        };
+
+        const setCursorToAnnotationEnd = ( editor, ckeTxt ) => {
+            editor.focus();
+
+            const currentRange = editor.getSelection().getRanges()[ 0 ];
+            const ckeNode = new CKEDITOR.dom.node( ckeTxt );
+            const newRange = new CKEDITOR.dom.range( currentRange.document );
+
+            newRange.moveToPosition( ckeNode, CKEDITOR.POSITION_BEFORE_END );
+            newRange.select();
+
+            console.warn('/ranges: ', ckeNode.getParent());
+        };
+    } );
+} ( document ) );
