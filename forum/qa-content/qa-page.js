@@ -898,7 +898,7 @@ function qa_ajax_error()
                 }
 
                 const chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( ( instanceName ) => {
-                    console.log( '....instanceName: ', instanceName, ' /matchedInstanceName: ', matchedInstanceName );
+                    // console.log( '....instanceName: ', instanceName, ' /matchedInstanceName: ', matchedInstanceName );
                     return instanceName.includes( matchedInstanceName );
                 } );
                 console.warn(
@@ -909,15 +909,24 @@ function qa_ajax_error()
                     //' /cke: ', CKEDITOR.instances[ chosenCommentCKEInstance ].document.$.querySelector( 'p' )
                 );
 
-                if ( chosenCommentCKEInstance ) {
-                    CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'instanceReady', ( ckeEvt ) => {
-                        handleCkeInstance( ckeEvt /*CKEDITOR.instances[ chosenCommentCKEInstance ].editable.editor*/, chosenCommentCKEInstance, eTarget );
-                    } );
-                } else {
-                    CKEDITOR.on( 'instanceReady', ( ckeEvt ) => {
-                        handleCkeInstance( ckeEvt, matchedInstanceName, eTarget );
-                    } );
-                }
+                CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'focus', ( ckeEvt ) => {
+                    console.warn('.... focus .....');
+                    handleCkeInstance( ckeEvt, chosenCommentCKEInstance /*matchedInstanceName*/, eTarget );
+                } );
+
+                // if ( chosenCommentCKEInstance ) {
+                // 	CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'focus', ( ckeEvt ) => {
+                //         ckeEvt.removeListener();
+                // 		console.warn('....cke focused!!!!....');
+					// } );
+                    // CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'instanceReady', ( ckeEvt ) => {
+                    //     handleCkeInstance( /*ckeEvt*/ CKEDITOR.instances[ chosenCommentCKEInstance ].editable.editor, chosenCommentCKEInstance, eTarget );
+                    // } );
+                // } else {
+                //     CKEDITOR.on( 'instanceReady', ( ckeEvt ) => {
+                //         handleCkeInstance( ckeEvt, matchedInstanceName, eTarget );
+                //     } );
+                // }
             }
         } );
 
@@ -938,6 +947,7 @@ function qa_ajax_error()
         };
 
         const handleCkeInstance = ( evt, chosenCommentCKEInstance, eTarget ) => {
+            console.warn( '(handleCkeInstance) chosenCommentCKEInstance: ', chosenCommentCKEInstance, ' /CKEDITOR.instances[ chosenCommentCKEInstance ]: ', CKEDITOR.instances[ chosenCommentCKEInstance ] );
             const ckeTxt = addAnnotationToCommentedUser( eTarget.parentNode.parentNode.parentNode, CKEDITOR.instances[ chosenCommentCKEInstance ] );
             setCursorToAnnotationEnd( evt.editor, ckeTxt );
 
@@ -946,7 +956,7 @@ function qa_ajax_error()
             }
 
             console.warn(
-                'editor: ', evt.editor.getSelection()
+                // 'editor: ', evt.editor.getSelection()
             );
         };
 
@@ -975,7 +985,7 @@ function qa_ajax_error()
             newRange.moveToPosition( ckeNode, CKEDITOR.POSITION_BEFORE_END );
             newRange.select();
 
-            console.warn('/ranges: ', ckeNode.getParent());
+            // console.warn('/ranges: ', ckeNode.getParent());
         };
     } );
 } ( document ) );
