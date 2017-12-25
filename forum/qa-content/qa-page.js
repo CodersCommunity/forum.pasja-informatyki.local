@@ -330,16 +330,39 @@ function qa_ajax_error()
 			return jsfiddleSnippetForm;
 		}
 
+		function createCppSnippet(cppData) {
+		    var compileCppBtn = document.createElement( 'button' );
+            compileCppBtn.type = 'button';
+		    compileCppBtn.textContent = 'CPP';
+            compileCppBtn.classList.add( 'compile-cpp-btn' );
+            compileCppBtn.addEventListener( 'click', function() {
+                var xhr = new XMLHttpRequest();
+                xhr.addEventListener( 'load', function() {
+                    console.warn( 'cpp output: ', xhr.response );
+                }, { once: true } );
+                xhr.open( 'POST', 'http://coliru.stacked-crooked.com/compile', true );
+                xhr.send( JSON.stringify( { 'cmd': 'g++ main.cpp && ./a.out', 'src': cppData } ) );
+            } );
+
+            return compileCppBtn;
+        }
+
 		// add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
 		function addSnippets(data, parent)
 		{
-			var codepenSnippet = createCodepenSnippet(data);
-			var jsfiddleSnippet = createJsfiddleSnippet(data);
-
 			var snippetsParent = document.createElement('div');
 			snippetsParent.classList.add('snippets-parent');
-			snippetsParent.appendChild(codepenSnippet);
-			snippetsParent.appendChild(jsfiddleSnippet);
+
+			if (!data.cpp) {
+                var codepenSnippet = createCodepenSnippet(data);
+                var jsfiddleSnippet = createJsfiddleSnippet(data);
+
+                snippetsParent.appendChild(codepenSnippet);
+                snippetsParent.appendChild(jsfiddleSnippet);
+            } else {
+			    var cppSnippet = createCppSnippet(data.cpp)
+                snippetsParent.appendChild(cppSnippet);
+            }
 
 			parent.appendChild(snippetsParent);
 			if ( parent.classList.contains( 'qa-c-item-content' ) )
@@ -354,7 +377,8 @@ function qa_ajax_error()
 		posts.forEach(function(post)
 		{
 		   var blockOfCodeParents = post.querySelectorAll('.syntaxhighlighter-parent');
-		   var canAddSnippets = true;
+		   var canAddFrontEndSnippets = true;
+		   var canAddSnippets = false;
 
 		   if (blockOfCodeParents.length)
 		   {
@@ -363,6 +387,7 @@ function qa_ajax_error()
 				 var htmlCode = '';
 				 var cssCode = '';
 				 var jsCode = '';
+				 var cppCode = '';
 				 var parent = Array.from(blockOfCodeParents)[0].parentNode.parentNode;
 
 				 Array.from(blockOfCodeParents).forEach(function(block)
@@ -390,13 +415,16 @@ function qa_ajax_error()
 						case 'jscript' : jsCode += blocksInPost.jscript;
                                         data.js = jsCode;
                                     break;
+                        case 'cpp' : cppCode += blocksInPost.cpp;
+                                    data.cpp = cppCode;
 						default : canAddSnippets = false;
                                     break;
 					}
 				 });
 
-				 if (canAddSnippets)
-					 addSnippets(data, parent);
+				 if (canAddFrontEndSnippets) {
+                     addSnippets( data, parent );
+                 }
 		   }
 		});
 	 }

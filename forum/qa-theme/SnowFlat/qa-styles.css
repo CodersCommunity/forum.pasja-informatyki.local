@@ -4841,6 +4841,15 @@ form div.qa-q-view-content
 	display: none;
 }
 
+.compile-cpp-btn {
+    width: 50px;
+    height: 25px;
+    background: red;
+    position: absolute;;
+    top: 0;
+    right: 10px;
+}
+
 .snippets-parent.inside-comment
 {
 	top: -10px;
