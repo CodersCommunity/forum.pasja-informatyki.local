@@ -871,65 +871,29 @@ function qa_ajax_error()
 } ( document ) );
 
 /*
- * Feature: add @adnotation with nick of user, to whom current comment is added to
+ * Feature: add @annotation with nick of user, to whom current comment refers to
  */
 ;( function( document ) {
 
     'use strict';
 
     window.addEventListener( 'DOMContentLoaded', () => {
-        console.clear();
-        ////
-        console.warn( '>Annotating commented user started<' );
-
-        // let recentInstanceName = '';
-
         document.querySelector( '.qa-main' ).addEventListener( 'click', function( ev ) {
             const eTarget = ev.target;
 
             if ( eTarget.value === 'skomentuj' || eTarget.value === 'odpowiedz' ) {
-                // console.warn( 'eTarget: ', eTarget, ' /element form: ', eTarget.form.action );
                 const matchedInstanceName = findCkeInstancePrefix( eTarget.name, eTarget.form.action );
                 const allCommentsForInstance = eTarget.form.querySelector( '[name="question-comments-list"]' ).children;
-                const isResponseToLastComment = allCommentsForInstance[ allCommentsForInstance.length - 1 ].contains( eTarget );
-                console.warn(
-                    '(click) matchedInstanceName: ', matchedInstanceName, ' /eTarget.name: ', eTarget.name,
-                    ' /raw author: ', eTarget.parentNode.parentNode.parentNode.querySelector( '.vcard.author' ).textContent,
-                    ' /rows: ', eTarget.form.querySelector('[name="question-comments-list"]').children,
-                );
+                const allCommentsForInstanceLength = allCommentsForInstance.length;
+                const isResponseToLastComment = allCommentsForInstanceLength && allCommentsForInstance[ allCommentsForInstanceLength - 1 ].contains( eTarget );
 
-                if ( matchedInstanceName === null || !allCommentsForInstance.length || isResponseToLastComment ) {
-                    // Stop here, because we do not want to annotate the question Author when we give an answer
+                if ( matchedInstanceName === null || !allCommentsForInstanceLength || isResponseToLastComment ) {
                     return;
                 }
 
-                // if ( recentInstanceName === matchedInstanceName ) {
-                //     const ckeIframeContainer = document.querySelector( `#${ matchedInstanceName } iframe` ).contentDocument.body.querySelector( 'p' );
-                //     console.warn('ckeIframeContainer: ', ckeIframeContainer);
-                //     ckeIframeContainer.classList.add( 'ckeditor-annotate-mask' );
-                // }
-
-                // recentInstanceName = matchedInstanceName;
-
-                const chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( ( instanceName ) => {
-                    // console.log( '....instanceName: ', instanceName, ' /matchedInstanceName: ', matchedInstanceName );
-                    return instanceName.includes( matchedInstanceName );
-                } );
-                // console.warn(
-                //     'chosenCommentCKEInstance: ', chosenCommentCKEInstance,
-                //     ' /Object.keys( CKEDITOR.instances ): ', Object.keys( CKEDITOR.instances )
-                // );
-                console.warn(
-                    ' /cke instance BEFORE focus: ', Object.assign({}, CKEDITOR.instances[ chosenCommentCKEInstance ])
-                );
-                // console.warn('cke dom before focus: ', CKEDITOR.instances[ chosenCommentCKEInstance ].ui);
-
-                // CKEDITOR.on( 'dialogShow', ( ckeEvt ) => {
-                //     console.warn('>> ANYthing... <<: ', ckeEvt);
-                // } );
+                const chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( ( instanceName ) => instanceName.includes( matchedInstanceName ) );
 
                 CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'focus', ( ckeEvt ) => {
-                    console.warn('.... focus .....');
                     handleCkeInstance( ckeEvt, chosenCommentCKEInstance, eTarget );
                 } );
             }
@@ -952,34 +916,21 @@ function qa_ajax_error()
         };
 
         const handleCkeInstance = ( evt, chosenCommentCKEInstance, eTarget ) => {
-            // console.warn( '(handleCkeInstance) chosenCommentCKEInstance: ', chosenCommentCKEInstance, ' /CKEDITOR.instances[ chosenCommentCKEInstance ]: ', CKEDITOR.instances[ chosenCommentCKEInstance ] );
-            const ckeTxt = addAnnotationToCommentedUser( eTarget.parentNode.parentNode.parentNode, CKEDITOR.instances[ chosenCommentCKEInstance ] );
-            setCursorToAnnotationEnd( evt.editor, ckeTxt );
-
-            if ( evt.removeListener ) {
-                evt.removeListener();
-            }
-
-            console.warn(
-                // 'editor: ', evt.editor.getSelection()
+            setCursorToAnnotationEnd( evt.editor, addAnnotationToCommentedUser(
+                    eTarget.parentNode.parentNode.parentNode, CKEDITOR.instances[ chosenCommentCKEInstance ]
+                )
             );
+
+            evt.removeListener();
         };
 
         const addAnnotationToCommentedUser = ( relativeDomRef, ckeCurrentInstance ) => {
-            // console.warn(
-            //     'relativeDomRef: ', relativeDomRef,
-            //     ' /ckeCurrentInstance: ', ckeCurrentInstance
-            // );
-            console.warn(
-                ' /author: ', relativeDomRef.querySelector( '.vcard.author' ).textContent
-            );
             const chosenCommentAuthor = relativeDomRef.querySelector( '.vcard.author' ).textContent;
             const ckeTxt = ckeCurrentInstance.document.$.querySelector( 'p' );
 
             let currentContent = '';
 
             if ( ckeTxt.innerHTML ) {
-                console.warn( 'ckeTxt before replace: ', ckeTxt.innerHTML );
                 currentContent = ckeTxt.innerHTML.replace( /[<]strong[>](.*)[,<\/]strong[>]/, '' );
             }
 
@@ -997,8 +948,6 @@ function qa_ajax_error()
 
             newRange.moveToPosition( ckeNode, CKEDITOR.POSITION_BEFORE_END );
             newRange.select();
-
-            // console.warn('/ranges: ', ckeNode.getParent());
         };
     } );
 } ( document ) );
