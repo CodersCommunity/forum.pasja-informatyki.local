@@ -215,6 +215,12 @@ function qa_ajax_error()
 
 	// check if browser supports 'select()' and 'copy' commands
 	var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
+	var compilersIdCache = {
+	    id: 0,
+        getNextId: function() {
+	        return 'compileBtn' + this.id++;
+        }
+    };
 
 	/*
 	 * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
@@ -330,18 +336,36 @@ function qa_ajax_error()
 			return jsfiddleSnippetForm;
 		}
 
-		function createCppSnippet(cppData) {
+		function createCppSnippet(cppData, snippetParent) {
+		    var showResult = function( result ) {
+                var cppRelRef = snippetParent.previousElementSibling.querySelector( '.cpp' );
+                var output = document.createElement( 'output' );
+                output.textContent = result;
+                output.classList.add( 'compiler-output' );
+                cppRelRef.parentNode.insertBefore( output, cppRelRef.nextSibling );
+            };
 		    var compileCppBtn = document.createElement( 'button' );
             compileCppBtn.type = 'button';
+            compileCppBtn.id = compilersIdCache.getNextId();
 		    compileCppBtn.textContent = 'CPP';
             compileCppBtn.classList.add( 'compile-cpp-btn' );
             compileCppBtn.addEventListener( 'click', function() {
-                var xhr = new XMLHttpRequest();
-                xhr.addEventListener( 'load', function() {
-                    console.warn( 'cpp output: ', xhr.response );
-                }, { once: true } );
-                xhr.open( 'POST', 'http://coliru.stacked-crooked.com/compile', true );
-                xhr.send( JSON.stringify( { 'cmd': 'g++ main.cpp && ./a.out', 'src': cppData } ) );
+                var cachedCompilation = sessionStorage.getItem( compileCppBtn.id );
+
+                if ( cachedCompilation ) {
+                    console.warn( 'cached compilation: ', cachedCompilation );
+                    showResult( cachedCompilation );
+                } else {
+                    var xhr = new XMLHttpRequest();
+                    xhr.addEventListener( 'load', function() {
+                        console.warn( 'cpp output: ', xhr.response );
+                        showResult( xhr.response );
+
+                        sessionStorage.setItem( compileCppBtn.id, JSON.stringify( xhr.response ) );
+                    }, { once: true } );
+                    xhr.open( 'POST', 'http://coliru.stacked-crooked.com/compile', true );
+                    xhr.send( JSON.stringify( { 'cmd': 'g++ main.cpp && ./a.out', 'src': cppData } ) );
+                }
             } );
 
             return compileCppBtn;
@@ -360,7 +384,7 @@ function qa_ajax_error()
                 snippetsParent.appendChild(codepenSnippet);
                 snippetsParent.appendChild(jsfiddleSnippet);
             } else {
-			    var cppSnippet = createCppSnippet(data.cpp)
+			    var cppSnippet = createCppSnippet(data.cpp, snippetsParent);
                 snippetsParent.appendChild(cppSnippet);
             }
 

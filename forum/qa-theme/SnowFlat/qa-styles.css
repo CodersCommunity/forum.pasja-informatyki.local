@@ -4884,3 +4884,10 @@ form div.qa-q-view-content
 	color: #3498db;
 	text-decoration: underline;
 }
+
+.compiler-output {
+    border: 2px solid red;
+    display: block;
+    background: black;
+    color: white;
+}
