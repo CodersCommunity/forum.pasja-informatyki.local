@@ -177,6 +177,58 @@ function qa_ajax_error()
 }
 
 
+/**
+ *	Feature: check if browser supports copying to clipboard.
+ *	If true, return function, which can copy highlighted content to clipboard on button click - then user can paste it wherever he wants into.
+ *	Otherwise return null.
+ */
+window.initializeCopyToClipboard = ( function() {
+	// check if browser supports 'select()' and 'copy' commands
+	var isClipboardSupported = ( window.getSelection && document.queryCommandSupported( 'copy' ) && navigator.userAgent.indexOf( 'Firefox' ) === -1 );
+
+	function copyToClipBoard( ev, contentToCopy ) {
+		// prevent page refresh (or something weird) as default button action
+		ev.preventDefault();
+
+		if ( !ev.defaultPrevented ) {
+			return false;
+		}
+
+		/*
+		 * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
+		 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
+		 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
+		 * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
+		 * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
+		 */
+		var textArea = document.createElement( "textarea" );
+		textArea.classList.add( 'content-copy' );
+		textArea.value = contentToCopy;
+
+		document.body.appendChild( textArea );
+
+		// if anything on the page is selected (a.k.a highlighted) - clear the selection
+		if ( window.getSelection().rangeCount )
+			window.getSelection().removeAllRanges();
+
+		/*
+		 * Below code will select given DOM elements
+		 * and create Range Object, so that text content can be selected (a.k.a highlighted)
+		 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
+		 */
+		var range = document.createRange();
+		range.selectNode( textArea );
+		window.getSelection().addRange( range );
+
+		// copy content that is select inside Document - so that is only textarea
+		document.execCommand( 'copy' );
+
+		// remove <textarea> from DOM
+		document.body.removeChild( textArea );
+	};
+
+	return isClipboardSupported ? copyToClipBoard : null;
+}() );
 
  /*	Feature: inform user about marking best answer, when he wants to close a topic
  */
@@ -213,8 +265,8 @@ function qa_ajax_error()
 {
 	'use strict';
 
-	// check if browser supports 'select()' and 'copy' commands
-	var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
+	// get reference to copying function or null if it is not supported by browser
+	var copyToClipboard = window.initializeCopyToClipboard;
 
 	/*
 	 * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
@@ -402,67 +454,10 @@ function qa_ajax_error()
 	 }
 
 	/*
-	 *	Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
-	 */
-	function copyToClipboard(ev)
-	{
-		// prevent page refresh (or something weird) as default button action
-		ev.preventDefault();
-		if ( !ev.defaultPrevented ) { return false; }
-
-		var code = [];
-		var t = ev.target;
-		var blockOfCodeBar = t.parentNode.parentNode;
-
-		// get block of code content - practically all lines of code inside
-		Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
-		{
-			code.push(lineOfCode.textContent);
-		});
-
-		/*
-		 * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
-		 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
-		 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
-		 * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
-		 * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
-		 */
-		var textArea = document.createElement("textarea");
-		textArea.classList.add('content-copy');
-
-		code.forEach(function(singleLineOfCode)
-		{
-			textArea.value += singleLineOfCode + '\r\n';
-		});
-
-		document.body.appendChild(textArea);
-
-		// if anything on the page is selected (a.k.a highlighted) - clear the selection
-		if (window.getSelection().rangeCount)
-			window.getSelection().removeAllRanges();
-
-		/*
-		 * Below code will select given DOM elements
-		 * and create Range Object, so that text content can be selected (a.k.a highlighted)
-		 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
-		 */
-		var range = document.createRange();
-		range.selectNode( textArea );
-		window.getSelection().addRange(range);
-
-		// copy content that is select inside Document - so that is only textarea
-		document.execCommand('copy');
-
-		// remove <textarea> from DOM
-		document.body.removeChild(textArea);
-	}
-
-
-	/*
 	 * Feature: Collapsable blocks of code
 	 * Date: 05.07.2016r.
 	 */
-	function handleCodeCollapsing(insidePreview, addCopyBtn)
+	function handleCodeCollapsing(insidePreview)
 	{
 		/*
 		 * !!!! IMPORTANT VARIABLE !!!!
@@ -567,8 +562,19 @@ function qa_ajax_error()
 			copyCodeBtn.textContent = 'Kopiuj';
 			copyCodeBtn.classList.add('content-copy-btn');
 
-			if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter'))
-				copyCodeBtn.addEventListener('click', copyToClipboard);
+			if (!!copyToClipboard && window.hasOwnProperty('SyntaxHighlighter'))
+				copyCodeBtn.addEventListener('click', function( ev ) {
+					var eTarget = ev.target;
+
+					var blockOfCodeBar = eTarget.parentNode.parentNode;
+
+					// get block of code content - practically all lines of code inside
+					var codeContent = Array.from( blockOfCodeBar.querySelector( '.code .container' ).children ).map( function( lineOfCode ) {
+						return lineOfCode.textContent  + '\r\n';
+					} ).join( '' );
+
+					copyToClipboard( ev, codeContent );
+				});
 			else
 				copyCodeBtn.classList.add('content-copy-btn-disabled');
 
@@ -666,7 +672,7 @@ function qa_ajax_error()
 				 * prepare blocks of code inside Preview to be collapsed/expanded
 				 * "true" parameter lets to display collapsing blocks inside Preview Modal
 				 */
-				handleCodeCollapsing(true, isClipboardSupported);
+				handleCodeCollapsing(true);
 			}
 		});
 	}
@@ -747,7 +753,7 @@ function qa_ajax_error()
 			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
 			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
 			 */
-			handleCodeCollapsing(false, isClipboardSupported);
+			handleCodeCollapsing(false);
 
 			var foundAnyAnswerInTopic = document.querySelector('.answer');
 
@@ -869,3 +875,95 @@ function qa_ajax_error()
     }
 
 } ( document ) );
+
+
+/**
+ *	Add button, which will let users to copy link of topic/comment they are currently reading and share it
+ */
+;( function( document ) {
+
+	'use strict';
+
+	var copyToClipboard = window.initializeCopyToClipboard;
+
+    console.info( 'copyToClipboard: ', copyToClipboard, ' /boolean: ' , !!copyToClipboard );
+
+	if ( !!copyToClipboard ) {
+		var shareMethodPopup = ( function() {
+			var popup = document.createElement( 'div' );
+			popup.classList.add( 'share-popup' );
+            popup.id = 'share-popup';
+
+			var shareLinkField = document.createElement( 'input' );
+			shareLinkField.type = 'text';
+			shareLinkField.readonly = true;
+            shareLinkField.id = 'shareLinkField';
+			shareLinkField.value = '';
+
+			var copyLinkBtn = document.createElement( 'button' );
+			copyLinkBtn.type = 'button';
+            copyLinkBtn.textContent = 'Kopiuj link';
+            copyLinkBtn.classList.add( 'copy-shared-link' );
+
+			popup.appendChild( shareLinkField );
+			popup.appendChild( copyLinkBtn );
+
+			return {
+                popup: popup,
+                shareLinkField: shareLinkField
+            };
+		}() );
+
+		var addShareButton = function() {
+
+			var topicActionButtonsBar = document.querySelector( '.qa-q-view-buttons' );
+			var answersActionButtonsBar = Array.from( document.querySelectorAll( '.qa-a-item-buttons' ) );
+			var commentsActionButtonsBar = Array.from( document.querySelectorAll( '.qa-c-item-buttons' ) );
+
+			var allActionButtonsBar = answersActionButtonsBar.concat( commentsActionButtonsBar );
+			allActionButtonsBar.push( topicActionButtonsBar );
+
+			for ( var i = 0, len = allActionButtonsBar.length; i < len; i++ ) {
+				var shareButton = document.createElement( 'button' );
+                shareButton.type = 'button';
+				shareButton.textContent = 'Udostępnij';
+				shareButton.classList.add( 'share-button' );
+
+				allActionButtonsBar[ i ].appendChild( shareButton );
+			}
+
+            var popupParentRef = {};
+
+            var mainParent = document.querySelector( '.qa-main' );
+			mainParent.addEventListener( 'click', function( ev ) {
+                var eTarget = ev.target;
+                var eClassList = eTarget.classList;
+                var parentRef = eTarget.parentNode;
+
+                if ( eClassList.contains( 'share-button' ) ) {
+                    var topicContentGroup = eTarget.parentNode.classList[ 0 ].split( '-' )[ 2 ];
+                    var olderParentRef = topicContentGroup === 'item' ? parentRef.parentNode.parentNode : parentRef.parentNode;
+                    popupParentRef = parentRef;
+                    var sharePopupElem = document.getElementById( 'share-popup' );
+
+                    if ( !sharePopupElem ) {
+                        var url = olderParentRef.querySelector( '[class*="-' + topicContentGroup + '-meta"] a' ).href;
+
+                        shareMethodPopup.shareLinkField.value = url;
+                        parentRef.appendChild( shareMethodPopup.popup );
+                    } else if ( sharePopupElem ) {
+                        sharePopupElem.parentNode.removeChild( shareMethodPopup.popup );
+                    }
+				} else if ( eClassList.contains( 'copy-shared-link' ) ) {
+                    var url = eTarget.previousElementSibling.value;
+
+                    copyToClipboard( ev, url );
+                    popupParentRef.removeChild( shareMethodPopup.popup );
+                }
+			} );
+		};
+
+		document.addEventListener( 'DOMContentLoaded', addShareButton );
+	}
+
+}( document ) );
