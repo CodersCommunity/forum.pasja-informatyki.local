@@ -869,3 +869,29 @@ function qa_ajax_error()
     }
 
 } ( document ) );
+
+/**
+ * Feature - Remove unnecessary # from tags, when creating new post (question)
+ */
+;( function( document ) {
+
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+        const tags = document.getElementById( 'tags' );
+        const askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
+
+        askQuestionBtn.addEventListener( 'click', () => {
+            tags.value = tags.value.split( ' ' ).reduce( ( acc, tag, idx, tagsArray ) => {
+                const extraSpace = idx === tagsArray.length - 1 ? '' : ' ';
+
+                if ( tag.startsWith( '#' ) ) {
+                    return acc + tag.slice( 1 ) + extraSpace;
+                } else {
+                    return acc + tag + extraSpace;
+                }
+            }, '' );
+        } );
+    } );
+
+}( document ) );
