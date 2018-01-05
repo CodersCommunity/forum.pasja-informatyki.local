@@ -877,22 +877,24 @@ function qa_ajax_error()
 
     'use strict';
 
-    window.addEventListener( 'DOMContentLoaded', () => {
-        const tags = document.getElementById( 'tags' );
-        const askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
+    if ( location.href.includes( '/ask' ) ) {
+        window.addEventListener( 'DOMContentLoaded', () => {
+            const tags = document.getElementById( 'tags' );
+            const askQuestionBtn = document.querySelector( 'input[value="Zadaj pytanie"]' );
 
-        askQuestionBtn.addEventListener( 'click', () => {
-            tags.value = tags.value.split( ' ' ).reduce( ( acc, tag, idx, tagsArray ) => {
-                const extraSpace = idx === tagsArray.length - 1 ? '' : ' ';
+            askQuestionBtn.addEventListener( 'click', () => {
+                tags.value = tags.value.split( ' ' ).reduce( ( acc, tag, idx, tagsArray ) => {
+                    const extraSpace = idx === tagsArray.length - 1 ? '' : ' ';
 
-                if ( tag.startsWith( '#' ) ) {
-                    return acc + tag.slice( 1 ) + extraSpace;
-                } else {
-                    return acc + tag + extraSpace;
-                }
-            }, '' );
+                    if ( tag.startsWith( '#' ) ) {
+                        return acc + tag.slice( 1 ) + extraSpace;
+                    } else {
+                        return acc + tag + extraSpace;
+                    }
+                }, '' );
+            } );
         } );
-    } );
+    }
 
 }( document ) );
 
