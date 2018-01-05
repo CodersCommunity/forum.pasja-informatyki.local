@@ -895,3 +895,92 @@ function qa_ajax_error()
     } );
 
 }( document ) );
+
+/*
+ * Feature: add @annotation with nick of user, to whom current comment refers to
+ */
+;( function() {
+
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+        const qaMainElement = document.querySelector( '.qa-main' );
+
+        if ( qaMainElement ) {
+            const addAnnotationToCommentedUser = ( relativeDomRef, ckeCurrentInstance ) => {
+                const chosenCommentAuthor = relativeDomRef.querySelector( '.vcard.author' ).textContent;
+                const ckeTxt = ckeCurrentInstance.document.$.querySelector( 'p' );
+
+                let currentContent = '';
+
+                if ( ckeTxt.innerHTML ) {
+                    currentContent = ckeTxt.innerHTML.replace( /[<]strong[>](.*)[,<\/]strong[>]/, '' );
+                }
+
+                ckeTxt.innerHTML = `<strong>@${ chosenCommentAuthor },</strong> ${ currentContent }`;
+
+                return ckeTxt;
+            };
+
+            const setCursorToAnnotationEnd = ( editor, ckeTxt ) => {
+                editor.focus();
+
+                const currentRange = editor.getSelection().getRanges()[ 0 ];
+                const ckeNode = new CKEDITOR.dom.node( ckeTxt );
+                const newRange = new CKEDITOR.dom.range( currentRange.document );
+
+                newRange.moveToPosition( ckeNode, CKEDITOR.POSITION_BEFORE_END );
+                newRange.select();
+            };
+
+            const findCkeInstancePrefix = ( instanceSource, ancestorFormAction ) => {
+                const isAnswer = instanceSource === 'q_doanswer';
+
+                if ( isAnswer ) {
+                    return;
+                }
+
+                const isQuestionComment = instanceSource === 'q_docomment';
+
+                if ( isQuestionComment ) {
+                    return `c${ ancestorFormAction.split( '/' ).find( Number ) }`;
+                }
+                else {
+                    return `c${ instanceSource.slice( 1, instanceSource.indexOf( '_' ) ) }`;
+                }
+            };
+
+            const handleCkeInstance = ( evt, chosenCommentCKEInstance, eTarget ) => {
+                setCursorToAnnotationEnd( evt.editor, addAnnotationToCommentedUser(
+                    eTarget.parentNode.parentNode.parentNode, CKEDITOR.instances[ chosenCommentCKEInstance ]
+                    )
+                );
+
+                evt.removeListener();
+            };
+
+            qaMainElement.addEventListener( 'click', ( ev ) => {
+                const eTarget = ev.target;
+
+                if ( eTarget.value === 'skomentuj' || eTarget.value === 'odpowiedz' ) {
+                    const matchedInstanceName = findCkeInstancePrefix( eTarget.name, eTarget.form.action );
+                    const allCommentsForInstance = eTarget.form.querySelector( '[name="question-comments-list"]' ).children;
+                    const allCommentsForInstanceLength = allCommentsForInstance.length;
+                    const isResponseToLastComment = allCommentsForInstanceLength && allCommentsForInstance[ allCommentsForInstanceLength - 1 ].contains( eTarget );
+
+                    if ( !matchedInstanceName || !allCommentsForInstanceLength || isResponseToLastComment ) {
+                        return;
+                    }
+
+                    const chosenCommentCKEInstance = Object.keys( CKEDITOR.instances ).find( ( instanceName ) => {
+                        return instanceName.includes( matchedInstanceName );
+                    } );
+
+                    CKEDITOR.instances[ chosenCommentCKEInstance ].on( 'focus', ( ckeEvt ) => {
+                        handleCkeInstance( ckeEvt, chosenCommentCKEInstance, eTarget );
+                    } );
+                }
+            } );
+        }
+    } );
+} () );
