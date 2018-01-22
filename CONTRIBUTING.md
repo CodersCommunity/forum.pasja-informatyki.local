@@ -74,5 +74,5 @@ Przykładowa kolejność dla Pull Requestów.
 5. \+ Need Review | - Work in progress
 6. Ready to merge
 
-Dodatkowo, nie zapominaj, o tym aby podlinkować issue do swojego PR np. 
+Dodatkowo nie zapominaj o tym, aby podlinkować issue do swojego PR, np.
 Ta zmiana pochodzi z #19    
