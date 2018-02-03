@@ -164,7 +164,7 @@
 	$custom=qa_opt('show_custom_ask') ? trim(qa_opt('custom_ask')) : '';
 
 	$qa_content['form']=array(
-		'tags' => 'name="ask" method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__form" name="ask" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -191,7 +191,7 @@
 
 		'buttons' => array(
 			'ask' => array(
-				'tags' => 'onclick="qa_show_waiting_after(this, false); '.
+				'tags' => 'id="__form-send" onclick="qa_show_waiting_after(this, false); '.
 					(method_exists($editor, 'update_script') ? $editor->update_script('content') : '').'"',
 				'label' => qa_lang_html('question/ask_button'),
 			)/*,
@@ -280,7 +280,8 @@
 
 	$qa_content['focusid']='title';
 
-
+	$qa_content['script_rel'][] = 'qa-content/qa-forms-protection.js';
+	
 	return $qa_content;
 
 

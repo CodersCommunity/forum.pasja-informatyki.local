@@ -171,7 +171,7 @@
 	$qa_content['error'] = @$pageerror;
 
 	$qa_content['form_message'] = array(
-		'tags' => 'method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__form" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -191,7 +191,7 @@
 
 		'buttons' => array(
 			'send' => array(
-				'tags' => 'onclick="qa_show_waiting_after(this, false);"',
+				'tags' => 'id="__form-send" onclick="qa_show_waiting_after(this, false);"',
 				'label' => qa_lang_html('main/send_button'),
 			),
 		),
@@ -242,6 +242,8 @@
 
 	$qa_content['raw']['account'] = $toaccount; // for plugin layers to access
 
+	$qa_content['script_rel'][] = 'qa-content/qa-forms-protection.js';
+	
 	return $qa_content;
 
 
