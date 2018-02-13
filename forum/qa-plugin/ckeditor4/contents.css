@@ -98,6 +98,7 @@ pre
 	word-wrap: break-word; /* IE7 */
 	-moz-tab-size: 4;
 	tab-size: 4;
+	background-color: #ffffaa;
 }
 
 .marker
