@@ -122,7 +122,7 @@
 	$qa_content['error']=@$pageerror;
 
 	$qa_content['form']=array(
-		'tags' => 'method="post" action="'.qa_self_html().'"',
+		'tags' => 'id="__form" method="post" action="'.qa_self_html().'"',
 
 		'style' => 'tall',
 
@@ -154,6 +154,7 @@
 
 		'buttons' => array(
 			'send' => array(
+				'tags' => 'id="__form-send"',
 				'label' => qa_lang_html('main/send_button'),
 			),
 		),
@@ -176,7 +177,8 @@
 		unset($qa_content['form']['buttons']);
 	}
 
-
+	$qa_content['script_rel'][] = 'qa-content/qa-forms-protection.js';
+	
 	return $qa_content;
 
 
