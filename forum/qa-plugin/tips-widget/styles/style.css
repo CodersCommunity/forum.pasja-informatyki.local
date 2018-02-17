@@ -1,0 +1,25 @@
+.tips-widget-title
+{
+	margin-bottom: 10px;
+}
+
+.tips-widget-content
+{
+	font-size: 13px;
+}
+
+.tips-widget-img
+{
+	display: block;
+	margin: 10px auto;
+}
+
+.tips-widget-footer
+{
+	margin-top: 10px;
+}
+
+ul[class="tips-page-list"] li
+{
+	margin: 10px 0px;
+}

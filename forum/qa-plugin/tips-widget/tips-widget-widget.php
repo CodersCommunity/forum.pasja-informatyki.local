@@ -1,5 +1,7 @@
 <?php
 
+require_once 'tips-replace-phrases.php';
+
 class tips_widget_widget
 {
 	public $random;
@@ -12,7 +14,8 @@ class tips_widget_widget
 			return;
 		}
 		
-		$this->tips_list = explode('!NEW!', qa_opt('tips-widget-content'));
+		$this->prepareTipsList();
+		
 		$tips_list_count = count($this->tips_list);
 		
 		if (isset($_COOKIE['prev_random']) &&
@@ -57,8 +60,15 @@ class tips_widget_widget
 			return;
 		}
 		
-		$themeobject->output('<div style="margin-bottom: 10px;"><b>Porady nie od parady</b></div>');
-		$themeobject->output('<div style="font-size: 13px;">', $this->tips_list[$this->random], '</div>');
-		$themeobject->output('<div style="margin-top: 10px;">Ciekawy innych porad? Odwiedź <a href="' . qa_path_html('tips') . '"><b>tę stronę</b></a>!</div>');
+		$themeobject->output('<div class="tips-widget-title"><b>Porady nie od parady</b></div>');
+		$themeobject->output('<div class="tips-widget-content">', $this->tips_list[$this->random], '</div>');
+		$themeobject->output('<div class="tips-widget-footer">Ciekawy innych porad? Odwiedź <a href="' . qa_path_html('tips') . '"><b>tę stronę</b></a>!</div>');
+	}
+	
+	public function prepareTipsList()
+	{
+		$tips_content = replaceWidgetImgSrc(replacePathHtml(qa_opt('tips-widget-content')));
+
+		$this->tips_list = explode('!NEW!', $tips_content);
 	}
 }

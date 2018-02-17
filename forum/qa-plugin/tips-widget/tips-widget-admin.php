@@ -1,5 +1,7 @@
 <?php
 
+require_once 'tips-replace-phrases.php';
+
 class tips_widget_admin
 {
 	public function option_default($option)
@@ -57,7 +59,17 @@ class tips_widget_admin
 			],
 			
 			[
-				'label' => 'Enter tips. Separate them with !NEW! phrase',
+				'label' => 'You can use the phrase <b>!PATH_HTML(request)!</b> to return the path of the <i>request</i> page, relative to the current request.',
+				'type'  => 'static'
+			],
+			
+			[
+				'label' => 'You can also use the phrase <b>!WIDGET_IMG_SRC(img)!</b> to return the full path of the <i>img</i> image file located in the <i>/qa-plugin/plugin_directory/icons</i>.',
+				'type'  => 'static'
+			],
+			
+			[
+				'label' => 'Enter tips. Separate them with <b>!NEW!</b> phrase',
 				'tags'  => 'name="tips-widget-content"',
 				'value' => qa_opt('tips-widget-content'),
 				'rows'  =>  20,
@@ -65,7 +77,7 @@ class tips_widget_admin
 			],
 			
 			[
-				'label' => 'Enter page content. Mark a place to insert tips list with !TIPS! phrase',
+				'label' => 'Enter page content. Mark a place to insert tips list with <b>!TIPS!</b> phrase',
 				'tags'  => 'name="tips-page-content"',
 				'value' => qa_opt('tips-page-content'),
 				'rows'  =>  20,
