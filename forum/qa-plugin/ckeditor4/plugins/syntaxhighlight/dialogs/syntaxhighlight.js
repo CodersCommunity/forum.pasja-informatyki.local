@@ -1,7 +1,7 @@
 CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 	var getDefaultOptions=function() {
 		var options=new Object();
-		var validLangs=['applescript','actionscript3','as3','bash','shell','sh','coldfusion','cf','cpp','c','c#','c-sharp','csharp','css','delphi','pascal','pas','diff','patch','erl','erlang','groovy','haxe','hx','java','jfx','javafx','js','jscript','javascript','perl','Perl','pl','php','text','plain','powershell','ps','posh','py','python','ruby','rails','ror','rb','sass','scss','scala','sql','tap','Tap','TAP','ts','typescript','vb','vbnet','xml','xhtml','xslt','html'];
+		var validLangs=['applescript','actionscript3','as3','bash','shell','sh','coldfusion','cf','cpp','c','c#','c-sharp','csharp','css','delphi','pascal','pas','diff','patch','erl','erlang','groovy','java','jfx','javafx','js','jscript','javascript','perl','Perl','pl','php','text','plain','powershell','ps','posh','py','python','ruby','rails','ror','rb','sass','scss','scala','sql','tap','Tap','TAP','ts','typescript','vb','vbnet','xml','xhtml','xslt','html'];
 		options.hideGutter=String(editor.config.syntaxhighlight_hideGutter).toLowerCase()==='true';
 		options.hideControls=String(editor.config.syntaxhighlight_hideControls).toLowerCase()==='true';
 		options.collapse=String(editor.config.syntaxhighlight_collapse).toLowerCase()==='true';
@@ -31,7 +31,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 					else if(options.lang=='pascal'||options.lang=='pas') options.lang='delphi';
 					else if(options.lang=='patch') options.lang='diff';
 					else if(options.lang=='erlang') options.lang='erl';
-					else if(options.lang=='haxe') options.lang='hx';
 					else if(options.lang=='jfx') options.lang='javafx';
 					else if(options.lang=='js'||options.lang=='javascript') options.lang='jscript';
 					else if(options.lang=='Perl'||options.lang=='pl') options.lang='perl';
@@ -155,7 +154,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 									['Diff','diff'],
 									['Erlang','erl'],
 									['Groovy','groovy'],
-									['Haxe','hx'],
 									['Javascript','jscript'],
 									['Java','java'],
 									['Java FX','javafx'],
