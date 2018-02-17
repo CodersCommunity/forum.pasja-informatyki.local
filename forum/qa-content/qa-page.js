@@ -486,7 +486,6 @@ function qa_ajax_error()
 			'diff' : 'diff',
 			'erl' : 'erlang',
 			'groovy' : 'groovy',
-			'hx' : 'haxe',
 			'jscript' : 'JavaScript',
 			'java' : 'Java',
 			'javafx' : 'Java-FX',
