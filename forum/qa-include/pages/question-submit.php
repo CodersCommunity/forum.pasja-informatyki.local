@@ -129,12 +129,12 @@
 
 		$prefix='a'.$answer['postid'].'_';
 
-        if (qa_clicked($prefix.'doselect') && $question['aselectable'] && ($allowselectmove || ( (!isset($question['selchildid'])) && !qa_opt('do_close_on_select'))) && qa_page_q_click_check_form_code($answer, $error)) {
-            if($answer['userid'] !== $userid) {
-                qa_question_set_selchildid($userid, $handle, $cookieid, $question, $answer['postid'], $answers);
-            }
-            return true;
-        }
+                if (qa_clicked($prefix.'doselect') && $question['aselectable'] && ($allowselectmove || ( (!isset($question['selchildid'])) && !qa_opt('do_close_on_select'))) && qa_page_q_click_check_form_code($answer, $error)) {
+                    if($answer['userid'] !== $userid) {
+                        qa_question_set_selchildid($userid, $handle, $cookieid, $question, $answer['postid'], $answers);
+                    }
+                    return true;
+                }
 
 		if (qa_clicked($prefix.'dounselect') && $question['aselectable'] && ($question['selchildid']==$answer['postid']) && ($allowselectmove || !qa_opt('do_close_on_select')) && qa_page_q_click_check_form_code($answer, $error)) {
 			qa_question_set_selchildid($userid, $handle, $cookieid, $question, null, $answers);
