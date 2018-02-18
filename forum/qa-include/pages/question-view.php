@@ -448,18 +448,17 @@
 			$prefix='a'.qa_html($answerid).'_';
 			$clicksuffix=' onclick="return qa_answer_click('.qa_js($answerid).', '.qa_js($question['postid']).', this);"';
 
-			if ($question['aselectable'] && !$answer['hidden'] && !$answer['queued']) {
-				if ($isselected) {
-					$a_view['unselect_tags']='title="'.qa_lang_html('question/unselect_popup').'" name="'.$prefix.'dounselect"'.$clicksuffix;
-				}
-				else {
-					if($answer['userid'] === $userid) {
-						unset($a_view['select_tags']);
-					} else {
-						$a_view['select_tags'] = 'title="'.qa_lang_html('question/select_popup').'" name="'.$prefix.'doselect"'.$clicksuffix;
-					}
-				}
-			}
+        if ($question['aselectable'] && !$answer['hidden'] && !$answer['queued']) {
+                if ($isselected) {
+                    $a_view['unselect_tags']='title="'.qa_lang_html('question/unselect_popup').'" name="'.$prefix.'dounselect"'.$clicksuffix;
+                } else {
+                    if($answer['userid'] === $userid) {
+                        unset($a_view['select_tags']);
+                    } else {
+				        $a_view['select_tags'] = 'title="'.qa_lang_html('question/select_popup').'" name="'.$prefix.'doselect"'.$clicksuffix;
+                    }
+                }
+            }
 
 			$buttons=array();
 
