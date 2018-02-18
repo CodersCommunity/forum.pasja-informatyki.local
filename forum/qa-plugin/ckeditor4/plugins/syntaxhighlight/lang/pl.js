@@ -11,7 +11,7 @@ CKEDITOR.plugins.setLang('syntaxhighlight', 'pl', {
 	hideControlsLbl:'Ukryj dodatkowe informacje na górze bloczka z kodem.',
 	collapse:'Blokowanie',
 	collapseLbl:'Domyślnie zablokuj blok kodu (dodatkowe informacje muszą być włączone',
-	codeTitleLbl:'Użyj tytuł bloku',
+	codeTitleLbl:'Tytuł bloku',
 	showColumns:'Pokaż kolumny',
 	showColumnsLbl:'Pokaż rząd kolumn w pierwszej linii',
 	lineWrap:'Wyłącz liniowe zawijanie bloku',
