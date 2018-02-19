@@ -1,0 +1,22 @@
+CKEDITOR.plugins.setLang('syntaxhighlight', 'pl', {
+	title:'Dodaj lub zaktualizuj bloczek kodu',
+	contextTitle:'Edytuj kod źródłowy',
+	sourceTab:'Kod źródłowy',
+	langLbl:'Wybierz język',
+	sourceTextareaEmptyError:'Kod źródłowy nie może być pusty!',
+	advancedTab:'Zaawansowane',
+	hideGutter:'Ukryj język',
+	hideGutterLbl:'Ukryj język i numery linii',
+	hideControls:'Ukryj informacje',
+	hideControlsLbl:'Ukryj dodatkowe informacje na górze bloczka z kodem.',
+	collapse:'Blokowanie',
+	collapseLbl:'Domyślnie zablokuj blok kodu (dodatkowe informacje muszą być włączone',
+	codeTitleLbl:'Tytuł bloku',
+	showColumns:'Pokaż kolumny',
+	showColumnsLbl:'Pokaż rząd kolumn w pierwszej linii',
+	lineWrap:'Wyłącz liniowe zawijanie bloku',
+	lineWrapLbl:'Wyłącz liniowe zawijanie bloku',
+	lineCount:'Domyślna liczba linii',
+	highlight:'Podświetl linie',
+	highlightLbl:'Wpisz linie które chcesz podświetlić (oddziel je przecinkiem) np.<em style="font-style:italic">3,10,15</em>.'
+});
