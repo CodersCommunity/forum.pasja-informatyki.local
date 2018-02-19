@@ -41,7 +41,7 @@ CKEDITOR.on( "instanceReady", function() {
             const questionEditCategory_1 = $('#q_category_1 option:selected');
             if(questionEditCategory_1.text() === 'Programowanie'){
                 const questionEditCategory_2 = $('#q_category_2 option:selected');
-				switch(category_2.text()){
+                switch(questionEditCategory_2.text()){
                     case 'HTML i CSS':
                         CKEDITOR.config.syntaxhighlight_lang = 'xml';
                     break;
