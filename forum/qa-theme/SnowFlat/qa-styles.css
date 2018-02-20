@@ -4804,7 +4804,7 @@ form div.qa-q-view-content
     background: black;
     border-radius: 10px;
     margin: 0;
-    padding: 10px;
+    padding: 9px;
     vertical-align: middle;
     transform: scale(0.40);
     width: 140px;
@@ -4833,6 +4833,7 @@ form div.qa-q-view-content
     top: 1px;
     font-size: 8px;
     padding: 4px;
+	height: 19px;
 }
 
 .jsfiddle-snippet select,
