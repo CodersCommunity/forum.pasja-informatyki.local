@@ -1,5 +1,9 @@
 Options -Indexes
 DirectoryIndex index.php
+
+# Change the path below in production or other environments 
+ErrorDocument 403 /vagrant/forum/index.php
+
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{HTTP_HOST} ^www.forum.pasja-informatyki.pl$ [NC]
