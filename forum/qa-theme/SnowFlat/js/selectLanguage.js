@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", () => {
     if (typeof CKEDITOR != 'undefined') {
         CKEDITOR.on( 'instanceReady', function() {
             const categories = [
@@ -15,12 +15,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		
             if ( location.href.includes( '/ask' ) ) {
                 codeBlock.addEventListener( 'click', () => {
-                    const firstCategory = $( '#category_1 option:selected' );
-                       	
-                    if(firstCategory.text() === 'Programowanie') {
-                        const secondCategory = $( '#category_2 option:selected' );			
+                    const firstCategory = document.querySelector( '#category_1' );
+                    const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
+                    if(selectedFirstOption.textContent === 'Programowanie') {
+                        const firstCategory = document.querySelector( '#category_2' );
+                        const selectedSecondOption = firstCategory.children[ firstCategory.selectedIndex ];			
                         const findCategory = categories.find( function(object) {
-                            return object.category == secondCategory.text();
+                            return object.category == selectedSecondOption.textContent;
                         });
                             			
                         if(findCategory != undefined){
@@ -29,6 +30,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
                             CKEDITOR.config.syntaxhighlight_lang = 'plain';
                         }
 	                 
+		    } else {
+						
+                            CKEDITOR.config.syntaxhighlight_lang = 'plain';
+						
                     }
                      		
                 });
@@ -36,11 +41,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
             } else if ( location.href.includes( 'edit' ) ) {
                 codeBlock.addEventListener( 'click', () => {
 	               			
-                    const questionEditFirstCategory = $( '#q_category_1 option:selected' );
-                    if(questionEditFirstCategory.text() === 'Programowanie'){
-                        const questionEditSecondCategory = $( '#q_category_2 option:selected' );
+                    const firstCategory = document.querySelector( '#q_category_1' );
+                    const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
+                    if(selectedFirstOption.textContent === 'Programowanie') {
+                        const secondCategory = document.querySelector( '#q_category_2' );
                         const findCategory = categories.find( function(object) {
-                            return object.category == questionEditSecondCategory.text();
+                            return object.category == secondCategory.textContent;
                         });
 		            
                         if(findCategory != undefined){
@@ -48,15 +54,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         } else {
                             CKEDITOR.config.syntaxhighlight_lang = 'plain';
                         }
+                    } else {
+						
+                            CKEDITOR.config.syntaxhighlight_lang = 'plain';
+						
                     }
                 });
 	        		
 	    } else {
                 codeBlock.addEventListener( 'click', () => {
 				
-                    const category = $( '.qa-q-view-where-data' );
+                    const category = document.querySelector( '.qa-q-view-where-data' );
                     const findCategory = categories.find( function(object) {
-                        return object.category == category.text();
+                        return object.category == category.textContent;
                     });
 		     	
                     if(findCategory != undefined){
@@ -69,4 +79,4 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }		   
         });
     }
-}
+});
