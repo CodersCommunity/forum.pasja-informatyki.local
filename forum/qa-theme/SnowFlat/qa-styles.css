@@ -4798,19 +4798,10 @@ form div.qa-q-view-content
     cursor: pointer;
 }
 
-.codepen-snippet img,
-.codepen-snippet input[type="image"]
+.codepen-snippet input[type="submit"]
 {
-    background: black;
-    border-radius: 10px;
-    margin: 0;
-    padding: 9px;
-    vertical-align: middle;
-    transform: scale(0.40);
-    width: 140px;
-    position: absolute;
-    right: 5px;
-    top: -11px;
+	background: black;
+	right: 47px;
 }
 
 .jsfiddle-snippet
@@ -4824,16 +4815,8 @@ form div.qa-q-view-content
 
 .jsfiddle-snippet input[type="submit"]
 {
-	border-radius: 6px;
     background: #4679A4;
-    color: white;
-    margin: 0;
-    position: absolute;
     right: 0;
-    top: 1px;
-    font-size: 8px;
-    padding: 4px;
-	height: 19px;
 }
 
 .jsfiddle-snippet select,
@@ -4845,6 +4828,18 @@ form div.qa-q-view-content
 .snippets-parent.inside-comment
 {
 	top: -10px;
+}
+
+.codepen-snippet input[type="submit"],
+.jsfiddle-snippet input[type="submit"] {
+	border-radius: 6px;
+    color: white;
+    margin: 0;
+    position: absolute;
+    top: 1px;
+    font-size: 8px;
+    padding: 4px;
+	height: 19px;
 }
 
 .entry-content.below-snippets
