@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 {category : 'Python, Django', language: 'python'},
             ]
             const codeBlock = document.getElementById( 'cke_43' );
-		
+            let clickHandler;
             if ( location.href.includes( '/ask' ) ) {
-                codeBlock.addEventListener( 'click', () => {
+                clickHandler = () => {
                     const firstCategory = document.querySelector( '#category_1' );
                     const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
                     if(selectedFirstOption.textContent === 'Programowanie') {
@@ -29,10 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             CKEDITOR.config.syntaxhighlight_lang = 'plain';		
                     }
                      		
-                });
+                };
 	         	
             } else if ( location.href.includes( 'edit' ) ) {
-                codeBlock.addEventListener( 'click', () => {
+                clickHandler = () => {
 	               			
                     const firstCategory = document.querySelector( '#q_category_1' );
                     const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else {		
                             CKEDITOR.config.syntaxhighlight_lang = 'plain';			
                     }
-                });
+                };
 	        		
 	    } else {
-                codeBlock.addEventListener( 'click', () => {
+                clickHandler = () => {
 				
                     const category = document.querySelector( '.qa-q-view-where-data' );
                     const findCategory = categories.find( function(object) {
@@ -58,8 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		     	
                    CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : 'plain';
 				
-                });
-            }		   
+                };
+            }
+        codeBlock.addEventListener( 'click', clickHandler );	
         });
     }
 });
