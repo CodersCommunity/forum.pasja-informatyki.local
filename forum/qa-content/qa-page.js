@@ -242,10 +242,9 @@ function qa_ajax_error()
 			dataCarrierInput.name = 'data';
 			dataCarrierInput.value = codeAsJSON;
 
-			var submitSnippet = document.createElement('input');
-			submitSnippet.type = 'image';
-			submitSnippet.src = 'https://assets.codepen.io/assets/logos/codepen-logo-9c0933e8569e634b75ac2eb808da908d.svg';
-			submitSnippet.value = 'Create new CODEPEN';
+            var submitSnippet = document.createElement('input');
+            submitSnippet.type = 'submit';
+            submitSnippet.value = 'CODEPEN';
 
 			codepenSnippetForm.appendChild(dataCarrierInput);
 			codepenSnippetForm.appendChild(submitSnippet);
