@@ -37,7 +37,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             if (isset($_POST['select_theme'])) {
                 $this->save_theme($_POST['select_theme']);
             }
-            $this->content['head_lines'][] = '<style>
+            $content = '<style>
               .widget-select-theme {
                 display: -webkit-flex;
                 display: -ms-flexbox;
@@ -85,8 +85,16 @@ class qa_html_theme_layer extends qa_html_theme_base
                   width: 100% !important;
                   display: block !important;
                 }
-              }
+              ';
+            if (!qa_is_mobile_probably()) {
+                $content .= '  .qa-sidepanel > div:not(.qa-widgets-side-bottom) {
+                  display: none;
+                }
+              ';
+            }
+            $content .= '}
             </style>';
+            $this->content['head_lines'][] = $content;
         }
         qa_html_theme_base::head_lines();
     }
