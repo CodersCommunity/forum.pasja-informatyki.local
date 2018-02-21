@@ -23,17 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         const findCategory = categories.find( function(object) {
                             return object.category == selectedSecondOption.textContent;
                         });
-                            			
-                        if(findCategory != undefined){
-                            CKEDITOR.config.syntaxhighlight_lang = findCategory.language;
-                        } else { 
-                            CKEDITOR.config.syntaxhighlight_lang = 'plain';
-                        }
 	                 
-		    } else {
-						
-                            CKEDITOR.config.syntaxhighlight_lang = 'plain';
-						
+                            CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : 'plain';
+		    } else {		
+                            CKEDITOR.config.syntaxhighlight_lang = 'plain';		
                     }
                      		
                 });
@@ -49,15 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             return object.category == secondCategory.textContent;
                         });
 		            
-                        if(findCategory != undefined){
-                            CKEDITOR.config.syntaxhighlight_lang = findCategory.language;
-                        } else {
-                            CKEDITOR.config.syntaxhighlight_lang = 'plain';
-                        }
-                    } else {
-						
-                            CKEDITOR.config.syntaxhighlight_lang = 'plain';
-						
+                            CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : 'plain';
+                    } else {		
+                            CKEDITOR.config.syntaxhighlight_lang = 'plain';			
                     }
                 });
 	        		
@@ -69,11 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         return object.category == category.textContent;
                     });
 		     	
-                    if(findCategory != undefined){
-                        CKEDITOR.config.syntaxhighlight_lang = findCategory.language;
-                    } else {
-                        CKEDITOR.config.syntaxhighlight_lang = 'plain';
-                    }
+                   CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : 'plain';
 				
                 });
             }		   
