@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     const firstCategory = document.querySelector( '#category_1' );
                     const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
                     if(selectedFirstOption.textContent === 'Programowanie') {
-                        const firstCategory = document.querySelector( '#category_2' );
-                        const selectedSecondOption = firstCategory.children[ firstCategory.selectedIndex ];			
+                        const secondCategory = document.querySelector( '#category_2' );
+                        const selectedSecondOption = firstCategory.children[ secondCategory.selectedIndex ];			
                         const findCategory = categories.find( function(object) {
                             return object.category == selectedSecondOption.textContent;
                         });
