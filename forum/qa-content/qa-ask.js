@@ -385,3 +385,54 @@ function set_category_description(idprefix)
 		});
 	});
 }(document));
+
+
+/*
+ * Suggest inserting code in appropriate blocks, when question category is "Programowanie"
+ */
+;( function() {
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+        if ( location.href.includes( '/ask' ) ) {
+            CKEDITOR.on( 'instanceReady', () => {
+                const showIncorrectCodePlacementWarning = () => {
+                    const warningDomElement = document.createElement( 'div' );
+                    warningDomElement.classList.add( 'incorrect-code-placement-warning' );
+                    warningDomElement.innerHTML = `
+                        Chyba zapomniałeś zamieścić kod źródłowy w przeznaczonym do tego bloczku.
+                        <br>
+                        Zobacz jak to zrobić
+                        <a target="_blank" href="https://forum.pasja-informatyki.pl/faq#jak-wstawic-kod-zrodlowy">tutaj</a>.
+                    `;
+                    askQuestionBtn.parentNode.insertBefore( warningDomElement, askQuestionBtn.parentNode.firstElementChild );
+                };
+                const questionEditorDocument = CKEDITOR.instances.content.document.$;
+                const askQuestionBtn = document.getElementById( '__form-send' );
+                const categorySelect = document.getElementById( 'category_1' );
+
+                // Use capture phase on <body> to block submitting before any [onclick] on button will be triggered.
+                document.body.addEventListener( 'click', ( event ) => {
+                    if ( event.srcElement && event.srcElement.id === askQuestionBtn.id ) {
+                        const selectedCategory = categorySelect.options[ categorySelect.selectedIndex ].textContent;
+
+                        if ( selectedCategory === 'Programowanie' ) {
+                            const isCodeBlockInEditor = !!( questionEditorDocument.querySelector( '[class^="brush"]' ) );
+
+                            if ( !isCodeBlockInEditor ) {
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                showIncorrectCodePlacementWarning();
+                            }
+                        }
+                    }
+                }, {
+                    capture: true,
+                    once: true
+                } );
+            } );
+        }
+    } );
+
+} () );

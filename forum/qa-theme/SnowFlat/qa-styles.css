@@ -4871,3 +4871,39 @@ form div.qa-q-view-content
 	color: #3498db;
 	text-decoration: underline;
 }
+
+@keyframes warningBlink {
+    0%, 100% {
+        background: white;
+        color: orange;
+    }
+
+    50% {
+        background: orange;
+        color: white;
+    }
+}
+
+@keyframes warningAnchorBlink {
+    0%, 100% {
+        color: #2980b9;
+    }
+
+    50% {
+        color: white;
+    }
+}
+
+.incorrect-code-placement-warning {
+    border: 2px solid orange;
+    color: orange;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+    animation: warningBlink 1.5s ease-in-out;
+}
+
+.incorrect-code-placement-warning a {
+    animation: warningAnchorBlink 1.5s ease-in-out;
+}
