@@ -19,13 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
                     if(selectedFirstOption.textContent === 'Programowanie') {
                         const secondCategory = document.querySelector( '#category_2' );
-                        const selectedSecondOption = firstCategory.children[ secondCategory.selectedIndex ];			
+                        const selectedSecondOption = secondCategory.children[ secondCategory.selectedIndex ];			
                         const findCategory = categories.find( function(object) {
                             return object.category == selectedSecondOption.textContent;
                         });
 	                 
                             CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : 'plain';
-		    } else {		
+		            } else {		
                             CKEDITOR.config.syntaxhighlight_lang = 'plain';		
                     }
                      		
@@ -38,8 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     const selectedFirstOption = firstCategory.children[ firstCategory.selectedIndex ];                       	
                     if(selectedFirstOption.textContent === 'Programowanie') {
                         const secondCategory = document.querySelector( '#q_category_2' );
+                        const selectedSecondOption = secondCategory.children[ secondCategory.selectedIndex ];
                         const findCategory = categories.find( function(object) {
-                            return object.category == secondCategory.textContent;
+                            return object.category == selectedSecondOption.textContent;
                         });
 		            
                             CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : 'plain';
