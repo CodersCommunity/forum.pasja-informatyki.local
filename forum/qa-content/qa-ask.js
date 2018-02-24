@@ -412,7 +412,7 @@ function set_category_description(idprefix)
                 const categorySelect = document.getElementById( 'category_1' );
 
                 // Use capture phase on <body> to block submitting before any [onclick] on button will be triggered.
-                document.body.addEventListener( 'click', ( event ) => {
+                document.body.addEventListener( 'click', function preventSubmit( event ) {
                     if ( event.srcElement && event.srcElement.id === askQuestionBtn.id ) {
                         const selectedCategory = categorySelect.options[ categorySelect.selectedIndex ].textContent;
 
@@ -424,13 +424,11 @@ function set_category_description(idprefix)
                                 event.stopPropagation();
 
                                 showIncorrectCodePlacementWarning();
+                                document.body.removeEventListener( 'click', preventSubmit, true );
                             }
                         }
                     }
-                }, {
-                    capture: true,
-                    once: true
-                } );
+                }, true );
             } );
         }
     } );
