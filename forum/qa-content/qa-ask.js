@@ -403,7 +403,7 @@ function set_category_description(idprefix)
                         Chyba zapomniałeś zamieścić kod źródłowy w przeznaczonym do tego bloczku.
                         <br>
                         Zobacz jak to zrobić
-                        <a target="_blank" href="https://forum.pasja-informatyki.pl/faq#jak-wstawic-kod-zrodlowy">tutaj</a>.
+                        <a target="_blank" href="https://forum.pasja-informatyki.pl/faq#jak-wstawic-kod-zrodlowy" title="Jak wstawić kod źródłowy?">tutaj</a>.
                     `;
                     askQuestionBtn.parentNode.insertBefore( warningDomElement, askQuestionBtn.parentNode.firstElementChild );
                 };
