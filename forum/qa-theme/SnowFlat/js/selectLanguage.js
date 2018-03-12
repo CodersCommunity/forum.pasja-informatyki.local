@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 {category : 'Java', language: 'java'},
                 {category : 'Python, Django', language: 'python'},
             ]
-            const codeBlock = document.getElementById( 'cke_43' );
+            const codeBlock = document.getElementById( 'cke_42' );
             let clickHandler;
             if ( location.href.includes( '/ask' ) ) {
                 clickHandler = () => {
