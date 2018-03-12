@@ -146,6 +146,7 @@ class qa_html_theme extends qa_html_theme_base
     {
         $jsUrl = $this->rooturl . $this->js_dir . 'snow-core.js?' . QA_VERSION;
         $this->content['script'][] = '<script src="' . $jsUrl . '"></script>';
+        $this->content['script'][] = '<script src="' . $this->rooturl . $this->js_dir .'selectLanguage.js' . '"></script>';
 
         qa_html_theme_base::head_script();
     }

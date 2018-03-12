@@ -699,7 +699,7 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('captcha_on_reset_password', '1'),
 ('captcha_on_unapproved', '0'),
 ('captcha_on_unconfirmed', '0'),
-('ckeditor4_config', 'toolbarCanCollapse:false,\nremovePlugins:''elementspath'',\nresize_enabled:true,\nautogrow:true,\nentities:false,\nextraPlugins:''syntaxhighlight'',\ndisableNativeSpellChecker:false,\npasteFromWordRemoveFontStyles:true,\npasteFromWordRemoveStyles:true,\nforcePasteAsPlainText:true'),
+('ckeditor4_config', 'toolbarCanCollapse:false,\nremovePlugins:''elementspath,contextmenu,tabletools,liststyle'',\nresize_enabled:true,\nautogrow:false,\nentities:false,extraPlugins:''syntaxhighlight'',\ndisableNativeSpellChecker:false,\npasteFromWordRemoveFontStyles:true,\npasteFromWordRemoveStyles:true'),
 ('ckeditor4_config_advanced', 'toolbarCanCollapse:false,\nremovePlugins:''elementspath'',\nresize_enabled:false,\nautogrow:false,\nentities:false'),
 ('ckeditor4_htmLawed_anti_link_spam', '/.*/,'),
 ('ckeditor4_htmLawed_controler', '0'),

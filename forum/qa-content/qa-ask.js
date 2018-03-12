@@ -385,3 +385,63 @@ function set_category_description(idprefix)
 		});
 	});
 }(document));
+
+
+/*
+ * Suggest inserting code in appropriate blocks, when question category is "Programowanie"
+ */
+;( function() {
+    'use strict';
+
+    window.addEventListener( 'DOMContentLoaded', () => {
+        if ( location.href.includes( '/ask' ) ) {
+            CKEDITOR.on( 'instanceReady', () => {
+                const showIncorrectCodePlacementWarning = () => {
+                    const warningDomElement = document.createElement( 'div' );
+                    warningDomElement.classList.add( 'incorrect-code-placement-warning' );
+                    warningDomElement.innerHTML = `
+						Czy to pytanie nie powinno zawierać kodu? Jeśli tak, upewnij się, że wstawiłeś go w przeznaczony do tego bloczek.
+					 	<br>
+					 	Instrukcję znajdziesz 
+                        <a target="_blank" href="https://forum.pasja-informatyki.pl/faq#jak-wstawic-kod-zrodlowy" title="Jak wstawić kod źródłowy?">tutaj</a>.
+                    `;
+                    askQuestionBtn.parentNode.insertBefore( warningDomElement, askQuestionBtn.parentNode.firstElementChild );
+                };
+                const questionEditorDocument = CKEDITOR.instances.content.document.$;
+                const askQuestionBtn = document.getElementById( '__form-send' );
+                const categorySelect = document.getElementById( 'category_1' );
+                const excludedSubCategories = [ 'Hostingi, domeny', 'Systemy CMS', 'Algorytmy' ];
+                const isChosenSubCategoryExcluded = ( chosenSubCategory ) => {
+					return excludedSubCategories.some( ( subCategory ) => {
+						return chosenSubCategory === subCategory;
+					} );
+				};
+
+                // Use capture phase on <body> to block submitting before any [onclick] on button will be triggered.
+                document.body.addEventListener( 'click', function preventSubmit( event ) {
+                    if ( event.srcElement && event.srcElement.id === askQuestionBtn.id ) {
+                        const subCategorySelect = document.getElementById( 'category_2' );
+
+                        if ( subCategorySelect ) {
+                            const selectedCategory = categorySelect.options[ categorySelect.selectedIndex ].textContent;
+                            const selectedSubCategory = subCategorySelect.options[ subCategorySelect.selectedIndex ].textContent;
+
+                            if ( selectedCategory === 'Programowanie' && !isChosenSubCategoryExcluded( selectedSubCategory ) ) {
+                                const isCodeBlockInEditor = !!( questionEditorDocument.querySelector( '[class^="brush"]' ) );
+
+                                if ( !isCodeBlockInEditor ) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+
+                                    showIncorrectCodePlacementWarning();
+                                    document.body.removeEventListener( 'click', preventSubmit, true );
+                                }
+                            }
+                        }
+                    }
+                }, true );
+            } );
+        }
+    } );
+
+} () );
