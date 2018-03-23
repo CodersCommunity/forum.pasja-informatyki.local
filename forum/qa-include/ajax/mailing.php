@@ -31,9 +31,6 @@
 
 		qa_mailing_perform_step();
 
-		if ($starttime==time())
-			sleep(1); // make sure at least one second has passed
-
 		$message=qa_mailing_progress_message();
 
 		if (isset($message))
