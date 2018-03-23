@@ -899,7 +899,6 @@
 				echo qa_html($message).str_repeat('    ', 1024)."<br>\n";
 
 				flush();
-				sleep(1);
 			}
 
 			echo qa_lang_html('admin/mailing_complete').'</tt><p><a href="'.qa_path_html('admin/mailing').'">'.qa_lang_html('admin/admin_title').' - '.qa_lang_html('admin/mailing_title').'</a>';
