@@ -32,7 +32,7 @@ function qa_title_change(value)
             }
 
             if (lines.length>2) {
-                let simelem=document.getElementById('similar');
+                const simelem=document.getElementById('similar');
                 if (simelem)
                     simelem.innerHTML=lines.slice(2).join('\n');
             }
@@ -221,7 +221,7 @@ function qa_category_select(idprefix, startpath)
                                 if (lines[0]=='1') {
                                     elem.qa_cat_desc=lines[1];
 
-                                    const addedoption=false;
+                                    let addedoption=false;
 
                                     if (lines.length>2) {
                                         const subelem=elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
