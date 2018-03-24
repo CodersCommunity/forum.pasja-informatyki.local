@@ -25,19 +25,19 @@
 function qa_title_change(value)
 {
     qa_ajax_post('asktitle', {title:value}, function(lines) {
-        if (lines[0]=='1') {
+        if (lines[0] == '1') {
             if (lines[1].length) {
-                qa_tags_examples=lines[1];
+                qa_tags_examples = lines[1];
                 qa_tag_hints(true);
             }
 
             if (lines.length>2) {
                 const simelem=document.getElementById('similar');
                 if (simelem)
-                    simelem.innerHTML=lines.slice(2).join('\n');
+                    simelem.innerHTML = lines.slice(2).join('\n');
             }
 
-        } else if (lines[0]=='0')
+        } else if (lines[0] == '0')
             alert(lines[1]);
         else
             qa_ajax_error();
@@ -58,23 +58,23 @@ function qa_html_escape(text)
 
 function qa_tag_click(link)
 {
-    let elem=document.getElementById('tags');
-    let parts=qa_tag_typed_parts(elem);
+    let elem = document.getElementById('tags');
+    let parts = qa_tag_typed_parts(elem);
 
     // removes any HTML tags and ampersand
-    let tag=qa_html_unescape(link.innerHTML.replace(/<[^>]*>/g, ''));
+    let tag = qa_html_unescape(link.innerHTML.replace(/<[^>]*>/g, ''));
 
-    let separator=qa_tag_onlycomma ? ', ' : ' ';
+    let separator = qa_tag_onlycomma ? ', ' : ' ';
 
     // replace if matches typed, otherwise append
-    let newvalue=(parts.typed && (tag.toLowerCase().indexOf(parts.typed.toLowerCase())>=0))
+    let newValue = (parts.typed && (tag.toLowerCase().indexOf(parts.typed.toLowerCase())>=0))
         ? (parts.before+separator+tag+separator+parts.after+separator) : (elem.value+separator+tag+separator);
 
     // sanitize and set value
     if (qa_tag_onlycomma)
-        elem.value=newvalue.replace(/[\s,]*,[\s,]*/g, ', ').replace(/^[\s,]+/g, '');
+        elem.value = newValue.replace(/[\s,]*,[\s,]*/g, ', ').replace(/^[\s,]+/g, '');
     else
-        elem.value=newvalue.replace(/[\s,]+/g, ' ').replace(/^[\s,]+/g, '');
+        elem.value = newValue.replace(/[\s,]+/g, ' ').replace(/^[\s,]+/g, '');
 
     elem.focus();
     qa_tag_hints();
@@ -84,55 +84,55 @@ function qa_tag_click(link)
 
 function qa_tag_hints(skipcomplete)
 {
-    let elem=document.getElementById('tags');
-    let html='';
-    let completed=false;
+    let elem = document.getElementById('tags');
+    let html = '';
+    let completed = false;
 
     // first try to auto-complete
     if (qa_tags_complete && !skipcomplete) {
-        let parts=qa_tag_typed_parts(elem);
+        let parts = qa_tag_typed_parts(elem);
 
         if (parts.typed) {
-            html=qa_tags_to_html((qa_html_unescape(qa_tags_examples+','+qa_tags_complete)).split(','), parts.typed.toLowerCase());
-            completed=html ? true : false;
+            html = qa_tags_to_html((qa_html_unescape(qa_tags_examples+','+qa_tags_complete)).split(','), parts.typed.toLowerCase());
+            completed = html ? true : false;
         }
     }
 
     // otherwise show examples
     if (qa_tags_examples && !completed)
-        html=qa_tags_to_html((qa_html_unescape(qa_tags_examples)).split(','), null);
+        html = qa_tags_to_html((qa_html_unescape(qa_tags_examples)).split(','), null);
 
     // set title visiblity and hint list
-    document.getElementById('tag_examples_title').style.display=(html && !completed) ? '' : 'none';
-    document.getElementById('tag_complete_title').style.display=(html && completed) ? '' : 'none';
-    document.getElementById('tag_hints').innerHTML=html;
+    document.getElementById('tag_examples_title').style.display = (html && !completed) ? '' : 'none';
+    document.getElementById('tag_complete_title').style.display = (html && completed) ? '' : 'none';
+    document.getElementById('tag_hints').innerHTML = html;
 }
 
 function qa_tags_to_html(tags, matchlc)
 {
-    let html='';
-    let added=0;
-    let tagseen={};
+    let html = '';
+    let added = 0;
+    let tagseen = {};
 
     for (var i=0; i<tags.length; i++) {
-        let tag=tags[i];
-        let taglc=tag.toLowerCase();
+        let tag = tags[i];
+        let taglc = tag.toLowerCase();
 
         if (!tagseen[taglc]) {
-            tagseen[taglc]=true;
+            tagseen[taglc] = true;
 
             if ( (!matchlc) || (taglc.indexOf(matchlc)>=0) ) { // match if necessary
                 if (matchlc) { // if matching, show appropriate part in bold
-                    let matchstart=taglc.indexOf(matchlc);
-                    let matchend=matchstart+matchlc.length;
-                    inner='<span style="font-weight:normal;">'+qa_html_escape(tag.substring(0, matchstart))+'<b>'+
+                    let matchstart = taglc.indexOf(matchlc);
+                    let matchend = matchstart+matchlc.length;
+                    inner = '<span style="font-weight:normal;">'+qa_html_escape(tag.substring(0, matchstart))+'<b>'+
                         qa_html_escape(tag.substring(matchstart, matchend))+'</b>'+qa_html_escape(tag.substring(matchend))+'</span>';
                 } else // otherwise show as-is
-                    inner=qa_html_escape(tag);
+                    inner = qa_html_escape(tag);
 
-                html+=qa_tag_template.replace(/\^/g, inner.replace('$', '$$$$'))+' '; // replace ^ in template, escape $s
+                html += qa_tag_template.replace(/\^/g, inner.replace('$', '$$$$'))+' '; // replace ^ in template, escape $s
 
-                if (++added>=qa_tags_max)
+                if (++added >= qa_tags_max)
                     break;
             }
         }
@@ -145,12 +145,12 @@ function qa_caret_from_end(elem)
 {
     if (document.selection) { // for IE
         elem.focus();
-        let sel=document.selection.createRange();
+        let sel = document.selection.createRange();
         sel.moveStart('character', -elem.value.length);
 
         return elem.value.length-sel.text.length;
 
-    } else if (typeof(elem.selectionEnd)!='undefined') // other browsers
+    } else if (typeof(elem.selectionEnd) != 'undefined') // other browsers
         return elem.value.length-elem.selectionEnd;
 
     else // by default return safest value
@@ -159,91 +159,91 @@ function qa_caret_from_end(elem)
 
 function qa_tag_typed_parts(elem)
 {
-    let caret=elem.value.length-qa_caret_from_end(elem);
-    let active=elem.value.substring(0, caret);
-    let passive=elem.value.substring(active.length);
+    let caret = elem.value.length-qa_caret_from_end(elem);
+    let active = elem.value.substring(0, caret);
+    let passive = elem.value.substring(active.length);
 
     // if the caret is in the middle of a word, move the end of word from passive to active
     if (
         active.match(qa_tag_onlycomma ? /[^\s,][^,]*$/ : /[^\s,]$/) &&
-        (adjoinmatch=passive.match(qa_tag_onlycomma ? /^[^,]*[^\s,][^,]*/ : /^[^\s,]+/))
+        (adjoinmatch = passive.match(qa_tag_onlycomma ? /^[^,]*[^\s,][^,]*/ : /^[^\s,]+/))
     ) {
-        active+=adjoinmatch[0];
-        passive=elem.value.substring(active.length);
+        active += adjoinmatch[0];
+        passive = elem.value.substring(active.length);
     }
 
     // find what has been typed so far
-    let typedmatch=active.match(qa_tag_onlycomma ? /[^\s,]+[^,]*$/ : /[^\s,]+$/) || [''];
+    let typedmatch = active.match(qa_tag_onlycomma ? /[^\s,]+[^,]*$/ : /[^\s,]+$/) || [''];
 
     return {before:active.substring(0, active.length-typedmatch[0].length), after:passive, typed:typedmatch[0]};
 }
 
 function qa_category_select(idprefix, startpath)
 {
-    let startval=startpath ? startpath.split("/") : [];
-    let setdescnow=true;
+    let startval = startpath ? startpath.split("/") : [];
+    let setdescnow =t rue;
 
-    for (let l=0; l<=qa_cat_maxdepth; l++) {
-        let elem=document.getElementById(idprefix+'_'+l);
+    for (let l=0; l <= qa_cat_maxdepth; l++) {
+        let elem = document.getElementById(idprefix+'_'+l);
 
         if (elem) {
             if (l) {
                 if (l<startval.length && startval[l].length) {
-                    let val=startval[l];
+                    let val = startval[l];
 
-                    for (let j=0; j<elem.options.length; j++)
-                        if (elem.options[j].value==val)
-                            elem.selectedIndex=j;
+                    for (let j = 0; j<elem.options.length; j++)
+                        if (elem.options[j].value == val)
+                            elem.selectedIndex = j;
                 } else
-                    let val=elem.options[elem.selectedIndex].value;
+                    let val = elem.options[elem.selectedIndex].value;
             } else
-                val='';
+                val = '';
 
-            if (elem.qa_last_sel!==val) {
-                elem.qa_last_sel=val;
+            if (elem.qa_last_sel !== val) {
+                elem.qa_last_sel = val;
 
-                let subelem=document.getElementById(idprefix+'_'+l+'_sub');
+                let subelem = document.getElementById(idprefix+'_'+l+'_sub');
                 if (subelem)
                     subelem.parentNode.removeChild(subelem);
 
-                if (val.length || (l==0)) {
-                    subelem=elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
-                    subelem.id=idprefix+'_'+l+'_sub';
+                if (val.length || (l == 0)) {
+                    subelem = elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
+                    subelem.id = idprefix+'_'+l+'_sub';
                     qa_show_waiting_after(subelem, true);
 
                     qa_ajax_post('category', {categoryid:val},
                         (function(elem, l) {
                             return function(lines) {
-                                let subelem=document.getElementById(idprefix+'_'+l+'_sub');
+                                let subelem = document.getElementById(idprefix+'_'+l+'_sub');
                                 if (subelem)
                                     subelem.parentNode.removeChild(subelem);
 
-                                if (lines[0]=='1') {
-                                    elem.qa_cat_desc=lines[1];
+                                if (lines[0] == '1') {
+                                    elem.qa_cat_desc = lines[1];
 
-                                    let addedoption=false;
+                                    let addedoption = false;
 
                                     if (lines.length>2) {
-                                        const subelem=elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
-                                        subelem.id=idprefix+'_'+l+'_sub';
-                                        subelem.innerHTML=' ';
+                                        const subelem = elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
+                                        subelem.id = idprefix+'_'+l+'_sub';
+                                        subelem.innerHTML = ' ';
 
-                                        const newelem=elem.cloneNode(false);
+                                        const newelem = elem.cloneNode(false);
 
-                                        newelem.name=newelem.id=idprefix+'_'+(l+1);
-                                        newelem.options.length=0;
+                                        newelem.name = newelem.id = idprefix+'_'+(l+1);
+                                        newelem.options.length = 0;
 
                                         if (l ? qa_cat_allownosub : qa_cat_allownone)
-                                            newelem.options[0]=new Option(l ? '' : elem.options[0].text, '', true, true);
+                                            newelem.options[0] = new Option(l ? '' : elem.options[0].text, '', true, true);
 
-                                        for (let i=2; i<lines.length; i++) {
-                                            let parts=lines[i].split('/');
+                                        for (let i = 2; i<lines.length; i++) {
+                                            let parts = lines[i].split('/');
 
-                                            if (String(qa_cat_exclude).length && (String(qa_cat_exclude)==parts[0]))
+                                            if (String(qa_cat_exclude).length && (String(qa_cat_exclude) == parts[0]))
                                                 continue;
 
-                                            newelem.options[newelem.options.length]=new Option(parts.slice(1).join('/'), parts[0]);
-                                            addedoption=true;
+                                            newelem.options[newelem.options.length] = new Option(parts.slice(1).join('/'), parts[0]);
+                                            addedoption = true;
                                         }
 
                                         if (addedoption) {
@@ -252,14 +252,14 @@ function qa_category_select(idprefix, startpath)
 
                                         }
 
-                                        if (l==0)
-                                            elem.style.display='none';
+                                        if (l == 0)
+                                            elem.style.display = 'none';
                                     }
 
                                     if (!addedoption)
                                         set_category_description(idprefix);
 
-                                } else if (lines[0]=='0')
+                                } else if (lines[0] == '0')
                                     alert(lines[1]);
                                 else
                                     qa_ajax_error();
@@ -267,7 +267,7 @@ function qa_category_select(idprefix, startpath)
                         })(elem, l)
                     );
 
-                    setdescnow=false;
+                    setdescnow = false;
                 }
 
                 break;
@@ -281,19 +281,19 @@ function qa_category_select(idprefix, startpath)
 
 function set_category_description(idprefix)
 {
-    const n=document.getElementById(idprefix+'_note');
+    const n = document.getElementById(idprefix+'_note');
 
     if (n) {
-        desc='';
+        desc = '';
 
-        for (let l=1; l<=qa_cat_maxdepth; l++) {
-            let elem=document.getElementById(idprefix+'_'+l);
+        for (let l = 1; l <= qa_cat_maxdepth; l++) {
+            let elem = document.getElementById(idprefix+'_'+l);
 
             if (elem && elem.options[elem.selectedIndex].value.length)
-                desc=elem.qa_cat_desc;
+                desc = elem.qa_cat_desc;
         }
 
-        n.innerHTML=desc;
+        n.innerHTML = desc;
     }
 }
 
