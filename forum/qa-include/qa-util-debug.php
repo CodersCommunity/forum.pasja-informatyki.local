@@ -8,38 +8,38 @@
 
 function qa_usage_init()
 {
-	// should already be initialised in qa-base.php
-	global $qa_usage;
-	if (empty($qa_usage))
-		$qa_usage = new Q2A_Util_Usage;
+    // should already be initialised in qa-base.php
+    global $qa_usage;
+    if (empty($qa_usage))
+        $qa_usage = new Q2A_Util_Usage;
 }
 
 function qa_usage_get()
 {
-	global $qa_usage;
-	return $qa_usage->getCurrent();
+    global $qa_usage;
+    return $qa_usage->getCurrent();
 }
 
 function qa_usage_delta($oldusage, $newusage)
 {
-	// equivalent function is now private
-	return array();
+    // equivalent function is now private
+    return array();
 }
 
 function qa_usage_mark($stage)
 {
-	global $qa_usage;
-	return $qa_usage->mark($stage);
+    global $qa_usage;
+    return $qa_usage->mark($stage);
 }
 
 function qa_usage_line($stage, $usage, $totalusage)
 {
-	// equivalent function is now private
-	return '';
+    // equivalent function is now private
+    return '';
 }
 
 function qa_usage_output()
 {
-	global $qa_usage;
-	return $qa_usage->output();
+    global $qa_usage;
+    return $qa_usage->output();
 }
