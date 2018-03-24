@@ -307,10 +307,10 @@ function set_category_description(idprefix)
 
 	window.addEventListener('load', function()
 	{
-		var titleDetected = false;
-		var editorDetected = false;
+		const titleDetected = false;
+		const editorDetected = false;
 
-		var alertDiv = document.createElement('div');
+		const alertDiv = document.createElement('div');
 		alertDiv.id = 'spoj-alert';
 		alertDiv.innerHTML = 'Twoje pytanie dotyczy zadania z serwisu SPOJ?<br>Nie psuj zabawy innym - nie umieszczaj całego kodu i zapoznaj się z <a href="http://forum.pasja-informatyki.pl/90416/spoj-zasady-umieszczania-postow?show=90416#q90416" target="_blank">tym tematem</a>.';
 		alertDiv.classList.add('spoj-alert');
@@ -345,11 +345,11 @@ function set_category_description(idprefix)
 
 		CKEDITOR.on('instanceReady', function(ev)
 		{
-			 var iframe = document.querySelector('iframe[title^="Edytor tekstu sformatowanego"]');
+			const iframe = document.querySelector('iframe[title^="Edytor tekstu sformatowanego"]');
 
 			// get CKEditor DOM from <iframe>
-			var ckeditor = iframe.contentWindow.document.body;
-			var editorFrame = ( document.getElementById( 'cke_content' ) || document.getElementById( 'cke_q_content' ) ).parentNode;
+			const ckeditor = iframe.contentWindow.document.body;
+			const editorFrame = ( document.getElementById( 'cke_content' ) || document.getElementById( 'cke_q_content' ) ).parentNode;
 
 			// when user writes topic title
 			( document.querySelector( 'input[name="q_title"]' ) || document.getElementById('title') ).addEventListener('input', function(ev)
