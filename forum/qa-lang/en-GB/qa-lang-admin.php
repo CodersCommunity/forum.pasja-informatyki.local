@@ -20,10 +20,10 @@
 	More about this license: http://www.question2answer.org/license.php
 */
 
-	return array(
-		'admin_title' => 'Administration Centre',
-		'url_format_note' => 'Options with the ^ label are working for your site\'s configuration. For best search engine optimisation (SEO), use the first ^ option available.',
-	);
+    return array(
+        'admin_title' => 'Administration Centre',
+        'url_format_note' => 'Options with the ^ label are working for your site\'s configuration. For best search engine optimisation (SEO), use the first ^ option available.',
+    );
 
 
 /*

@@ -1,21 +1,21 @@
 <?php
 /*
-	Snow Theme for Question2Answer Package
-	Copyright (C) 2014 Q2A Market <http://www.q2amarket.com>
+    Snow Theme for Question2Answer Package
+    Copyright (C) 2014 Q2A Market <http://www.q2amarket.com>
 
-	File:           qa-theme.php
-	Version:        Snow 1.4
-	Description:    Q2A theme class
+    File:           qa-theme.php
+    Version:        Snow 1.4
+    Description:    Q2A theme class
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
 */
 
 /**
@@ -323,29 +323,29 @@ class qa_html_theme extends qa_html_theme_base
         if ($adres === '') {
             $this->output(<<<'TAG'
 <div class="qa-nav-sub">
-					<ul class="qa-nav-sub-list">
-						<li class="qa-nav-sub-item qa-nav-sub-recent">
-							<a href="./questions" class="qa-nav-sub-link qa-nav-sub-selected">Najnowsze</a>
-						</li>
-						<li class="qa-nav-sub-item qa-nav-sub-hot">
-							<a href="./questions?sort=hot" class="qa-nav-sub-link">Gorące</a>
-						</li>
-						<li class="qa-nav-sub-item qa-nav-sub-votes">
-							<a href="./questions?sort=votes" class="qa-nav-sub-link">Najwięcej głosów</a>
-						</li>
-						<li class="qa-nav-sub-item qa-nav-sub-answers">
-							<a href="./questions?sort=answers" class="qa-nav-sub-link">Najwięcej odpowiedzi</a>
-						</li>
-						<li class="qa-nav-sub-item qa-nav-sub-views">
-							<a href="./questions?sort=views" class="qa-nav-sub-link">Najwięcej odwiedzin</a>
-						</li>
-						<li class="qa-nav-sub-item qa-nav-sub-polls">
-							<a href="./faq" class="qa-nav-sub-link">Pierwszy raz tutaj?</a>
-						</li>
-					</ul>
-					<div class="qa-nav-sub-clear">
-					</div>
-				</div>
+                    <ul class="qa-nav-sub-list">
+                        <li class="qa-nav-sub-item qa-nav-sub-recent">
+                            <a href="./questions" class="qa-nav-sub-link qa-nav-sub-selected">Najnowsze</a>
+                        </li>
+                        <li class="qa-nav-sub-item qa-nav-sub-hot">
+                            <a href="./questions?sort=hot" class="qa-nav-sub-link">Gorące</a>
+                        </li>
+                        <li class="qa-nav-sub-item qa-nav-sub-votes">
+                            <a href="./questions?sort=votes" class="qa-nav-sub-link">Najwięcej głosów</a>
+                        </li>
+                        <li class="qa-nav-sub-item qa-nav-sub-answers">
+                            <a href="./questions?sort=answers" class="qa-nav-sub-link">Najwięcej odpowiedzi</a>
+                        </li>
+                        <li class="qa-nav-sub-item qa-nav-sub-views">
+                            <a href="./questions?sort=views" class="qa-nav-sub-link">Najwięcej odwiedzin</a>
+                        </li>
+                        <li class="qa-nav-sub-item qa-nav-sub-polls">
+                            <a href="./faq" class="qa-nav-sub-link">Pierwszy raz tutaj?</a>
+                        </li>
+                    </ul>
+                    <div class="qa-nav-sub-clear">
+                    </div>
+                </div>
 TAG
             );
         }
