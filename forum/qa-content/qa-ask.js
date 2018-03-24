@@ -32,9 +32,9 @@ function qa_title_change(value)
             }
 
             if (lines.length>2) {
-                const simelem=document.getElementById('similar');
-                if (simelem)
-                    simelem.innerHTML = lines.slice(2).join('\n');
+                const simpleElement=document.getElementById('similar');
+                if (simpleElement)
+                    simpleElement.innerHTML = lines.slice(2).join('\n');
             }
 
         } else if (lines[0] == '0')
@@ -58,7 +58,7 @@ function qa_html_escape(text)
 
 function qa_tag_click(link)
 {
-    let elem = document.getElementById('tags');
+    let element = document.getElementById('tags');
     let parts = qa_tag_typed_parts(elem);
 
     // removes any HTML tags and ampersand
@@ -72,11 +72,11 @@ function qa_tag_click(link)
 
     // sanitize and set value
     if (qa_tag_onlycomma)
-        elem.value = newValue.replace(/[\s,]*,[\s,]*/g, ', ').replace(/^[\s,]+/g, '');
+        element.value = newValue.replace(/[\s,]*,[\s,]*/g, ', ').replace(/^[\s,]+/g, '');
     else
-        elem.value = newValue.replace(/[\s,]+/g, ' ').replace(/^[\s,]+/g, '');
+        element.value = newValue.replace(/[\s,]+/g, ' ').replace(/^[\s,]+/g, '');
 
-    elem.focus();
+    element.focus();
     qa_tag_hints();
 
     return false;
@@ -84,7 +84,7 @@ function qa_tag_click(link)
 
 function qa_tag_hints(skipcomplete)
 {
-    let elem = document.getElementById('tags');
+    let element = document.getElementById('tags');
     let html = '';
     let completed = false;
 
@@ -112,21 +112,21 @@ function qa_tags_to_html(tags, matchlc)
 {
     let html = '';
     let added = 0;
-    let tagseen = {};
+    let tagSeen = {};
 
-    for (var i=0; i<tags.length; i++) {
+    for (let i=0; i<tags.length; i++) {
         let tag = tags[i];
-        let taglc = tag.toLowerCase();
+        let tagLc = tag.toLowerCase();
 
         if (!tagseen[taglc]) {
             tagseen[taglc] = true;
 
             if ( (!matchlc) || (taglc.indexOf(matchlc)>=0) ) { // match if necessary
                 if (matchlc) { // if matching, show appropriate part in bold
-                    let matchstart = taglc.indexOf(matchlc);
-                    let matchend = matchstart+matchlc.length;
-                    inner = '<span style="font-weight:normal;">'+qa_html_escape(tag.substring(0, matchstart))+'<b>'+
-                        qa_html_escape(tag.substring(matchstart, matchend))+'</b>'+qa_html_escape(tag.substring(matchend))+'</span>';
+                    let matchStart = tagLc.indexOf(matchLc);
+                    let matchEnd = matchStart+matchLc.length;
+                    inner = '<span style="font-weight:normal;">'+qa_html_escape(tag.substring(0, matchStart))+'<b>'+
+                        qa_html_escape(tag.substring(matchStart, matchEnd))+'</b>'+qa_html_escape(tag.substring(matchEnd))+'</span>';
                 } else // otherwise show as-is
                     inner = qa_html_escape(tag);
 
@@ -141,27 +141,27 @@ function qa_tags_to_html(tags, matchlc)
     return html;
 }
 
-function qa_caret_from_end(elem)
+function qa_caret_from_end(element)
 {
     if (document.selection) { // for IE
-        elem.focus();
+        element.focus();
         let sel = document.selection.createRange();
         sel.moveStart('character', -elem.value.length);
 
-        return elem.value.length-sel.text.length;
+        return element.value.length-sel.text.length;
 
-    } else if (typeof(elem.selectionEnd) != 'undefined') // other browsers
-        return elem.value.length-elem.selectionEnd;
+    } else if (typeof(element.selectionEnd) != 'undefined') // other browsers
+        return element.value.length-elem.selectionEnd;
 
     else // by default return safest value
         return 0;
 }
 
-function qa_tag_typed_parts(elem)
+function qa_tag_typed_parts(element)
 {
-    let caret = elem.value.length-qa_caret_from_end(elem);
-    let active = elem.value.substring(0, caret);
-    let passive = elem.value.substring(active.length);
+    let caret = element.value.length-qa_caret_from_end(element);
+    let active = element.value.substring(0, caret);
+    let passive = element.value.substring(active.length);
 
     // if the caret is in the middle of a word, move the end of word from passive to active
     if (
@@ -169,72 +169,72 @@ function qa_tag_typed_parts(elem)
         (adjoinmatch = passive.match(qa_tag_onlycomma ? /^[^,]*[^\s,][^,]*/ : /^[^\s,]+/))
     ) {
         active += adjoinmatch[0];
-        passive = elem.value.substring(active.length);
+        passive = element.value.substring(active.length);
     }
 
     // find what has been typed so far
-    let typedmatch = active.match(qa_tag_onlycomma ? /[^\s,]+[^,]*$/ : /[^\s,]+$/) || [''];
+    const typedMatch = active.match(qa_tag_onlycomma ? /[^\s,]+[^,]*$/ : /[^\s,]+$/) || [''];
 
-    return {before:active.substring(0, active.length-typedmatch[0].length), after:passive, typed:typedmatch[0]};
+    return {before:active.substring(0, active.length-typedmatch[0].length), after:passive, typed:typedMatch[0]};
 }
 
-function qa_category_select(idprefix, startpath)
+function qa_category_select(idPrefix, startPath)
 {
-    let startval = startpath ? startpath.split("/") : [];
-    let setdescnow =t rue;
+    let startVal = startpath ? startpath.split("/") : [];
+    let setDescNow = true;
 
     for (let l=0; l <= qa_cat_maxdepth; l++) {
-        let elem = document.getElementById(idprefix+'_'+l);
+        let element = document.getElementById(idPrefix+'_'+l);
 
-        if (elem) {
+        if (element) {
             if (l) {
-                if (l<startval.length && startval[l].length) {
-                    let val = startval[l];
+                if (l<startVal.length && startVal[l].length) {
+                    let value = startVal[l];
 
-                    for (let j = 0; j<elem.options.length; j++)
-                        if (elem.options[j].value == val)
-                            elem.selectedIndex = j;
+                    for (let j = 0; j<element.options.length; j++)
+                        if (element.options[j].value == value)
+                            element.selectedIndex = j;
                 } else
-                    let val = elem.options[elem.selectedIndex].value;
+                    let value = element.options[element.selectedIndex].value;
             } else
-                val = '';
+                value = '';
 
-            if (elem.qa_last_sel !== val) {
-                elem.qa_last_sel = val;
+            if (element.qa_last_sel !== value) {
+                element.qa_last_sel = value;
 
-                let subelem = document.getElementById(idprefix+'_'+l+'_sub');
-                if (subelem)
-                    subelem.parentNode.removeChild(subelem);
+                let subElement = document.getElementById(idPrefix+'_'+l+'_sub');
+                if (subElement)
+                    subElement.parentNode.removeChild(subElement);
 
-                if (val.length || (l == 0)) {
-                    subelem = elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
-                    subelem.id = idprefix+'_'+l+'_sub';
-                    qa_show_waiting_after(subelem, true);
+                if (value.length || (l == 0)) {
+                    subElement = element.parentNode.insertBefore(document.createElement('span'), element.nextSibling);
+                    subElement.id = idPrefix+'_'+l+'_sub';
+                    qa_show_waiting_after(subElement, true);
 
                     qa_ajax_post('category', {categoryid:val},
                         (function(elem, l) {
                             return function(lines) {
-                                let subelem = document.getElementById(idprefix+'_'+l+'_sub');
-                                if (subelem)
-                                    subelem.parentNode.removeChild(subelem);
+                                let subElement = document.getElementById(idprefix+'_'+l+'_sub');
+                                if (subElement)
+                                    subElement.parentNode.removeChild(subElement);
 
                                 if (lines[0] == '1') {
                                     elem.qa_cat_desc = lines[1];
 
-                                    let addedoption = false;
+                                    let addedOption = false;
 
                                     if (lines.length>2) {
-                                        const subelem = elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
-                                        subelem.id = idprefix+'_'+l+'_sub';
-                                        subelem.innerHTML = ' ';
+                                        let subElement = elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
+                                        subElement.id = idprefix+'_'+l+'_sub';
+                                        subElement.innerHTML = ' ';
 
-                                        const newelem = elem.cloneNode(false);
+                                        let newElement = elem.cloneNode(false);
 
-                                        newelem.name = newelem.id = idprefix+'_'+(l+1);
-                                        newelem.options.length = 0;
+                                        newElement.name = newElement.id = idprefix+'_'+(l+1);
+                                        newElement.options.length = 0;
 
                                         if (l ? qa_cat_allownosub : qa_cat_allownone)
-                                            newelem.options[0] = new Option(l ? '' : elem.options[0].text, '', true, true);
+                                            newElement.options[0] = new Option(l ? '' : elem.options[0].text, '', true, true);
 
                                         for (let i = 2; i<lines.length; i++) {
                                             let parts = lines[i].split('/');
@@ -242,12 +242,12 @@ function qa_category_select(idprefix, startpath)
                                             if (String(qa_cat_exclude).length && (String(qa_cat_exclude) == parts[0]))
                                                 continue;
 
-                                            newelem.options[newelem.options.length] = new Option(parts.slice(1).join('/'), parts[0]);
-                                            addedoption = true;
+                                            newElement.options[newElement.options.length] = new Option(parts.slice(1).join('/'), parts[0]);
+                                            addedOption = true;
                                         }
 
-                                        if (addedoption) {
-                                            subelem.appendChild(newelem);
+                                        if (addedOption) {
+                                            subElement.appendChild(newElement);
                                             qa_category_select(idprefix, startpath);
 
                                         }
@@ -256,7 +256,7 @@ function qa_category_select(idprefix, startpath)
                                             elem.style.display = 'none';
                                     }
 
-                                    if (!addedoption)
+                                    if (!addedOption)
                                         set_category_description(idprefix);
 
                                 } else if (lines[0] == '0')
@@ -287,10 +287,10 @@ function set_category_description(idprefix)
         desc = '';
 
         for (let l = 1; l <= qa_cat_maxdepth; l++) {
-            let elem = document.getElementById(idprefix+'_'+l);
+            let element = document.getElementById(idprefix+'_'+l);
 
-            if (elem && elem.options[elem.selectedIndex].value.length)
-                desc = elem.qa_cat_desc;
+            if (element && element.options[element.selectedIndex].value.length)
+                desc = element.qa_cat_desc;
         }
 
         n.innerHTML = desc;
