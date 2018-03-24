@@ -32,7 +32,7 @@ function qa_title_change(value)
 			}
 
 			if (lines.length>2) {
-				var simelem=document.getElementById('similar');
+				let simelem=document.getElementById('similar');
 				if (simelem)
 					simelem.innerHTML=lines.slice(2).join('\n');
 			}
@@ -58,16 +58,16 @@ function qa_html_escape(text)
 
 function qa_tag_click(link)
 {
-	var elem=document.getElementById('tags');
-	var parts=qa_tag_typed_parts(elem);
+	let elem=document.getElementById('tags');
+	let parts=qa_tag_typed_parts(elem);
 
 	// removes any HTML tags and ampersand
-	var tag=qa_html_unescape(link.innerHTML.replace(/<[^>]*>/g, ''));
+	let tag=qa_html_unescape(link.innerHTML.replace(/<[^>]*>/g, ''));
 
-	var separator=qa_tag_onlycomma ? ', ' : ' ';
+	let separator=qa_tag_onlycomma ? ', ' : ' ';
 
 	// replace if matches typed, otherwise append
-	var newvalue=(parts.typed && (tag.toLowerCase().indexOf(parts.typed.toLowerCase())>=0))
+	let newvalue=(parts.typed && (tag.toLowerCase().indexOf(parts.typed.toLowerCase())>=0))
 		? (parts.before+separator+tag+separator+parts.after+separator) : (elem.value+separator+tag+separator);
 
 	// sanitize and set value
@@ -84,13 +84,13 @@ function qa_tag_click(link)
 
 function qa_tag_hints(skipcomplete)
 {
-	var elem=document.getElementById('tags');
-	var html='';
-	var completed=false;
+	let elem=document.getElementById('tags');
+	let html='';
+	let completed=false;
 
 	// first try to auto-complete
 	if (qa_tags_complete && !skipcomplete) {
-		var parts=qa_tag_typed_parts(elem);
+		let parts=qa_tag_typed_parts(elem);
 
 		if (parts.typed) {
 			html=qa_tags_to_html((qa_html_unescape(qa_tags_examples+','+qa_tags_complete)).split(','), parts.typed.toLowerCase());
@@ -110,21 +110,21 @@ function qa_tag_hints(skipcomplete)
 
 function qa_tags_to_html(tags, matchlc)
 {
-	var html='';
-	var added=0;
-	var tagseen={};
+	let html='';
+	let added=0;
+	let tagseen={};
 
 	for (var i=0; i<tags.length; i++) {
-		var tag=tags[i];
-		var taglc=tag.toLowerCase();
+		let tag=tags[i];
+		let taglc=tag.toLowerCase();
 
 		if (!tagseen[taglc]) {
 			tagseen[taglc]=true;
 
 			if ( (!matchlc) || (taglc.indexOf(matchlc)>=0) ) { // match if necessary
 				if (matchlc) { // if matching, show appropriate part in bold
-					var matchstart=taglc.indexOf(matchlc);
-					var matchend=matchstart+matchlc.length;
+					let matchstart=taglc.indexOf(matchlc);
+					let matchend=matchstart+matchlc.length;
 					inner='<span style="font-weight:normal;">'+qa_html_escape(tag.substring(0, matchstart))+'<b>'+
 						qa_html_escape(tag.substring(matchstart, matchend))+'</b>'+qa_html_escape(tag.substring(matchend))+'</span>';
 				} else // otherwise show as-is
@@ -145,7 +145,7 @@ function qa_caret_from_end(elem)
 {
 	if (document.selection) { // for IE
 		elem.focus();
-		var sel=document.selection.createRange();
+		let sel=document.selection.createRange();
 		sel.moveStart('character', -elem.value.length);
 
 		return elem.value.length-sel.text.length;
@@ -159,9 +159,9 @@ function qa_caret_from_end(elem)
 
 function qa_tag_typed_parts(elem)
 {
-	var caret=elem.value.length-qa_caret_from_end(elem);
-	var active=elem.value.substring(0, caret);
-	var passive=elem.value.substring(active.length);
+	let caret=elem.value.length-qa_caret_from_end(elem);
+	let active=elem.value.substring(0, caret);
+	let passive=elem.value.substring(active.length);
 
 	// if the caret is in the middle of a word, move the end of word from passive to active
 	if (
@@ -173,36 +173,36 @@ function qa_tag_typed_parts(elem)
 	}
 
 	// find what has been typed so far
-	var typedmatch=active.match(qa_tag_onlycomma ? /[^\s,]+[^,]*$/ : /[^\s,]+$/) || [''];
+	let typedmatch=active.match(qa_tag_onlycomma ? /[^\s,]+[^,]*$/ : /[^\s,]+$/) || [''];
 
 	return {before:active.substring(0, active.length-typedmatch[0].length), after:passive, typed:typedmatch[0]};
 }
 
 function qa_category_select(idprefix, startpath)
 {
-	var startval=startpath ? startpath.split("/") : [];
-	var setdescnow=true;
+	let startval=startpath ? startpath.split("/") : [];
+	let setdescnow=true;
 
-	for (var l=0; l<=qa_cat_maxdepth; l++) {
-		var elem=document.getElementById(idprefix+'_'+l);
+	for (let l=0; l<=qa_cat_maxdepth; l++) {
+		let elem=document.getElementById(idprefix+'_'+l);
 
 		if (elem) {
 			if (l) {
 				if (l<startval.length && startval[l].length) {
-					var val=startval[l];
+					let val=startval[l];
 
-					for (var j=0; j<elem.options.length; j++)
+					for (let j=0; j<elem.options.length; j++)
 						if (elem.options[j].value==val)
 							elem.selectedIndex=j;
 				} else
-					var val=elem.options[elem.selectedIndex].value;
+					let val=elem.options[elem.selectedIndex].value;
 			} else
 				val='';
 
 			if (elem.qa_last_sel!==val) {
 				elem.qa_last_sel=val;
 
-				var subelem=document.getElementById(idprefix+'_'+l+'_sub');
+				let subelem=document.getElementById(idprefix+'_'+l+'_sub');
 				if (subelem)
 					subelem.parentNode.removeChild(subelem);
 
@@ -214,21 +214,21 @@ function qa_category_select(idprefix, startpath)
 					qa_ajax_post('category', {categoryid:val},
 						(function(elem, l) {
 							return function(lines) {
-								var subelem=document.getElementById(idprefix+'_'+l+'_sub');
+								let subelem=document.getElementById(idprefix+'_'+l+'_sub');
 								if (subelem)
 									subelem.parentNode.removeChild(subelem);
 
 								if (lines[0]=='1') {
 									elem.qa_cat_desc=lines[1];
 
-									var addedoption=false;
+									const addedoption=false;
 
 									if (lines.length>2) {
-										var subelem=elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
+										const subelem=elem.parentNode.insertBefore(document.createElement('span'), elem.nextSibling);
 										subelem.id=idprefix+'_'+l+'_sub';
 										subelem.innerHTML=' ';
 
-										var newelem=elem.cloneNode(false);
+										const newelem=elem.cloneNode(false);
 
 										newelem.name=newelem.id=idprefix+'_'+(l+1);
 										newelem.options.length=0;
@@ -236,8 +236,8 @@ function qa_category_select(idprefix, startpath)
 										if (l ? qa_cat_allownosub : qa_cat_allownone)
 											newelem.options[0]=new Option(l ? '' : elem.options[0].text, '', true, true);
 
-										for (var i=2; i<lines.length; i++) {
-											var parts=lines[i].split('/');
+										for (let i=2; i<lines.length; i++) {
+											let parts=lines[i].split('/');
 
 											if (String(qa_cat_exclude).length && (String(qa_cat_exclude)==parts[0]))
 												continue;
@@ -281,13 +281,13 @@ function qa_category_select(idprefix, startpath)
 
 function set_category_description(idprefix)
 {
-	var n=document.getElementById(idprefix+'_note');
+	const n=document.getElementById(idprefix+'_note');
 
 	if (n) {
 		desc='';
 
-		for (var l=1; l<=qa_cat_maxdepth; l++) {
-			var elem=document.getElementById(idprefix+'_'+l);
+		for (let l=1; l<=qa_cat_maxdepth; l++) {
+			let elem=document.getElementById(idprefix+'_'+l);
 
 			if (elem && elem.options[elem.selectedIndex].value.length)
 				desc=elem.qa_cat_desc;
