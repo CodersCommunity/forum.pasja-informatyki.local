@@ -80,7 +80,7 @@
 		'mass_mailings_explanation' => 'Zapisz się na powiadomienia dla użytkowników',
 		'mass_mailings' => 'Powiadomienia użytkowników:',
 		'member_for' => 'Zarejestrowany od:',
-		'member_type' => 'Rodzaj:',
+		'member_type' => 'Ranga:',
 		'new_password_1' => 'Nowe hasło:',
 		'new_password_2' => 'Powtórz nowe hasło:',
 		'no_blocked_users' => 'Nie znaleziono zablokowanych użytkowników',
