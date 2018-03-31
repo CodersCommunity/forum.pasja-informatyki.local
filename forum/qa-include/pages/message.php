@@ -68,8 +68,13 @@
 
 //	Check the user exists and work out what can and can't be set (if not using single sign-on)
 
-	if ( !qa_opt('allow_private_messages') || !is_array($toaccount) || ($toaccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) )
-		return include QA_INCLUDE_DIR.'qa-page-not-found.php';
+        if ( !qa_opt('allow_private_messages') || !is_array($toaccount) || ($toaccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) ){
+
+            if(qa_get_logged_in_level() <= QA_USER_LEVEL_MODERATOR) {
+                return include QA_INCLUDE_DIR.'qa-page-not-found.php';
+            }	
+
+	}
 
 
 //	Check that we have permission and haven't reached the limit, but don't quit just yet
