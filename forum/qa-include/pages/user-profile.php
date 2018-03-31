@@ -470,7 +470,7 @@
 
 			));
 
-		} else if(qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR) {
+		} else if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR) {
 			$qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
 
 				'^1' => '<a class="disabled-pw-link" href="'.qa_path_html('message/'.$handle).'"><dfn data-info="Uzytkownik ma wylaczone otrzymywanie wiadomosci od innych uzytkownikow, ale korzystajac z uprawnien administracyjnych mozesz sie z nim skontaktowac">',
