@@ -70,7 +70,7 @@
 
         if ( !qa_opt('allow_private_messages') || !is_array($toaccount) || ($toaccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) ){
 
-            if(qa_get_logged_in_level() <= QA_USER_LEVEL_MODERATOR) {
+            if(qa_get_logged_in_level() < QA_USER_LEVEL_EDITOR) {
                 return include QA_INCLUDE_DIR.'qa-page-not-found.php';
             }	
 
