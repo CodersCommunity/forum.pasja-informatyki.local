@@ -358,20 +358,17 @@
 			if($event_user) $this->check_voter($event_user);
 		}
 
-		function check_voted($uid) {
-						// upvotes received
+                function check_voted($uid) {
+                    // upvotes received
 			
-			$votes = qa_db_read_one_assoc(
-				qa_db_query_sub(
-					'SELECT upvoteds FROM ^userpoints WHERE userid=#',
-					$uid
-				),
-				true
-			);
-			$badges = array('liked','loved','revered');
+                    $votesArray = qa_db_query_raw('SELECT upvoteds FROM qa_userpoints WHERE userid='.$uid.' LIMIT 1');
+                    foreach($votesArray as $vote) {
+                        $votes = $vote;
+                    }
+                    $badges = array('liked','loved','revered');
 
-			qa_badge_award_check($badges, $votes, $uid);
-		}
+                    qa_badge_award_check($badges, $votes, $uid);
+                }
 
 		function check_voter($uid) {
 			
