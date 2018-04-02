@@ -2271,7 +2271,7 @@ input[type="submit"], button {
 	color: #fff;
 }
 .qa-suggest-next a {
-	color: #fff;
+	color: #5faee3 !important;
 	border-bottom: 1px dotted #fff;
 }
 .qa-suggest-next a:hover, .qa-suggest-next a:focus {
