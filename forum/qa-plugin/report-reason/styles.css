@@ -1,0 +1,88 @@
+.qa-flag-reasons-wrap {
+    display:inline-block;
+    min-width:250px;
+    position:relative;
+    background: #a278e2;
+    border:1px solid #FCC;
+    padding:35px;
+    margin:10px 0 30px 0;
+    text-align:left;
+    z-index:3335;
+}
+.qa-flag-reasons-wrap .closer {
+    position:absolute;
+    top:5px;
+    right:7px;
+    font-size:20px;
+    color:#333;
+    cursor:pointer;
+    background:#a278e2;
+    border-radius:3px;
+    width:20px;
+    height:20px;
+    line-height: 20px;
+    text-align:center;
+}
+.qa-flag-reasons-wrap h4 {
+    margin-bottom:10px;
+}
+.qa-flag-reasons-wrap label {
+    display:block;
+    padding:7px 0;
+}
+input[name="qa-spam-reason-radio"] {
+    margin:0 2px 0 0;
+}
+input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
+.qa-spam-reason-text-wrap {
+    display:block;
+    margin:20px 0 10px 0;
+}
+.qa-spam-reason-text {
+    padding:7px;
+    height:auto;
+}
+.qa-go-flag-send-button {
+    margin-top:15px;
+}
+#flagbox-popup {
+    background: #000000;
+    background: rgba(0,0,0,0.75);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 5119;
+}
+#flagbox-center {
+    margin: 6% auto;
+    width: auto;
+    text-align: center;
+}
+.qa-flagreason-list {
+    padding-left:0;
+    margin:0px;
+    list-style:none;
+}
+.qa-flagreason-list li {
+    margin-bottom:15px;
+}
+.qa-flag-wrap {
+    display:block;
+}
+.qa-flagreasons {
+    display:inline-block;
+    max-width:90%;
+    margin-bottom:30px;
+    padding:20px 20px 5px 20px;
+    background:#34495e;//#3498db;
+    color:#3498db;
+    border:1px solid #F9A;
+        font-weight: bold;
+}
+.qa-flagreasons a, a:hover {
+    color: #3498db;
+    text-decoration: underline;
+}
