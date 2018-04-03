@@ -5,8 +5,8 @@ class q2apro_flagreasons_event
     public function process_event($event, $userId, $handle, $cookieId, $params)
     {
         $flagEvents = ['q_unflag', 'a_unflag', 'c_unflag'];
-        
-        if(in_array($event, $flagEvents)) {
+
+        if (in_array($event, $flagEvents, true)) {
             $postId = $params['postid'];
 
             qa_db_query_sub('
@@ -15,13 +15,16 @@ class q2apro_flagreasons_event
                 AND postid = #
             ', $userId, $postId);
         }
+
         $flagEvents2 = ['q_clearflags', 'a_clearflags', 'c_clearflags'];
-        
-        if(in_array($event, $flagEvents2)) {
+
+        if (in_array($event, $flagEvents2, true)) {
             $userLevel = qa_get_logged_in_level();
-            if($userLevel >= QA_USER_LEVEL_EDITOR) {
+
+            if ($userLevel >= QA_USER_LEVEL_EDITOR) {
             $postId = $params['postid'];
             }
+
             qa_db_query_sub('
                 DELETE FROM `^flagreasons` 
                 WHERE postid = #

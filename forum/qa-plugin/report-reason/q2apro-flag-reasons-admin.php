@@ -5,11 +5,12 @@ class q2apro_flagreasons_admin
     public function init_queries($tablesLc) 
     {
         $tableName = qa_db_add_table_prefix('flagreasons');
-        
-        if(!in_array($tableName, $tablesLc)) {
-            require_once QA_INCLUDE_DIR.'qa-app-users.php';
+        $result    = null;
 
-            return '
+        if (!in_array($tableName, $tablesLc, true)) {
+            require_once QA_INCLUDE_DIR . 'qa-app-users.php';
+
+            $result = '
                 CREATE TABLE `^flagreasons` (
                   `userid` int(10) UNSIGNED NOT NULL,
                   `postid` int(10) UNSIGNED NOT NULL,
@@ -20,17 +21,18 @@ class q2apro_flagreasons_admin
                 ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ';
         }
-        return null;
+
+        return $result;
     }
+
     public function option_default($option) 
     {
-        if('q2apro_flagreasons_enabled' === $option) return 1;
-        else return null;
+        return 'q2apro_flagreasons_enabled' === $option ? 1 : null;
     }
     
     public function allow_template($template)
     {
-        return ($template!='admin');
+        return ('admin' !== $template);
     }       
 }
 
