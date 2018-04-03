@@ -49,7 +49,7 @@ class q2apro_flag_reasons_page
             exit();
         }
 
-        $transferString=$_POST['ajaxdata'];
+        $transferString = qa_post_text('ajaxdata');
         
         if(!empty($transferString)) {
             $newData = json_decode($transferString, true);
