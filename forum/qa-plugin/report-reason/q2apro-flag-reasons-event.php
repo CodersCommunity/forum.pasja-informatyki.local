@@ -18,7 +18,8 @@ class q2apro_flagreasons_event
         $flagEvents2 = ['q_clearflags', 'a_clearflags', 'c_clearflags'];
         
         if(in_array($event, $flagEvents2)) {
-            if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR) {
+            $userLevel = qa_get_logged_in_level();
+            if($userLevel >= QA_USER_LEVEL_EDITOR) {
             $postId = $params['postid'];
             }
             qa_db_query_sub('
