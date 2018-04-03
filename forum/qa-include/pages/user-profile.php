@@ -459,11 +459,11 @@
 
 
 	//	Private message link
-
-                if (qa_opt('allow_private_messages') && isset($loginuserid) && ($loginuserid != $userid) && !($useraccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) && !$userediting) {
+                $allowedPrivateMessages = qa_opt('allow_private_messages');
+                if ($allowedPrivateMessages && isset($loginuserid) && ($loginuserid != $userid) && !($useraccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) && !$userediting) {
 			
 			$qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), [
-				'^1' => '<a href="'.qa_path_html('message/'.$handle).'">',
+				'^1' => '<a href="' . qa_path_html('message/'.$handle) . '">',
 				'^2' => '</a>',
                          ]);
 			
