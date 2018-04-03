@@ -2,7 +2,7 @@
     display:inline-block;
     min-width:250px;
     position:relative;
-    background: #a278e2;
+    background: #34495e;
     border:1px solid #FCC;
     padding:35px;
     margin:10px 0 30px 0;
@@ -16,7 +16,7 @@
     font-size:20px;
     color:#333;
     cursor:pointer;
-    background:#a278e2;
+    background:#34495e;
     border-radius:3px;
     width:20px;
     height:20px;
@@ -77,7 +77,7 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
     max-width:90%;
     margin-bottom:30px;
     padding:20px 20px 5px 20px;
-    background:#34495e;//#3498db;
+    background:#34495e;
     color:#3498db;
     border:1px solid #F9A;
         font-weight: bold;
