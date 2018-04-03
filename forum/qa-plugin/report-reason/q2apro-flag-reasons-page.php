@@ -25,7 +25,7 @@ class q2apro_flag_reasons_page
 
     public function match_request($request)
     {
-        if ($request === 'ajaxflagger') {
+        if ('ajaxflagger' === $request) {
             return true;
         }
 
@@ -44,20 +44,22 @@ class q2apro_flag_reasons_page
         6 - other
         */
 
-        if(!qa_is_logged_in()) {
+        $logged = qa_is_logged_in();
+        if(!$logged) {
             exit();
         }
 
         $transferString=$_POST['ajaxdata'];
+        
         if(!empty($transferString)) {
             $newData = json_decode($transferString, true);
             $newData = str_replace('&quot;', '"', $newData); // see stackoverflow.com/questions/3110487/
 
-            $questionId = (int)$newData['questionid'];
-            $postId = (int)$newData['postid'];
+            $questionId = (int) $newData['questionid'];
+            $postId = (int) $newData['postid'];
             $postType = $newData['posttype'];
             $parentId = empty($newData['parentid']) ? null : (int)$newData['parentid']; // only C
-            $reasonId = (int)$newData['reasonid'];
+            $reasonId = (int) $newData['reasonid'];
             $notice = empty($newData['notice']) ? null : trim($newData['notice']);
             
             $ajaxReturn = '';
@@ -75,14 +77,14 @@ class q2apro_flag_reasons_page
             require_once QA_INCLUDE_DIR . 'app/votes.php';
             require_once QA_INCLUDE_DIR . 'pages/question-view.php';
             
-            if($postType == 'q') {
+            if('q' === $postType) {
                 $questionData = qa_db_select_with_pending(
                     qa_db_full_post_selectspec($userId, $questionId),
                     qa_db_full_child_posts_selectspec($userId, $questionId),
                     qa_db_full_a_child_posts_selectspec($userId, $questionId),
                     qa_db_post_parent_q_selectspec($questionId),
                     qa_db_post_close_post_selectspec($questionId),
-                    false,//qa_db_post_duplicates_selectspec($questionId),
+                    false,
                     qa_db_post_meta_selectspec($questionId, 'qa_q_extra'),
                     qa_db_category_nav_selectspec($questionId, true, true, true),
                     isset($userId) ? qa_db_is_favorite_selectspec($userId, QA_ENTITY_QUESTION, $questionId) : null
@@ -108,7 +110,7 @@ class q2apro_flag_reasons_page
                     ', $userId, $postId, $reasonId, $notice);
                 }
             }
-            else if($postType === 'a') {
+            else if('a' === $postType) {
                 $answerId = $postId;
                 
                 list($answer, $question, $qChildPosts, $aChildPosts) = qa_db_select_with_pending(
@@ -137,7 +139,7 @@ class q2apro_flag_reasons_page
                     ', $userId, $postId, $reasonId, $notice);
                 }
             }
-            else if($postType === 'c') {
+            else if('c' === $postType) {
 
                 $commentId = $postId;
                 
