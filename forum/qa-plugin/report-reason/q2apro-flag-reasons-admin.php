@@ -24,12 +24,8 @@ class q2apro_flagreasons_admin
     }
     public function option_default($option) 
     {
-        switch($option) {
-            case 'q2apro_flagreasons_enabled':
-                return 1;
-            default:
-                return null;
-        }
+        if('q2apro_flagreasons_enabled' === $option) return 1;
+        else return null;
     }
     
     public function allow_template($template)
