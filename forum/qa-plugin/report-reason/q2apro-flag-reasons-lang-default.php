@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'reason' => 'Pow&#243;d:',
     'reason_spam' => 'Kod bez bloczka',
     'reason_quality' => 'SPAM',
@@ -15,4 +15,4 @@ return array(
     'enter_details' => 'Wpisz notatke',
     'send' => 'Wy&#347;lij',
     'flaglist_head' => 'Flagi:',
-);
+];
