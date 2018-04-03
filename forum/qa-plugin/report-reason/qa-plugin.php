@@ -108,7 +108,7 @@ function q2apro_count_postflags_output($postId)
     // count reasons
     foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
-        $flagOutput .= (empty($flagoutput) ? '' : '<br>'); //todo: ta zmienna $flagoutput nigdzie nie istnieje. 
+        $flagOutput .= (empty($flagoutput) ? '' : '<br>'); //todo: ta zmienna $flagoutput nigdzie nie istnieje.
         $flagOutput .= ' ' . q2apro_flag_reasonid_to_readable($flag['reasonid']) . ' (' . $handle;
         if (!empty($flag['notice'])) {
             $flagOutput .= ' ' . $flag['notice'] . '”';
