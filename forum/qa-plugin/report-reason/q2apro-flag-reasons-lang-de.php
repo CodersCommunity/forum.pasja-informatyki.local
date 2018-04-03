@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'reason' => 'Grund der Meldung:',
     'reason_spam' => 'Spam',
     'reason_quality' => 'Schreibregeln',
@@ -15,4 +15,4 @@ return array(
     'enter_details' => 'Details eintragen …',
     'send' => 'Absenden',
     'flaglist_head' => 'Flags:',
-);
+];
