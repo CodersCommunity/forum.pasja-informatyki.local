@@ -108,7 +108,6 @@ class qa_html_theme_layer extends qa_html_theme_base
     public function post_tags($post, $class)
     {
         qa_html_theme_base::post_tags($post, $class);
-ini_set('display_errors', 1);
         if($class === 'qa-q-view') {
             $postId = $post['raw']['postid'];
             $flagReasons = q2apro_get_postflags($postId);
