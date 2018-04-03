@@ -108,7 +108,7 @@ function q2apro_count_postflags_output($postId)
         $flagOutput .= '✌ '.q2apro_flag_reasonid_to_readable($flag['reasonid']).' ('.$handle;
         if(!empty($flag['notice']))
         {
-            $flagOutput .= ' “'.$flag['notice'].'”';
+            $flagOutput .= ' '.$flag['notice'].'”';
         }
         $flagOutput .= ')';
     }
