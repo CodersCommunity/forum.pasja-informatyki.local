@@ -24,8 +24,7 @@
     
 */
 
-if(!defined('QA_VERSION'))
-{
+if (!defined('QA_VERSION')) {
     header('Location: ../../');
     exit;
 }
@@ -34,18 +33,22 @@ if(!defined('QA_VERSION'))
 qa_register_plugin_phrases('q2apro-flag-reasons-lang-*.php', 'q2apro_flagreasons_lang');
 
 // page
-qa_register_plugin_module('page', 'q2apro-flag-reasons-page.php', 'q2apro_flag_reasons_page', 'q2apro flag reasons Page');
+qa_register_plugin_module(
+    'page', 'q2apro-flag-reasons-page.php', 'q2apro_flag_reasons_page', 'q2apro flag reasons Page'
+);
 
 // layer 
 qa_register_plugin_layer('q2apro-flag-reasons-layer.php', 'q2apro flag reasons layer');
 
 // admin
-qa_register_plugin_module('module', 'q2apro-flag-reasons-admin.php', 'q2apro_flagreasons_admin', 'q2apro flag reasons Admin');
+qa_register_plugin_module(
+    'module', 'q2apro-flag-reasons-admin.php', 'q2apro_flagreasons_admin', 'q2apro flag reasons Admin'
+);
 
 // track events
-qa_register_plugin_module('event', 'q2apro-flag-reasons-event.php','q2apro_flagreasons_event','q2apro flag reasons Event');
-
-
+qa_register_plugin_module(
+    'event', 'q2apro-flag-reasons-event.php', 'q2apro_flagreasons_event', 'q2apro flag reasons Event'
+);
 
 function q2apro_flag_reasonid_to_readable($reasonId)
 {
@@ -58,9 +61,8 @@ function q2apro_flag_reasonid_to_readable($reasonId)
     5 - duplicate
     6 - migrate
     */
-    
-    switch($reasonId)
-    {
+
+    switch ($reasonId) {
         case 1:
             return qa_lang('q2apro_flagreasons_lang/reason_quality');
             break;
@@ -79,39 +81,40 @@ function q2apro_flag_reasonid_to_readable($reasonId)
         case 6:
             return qa_lang('q2apro_flagreasons_lang/reason_migrate');
             break;
-        default: 
+        default:
             return '';
     }
 }
 
 function q2apro_get_postflags($postId)
 {
-    return qa_db_read_all_assoc( qa_db_query_sub('
+    return qa_db_read_all_assoc(
+        qa_db_query_sub(
+            '
             SELECT userid, postid, reasonid, notice 
             FROM ^flagreasons
             WHERE postid = #
             ', $postId
-            ));
+        )
+    );
 }
 
 function q2apro_count_postflags_output($postId)
 {
     $flags = q2apro_get_postflags($postId);
-    
+
     $flagOutput = '';
-    
+
     // count reasons
-    foreach($flags as $flag)
-    {
+    foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
-        $flagOutput .= (empty($flagoutput) ? '' : '<br>');
-        $flagOutput .= ' '.q2apro_flag_reasonid_to_readable($flag['reasonid']).' ('.$handle;
-        if(!empty($flag['notice']))
-        {
-            $flagOutput .= ' '.$flag['notice'].'”';
+        $flagOutput .= (empty($flagoutput) ? '' : '<br>'); //todo: ta zmienna $flagoutput nigdzie nie istnieje. 
+        $flagOutput .= ' ' . q2apro_flag_reasonid_to_readable($flag['reasonid']) . ' (' . $handle;
+        if (!empty($flag['notice'])) {
+            $flagOutput .= ' ' . $flag['notice'] . '”';
         }
         $flagOutput .= ')';
     }
-    
-    return $flagOutput;    
+
+    return $flagOutput;
 }
