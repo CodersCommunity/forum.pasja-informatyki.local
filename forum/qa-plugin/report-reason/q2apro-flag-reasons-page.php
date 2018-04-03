@@ -94,7 +94,7 @@ class q2apro_flag_reasons_page
                 $error = qa_flag_error_html($question, $userId, $questionId);
 
                 if (!$error) {
-                    $handle   = qa_userid_to_handle($userid); // todo: czy tu nie jest literowka? $userid zamiast $userId ?
+                    $handle   = qa_userid_to_handle($userId);
                     $cookieId = qa_cookie_get();
 
                     $answers         = qa_page_q_load_as($question, $childPosts);
@@ -161,7 +161,7 @@ class q2apro_flag_reasons_page
                 $error   = qa_flag_error_html($comment, $userId, $questionId);
 
                 if (!$error) {
-                    $handle   = qa_userid_to_handle($userid); // todo: czy $userid nie powinno byc jako $userId?
+                    $handle   = qa_userid_to_handle($userId);
                     $cookieId = qa_cookie_get();
 
                     if (qa_flag_set_tohide($comment, $userId, $handle, $cookieId, $question)) {
