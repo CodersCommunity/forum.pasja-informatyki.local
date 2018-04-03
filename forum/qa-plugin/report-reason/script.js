@@ -1,6 +1,5 @@
 $(document).ready(function()
 {
-    // prevent submit
     $(".qa-form-light-button-flag").attr("type", "button");
     
     $(".qa-form-light-button-flag").click( function()
@@ -8,9 +7,6 @@ $(document).ready(function()
         var postId = $(this).data("postid");
         var postType = $(this).data("posttype");
         var parentId = $(this).data("parentid");
-        
-        // remove button so no double inserts
-        // $(this).remove();
         
         $("#flagbox-popup").show();
         
@@ -49,12 +45,10 @@ $(document).ready(function()
                  cache: false,
                  success: function(data)
                  {
-                    console.log("got server data:");
-                    console.log(data);
-                    
                     if(typeof data.error !== "undefined")
                     {
-                        alert(data.error);
+                        console.log(data.error);
+                        alert('Blad serwera. Prosze sprobowac za jakis czas');
                     }
                     else if(typeof data.success !== "undefined")
                     {
@@ -63,12 +57,12 @@ $(document).ready(function()
                     }
                     else
                     {
-                        alert(data);
+                        console.log(data);
                     }
                  },
                  error: function(data)
                  {
-                    console.log("Ajax error:");
+                    alert('Wystapil blad! Przepraszamy za niedogodnosci');
                     console.log(data);
                  }
             });        });
