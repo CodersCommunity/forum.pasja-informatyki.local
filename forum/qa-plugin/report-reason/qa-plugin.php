@@ -105,7 +105,7 @@ function q2apro_count_postflags_output($postId)
     {
         $handle = qa_userid_to_handle($flag['userid']);
         $flagOutput .= (empty($flagoutput) ? '' : '<br>');
-        $flagOutput .= '✌ '.q2apro_flag_reasonid_to_readable($flag['reasonid']).' ('.$handle;
+        $flagOutput .= ' '.q2apro_flag_reasonid_to_readable($flag['reasonid']).' ('.$handle;
         if(!empty($flag['notice']))
         {
             $flagOutput .= ' '.$flag['notice'].'”';
