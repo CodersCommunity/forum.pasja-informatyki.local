@@ -2,10 +2,10 @@
     display:inline-block;
     min-width:250px;
     position:relative;
-    background: #34495e;
+    background-color: #3498db;;
     border:1px solid #FCC;
     padding:35px;
-    margin:10px 0 30px 0;
+    margin:10px 0 30px;
     text-align:left;
     z-index:3335;
 }
@@ -16,7 +16,7 @@
     font-size:20px;
     color:#333;
     cursor:pointer;
-    background:#34495e;
+    background-color: #3498db;
     border-radius:3px;
     width:20px;
     height:20px;
@@ -31,7 +31,7 @@
     padding:7px 0;
 }
 input[name="qa-spam-reason-radio"] {
-    margin:0 2px 0 0;
+    margin-right: 2px;
 }
 input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
 .qa-spam-reason-text-wrap {
