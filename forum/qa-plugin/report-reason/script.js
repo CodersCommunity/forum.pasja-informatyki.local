@@ -1,42 +1,31 @@
-$(document).ready(function()
-{
-    $(".qa-form-light-button-flag").attr("type", "button");
+document.addEventListener("DOMContentLoaded", () => {
     
-    $(".qa-form-light-button-flag").click( function()
-    {
-        var postId = $(this).data("postid");
-        var postType = $(this).data("posttype");
-        var parentId = $(this).data("parentid");
+    const flagButton = document.getElementsByClassName('qa-form-light-button-flag')[0];
+    flagButton.type = "button";
+
+    flagButton.addEventListener("click", () => {
+
+        const postId = flagButton.dataset.postid;
+        const postType = flagButton.dataset.posttype;
+        const parentId = flagButton.dataset.parentid;
         
         $("#flagbox-popup").show();
         
-        $(".qa-flag-reasons-wrap .closer").click( function()
-        {
+        const closer = document.getElementsByClassName('closer')[0];
+        closer.addEventListener("click", () => {
             $("#flagbox-popup").hide();
         });
-        
-        // focus on first element, then Enter and Escape key work
-        $('.qa-flag-reasons-wrap input').first().focus();
-        
-        $(".qa-go-flag-send-button").click( function()
-        {
-            const flagReason = $("input[name=qa-spam-reason-radio]:checked").val();
-            const flagNotice = $(".qa-spam-reason-text").val();
-            
-            let dataArray = {};
-                dataArray.questionid= flagQuestionid;
-                dataArray.postid= postId;
-                dataArray.posttype= postType;
-                dataArray.parentid= parentId;
-                dataArray.reasonid= flagReason;
-                dataArray.notice= flagNotice;
-            
-            
-            const sendData = JSON.stringify(dataArray);
-            console.log("sending: "+sendData);
-                        console.log(flagAjaxURL);
 
-            // send ajax
+        const sendButton = document.getElementsByClassName('qa-go-flag-send-button')[0];
+        sendButton.addEventListener("click", () => {
+
+            const flagReason = document.querySelector("input[name=qa-spam-reason-radio]:checked").value;
+            const flagNotice = document.getElementsByClassName("qa-spam-reason-text")[0].value;
+
+            const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, parentid: parentId, reasonid: flagReason, notice: flagNotice};
+            const sendData = JSON.stringify(dataArray);
+            const errorText = '';
+
             $.ajax({
                  type: "POST",
                  url: flagAjaxURL,
@@ -45,51 +34,40 @@ $(document).ready(function()
                  cache: false,
                  success: function(data)
                  {
-                    if(typeof data.error !== "undefined")
+                    if(data.error)
                     {
-                        console.log(data.error);
+            
+                        errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
+                        console.log(data);
                         alert('Blad serwera. Prosze sprobowac za jakis czas');
                     }
-                    else if(typeof data.success !== "undefined")
+                    else if(data.success)
                     {
                         // if success, reload page
                         location.reload();
                     }
                     else
                     {
-                        console.log(data);
+                        errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
                     }
                  },
                  error: function(data)
                  {
+                    errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
                     alert('Wystapil blad! Przepraszamy za niedogodnosci');
                     console.log(data);
                  }
-            });        });
-        
-    }); // END click
+            });
     
-    // submit by enter key, cancel by escape key
-    $('.qa-flag-reasons-wrap').on('keyup', function(e)
-    {
-        console.log(e.keyCode);
-        if(e.keyCode == 13)
-        {
-            $(this).find('.qa-go-flag-send-button').click();
-        }
-        else if(e.keyCode == 27)
-        {
-            $(this).find('.closer').click();
-        }
-    });
-    
-    // mouse click on flagbox closes div
-    $('#flagbox-popup').click(function(e)
-    {
-        if(e.target == this)
-        { 
-            $(this).find('.closer').click();
-        }
+          if(errorText != '')
+          {
+              const errorHtml = document.createElement('p');
+              errorHtml.html = errorText;
+              const erorrPopupHtml = document.getElementsByClassName('html-error')[0];
+              errorPopupHtml.appendChild(errorHtml);
+          }
+        });
+
     });
     
 });
