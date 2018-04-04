@@ -1,30 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    const flagButton = document.getElementsByClassName('qa-form-light-button-flag')[0];
+    const flagboxPopup = document.querySelector("#flagbox-popup");
+    const erorrPopupHtml = document.querySelector('.html-error');
+    const flagButton = document.querySelector('.qa-form-light-button-flag');
     flagButton.type = "button";
+
 
     flagButton.addEventListener("click", () => {
 
-        const postId = flagButton.dataset.postid;
-        const postType = flagButton.dataset.posttype;
-        const parentId = flagButton.dataset.parentid;
-        
-        $("#flagbox-popup").show();
-        
-        const closer = document.getElementsByClassName('closer')[0];
-        closer.addEventListener("click", () => {
-            $("#flagbox-popup").hide();
-        });
+            const { postid: postId, posttype: postType, parentid: parentId } = flagButton.dataset;
+            flagboxPopup.classList.add("show");
+            const closer = document.querySelector('.closer');
+            closer.addEventListener("click", () => {
+	            flagboxPopup.classList.remove("show");
+                flagboxPopup.classList.add("hide");
+            });
 
-        const sendButton = document.getElementsByClassName('qa-go-flag-send-button')[0];
-        sendButton.addEventListener("click", () => {
+            const sendButton = document.querySelector('.qa-go-flag-send-button');
+            sendButton.addEventListener("click", () => {
 
             const flagReason = document.querySelector("input[name=qa-spam-reason-radio]:checked").value;
-            const flagNotice = document.getElementsByClassName("qa-spam-reason-text")[0].value;
+            const flagNotice = document.querySelector(".qa-spam-reason-text").value;
 
-            const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, parentid: parentId, reasonid: flagReason, notice: flagNotice};
+            const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, reasonid: flagReason, notice: flagNotice};
             const sendData = JSON.stringify(dataArray);
-            const errorText = '';
+            const errorMessage = 'Blad serwera. Prosze sprobowac za jakis czas';
+            let errorText = '';
 
             $.ajax({
                  type: "POST",
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
                  {
                     if(data.error)
                     {
-                        errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
+                        errorText = errorMessage;
                     }
                     else if(data.success)
                     {
@@ -44,24 +45,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     else
                     {
-                        errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
+			            errorText = errorMessage;
                     }
                  },
                  error: function(data)
                  {
-                    errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
+		             errorText = errorMessage;
                  }
             });
-    
-          if(errorText != '')
-          {
-              const errorHtml = document.createElement('p');
-              errorHtml.html = errorText;
-              const erorrPopupHtml = document.getElementsByClassName('html-error')[0];
-              errorPopupHtml.appendChild(errorHtml);
-          }
+	
+        if(errorText)
+	    {
+		    const errorHtml = document.createElement('p');
+		    errorHtml.innerHTML = errorText;
+		    errorPopupHtml.appendChild(errorHtml);
+	    }
         });
 
     });
     
-});
+});  
