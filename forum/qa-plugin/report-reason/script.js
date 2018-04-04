@@ -36,14 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
                  {
                     if(data.error)
                     {
-            
                         errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
-                        console.log(data);
-                        alert('Blad serwera. Prosze sprobowac za jakis czas');
                     }
                     else if(data.success)
                     {
-                        // if success, reload page
                         location.reload();
                     }
                     else
@@ -54,8 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
                  error: function(data)
                  {
                     errorText = 'Blad serwera. Prosze sprobowac za jakis czas';
-                    alert('Wystapil blad! Przepraszamy za niedogodnosci');
-                    console.log(data);
                  }
             });
     
