@@ -242,9 +242,9 @@ function qa_ajax_error()
 			dataCarrierInput.name = 'data';
 			dataCarrierInput.value = codeAsJSON;
 
-            var submitSnippet = document.createElement('input');
-            submitSnippet.type = 'submit';
-            submitSnippet.value = 'CODEPEN';
+                        var submitSnippet = document.createElement('input');
+                        submitSnippet.type = 'submit';
+                        submitSnippet.value = 'CODEPEN';
 
 			codepenSnippetForm.appendChild(dataCarrierInput);
 			codepenSnippetForm.appendChild(submitSnippet);
@@ -275,51 +275,51 @@ function qa_ajax_error()
 			jsTxt.name = 'js';
 			jsTxt.value = jsfiddleData.js || '';
 
-            var selectHTML = document.createElement('select');
-            selectHTML.name = 'panel_html';
+                        var selectHTML = document.createElement('select');
+                        selectHTML.name = 'panel_html';
 			var selectCSS = document.createElement('select');
-            selectCSS.name = 'panel_css';
-            var selectJS = document.createElement('select');
-            selectJS.name = 'panel_js';
+                        selectCSS.name = 'panel_css';
+                        var selectJS = document.createElement('select');
+                        selectJS.name = 'panel_js';
 
-            var htmlVersion = document.createElement('option');
-            htmlVersion.value = 0;
-            htmlVersion.textContent = 'HTML';
-            htmlVersion.setAttribute('selected', 'selected');
+                        var htmlVersion = document.createElement('option');
+                        htmlVersion.value = 0;
+                        htmlVersion.textContent = 'HTML';
+                        htmlVersion.setAttribute('selected', 'selected');
 
-            var cssCleanVersion = document.createElement('option');
-            cssCleanVersion.value = 0;
-            cssCleanVersion.textContent = 'CSS';
-            cssCleanVersion.setAttribute('selected', 'selected');
-            var cssPreProcessorVersion = document.createElement('option');
-            cssPreProcessorVersion.value = 1;
-            cssPreProcessorVersion.textContent = 'SCSS';
+                        var cssCleanVersion = document.createElement('option');
+                        cssCleanVersion.value = 0;
+                        cssCleanVersion.textContent = 'CSS';
+                        cssCleanVersion.setAttribute('selected', 'selected');
+                        var cssPreProcessorVersion = document.createElement('option');
+                        cssPreProcessorVersion.value = 1;
+                        cssPreProcessorVersion.textContent = 'SCSS';
 
-            var jsCleanVersion = document.createElement('option');
-            jsCleanVersion.value = 0;
-            jsCleanVersion.textContent = 'JavaScript';
-            jsCleanVersion.setAttribute('selected', 'selected');
-            var jsCoffeeVersion = document.createElement('option');
-            jsCoffeeVersion.value = 1;
-            jsCoffeeVersion.textContent = 'CoffeeScript';
-            var jsOldVersion = document.createElement('option');
-            jsOldVersion.value = 2;
-            jsOldVersion.textContent = 'JavaScript 1.7';
+                        var jsCleanVersion = document.createElement('option');
+                        jsCleanVersion.value = 0;
+                        jsCleanVersion.textContent = 'JavaScript';
+                        jsCleanVersion.setAttribute('selected', 'selected');
+                        var jsCoffeeVersion = document.createElement('option');
+                        jsCoffeeVersion.value = 1;
+                        jsCoffeeVersion.textContent = 'CoffeeScript';
+                        var jsOldVersion = document.createElement('option');
+                        jsOldVersion.value = 2;
+                        jsOldVersion.textContent = 'JavaScript 1.7';
 
 			var submitSnippet = document.createElement('input');
 			submitSnippet.type = 'submit';
 			submitSnippet.value = 'JSFIDDLE';
 
-            selectHTML.appendChild(htmlVersion);
-            selectCSS.appendChild(cssCleanVersion);
-            selectCSS.appendChild(cssPreProcessorVersion);
-            selectJS.appendChild(jsCleanVersion);
-            selectJS.appendChild(jsCoffeeVersion);
-            selectJS.appendChild(jsOldVersion);
+                        selectHTML.appendChild(htmlVersion);
+                        selectCSS.appendChild(cssCleanVersion);
+                        selectCSS.appendChild(cssPreProcessorVersion);
+                        selectJS.appendChild(jsCleanVersion);
+                        selectJS.appendChild(jsCoffeeVersion);
+                        selectJS.appendChild(jsOldVersion);
 
-            jsfiddleSnippetForm.appendChild(selectHTML);
-            jsfiddleSnippetForm.appendChild(selectCSS);
-            jsfiddleSnippetForm.appendChild(selectJS);
+                        jsfiddleSnippetForm.appendChild(selectHTML);
+                        jsfiddleSnippetForm.appendChild(selectCSS);
+                        jsfiddleSnippetForm.appendChild(selectJS);
 			jsfiddleSnippetForm.appendChild(submitSnippet);
 
 			jsfiddleSnippetForm.appendChild(htmlTxt);
@@ -616,7 +616,7 @@ function qa_ajax_error()
 				modalBackground.removeEventListener('click', hideModal);
 
 				document.body.removeChild(modalBackground);
-                modalWrapperParent.removeChild(modalWrapper);
+                                modalWrapperParent.removeChild(modalWrapper);
 			}
 
 			// close Modal on btn click
@@ -637,7 +637,7 @@ function qa_ajax_error()
 				var closeModalBtn = document.createElement('button');
 				var ckeFullInstanceName = ckeCurrentInstance ? ckeCurrentInstance + '_content' : Object.keys(CKEDITOR.instances)[0];
 
-                modal = document.createElement('div');
+                                modal = document.createElement('div');
 
 				modal.classList.add('post-preview-parent');
 
@@ -749,7 +749,7 @@ function qa_ajax_error()
 
 			var foundAnyAnswerInTopic = document.querySelector('.answer');
 
-            if (!foundAnyAnswerInTopic)
+                        if (!foundAnyAnswerInTopic)
 				checkCkeditor(false);
 			else
 			{
