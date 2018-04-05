@@ -2,13 +2,16 @@
 
 class qa_html_theme_layer extends qa_html_theme_base
 {
-
+    private $isLogged;
+    public function __construct()
+    {
+        $this->isLogged = qa_is_logged_in();    
+    }
     public function head_script()
     {
         qa_html_theme_base::head_script();
-        $logged = qa_is_logged_in();
 
-        if ($logged && 'question' === $this->template) {
+        if ($this->isLogged && 'question' === $this->template) {
             $this->output(
                 '
                 <script>
@@ -30,9 +33,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function q_view_buttons($q_view)
     {
-        $logged = qa_is_logged_in();
-
-        if ($logged && isset($q_view['form']['buttons']['flag'], $q_view['raw']['postid'])) {
+        if ($this->isLogged && isset($q_view['form']['buttons']['flag'], $q_view['raw']['postid'])) {
             $q_view['form']['buttons']['flag']['tags'] =
                 'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" ';
         }
@@ -42,9 +43,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function a_item_buttons($a_item)
     {
-        $logged = qa_is_logged_in();
-
-        if ($logged && isset($a_item['form']['buttons']['flag'], $a_item['raw']['postid'])) {
+        if ($this->isLogged && isset($a_item['form']['buttons']['flag'], $a_item['raw']['postid'])) {
             $a_item['form']['buttons']['flag']['tags'] =
                 'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" ';
         }
@@ -54,9 +53,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function c_item_buttons($c_item)
     {
-        $logged = qa_is_logged_in();
-
-        if ($logged && isset($c_item['form']['buttons']['flag'], $c_item['raw']['postid'])) {
+        if ($this->isLogged && isset($c_item['form']['buttons']['flag'], $c_item['raw']['postid'])) {
             $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" ';
         }
 
@@ -65,9 +62,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function body_hidden()
     {
-        $logged = qa_is_logged_in();
-
-        if ($logged && 'question' === $this->template) {
+        if ($this->isLogged && 'question' === $this->template) {
             $this->output(
                 '
             <div id="flagbox-popup">
