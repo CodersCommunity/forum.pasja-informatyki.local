@@ -10,7 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 {category : 'C# i .NET', language: 'csharp'},
                 {category : 'Java', language: 'java'},
                 {category : 'Python, Django', language: 'python'},
-            ]
+                {category : 'SPOJ', language: 'cpp'},
+                {category : 'Pascal, Delphi', language: 'delphi'},
+                {category : 'Ruby, Ruby On Jails', language: 'ruby'},
+                {category : 'Visual Basic', language: 'vb'},
+                {category : 'Android, Swift, Symbian', language: 'java'},
+                {category : 'OpenGL, Unity', language: 'cpp'},
+                {category : 'Arduino', language: 'cpp'}
+            ];
             const codeBlock = document.getElementById( 'cke_42' );
             let clickHandler;
             if ( location.href.includes( '/ask' ) ) {
