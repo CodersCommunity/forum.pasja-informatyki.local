@@ -2,10 +2,10 @@
     display:inline-block;
     min-width:250px;
     position:relative;
-    background-color: #3498db;;
+    background-color: #3498db;
     border:1px solid #FCC;
     padding:35px;
-    margin:10px 0 30px;
+    margin:10px 0 30px 0;
     text-align:left;
     z-index:3335;
 }
@@ -31,7 +31,7 @@
     padding:7px 0;
 }
 input[name="qa-spam-reason-radio"] {
-    margin-right: 2px;
+    margin:0 2px 0 0;
 }
 input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
 .qa-spam-reason-text-wrap {
@@ -80,9 +80,17 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
     background:#34495e;
     color:#3498db;
     border:1px solid #F9A;
-        font-weight: bold;
+    font-weight: bold;
 }
 .qa-flagreasons a, a:hover {
     color: #3498db;
     text-decoration: underline;
+}
+
+.show {
+    display: block !important;
+}
+
+.hide {
+    display: none !important;
 }
