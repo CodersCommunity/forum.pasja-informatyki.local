@@ -31,7 +31,7 @@
     padding:7px 0;
 }
 input[name="qa-spam-reason-radio"] {
-    margin:0 2px 0 0;
+    margin-right: 2px;
 }
 input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
 .qa-spam-reason-text-wrap {
