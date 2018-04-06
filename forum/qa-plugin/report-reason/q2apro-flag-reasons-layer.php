@@ -3,14 +3,13 @@
 class qa_html_theme_layer extends qa_html_theme_base
 {
     private $isLogged;
-    public function __construct()
-    {
-        $this->isLogged = qa_is_logged_in();    
-    }
+    
     public function head_script()
-    {
+    {      
         qa_html_theme_base::head_script();
 
+        $this->isLogged = qa_is_logged_in(); 
+        
         if ($this->isLogged && 'question' === $this->template) {
             $this->output(
                 '
