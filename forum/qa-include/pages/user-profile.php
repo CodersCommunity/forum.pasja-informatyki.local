@@ -939,16 +939,16 @@
 
             ));
 
-        } else if( ($option == 1) && (qa_get_logged_in_level() >= QA_USER_LEVEL_SUPER) && ($loginuserid != $userid))
-        {
-            $qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
+        } else if( ($option == 1) && (qa_get_logged_in_level() >= QA_USER_LEVEL_SUPER) && ($loginuserid != $userid)) {
+			$qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
 
-                '^1' => '<a href="'.qa_path_html('message/'.$handle).'"><dfn class="pw-link-admins" data-info="Użytkownik ma wyłączone otrzymywanie wiadomości od innych użytkowników, ale korzystając z uprawnień administracyjnych możesz skontaktować się z nim">',
+				'^1' => '<br><dfn class="pw-link-admins" data-info="UĹĽytkownik ma wyĹ‚Ä…czone otrzymywanie wiadomoĹ›ci od innych uĹĽytkownikĂłw, ale korzystajÄ…c z uprawnieĹ„ administracyjnych moĹĽesz skontaktowaÄ‡ siÄ™ z nim"><a href="'.qa_path_html('message/'.$handle).'">',
 
-                '^2' => '</dfn></a>',
+				'^2' => '</a></dfn>',
 
-            ));
-        }
+			));
+		}
+
 
 
 
