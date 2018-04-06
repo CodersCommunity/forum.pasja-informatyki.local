@@ -78,17 +78,12 @@ class q2apro_flag_reasons_page
                     qa_db_full_child_posts_selectspec($userId, $questionId),
                     qa_db_full_a_child_posts_selectspec($userId, $questionId),
                     qa_db_post_parent_q_selectspec($questionId),
-                    qa_db_post_close_post_selectspec($questionId),
-                    false,
-                    qa_db_post_meta_selectspec($questionId, 'qa_q_extra'),
-                    qa_db_category_nav_selectspec($questionId, true, true, true),
-                    isset($userId) ? qa_db_is_favorite_selectspec($userId, QA_ENTITY_QUESTION, $questionId) : null
+                    false
                 );
 
                 // TODO: $parentQuestion, $extraValue, $categories, $favorite - to zmienne nieuzywane w ogole.
                 list($question, $childPosts, $aChildPosts,
-                    $parentQuestion, $closePost, $duplicatePosts,
-                    $extraValue, $categories, $favorite
+                    $closePost, $duplicatePosts
                     ) = $questionData;
 
                 $error = qa_flag_error_html($question, $userId, $questionId);
@@ -148,9 +143,7 @@ class q2apro_flag_reasons_page
             } elseif ('c' === $postType) {
 
                 $commentId = $postId;
-
-                // todo: comment i children nie jest uzywane.
-                list($comment, $question, $parent, $children) = qa_db_select_with_pending(
+                list($question, $parent) = qa_db_select_with_pending(
                     qa_db_full_post_selectspec($userId, $commentId),
                     qa_db_full_post_selectspec($userId, $questionId),
                     qa_db_full_post_selectspec($userId, $parentId),
