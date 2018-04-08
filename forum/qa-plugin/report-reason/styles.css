@@ -94,3 +94,7 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
 .hide {
     display: none !important;
 }
+
+input[name=qa-spam-reason-radio]:hover {
+    cursor: pointer;    
+}
