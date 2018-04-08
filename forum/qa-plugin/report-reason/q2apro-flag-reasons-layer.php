@@ -68,19 +68,19 @@ class qa_html_theme_layer extends qa_html_theme_base
                 <div id="flagbox-center">
                     <div class="qa-flag-reasons-wrap">
                         <h4>
-                            '
-                . qa_lang('q2apro_flagreasons_lang/reason')
-                . '
+                          '
+                          . qa_lang('q2apro_flagreasons_lang/reason')
+                          . '
                         </h4>
                         ';
-                 for($i=0;$i<=6;$i++){
-                echo '<label>
+                        for ($i=0; $i<=6; $i++) {
+                            echo '<label>
                             <input type="radio" name="qa-spam-reason-radio" value="' . $i . '">
                             <span>'
-                . q2apro_flag_reasonid_to_readable($i)
-                . '</span>
-                        </label>';
-                 }
+                            . q2apro_flag_reasonid_to_readable($i)
+                            . '</span>
+                            </label>';
+                        }
                         echo '
                         
                         <div class="qa-spam-reason-text-wrap">
