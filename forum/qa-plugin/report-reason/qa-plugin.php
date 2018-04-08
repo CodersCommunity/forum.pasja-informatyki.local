@@ -52,38 +52,16 @@ qa_register_plugin_module(
 
 function q2apro_flag_reasonid_to_readable($reasonId)
 {
-    /*
-    Reasonids for Flags:
-    1 - spam
-    2 - quality
-    3 - rude
-    4 - edit
-    5 - duplicate
-    6 - migrate
-    */
-
-    switch ($reasonId) {
-        case 1:
-            return qa_lang('q2apro_flagreasons_lang/reason_quality');
-            break;
-        case 2:
-            return qa_lang('q2apro_flagreasons_lang/reason_spam');
-            break;
-        case 3:
-            return qa_lang('q2apro_flagreasons_lang/reason_rude');
-            break;
-        case 4:
-            return qa_lang('q2apro_flagreasons_lang/reason_edit');
-            break;
-        case 5:
-            return qa_lang('q2apro_flagreasons_lang/reason_duplicate');
-            break;
-        case 6:
-            return qa_lang('q2apro_flagreasons_lang/reason_migrate');
-            break;
-        default:
-            return '';
-    }
+    $translationArray = [
+        1 => 'quality',
+        2 => 'spam',
+        3 => 'rude',
+        4 => 'edit',
+        5 => 'duplicate',
+        6 => 'migrate'
+    ];
+    
+    return qa_lang('q2apro_flagreasons_lang/reason_' . $translationArray[$reasonId]);
 }
 
 function q2apro_get_postflags($postId)
