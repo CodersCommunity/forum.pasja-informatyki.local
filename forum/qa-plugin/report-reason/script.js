@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     flagButton.addEventListener("click", () => {
 
             const { postid: postId, posttype: postType, parentid: parentId } = flagButton.dataset;
+	    flagboxPopup.classList.remove("hide");
             flagboxPopup.classList.add("show");
             const closer = document.querySelector('.closer');
             closer.addEventListener("click", () => {
-	            flagboxPopup.classList.remove("show");
+	        flagboxPopup.classList.remove("show");
                 flagboxPopup.classList.add("hide");
             });
 
