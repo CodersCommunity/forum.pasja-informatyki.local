@@ -23,7 +23,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             $this->output(
                 '
                 <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'script.js"></script>
-                <link rel="stylesheet" type="text/css" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'styles.css">
+                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'styles.css">
             '
             );
         }
@@ -72,42 +72,16 @@ class qa_html_theme_layer extends qa_html_theme_base
                 . qa_lang('q2apro_flagreasons_lang/reason')
                 . '
                         </h4>
-                        <label>
-                            <input type="radio" name="qa-spam-reason-radio" value="1" checked>
+                        ';
+                 for($i=0;$i<=6;$i++){
+                echo '<label>
+                            <input type="radio" name="qa-spam-reason-radio" value="' . $i . '">
                             <span>'
-                . q2apro_flag_reasonid_to_readable(1)
+                . q2apro_flag_reasonid_to_readable($i)
                 . '</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qa-spam-reason-radio" value="2">
-                            <span>'
-                . q2apro_flag_reasonid_to_readable(2)
-                . '</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qa-spam-reason-radio" value="3">
-                            <span>'
-                . q2apro_flag_reasonid_to_readable(3)
-                . '</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qa-spam-reason-radio" value="4">
-                            <span>'
-                . q2apro_flag_reasonid_to_readable(4)
-                . '</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qa-spam-reason-radio" value="5">
-                            <span>'
-                . q2apro_flag_reasonid_to_readable(5)
-                . '</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qa-spam-reason-radio" value="6">
-                            <span>'
-                . q2apro_flag_reasonid_to_readable(6)
-                . '</span>
-                        </label>
+                        </label>';
+                 }
+                        echo '
                         
                         <div class="qa-spam-reason-text-wrap">
                             <p>
