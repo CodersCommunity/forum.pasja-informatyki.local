@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'reason'           => 'Pow&#243;d:',
+    'reason'           => 'Powód:',
     'reason_spam'      => 'Kod bez bloczka',
     'reason_quality'   => 'SPAM',
     'reason_rude'      => 'Duplikat',
-    'reason_edit'      => 'Z&#322;e otagowanie',
+    'reason_edit'      => 'Złe otagowanie',
     'reason_duplicate' => 'Niepoprawna kategoria',
     'reason_offtopic'  => 'Obraza',
     'reason_migrate'   => 'Inne',
@@ -13,6 +13,6 @@ return [
     'reason_other'     => 'Inne',
     'note'             => 'Notatka:',
     'enter_details'    => 'Wpisz notatke',
-    'send'             => 'Wy&#347;lij',
+    'send'             => 'Wyślij',
     'flaglist_head'    => 'Flagi:'
 ];
