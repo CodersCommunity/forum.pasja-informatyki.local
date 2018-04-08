@@ -30,15 +30,6 @@ class q2apro_flag_reasons_page
 
     public function process_request($request)
     {
-        /***
-         * Incoming reasonid for flags:
-         * 1 - spam
-         * 2 - quality
-         * 3 - rude
-         * 4 - edit
-         * 5 - migrate
-         * 6 - other
-         */
 
         $logged = qa_is_logged_in();
         if (!$logged) {
