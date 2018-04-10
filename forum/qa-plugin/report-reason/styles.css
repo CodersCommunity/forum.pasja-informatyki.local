@@ -67,7 +67,7 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
     list-style:none;
 }
 .qa-flagreason-list li {
-    margin-bottom:15px;
+    margin: 4px;
 }
 .qa-flag-wrap {
     display:block;
