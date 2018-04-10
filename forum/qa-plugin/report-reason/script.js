@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const flagReason = document.querySelector("input[name=qa-spam-reason-radio]:checked");
         const flagNotice = document.querySelector(".qa-spam-reason-text").value;
 
-        const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, reasonid: flagReason, notice: flagNotice};
+        const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, reasonid: flagReason.value, notice: flagNotice};
         const sendData = JSON.stringify(dataArray);
         const errorMessage = 'Blad serwera. Prosze sprobowac za jakis czas';
         let errorText = '';
