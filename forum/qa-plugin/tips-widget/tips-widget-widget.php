@@ -7,7 +7,8 @@ class tips_widget_widget
     public $random;
     private $tips_list;
     
-    public function init() {
+    public function init()
+    {
         if (!qa_opt('tips-enable')) {
             return;
         }
@@ -23,8 +24,7 @@ class tips_widget_widget
             $_COOKIE['prev_random'] < $tips_list_count
         ) {
             $prev_random = (int)$_COOKIE['prev_random'];
-        }
-        else {
+        } else {
             $prev_random = -1;
         }
         
@@ -39,25 +39,33 @@ class tips_widget_widget
         } while ($this->random === $prev_random);
     }
     
-    public function allow_template($template) {
+    public function allow_template($template)
+    {
         return qa_opt('tips-enable');
     }
     
-    public function allow_region($region) {
+    public function allow_region($region)
+    {
         return $region === 'side';
     }
     
-    public function output_widget($region, $place, $themeobject, $template, $request, $qa_content) {
+    public function output_widget($region, $place, $themeobject, $template, $request, $qa_content)
+    {
         if (!qa_opt('tips-enable')) {
             return;
         }
         
         $themeobject->output('<div class="tips-widget-title"><b>Porady nie od parady</b></div>');
         $themeobject->output('<div class="tips-widget-content">', $this->tips_list[$this->random], '</div>');
-        $themeobject->output('<div class="tips-widget-footer">Ciekawy innych porad? Odwiedź <a href="' . qa_path_html('tips') . '"><b>tę stronę</b></a>!</div>');
+        $themeobject->output(
+            '<div class="tips-widget-footer">Ciekawy innych porad? Odwiedź <a href="' .
+            qa_path_html('tips') .
+            '"><b>tę stronę</b></a>!</div>'
+        );
     }
     
-    public function prepareTipsList() {
+    public function prepareTipsList()
+    {
         $tips_content = replaceWidgetImgSrc(replacePathHtml(qa_opt('tips-widget-content')));
 
         $this->tips_list = explode('!NEW!', $tips_content);

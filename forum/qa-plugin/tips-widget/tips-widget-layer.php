@@ -4,7 +4,8 @@ class qa_html_theme_layer extends qa_html_theme_base
 {
     const DAY = 86400;
     
-    public function initialize() {
+    public function initialize()
+    {
         if (qa_opt('tips-enable')) {
             $widget_module = qa_load_module('widget', 'Tips Widget Widget');
             if (!is_null($widget_module)) {
@@ -16,7 +17,8 @@ class qa_html_theme_layer extends qa_html_theme_base
         qa_html_theme_base::initialize();
     }
     
-    public function head_css() {
+    public function head_css()
+    {
         if (qa_opt('tips-enable')) {
             $this->content['css_src'][] = QA_HTML_THEME_LAYER_URLTOROOT . 'styles/style.css';
         }

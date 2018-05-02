@@ -4,13 +4,13 @@ require_once 'tips-replace-phrases.php';
 
 class tips_widget_admin
 {
-    public function option_default($option) {
+    public function option_default($option)
+    {
         $response = null;
         
         if ($option === 'tips-enable') {
             $response = false;
-        }
-        elseif ($option === 'tips-widget-content' || $option === 'tips-page-content') {
+        } elseif ($option === 'tips-widget-content' || $option === 'tips-page-content') {
             $response = file_get_contents(__DIR__ . '/snippets/' . $option . '.html');
             if ($response === false) {
                 $response = '';
@@ -20,7 +20,8 @@ class tips_widget_admin
         return $response;
     }
     
-    public function admin_form(&$qa_content) {    
+    public function admin_form(&$qa_content)
+    {    
         $saved = qa_clicked('tips-save');
         
         if ($saved === true) {
@@ -42,7 +43,8 @@ class tips_widget_admin
         return $form;
     }
     
-    public function prepareFields() {
+    public function prepareFields()
+    {
         return [
             [
                 'label' => 'Enable plugin',
