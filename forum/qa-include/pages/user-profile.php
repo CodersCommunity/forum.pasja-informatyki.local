@@ -204,12 +204,6 @@
 
                 
 
-            elseif ($loginlevel >= QA_USER_LEVEL_EXPERT)
-
-                $maxlevelassign = QA_USER_LEVEL_RECRUT;
-
-                
-
             if ($loginlevel >= QA_USER_LEVEL_ADMIN)
 
                 $fieldseditable = true;
@@ -832,8 +826,6 @@
 
                 case QA_USER_LEVEL_EXPERT: $colorClass = 'expert'; break;
 
-                case QA_USER_LEVEL_RECRUT: $colorClass = 'recrut'; break;
-
                 default: $colorClass = ''; break;
 
             }
@@ -976,7 +968,7 @@
 
 
 
-                array_push($showlevels, QA_USER_LEVEL_RECRUT, QA_USER_LEVEL_EXPERT, QA_USER_LEVEL_EDITOR, QA_USER_LEVEL_MODERATOR, QA_USER_LEVEL_ADMIN, QA_USER_LEVEL_SUPER);
+                array_push($showlevels, QA_USER_LEVEL_EXPERT, QA_USER_LEVEL_EDITOR, QA_USER_LEVEL_MODERATOR, QA_USER_LEVEL_ADMIN, QA_USER_LEVEL_SUPER);
 
 
 
@@ -1185,8 +1177,6 @@
                             case QA_USER_LEVEL_EDITOR: $colorClass = 'editor'; break;
 
                             case QA_USER_LEVEL_EXPERT: $colorClass = 'expert'; break;
-
-                            case QA_USER_LEVEL_RECRUT: $colorClass = 'recrut'; break;
 
                             default: $colorClass = ''; break;
 
