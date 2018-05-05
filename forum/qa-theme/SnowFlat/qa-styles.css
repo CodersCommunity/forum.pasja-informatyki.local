@@ -4907,3 +4907,7 @@ form div.qa-q-view-content
 .incorrect-code-placement-warning a {
     animation: warningAnchorBlink 1.5s ease-in-out;
 }
+.pw-link-admins::after {
+width: 300px;
+padding: 10px;
+}
