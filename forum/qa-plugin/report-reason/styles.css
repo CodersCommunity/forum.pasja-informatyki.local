@@ -1,14 +1,17 @@
 .qa-flag-reasons-wrap {
-    display:inline-block;
-    min-width:250px;
-    position:relative;
-    background-color: #3498db;
-    border:1px solid #FCC;
+    z-index:3335;
     padding:35px;
     margin:10px 0 30px;
     text-align:left;
-    z-index:3335;
+    display:inline-block;
+    min-width:50px;
+    position:relative;
+    background-color: #D9E3EA;
+    border: 1px solid #658296;
+    font-size: 15px;
+    padding: 30px;
 }
+
 .qa-flag-reasons-wrap .closer {
     position:absolute;
     top:5px;
@@ -16,35 +19,42 @@
     font-size:20px;
     color:#333;
     cursor:pointer;
-    background-color: #3498db;
     border-radius:3px;
     width:20px;
     height:20px;
     line-height: 20px;
     text-align:center;
 }
+
 .qa-flag-reasons-wrap h4 {
     margin-bottom:10px;
 }
+
 .qa-flag-reasons-wrap label {
     display:block;
     padding:7px 0;
 }
+
 input[name="qa-spam-reason-radio"] {
     margin-right: 2px;
 }
+
 input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
+
 .qa-spam-reason-text-wrap {
     display:block;
     margin:20px 0 10px 0;
 }
+
 .qa-spam-reason-text {
     padding:7px;
     height:auto;
 }
+
 .qa-go-flag-send-button {
     margin-top:15px;
 }
+
 #flagbox-popup {
     background: #000000;
     background: rgba(0,0,0,0.75);
@@ -56,34 +66,39 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
     display: none;
     z-index: 5119;
 }
+
 #flagbox-center {
     margin: 6% auto;
     width: auto;
     text-align: center;
 }
+
 .qa-flagreason-list {
     padding-left:0;
     margin:0px;
     list-style:none;
 }
+
 .qa-flagreason-list li {
     margin: 4px;
 }
+
 .qa-flag-wrap {
     display:block;
 }
+
 .qa-flagreasons {
     display:inline-block;
-    max-width:90%;
+    max-width:60%;
     margin-bottom:30px;
-    padding:20px 20px 5px 20px;
-    background:#34495e;
-    color:#3498db;
-    border:1px solid #F9A;
+    padding:20px;
+    background-color: #D9E3EA;
+    border:1px solid #D9E3EE;
     font-weight: bold;
+
 }
+
 .qa-flagreasons a, a:hover {
-    color: #3498db;
     text-decoration: underline;
 }
 
