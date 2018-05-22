@@ -56,7 +56,7 @@
 		'confirm_user_required' => 'Nowi użytkownicy muszą potwierdzić swoje dane:',
 		'custom_home_content' => 'Treść do wyświetlenia na stronie głównej (HTML dozwolony):',
 		'custom_home_heading' => 'Nagłówek na stronie głównej:',
-		'default_privacy' => 'Prywatność: Twój adres email nie będzie przekazywany innym podmiotom bez Twojej zgody.',
+		'default_privacy' => 'Twój adres e-mail nie zostanie przekazany osobom trzecim bez Twojej zgody!',
 		'default_sidebar' => "Witaj w serwisie ^, w którym możesz zadawać pytania innym użytkownikom i ekspertom, dzielić się wiedzą z innymi i zdobywać wiedzę na liczne tematy.",
 		'default_subject' => 'Wiadomość od ^',
 		'default_suffix' => 'Pytania i odpowiedzi',
