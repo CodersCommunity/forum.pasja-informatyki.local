@@ -22,6 +22,10 @@ class q2a_googleauthenticator_admin
             $queries[] = 'ALTER TABLE ^users ADD `2fa_enabled` SMALLINT (1) DEFAULT 0';
         }
 
+        if(!in_array('2fa_change_date', $columns)) {
+            $queries[] = 'ALTER TABLE ^users ADD `2fa_change_date` VARCHAR (80) DEFAULT 0';
+        }
+
         if(!in_array('2fa_secret', $columns)) {
             $queries[] =
                 'ALTER TABLE ^users ADD `2fa_secret` VARCHAR ( 80 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL';

@@ -25,7 +25,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         // Return the user with the specified userid (should return one user or null)
         $users = qa_db_read_all_assoc(
             qa_db_query_sub(
-                'SELECT  us.userid, us.2fa_enabled, us.email, us.handle, up.points FROM ^users us LEFT JOIN ^userpoints up ON us.userid = up.userid WHERE us.userid=$',
+                'SELECT us.userid, us.2fa_enabled, us.email, us.handle, us.2fa_change_date, up.points FROM ^users us LEFT JOIN ^userpoints up ON us.userid = up.userid WHERE us.userid=$',
                 $userid
             )
         );
@@ -43,9 +43,14 @@ class qa_html_theme_layer extends qa_html_theme_base
      */
     private function updateUserEnable2FA($userid, $isEnabled)
     {
+        $time      = new DateTime('now');
+        $formatter = new IntlDateFormatter('pl_PL', IntlDateFormatter::SHORT, IntlDateFormatter::SHORT);
+        $formatter->setPattern('EEEE, dd MMMM yyyy, HH:mm:ss');
+
         $result = qa_db_query_sub(
-            'UPDATE ^users SET 2fa_enabled=# WHERE userid=#',
+            'UPDATE ^users SET 2fa_enabled=#, 2fa_change_date=$ WHERE userid=#',
             $isEnabled,
+            $formatter->format($time),
             $userid
         );
 
@@ -63,33 +68,28 @@ class qa_html_theme_layer extends qa_html_theme_base
 
         if (qa_clicked('doenable2fa')) {
             $userActive2fa = $this->updateUserEnable2FA($useraccount['userid'], true);
-            var_dump($userActive2fa);
         } elseif (qa_clicked('dodisable2fa')) {
             $userActive2fa = $this->updateUserEnable2FA($useraccount['userid'], false);
-            var_dump($userActive2fa);
         }
 
+        $useraccount = $this->getUser();
         if (true === (bool) $userActive2fa) {
-            $result = $this->render2FAEnabledForm();
+            $result = $this->render2FAEnabledForm($useraccount['2fa_change_date']);
         } else {
-            $result = $this->render2FADisabledForm();
+            $result = $this->render2FADisabledForm($useraccount['2fa_change_date']);
         }
 
         return $result;
     }
 
-    private function render2FAEnabledForm()
+    private function render2FAEnabledForm($date)
     {
-        $time = new DateTime('now');
-        $formatter = new IntlDateFormatter('pl_PL', IntlDateFormatter::SHORT, IntlDateFormatter::SHORT);
-        $formatter->setPattern('EEEE, dd MMMM yyyy, hh:mm:ss');
-
         return [
             'fields'  => [
                 'old' => [
                     'label' => qa_lang_html('plugin_2fa/plugin_is_enabled'),
                     'tags'  => 'name="oldpassword" disabled',
-                    'value' => $formatter->format($time),
+                    'value' => $date,
                     'type'  => 'input'
                 ]
             ],
@@ -105,7 +105,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         ];
     }
 
-    private function render2FADisabledForm()
+    private function render2FADisabledForm($date)
     {
         return [
             'fields'  => [
