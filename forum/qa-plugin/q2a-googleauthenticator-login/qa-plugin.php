@@ -21,7 +21,8 @@ if (!defined('QA_VERSION')) { // don't allow this page to be requested directly 
 
 define('GOOGLEAUTHENTICATOR_BASIC_PATH', __DIR__);
 
-qa_register_plugin_phrases('src/i18n/qa-googleauthenticator-lang-*.php', '2fa');
+qa_register_plugin_phrases('src/i18n/q2a-googleauthenticator-lang-*.php', 'plugin_2fa');
+qa_register_plugin_layer('q2a-googleauthenticator-layer.php', 'Google 2FA Layer');
 qa_register_plugin_module(
     'module',
     'src/q2a-googleauthenticator-admin.php',
@@ -30,6 +31,5 @@ qa_register_plugin_module(
 );
 
 //qa_register_plugin_overrides('qa-open-overrides.php');
-//qa_register_plugin_layer('qa-open-layer.php', 'OAuth/OpenID Layer');
 //qa_register_plugin_module('page', 'qa-open-page-logins.php', 'qa_open_logins_page', 'Open Login Configuration');
 //qa_register_plugin_module('widget', 'qa-open-widget.php', 'qa_open_logins_widget', 'Open Login Providers');
