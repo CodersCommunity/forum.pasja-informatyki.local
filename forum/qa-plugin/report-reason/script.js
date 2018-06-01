@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const { postid: postId, posttype: postType, parentid: parentId } = flagButton.dataset;
 	    
-        const closer = document.querySelector('.closer');
+        const closer = document.querySelector('.close-preview-btn');
         closer.addEventListener("click", () => {
 	    hidePopup();
         });
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const sendButton = document.querySelector('.qa-go-flag-send-button');
         sendButton.addEventListener("click", () => {
 
-        const flagReason = document.querySelector("input[name=qa-spam-reason-radio]:checked");
+        const flagReason = document.querySelector("input.qa-spam-reason-radio:checked");
         const flagNotice = document.querySelector(".qa-spam-reason-text").value;
 
         const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, reasonid: flagReason.value, notice: flagNotice};
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
                  },
                  error: function(data)
                  {
-	             errorText = errorMessage; 
+	             errorText = errorMessage;
                  }
             });	
         } else {
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if(errorText)
         {
-            const errorPopupHtml = document.querySelector('.html-error');
+            const errorPopupHtml = document.querySelector('.qa-spam-reason-error');
 	    const errorHtml = document.createElement('p');
             errorHtml.innerHTML = errorText;
 	    errorPopupHtml.appendChild(errorHtml);
