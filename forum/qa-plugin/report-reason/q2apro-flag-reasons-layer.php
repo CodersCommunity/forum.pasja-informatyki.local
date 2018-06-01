@@ -54,41 +54,40 @@ class qa_html_theme_layer extends qa_html_theme_base
         if ($this->isLogged && 'question' === $this->template) {
             $this->output(
                 '
-            <div id="flagbox-popup">
-                <div id="flagbox-center">
+            <div id="flagbox-popup" class="modal-background flagbox-popup" hidden>
+                <div class="flagbox-center">
                     <div class="qa-flag-reasons-wrap">
-                        <h4>
+                        <p><b>
                           '
                           . qa_lang('q2apro_flagreasons_lang/reason')
                           . '
-                        </h4>
+                        </b></p>
                         ');
                         for ($i=1; $i<=6; $i++) {
-                            $this->output('<label>
-                            <input type="radio" name="qa-spam-reason-radio" value="' . $i . '">
-                            <span>'
+                            $this->output('<label for="qa-spam-reason-radio-' . $i . '">
+                            <input type="radio" class="qa-spam-reason-radio" name="qa-spam-reason-radio" id="qa-spam-reason-radio-' . $i . '" value="' . $i . '">
+                            '
                             . q2apro_flag_reasonid_to_readable($i)
-                            . '</span>
+                            . '
                             </label>');
                         }
                         $this->output('
-                        
+                        <p><b>
+                            '
+                            . qa_lang('q2apro_flagreasons_lang/note')
+                            . '
+                        </b></p>
                         <div class="qa-spam-reason-text-wrap">
-                            <p>
-                                '
-                . qa_lang('q2apro_flagreasons_lang/note')
-                . '
-                            </p>
                             <input type="text" name="qa-spam-reason-text" class="qa-spam-reason-text" placeholder="'
                 . qa_lang('q2apro_flagreasons_lang/enter_details')
                 . '">
-                        <div class="html-error"></div></div>
+                        <div id="qa-spam-reason-error" class="qa-error" hidden></div></div>
                         
-                        <input type="button" class="qa-gray-button qa-go-flag-send-button" value="'
+                        <input type="button" class="qa-form-tall-button qa-form-tall-button-ask qa-form-wide-text qa-go-flag-send-button" value="'
                 . qa_lang('q2apro_flagreasons_lang/send')
                 . '">
                         
-                        <div class="closer">X</div>
+                        <button class="close-preview-btn">X</button>
                     </div>
                 </div> 
             </div>

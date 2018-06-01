@@ -12,7 +12,7 @@ return [
     'reason_close'     => 'Niepoprawna kategoria',
     'reason_other'     => 'Inne',
     'note'             => 'Notatka:',
-    'enter_details'    => 'Wpisz notatke',
+    'enter_details'    => 'Wpisz notatkę',
     'send'             => 'Wyślij',
     'flaglist_head'    => 'Flagi:'
 ];
