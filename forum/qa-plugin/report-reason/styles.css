@@ -1,82 +1,79 @@
 .qa-flag-reasons-wrap {
-    z-index:3335;
-    padding:35px;
-    margin:10px 0 30px;
-    text-align:left;
-    display:inline-block;
-    min-width:50px;
-    position:relative;
-    background-color: #D9E3EA;
+    z-index: 3335;
+    margin: 10px 0 30px;
+    text-align: left;
+    display: inline-block;
+    min-width: 50px;
+    position: relative;
+    background-color: white;
     border: 1px solid #658296;
     font-size: 15px;
     padding: 30px;
+    -webkit-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.5);
 }
 
-.qa-flag-reasons-wrap .closer {
-    position:absolute;
-    top:5px;
-    right:7px;
-    font-size:20px;
-    color:#333;
-    cursor:pointer;
-    border-radius:3px;
-    width:20px;
-    height:20px;
-    line-height: 20px;
-    text-align:center;
+.qa-flag-reasons-wrap p {
+    margin-bottom: 10px;
 }
 
-.qa-flag-reasons-wrap h4 {
-    margin-bottom:10px;
+.qa-flag-reasons-wrap p:nth-of-type(2) {
+    margin-top: 10px;
 }
 
 .qa-flag-reasons-wrap label {
-    display:block;
-    padding:7px 0;
+    display: block;
+    padding: 3px 0;
 }
 
-input[name="qa-spam-reason-radio"] {
+input.qa-spam-reason-radio {
     margin-right: 2px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    vertical-align: middle;
 }
 
-input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
+input.qa-spam-reason-radio:hover {
+    cursor: pointer;
+}
+
+input.qa-spam-reason-radio:checked + span {
+    font-weight: bold;
+}
 
 .qa-spam-reason-text-wrap {
-    display:block;
-    margin:20px 0 10px 0;
+    display: block;
+    margin: 10px 0;
 }
 
 .qa-spam-reason-text {
-    padding:7px;
-    height:auto;
+    padding: 7px;
+    height: auto;
 }
 
 .qa-go-flag-send-button {
-    margin-top:15px;
+    margin-top: 15px;
 }
 
-#flagbox-popup {
-    background: #000000;
-    background: rgba(0,0,0,0.75);
+.flagbox-popup {
     height: 100%;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    display: none;
-    z-index: 5119;
 }
 
-#flagbox-center {
+.flagbox-center {
     margin: 6% auto;
     width: auto;
     text-align: center;
 }
 
 .qa-flagreason-list {
-    padding-left:0;
-    margin:0px;
-    list-style:none;
+    padding-left: 0;
+    margin: 0px;
+    list-style: none;
 }
 
 .qa-flagreason-list li {
@@ -84,16 +81,16 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
 }
 
 .qa-flag-wrap {
-    display:block;
+    display: block;
 }
 
 .qa-flagreasons {
-    display:inline-block;
-    max-width:60%;
-    margin-bottom:30px;
-    padding:20px;
+    display: inline-block;
+    max-width: 60%;
+    margin-bottom: 30px;
+    padding: 20px;
     background-color: #D9E3EA;
-    border:1px solid #D9E3EE;
+    border: 1px solid #D9E3EE;
     font-weight: bold;
 
 }
@@ -108,8 +105,4 @@ input[name="qa-spam-reason-radio"]:checked+span { font-weight: bold; }
 
 .hide {
     display: none !important;
-}
-
-input[name=qa-spam-reason-radio]:hover {
-    cursor: pointer;    
 }
