@@ -102,38 +102,27 @@ class qa_html_theme_layer extends qa_html_theme_base
             $postId      = $post['raw']['postid'];
             $flagReasons = q2apro_get_postflags($postId);
             if (!empty($flagReasons)) {
-                $flagsOut = '<ul class="qa-flagreason-list">';
+                $flagsOut = '<p class="qa-flagreason">';
                 foreach ($flagReasons as $flag) {
                     $userHandle = qa_userid_to_handle($flag['userid']);
                     $reason     = q2apro_flag_reasonid_to_readable($flag['reasonid']);
                     $notice     = $flag['notice'];
                     if (!empty($notice)) {
-                        $notice = '
-                        <span class="flagreason-notice">' . $notice . '</span>
-                        ';
+                        $notice = '<q>' . $notice . '</q>';
                     }
                     $flagsOut .= '
-                    <li>
-                        <span class="flagreason-what">Zgłoszenie z powodu <span style="font-weight: bold;">' . $reason . '</span> </span>
-                        stworzone przez
-                        <span class="flagreason-who"><a href="' . qa_path('user') . '/' . $userHandle . '"><span style="font-weight: bold;">' . $userHandle . '</span></a></span>';
+                        <span class="flagreason-what">Post zgłoszony z powodu <i><strong>' . $reason . '</strong></i> </span>
+                        przez
+                        <span class="flagreason-who"><a href="' . qa_path('user') . '/' . $userHandle . '"><b>' . $userHandle . '</b></a></span>.';
                     
                     if (null !== $notice) {
-                        $flagsOut .= ' [<span style="font-weight: bold;">Notatka: ' . $notice . ']</span></li>';
+                        $flagsOut .= '<br>Treść notatki: ' . $notice . '.';
                     }
                 }
-                $flagsOut  .= '</ul>';
+                $flagsOut  .= '</p>';
                 $userLevel = qa_get_logged_in_level();
                 if ($userLevel > QA_USER_LEVEL_EXPERT) {
-                    $this->output(
-                        '
-                    <div class="qa-flag-wrap">
-                          <div class="qa-flagreasons">
-                                          ' . $flagsOut . '
-                    </div>
-                </div>
-                '
-                    );
+                    $this->output($flagsOut);
                 }
             }
         }
