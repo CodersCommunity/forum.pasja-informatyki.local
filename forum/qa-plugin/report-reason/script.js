@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorText = "Proszę wybrać powód zgłoszenia!";    
             }
 		
-            if(true === isError) {
+            if(isError) {
                 const errorPopupHtml = document.querySelector(".qa-spam-reason-error");
 	        const errorHtml = document.createElement("p");
                 errorHtml.innerHTML = errorText;
