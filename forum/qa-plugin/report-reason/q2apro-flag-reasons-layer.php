@@ -109,28 +109,18 @@ class qa_html_theme_layer extends qa_html_theme_base
                     $notice     = $flag['notice'];
                     if (!empty($notice)) {
                         $notice = '
-                        | 
                         <span class="flagreason-notice">' . $notice . '</span>
                         ';
                     }
                     $flagsOut .= '
                     <li>
-                        <span class="flagreason-what">'
-                                 . $reason
-                                 . '</span>
-                        | 
-                        <span class="flagreason-who"><a href="'
-                                 . qa_path('user')
-                                 . '/'
-                                 . $userHandle
-                                 . '">'
-                                 . $userHandle
-                                 . '</a></span>
-                        '
-                                 . $notice
-                                 . '
-                    </li>
-                    ';
+                        <span class="flagreason-what">Zgłoszenie z powodu <span style="font-weight: bold;">' . $reason . '</span> </span>
+                        stworzone przez
+                        <span class="flagreason-who"><a href="' . qa_path('user') . '/' . $userHandle . '"><span style="font-weight: bold;">' . $userHandle . '</span></a></span>';
+                    
+                    if (null !== $notice) {
+                        $flagsOut .= ' [<span style="font-weight: bold;">Notatka: ' . $notice . ']</span></li>';
+                    }
                 }
                 $flagsOut  .= '</ul>';
                 $userLevel = qa_get_logged_in_level();
