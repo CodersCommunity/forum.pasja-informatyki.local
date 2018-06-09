@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.getElementsByTagName('body')[0];
     const closer = document.querySelector(".close-preview-btn");
     const sendButton = document.querySelector(".qa-go-flag-send-button");
-    const errorMessage = "Blad serwera. Prosze sprobowac za jakis czas";
+    const errorMessage = "Błąd serwera. Proszę spróbować za jakiś czas";
 
     function showPopup() {
         flagboxPopup.classList.remove("hide");
