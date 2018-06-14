@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
     const closer = document.querySelector(".close-preview-btn");
     const sendButton = document.querySelector(".qa-go-flag-send-button");
-    const errorMessage = "Blad serwera. Prosze sprobowac za jakis czas";
+    const errorMessage = "Błąd serwera. Proszę spróbować za jakiś czas";
     const errorPopup = document.querySelector("#qa-spam-reason-error");
     const tooManyReportError = "Zbyt dużo zgłoszeń z tego adresu IP. Spróbuj za godzinę";
 
