@@ -72,7 +72,6 @@ class q2apro_flag_reasons_page
                     false
                 );
 
-                // TODO: $parentQuestion, $extraValue, $categories, $favorite - to zmienne nieuzywane w ogole.
                 list($question, $childPosts, $aChildPosts,
                     $closePost, $duplicatePosts
                     ) = $questionData;
@@ -135,12 +134,6 @@ class q2apro_flag_reasons_page
             } elseif ('c' === $postType) {
 
                 $commentId = $postId;
-                list($question, $parent) = qa_db_select_with_pending(
-                    qa_db_full_post_selectspec($userId, $commentId),
-                    qa_db_full_post_selectspec($userId, $questionId),
-                    qa_db_full_post_selectspec($userId, $parentId),
-                    qa_db_full_child_posts_selectspec($userId, $parentId)
-                );
 
                 $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $commentId));
                 $error   = qa_flag_error_html($comment, $userId, $questionId);
