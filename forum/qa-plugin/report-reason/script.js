@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorMessage = "Błąd serwera. Proszę spróbować za jakiś czas";
     const errorPopup = document.querySelector("#qa-spam-reason-error");
     const tooManyReportError = "Zbyt dużo zgłoszeń z tego adresu IP. Spróbuj za godzinę";
+    const reportReasonEmptyError = "Wybierz powód zgłoszenia!";
 
     function showPopup() {
         flagboxPopup.classList.remove("hide");
@@ -23,6 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
         while (errorPopup.firstChild) {
              errorPopup.removeChild(errorPopup.firstChild);
         }
+    }
+    function showError(errorText) {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = errorText;
+                    
+        removeAllChildFromErrorPopup();
+        errorPopup.appendChild(paragraph);
+        errorPopup.hidden = false
     }
 
     wrap.addEventListener("click", (e) => {
@@ -49,13 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const flagReason = document.querySelector("input.qa-spam-reason-radio:checked");
                 const flagNotice = document.querySelector(".qa-spam-reason-text").value;
                 
-                if (null == flagReason) {
-                    const nothingSelectedErrorParagraph = document.createElement("p");
-                    nothingSelectedErrorParagraph.innerHTML = "Wybierz powód zgłoszenia!";
-                    
-                    removeAllChildFromErrorPopup();
-                    errorPopup.appendChild(nothingSelectedErrorParagraph);
-                    errorPopup.hidden = false;
+                if (!flagReason) {
+                    showError(reportReasonEmptyError);
                     return false;
                 }
                 
@@ -78,12 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         success: function(data) {
                             if(data.error) {
                                 if ("Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę" === data.error) {
-                                    const tooManyReportErrorParagraph = document.createElement("p");
-                                    tooManyReportErrorParagraph.innerHTML = tooManyReportError;
-                                
-                                    removeAllChildFromErrorPopup();
-                                    errorPopup.appendChild(tooManyReportErrorParagraph);
-                                    errorPopup.hidden = false;
+                                    showError(tooManyReportError);
                                     return false;
                                 } else {
                                     isError = true;
@@ -100,12 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     });    
                 }
                 if (isError) {
-                    const errorPopupHtml = document.querySelector("#qa-spam-reason-error");
-                    const errorHtml = document.createElement("p");
-                    
-                    removeAllChildFromErrorPopup();
-                    errorHtml.innerHTML = errorText;
-                    errorPopupHtml.appendChild(errorHtml);
+                    showError(errorText);
                 }
             
             });
