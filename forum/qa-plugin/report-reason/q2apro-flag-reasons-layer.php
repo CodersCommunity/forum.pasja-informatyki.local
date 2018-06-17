@@ -30,7 +30,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         if ($this->isLogged && isset($q_view['form']['buttons']['flag'], $q_view['raw']['postid'])) {
             $q_view['form']['buttons']['flag']['tags'] =
-                'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" ';
+                'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" style="cursor: pointer" ';
         }
         qa_html_theme_base::q_view_buttons($q_view);
     }
@@ -38,14 +38,14 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         if ($this->isLogged && isset($a_item['form']['buttons']['flag'], $a_item['raw']['postid'])) {
             $a_item['form']['buttons']['flag']['tags'] =
-                'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" ';
+                'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" style="cursor: pointer" ';
         }
         qa_html_theme_base::a_item_buttons($a_item);
     }
     public function c_item_buttons($c_item)
     {
         if ($this->isLogged && isset($c_item['form']['buttons']['flag'], $c_item['raw']['postid'])) {
-            $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" ';
+            $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" style="cursor: pointer" ';
         }
         qa_html_theme_base::c_item_buttons($c_item);
     }
@@ -98,32 +98,37 @@ class qa_html_theme_layer extends qa_html_theme_base
     public function post_tags($post, $class)
     {
         qa_html_theme_base::post_tags($post, $class);
-        if ('qa-q-view' === $class) {
-            $postId      = $post['raw']['postid'];
-            $flagReasons = q2apro_get_postflags($postId);
-            if (!empty($flagReasons)) {
-                $flagsOut = '<p class="qa-flagreason">';
-                foreach ($flagReasons as $flag) {
-                    $userHandle = qa_userid_to_handle($flag['userid']);
-                    $reason     = q2apro_flag_reasonid_to_readable($flag['reasonid']);
-                    $notice     = $flag['notice'];
-                    if (!empty($notice)) {
-                        $notice = '<q>' . $notice . '</q>';
-                    }
-                    $flagsOut .= '
-                        <span class="flagreason-what">Post zgłoszony z powodu <i><strong>' . $reason . '</strong></i> </span>
-                        przez
-                        <span class="flagreason-who"><a href="' . qa_path('user') . '/' . $userHandle . '"><b>' . $userHandle . '</b></a></span>.';
+        $postId      = $post['raw']['postid'];
+        $flagReasons = q2apro_get_postflags($postId);
+        if (!empty($flagReasons)) {
+            $flagsOut = '<p class="qa-flagreason">';
+            foreach ($flagReasons as $flag) {
+                $userHandle = qa_userid_to_handle($flag['userid']);
+                $reason     = q2apro_flag_reasonid_to_readable($flag['reasonid']);
+                $notice     = $flag['notice'];
+                $addedBr    = false;
+                if (!empty($notice)) {
+                    $notice = '<q>' . $notice . '</q>';
+                }
+                $flagsOut .= '
+                    <span class="flagreason-what">Post zgłoszony z powodu <i><strong>' . $reason . '</strong></i> </span>
+                    przez
+                    <span class="flagreason-who"><a href="' . qa_path('user') . '/' . $userHandle . '"><b>' . $userHandle . '</b></a></span>.';
+                
+                if (null !== $notice) {
+                    $flagsOut .= '<br>Treść notatki: ' . $notice . '.';
+                    $flagsOut .= '<br><br>';
+                    $addedBr = true;
+                }
                     
-                    if (null !== $notice) {
-                        $flagsOut .= '<br>Treść notatki: ' . $notice . '.';
-                    }
+                if (!$addedBr) {
+                    $flagsOut .= '<br><br>';
                 }
-                $flagsOut  .= '</p>';
-                $userLevel = qa_get_logged_in_level();
-                if ($userLevel > QA_USER_LEVEL_EXPERT) {
-                    $this->output($flagsOut);
-                }
+            }
+            $flagsOut  .= '</p>';
+            $userLevel = qa_get_logged_in_level();
+            if ($userLevel > QA_USER_LEVEL_EXPERT) {
+                $this->output($flagsOut);
             }
         }
     }
