@@ -30,7 +30,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         if ($this->isLogged && isset($q_view['form']['buttons']['flag'], $q_view['raw']['postid'])) {
             $q_view['form']['buttons']['flag']['tags'] =
-                'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" style="cursor: pointer" ';
+                'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" ';
         }
         qa_html_theme_base::q_view_buttons($q_view);
     }
@@ -38,14 +38,14 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         if ($this->isLogged && isset($a_item['form']['buttons']['flag'], $a_item['raw']['postid'])) {
             $a_item['form']['buttons']['flag']['tags'] =
-                'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" style="cursor: pointer" ';
+                'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" ';
         }
         qa_html_theme_base::a_item_buttons($a_item);
     }
     public function c_item_buttons($c_item)
     {
         if ($this->isLogged && isset($c_item['form']['buttons']['flag'], $c_item['raw']['postid'])) {
-            $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" style="cursor: pointer" ';
+            $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" ';
         }
         qa_html_theme_base::c_item_buttons($c_item);
     }
