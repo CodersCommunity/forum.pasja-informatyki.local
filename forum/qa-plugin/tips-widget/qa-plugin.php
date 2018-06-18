@@ -13,32 +13,32 @@
 */
 
 if (!defined('QA_VERSION')) { // don't allow this page to be requested directly from browser
-	header('Location: ../../');
-	exit;
+    header('Location: ../../');
+    exit;
 }
 
 qa_register_plugin_layer(
-  'tips-widget-layer.php',
-  'Tips Widget Layer'
+    'tips-widget-layer.php',
+    'Tips Widget Layer'
 );
 
 qa_register_plugin_module(
-  'module',
-  'tips-widget-admin.php',
-  'tips_widget_admin',
-  'Tips Widget Admin'
+    'module',
+    'tips-widget-admin.php',
+    'tips_widget_admin',
+    'Tips Widget Admin'
 );
 
 qa_register_plugin_module(
-  'page',
-  'tips-widget-page.php',
-  'tips_widget_page',
-  'Tips Widget Page'
+    'page',
+    'tips-widget-page.php',
+    'tips_widget_page',
+    'Tips Widget Page'
 );
 
 qa_register_plugin_module(
-  'widget',
-  'tips-widget-widget.php',
-  'tips_widget_widget',
-  'Tips Widget Widget'
+    'widget',
+    'tips-widget-widget.php',
+    'tips_widget_widget',
+    'Tips Widget Widget'
 );
