@@ -2312,6 +2312,7 @@ input[type="submit"], button {
 	background-image: url('images/icons/edit-white.png');
 }
 .qa-form-light-button-flag {
+	cursor: pointer;
 	background-image: url('images/icons/flag-white.png');
 }
 .qa-form-light-button-unflag, .qa-form-light-button-clearflags {
@@ -2744,9 +2745,11 @@ input[type="submit"], button {
 	background-image: url('images/icons/edit.png');
 }
 .qa-c-list-item .qa-form-light-button-flag {
+	cursor: pointer;
 	background-image: url('images/icons/flag.png');
 }
 .qa-c-list-item .qa-form-light-button-unflag, .qa-c-list-item .qa-form-light-button-clearflags {
+	cursor: pointer;
 	background-image: url('images/icons/un-flag.png');
 }
 .qa-c-list-item .qa-form-light-button-hide {
