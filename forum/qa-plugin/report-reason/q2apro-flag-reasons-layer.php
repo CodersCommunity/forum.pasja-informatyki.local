@@ -117,7 +117,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                 
                 if (null !== $notice) {
                     $flagsOut .= '<br>Treść notatki: ' . $notice . '.';
-                    $flagsOut .= '<br><br>';
+                    $flagsOut .= '<br>';
                     $addedBr = true;
                 }
                     
