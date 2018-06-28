@@ -91,18 +91,15 @@ document.addEventListener("DOMContentLoaded", () => {
                                     showError(tooManyReportError);
                                     return false;
                                 } else {
-                                    //alert(data.error);
                                     isError = true;
                                 }
                             } else if(data.success) {
                                 location.reload();
                             } else {
-                                //alert(data.error);
                                 isError = true;
                             }
                         },
                         error: function(data) {
-                            //alert(data.error);
                             isError = true;
                         }
                     });    
