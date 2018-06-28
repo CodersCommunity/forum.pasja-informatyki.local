@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     const flagboxPopup = document.querySelector("#flagbox-popup");
-    const flagButton = document.querySelector(".qa-form-light-button-flag");
-    flagButton.type = "button";
     const wrap = document.querySelector(".qa-flag-reasons-wrap");
     const body = document.body;
     const closer = document.querySelector(".close-preview-btn");
@@ -41,7 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (event.target.matches(".qa-form-light-button-unflag")) {
             location.reload();
         }
+        if (event.target.matches(".qa-form-light-button-clearflags")) {
+            location.reload();
+        }
         if (event.target.matches("input.qa-form-light-button-flag")) {
+            const flagButton = document.querySelector("input.qa-form-light-button-flag");
+            flagButton.type = "button";
+            
             event.preventDefault();
             showPopup();    
 
@@ -51,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             closer.addEventListener("click", () => {
                 hidePopup();
+                return false;
             });
 
             sendButton.addEventListener("click", () => {
@@ -81,19 +86,23 @@ document.addEventListener("DOMContentLoaded", () => {
                         cache: false,
                         success: function(data) {
                             if(data.error) {
+                                //alert(data.error);
                                 if ("Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę" === data.error) {
                                     showError(tooManyReportError);
                                     return false;
                                 } else {
+                                    //alert(data.error);
                                     isError = true;
                                 }
                             } else if(data.success) {
                                 location.reload();
                             } else {
+                                //alert(data.error);
                                 isError = true;
                             }
                         },
                         error: function(data) {
+                            //alert(data.error);
                             isError = true;
                         }
                     });    

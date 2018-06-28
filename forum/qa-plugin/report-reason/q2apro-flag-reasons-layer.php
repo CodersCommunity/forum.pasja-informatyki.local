@@ -95,51 +95,36 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::body_hidden();
     }
-    public function post_tags($post, $class)
-    {
-        qa_html_theme_base::post_tags($post, $class);
-        $postId      = $post['raw']['postid'];
-        $flagReasons = q2apro_get_postflags($postId);
-        if (!empty($flagReasons)) {
-            $flagsOut = '<p class="qa-flagreason">';
-            foreach ($flagReasons as $flag) {
-                $userHandle = qa_userid_to_handle($flag['userid']);
-                $reason     = q2apro_flag_reasonid_to_readable($flag['reasonid']);
-                $notice     = $flag['notice'];
-                $addedBr    = false;
-                if (!empty($notice)) {
-                    $notice = '<q>' . $notice . '</q>';
-                }
-                $flagsOut .= '
-                    <span class="flagreason-what">Post zgłoszony z powodu <i><strong>' . $reason . '</strong></i> </span>
-                    przez
-                    <span class="flagreason-who"><a href="' . qa_path('user') . '/' . $userHandle . '"><b>' . $userHandle . '</b></a></span>.';
-                
-                if (null !== $notice) {
-                    $flagsOut .= '<br>Treść notatki: ' . $notice . '.';
-                    $flagsOut .= '<br>';
-                    $addedBr = true;
-                }
-                    
-                if (!$addedBr) {
-                    $flagsOut .= '<br><br>';
-                }
-            }
-            $flagsOut  .= '</p>';
-            $userLevel = qa_get_logged_in_level();
-            if ($userLevel > QA_USER_LEVEL_EXPERT) {
-                $this->output($flagsOut);
-            }
-        }
-    }
     public function post_meta_flags($post, $class)
     {
-        if (('qa-a-item' === $class || 'qa-c-item' === $class) && !empty($post['flags']['suffix'])) {
-            $flagInfo = q2apro_count_postflags_output($post['raw']['postid']);
-            if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
-                $post['flags']['suffix'] .= ': <br>' . $flagInfo;
+        if ('qa-a-item' === $class || 'qa-c-item' === $class || 'qa-q-view' === $class) {
+            if (isset($post['raw']['postid'])) {
+                $flagInfo = q2apro_count_postflags_output($post['raw']['postid']);
+                if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
+                    $flagsCount = count(q2apro_get_postflags($post['raw']['postid']));
+                    
+                    unset($post['flags']);
+                    
+                    $post['flags']['suffix'] = $this->prepareFlagSuffix($flagsCount);
+                    $post['flags']['suffix'] .= ': <br>' . $flagInfo;
+                }
             }
         }
         qa_html_theme_base::post_meta_flags($post, $class);
+    }
+    
+    private function prepareFlagSuffix($flagsCount)
+    {
+        $flagsCountText = '';
+        
+        if (1 === $flagsCount) {
+            $flagsCountText = ' zgłoszenie';
+        } elseif ((1 === $flagsCount%10 && 1 !== $flagsCount) || (4 < $flagsCount%10)) {
+            $flagsCountText = ' zgłoszeń';
+        } elseif (1 < $flagsCount%10 && 5 > $flagsCount%10) {
+            $flagsCountText = ' zgłoszenia';
+        }
+        
+        return $flagsCount . $flagsCountText;
     }
 }

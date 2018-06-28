@@ -69,9 +69,9 @@ function q2apro_get_postflags($postId)
     return qa_db_read_all_assoc(
         qa_db_query_sub(
             '
-            SELECT userid, postid, reasonid, notice 
+            SELECT `userid`, `postid`, `reasonid`, `notice` 
             FROM ^flagreasons
-            WHERE postid = #
+            WHERE `postid` = #
             ', $postId
         )
     );
@@ -81,18 +81,24 @@ function q2apro_count_postflags_output($postId)
 {
     $flags = q2apro_get_postflags($postId);
 
-    $flagOutput = '';
+    $flagOutput = [];
 
     // count reasons
     foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
-        $flagOutput .= (empty($flagoutput) ? '' : '<br>'); //todo: ta zmienna $flagoutput nigdzie nie istnieje.
-        $flagOutput .= ' ' . q2apro_flag_reasonid_to_readable($flag['reasonid']) . ' (' . $handle;
+        $flagOutput[] = ' Post zgłoszony z powodu <b>' . q2apro_flag_reasonid_to_readable($flag['reasonid']) . '</b> przez <a href="' . qa_path('user') . '/' . $handle . '">' . $handle . '</a>.';
         if (!empty($flag['notice'])) {
-            $flagOutput .= ' ' . $flag['notice'] . '”';
+            $flagOutput[] = ' Treść notatki: ' . $flag['notice'];
         }
-        $flagOutput .= ')';
+        $flagOutput[] = '<br>';
     }
+    unset($flagOutput[count($flagOutput)-1]);
 
-    return $flagOutput;
+    $flagsOutput = '';
+    
+    foreach ($flagOutput as $flag) {
+        $flagsOutput .= $flag;
+    }
+    
+    return $flagsOutput;
 }

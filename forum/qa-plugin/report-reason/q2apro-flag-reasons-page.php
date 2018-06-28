@@ -76,8 +76,8 @@ class q2apro_flag_reasons_page
                     $closePost, $duplicatePosts
                     ) = $questionData;
 
-                $error = qa_flag_error_html($question, $userId, $questionId);
-
+                //$error = qa_flag_error_html($question, $userId, $questionId);
+                $error = true;
                 if (!$error) {
                     $handle   = qa_userid_to_handle($userId);
                     $cookieId = qa_cookie_get();
@@ -109,7 +109,6 @@ class q2apro_flag_reasons_page
                     qa_db_full_child_posts_selectspec($userId, $answerId)
                 );
 
-                $answers         = qa_page_q_load_as($question, $qChildPosts); // todo: dead code - answers nie jest uzywane.
                 $commentsFollows = qa_page_q_load_c_follows($question, $qChildPosts, $aChildPosts);
 
                 $error = qa_flag_error_html($answer, $userId, $questionId);
