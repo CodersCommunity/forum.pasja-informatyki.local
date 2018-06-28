@@ -50,7 +50,8 @@ class q2apro_flag_reasons_page
             $notice     = empty($newData['notice']) ? null : trim($newData['notice']);
 
             if (empty($questionId) || empty($postId) || empty($postType) || empty($reasonId)) {
-                $reply = ['error' => 'missing'];
+                $reply = ['
+                ' => 'missing'];
                 echo json_encode($reply);
 
                 return;
@@ -76,8 +77,8 @@ class q2apro_flag_reasons_page
                     $closePost, $duplicatePosts
                     ) = $questionData;
 
-                //$error = qa_flag_error_html($question, $userId, $questionId);
-                $error = true;
+                $error = qa_flag_error_html($question, $userId, $questionId);
+                
                 if (!$error) {
                     $handle   = qa_userid_to_handle($userId);
                     $cookieId = qa_cookie_get();
