@@ -270,7 +270,11 @@
 
     }
 
-
+    if (qa_clicked('doblockpw')) {
+        qa_db_query_sub('INSERT INTO ^blockedPw(`fromUserId`, `toUserId`) VALUES (#, #)', $loginuserid, $useraccount['userid']);
+    } else if (qa_clicked('dounblockpw')) {
+        qa_db_query_sub('DELETE FROM ^blockedPw WHERE fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid']);
+    }
 
 
 
@@ -921,7 +925,10 @@
     //    Private message link
 
         $option = qa_opt('allow_private_messages');
-        if ( $option && isset($loginuserid) && ($loginuserid != $userid) && !($useraccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) && !$userediting ) {
+        
+        $isBlocked = qa_db_query_sub('SELECT * FROM ^blockedPw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND fromUserId = #', $loginuserid, $useraccount['userid'], $useraccount['userid'], $loginuserid);
+
+        if ($isBlocked->num_rows === 0 && $option && isset($loginuserid) && ($loginuserid != $userid) && !($useraccount['flags'] & QA_USER_FLAGS_NO_MESSAGES) && !$userediting ) {
 
             $qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
 
@@ -932,19 +939,14 @@
             ));
 
         } else if( ($option == 1) && (qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR) && ($loginuserid != $userid)) {
-			$qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
+            $qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
 
-				'^1' => '<br><dfn class="pw-link-admins" data-info="Użytkownik ma wyłączone otrzymywanie wiadomości od innych użytkowników, ale korzystając z uprawnień administracyjnych możesz skontaktować się z nim"><a href="'.qa_path_html('message/'.$handle).'">',
+                '^1' => '<br><dfn class="pw-link-admins" data-info="Użytkownik ma wyłączone otrzymywanie wiadomości od innych użytkowników, ale korzystając z uprawnień administracyjnych możesz skontaktować się z nim"><a href="'.qa_path_html('message/'.$handle).'">',
 
-				'^2' => '</a></dfn>',
+                '^2' => '</a></dfn>',
 
-			));
-		}
-
-
-
-
-
+            ));
+        }
 
     //    Levels editing or viewing (add category-specific levels)
 
@@ -1575,6 +1577,7 @@
 
             );
 
+            
 
 
             if (isset($maxlevelassign) && $useraccount['level'] < QA_USER_LEVEL_MODERATOR) {
@@ -2026,7 +2029,18 @@
 
 
 
-
+    $canBlock = qa_db_query_sub('SELECT * FROM ^blockedPw WHERE fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid']);
+    if ($canBlock->num_rows == 0 && qa_get_logged_in_userid() != null) {
+        $qa_content['form_profile']['buttons'][] = [
+            'tags' => 'name="doblockpw"',
+            'label' => 'Zablokuj wiadomości prywatne od tego użytkownika'
+        ];
+    } elseif ($canBlock->num_rows != 0 && qa_get_logged_in_userid() != null) {
+        $qa_content['form_profile']['buttons'][] = [
+            'tags' => 'name="dounblockpw"',
+            'label' => 'Odblokuj wiadomości prywatne od tego użytkownika'
+        ];
+    }
 
 //    Wall posts
 
