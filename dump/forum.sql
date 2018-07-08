@@ -1741,6 +1741,18 @@ INSERT INTO `qa_words` (`wordid`, `word`, `titlecount`, `contentcount`, `tagword
 (12, 'html', 1, 1, 0, 0),
 (13, 'użytkownika', 1, 1, 0, 0);
 
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `qa_blockedPw`
+--
+
+CREATE TABLE IF NOT EXISTS `qa_blockedPw` (
+  `fromUserId` int(10) unsigned NOT NULL,
+  `toUserId` int(10) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 --
 -- Indeksy dla zrzutów tabel
 --
