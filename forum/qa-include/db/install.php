@@ -502,6 +502,11 @@
 				'content' => 'VARCHAR('.QA_DB_MAX_META_CONTENT_LENGTH.') NOT NULL',
 				'PRIMARY KEY (tag, title)',
 			),
+			
+			'blockedPw' => [
+			    'fromUserId' => 'INT UNSIGNED NOT NULL',
+                            'toUserId' => 'INT UNSIGNED NOT NULL'
+                        ]
 
 		);
 
