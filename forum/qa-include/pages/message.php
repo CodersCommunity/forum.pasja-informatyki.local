@@ -69,7 +69,7 @@
 //    Check the user exists and work out what can and can't be set (if not using single sign-on)
         $blockedPrivateMessages = qa_db_query_sub('SELECT * FROM ^blockedPw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
         $allowedPrivateMessages = qa_opt('allow_private_messages');
-        if ($blockedPrivateMessages->num_rows !== 0 || !$allowedPrivateMessages || !is_array($toaccount) || ($toaccount['flags'] & QA_USER_FLAGS_NO_MESSAGES)) {
+        if ($toaccount['level'] <= QA_USER_LEVEL_EXPERT && $blockedPrivateMessages->num_rows !== 0 || !$allowedPrivateMessages || !is_array($toaccount) || ($toaccount['flags'] & QA_USER_FLAGS_NO_MESSAGES)) {
             $userLevel = qa_get_logged_in_level();
             if($userLevel < QA_USER_LEVEL_EDITOR) {
                 return include QA_INCLUDE_DIR.'qa-page-not-found.php';

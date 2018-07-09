@@ -2030,12 +2030,12 @@
 
 
     $canBlock = qa_db_query_sub('SELECT * FROM ^blockedPw WHERE fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid']);
-    if ($canBlock->num_rows == 0 && qa_get_logged_in_userid() != null) {
+    if ($canBlock->num_rows == 0 && qa_get_logged_in_userid() != null && $loginuserid !== $useraccount['userid']) {
         $qa_content['form_profile']['buttons'][] = [
             'tags' => 'name="doblockpw"',
             'label' => 'Zablokuj wiadomości prywatne od tego użytkownika'
         ];
-    } elseif ($canBlock->num_rows != 0 && qa_get_logged_in_userid() != null) {
+    } elseif ($canBlock->num_rows != 0 && qa_get_logged_in_userid() != null && $loginuserid !== $useraccount['userid']) {
         $qa_content['form_profile']['buttons'][] = [
             'tags' => 'name="dounblockpw"',
             'label' => 'Odblokuj wiadomości prywatne od tego użytkownika'
