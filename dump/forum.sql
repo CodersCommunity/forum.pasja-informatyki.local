@@ -1744,10 +1744,10 @@ INSERT INTO `qa_words` (`wordid`, `word`, `titlecount`, `contentcount`, `tagword
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `qa_blockedPw`
+-- Struktura tabeli dla tabeli `qa_blockedpw`
 --
 
-CREATE TABLE IF NOT EXISTS `qa_blockedPw` (
+CREATE TABLE IF NOT EXISTS `qa_blockedpw` (
   `fromUserId` int(10) unsigned NOT NULL,
   `toUserId` int(10) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
