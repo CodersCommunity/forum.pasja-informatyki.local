@@ -503,9 +503,9 @@
                 'PRIMARY KEY (tag, title)',
             ),
             
-            'blockedPw' => [
+            'blockedpw' => [
                 'fromUserId' => 'INT UNSIGNED NOT NULL',
-                 'toUserId' => 'INT UNSIGNED NOT NULL'
+                'toUserId' => 'INT UNSIGNED NOT NULL'
             ]
 
         );
