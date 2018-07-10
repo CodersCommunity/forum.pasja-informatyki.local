@@ -67,7 +67,7 @@
 
 
 //    Check the user exists and work out what can and can't be set (if not using single sign-on)
-        $blockedPrivateMessages = qa_db_query_sub('SELECT * FROM ^blockedPw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
+        $blockedPrivateMessages = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
         $allowedPrivateMessages = qa_opt('allow_private_messages');
         $toAccountLevelPass = QA_USER_LEVEL_EXPERT > $toaccount['level'];
         $blockedPrivateMessageBool = 0 !== $blockedPrivateMessages->num_rows;
