@@ -838,15 +838,15 @@ function qa_ajax_error()
 
                     usersResponsesList = topicMainContent.querySelector( '[id*="' + idNumber + '_list"]' );
                 } else if ( areCommentsExpanded ) {
-                	var target = ev.target.parentNode.parentNode;
+                    var target = ev.target.parentNode.parentNode;
                     var mutationObserver = new MutationObserver( function() {
-                    	styleTopicAuthor();
+                        styleTopicAuthor();
                         mutationObserver.disconnect();
                     } );
 
                     mutationObserver.observe( target, { childList: true } );
                     return;
-				}
+                }
 
                 var commentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
                 var answerBtn = topicMainContent.querySelector( 'input[value="Odpowiedz"]' );
