@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorPopup = document.querySelector("#qa-spam-reason-error");
     const tooManyReportError = "Zbyt dużo zgłoszeń z tego adresu IP. Spróbuj za godzinę";
     const reportReasonEmptyError = "Wybierz powód zgłoszenia!";
+    const commentSubmitButton = document.querySelector('.qa-form-tall-button-comment')
 
     function showPopup() {
         flagboxPopup.classList.remove("hide");
@@ -35,6 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.addEventListener("click", (e) => {
         e.stopPropagation();
     });
+    
+    commentSubmitButton.addEventListener("click", () => {
+       location.reload(); 
+    });
+    
     body.addEventListener("click", (event) => {
         if (event.target.matches(".qa-form-light-button-unflag")) {
             location.reload();
