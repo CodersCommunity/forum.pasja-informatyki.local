@@ -21,12 +21,12 @@ class qa_pw_event
             $fromUserHandle = qa_db_query_sub('SELECT `handle` FROM ^users WHERE `userid` = #', $botId);
             $toUserHandle = qa_db_query_sub('SELECT `handle` FROM ^users WHERE `userid` = #', $userId);
                 
-            qa_report_event('u_message', $botId, $fromUserHandle, qa_cookie_get(), array(
+            qa_report_event('u_message', $botId, $fromUserHandle, qa_cookie_get(), [
                 'userid' => $userId,
                 'handle' => $toUserHandle,
                 'messageid' => $messageId,
-                'message' => $messageContent,
-            ));
+                'message' => $messageContent
+            ]);
         }
     }
 }
