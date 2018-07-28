@@ -795,7 +795,7 @@ function qa_ajax_error()
         var repliesData = {
             answerQuery: '.qa-a-item-who-data',
             commentQuery: '.qa-c-item-who-data',
-            answersAndComments: function ( query, replyType ) {
+            answersAndComments: function ( query ) {
                 [].slice.call( document.querySelectorAll( query ) ).forEach( function( replyType ) {
                     var nick = replyType.querySelector( '.nickname' );
 
@@ -805,8 +805,8 @@ function qa_ajax_error()
                 } );
             }
         };
-        repliesData.answersAndComments( repliesData.answerQuery, 'answer' );
-        repliesData.answersAndComments( repliesData.commentQuery, 'comment' );
+        repliesData.answersAndComments( repliesData.answerQuery );
+        repliesData.answersAndComments( repliesData.commentQuery );
     }
 
     /** When anybody add a comment, then styleTopicAuthor() will run again */
@@ -822,8 +822,9 @@ function qa_ajax_error()
                 'Skomentuj to pytanie',
                 'Odpowiedz na to pytanie'
             ];
+            var areCommentsExpanded = ev.target.classList.contains( 'qa-c-item-expand' );
 
-            if ( activity.indexOf( ev.target.title ) > -1 ) {
+            if ( activity.indexOf( ev.target.title ) > -1 || areCommentsExpanded ) {
 
                 var usersResponsesList;
 
@@ -836,6 +837,15 @@ function qa_ajax_error()
                     idNumber = idNumber.slice( 1, idNumber.indexOf( '_' ) );
 
                     usersResponsesList = topicMainContent.querySelector( '[id*="' + idNumber + '_list"]' );
+                } else if ( areCommentsExpanded ) {
+                    var target = ev.target.parentNode.parentNode;
+                    var mutationObserver = new MutationObserver( function() {
+                        styleTopicAuthor();
+                        mutationObserver.disconnect();
+                    } );
+
+                    mutationObserver.observe( target, { childList: true } );
+                    return;
                 }
 
                 var commentBtn = usersResponsesList.parentNode.parentNode.querySelector( 'input[value="Skomentuj"]' );
