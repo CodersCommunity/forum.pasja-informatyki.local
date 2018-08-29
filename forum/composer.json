@@ -1,0 +1,12 @@
+{
+    "name": "coderscommunity/forum",
+    "require": {
+        "sentry/sentry": "^1.9"
+    },
+    "authors": [
+        {
+            "name": "Marek Woś",
+            "email": "marek.wos@getresponse.com"
+        }
+    ]
+}
