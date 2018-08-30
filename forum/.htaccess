@@ -17,7 +17,6 @@ Header set X-Frame-Options "sameorigin"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
 Header set Strict-Transport-Security "max-age=31536000"
-Header set Content-Security-Policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';"
 Header set Referrer-Policy "origin-when-cross-origin"
 Header set Expect-CT "max-age=7776000, enforce"
 #Feature-Policy: camera 'none'; fullscreen 'self'; geolocation *; microphone 'self' https://example.com

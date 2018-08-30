@@ -28,16 +28,16 @@
 		function head_script(){
 			qa_html_theme_base::head_script();
 			if(qa_opt('q2apro_onsitenotifications_enabled')) {
-				$this->output('<script type="text/javascript">
+				$this->output('<script ' . qa_html_theme_base::nonce() . '  type="text/javascript">
 						var eventnotifyAjaxURL = "'.qa_path('eventnotify').'";
 					</script>');  
-				$this->output('<script type="text/javascript" src="'.QA_HTML_THEME_LAYER_URLTOROOT.'script.js"></script>');
-				$this->output('<link rel="stylesheet" type="text/css" href="'.QA_HTML_THEME_LAYER_URLTOROOT.'styles.css">');
+				$this->output('<script  ' . qa_html_theme_base::nonce() . ' type="text/javascript" src="'.QA_HTML_THEME_LAYER_URLTOROOT.'script.js"></script>');
+				$this->output('<link  ' . qa_html_theme_base::nonce() . ' rel="stylesheet" type="text/css" href="'.QA_HTML_THEME_LAYER_URLTOROOT.'styles.css">');
 				
 				// hack for snow flat theme (q2a v1.7) to show the notification icon outside the user's drop down
 				if(qa_opt('site_theme')=='SnowFlat') {
 					$this->output('
-					<script type="text/javascript">
+					<script  ' . qa_html_theme_base::nonce() . ' type="text/javascript">
 						$(document).ready(function(){
 							// $("#osnbox").detach().appendTo(".qam-account-items-wrapper");
 							var elem = $("#osnbox").detach();
@@ -50,7 +50,7 @@
 				// hack for snow theme (q2a v1.6) to position the notification box more to the right
 				if(qa_opt('site_theme')=='Snow') {
 					$this->output('
-					<style type="text/css">
+					<style  ' . qa_html_theme_base::nonce() . ' type="text/css">
 						#nfyWrap {
 							left:-100px;
 						}
@@ -61,7 +61,7 @@
 				// from q2a v1.7 we can use: $isRTL = $this->isRTL; but prior q2a versions can not, so we provide an admin option				
 				if(qa_opt('q2apro_onsitenotifications_rtl')) {
 					$this->output('
-					<style type="text/css">
+					<style  ' . qa_html_theme_base::nonce() . ' type="text/css">
 						#nfyReadClose {
 							float:left;
 						}

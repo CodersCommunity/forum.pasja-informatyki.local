@@ -111,8 +111,8 @@
 
 		function head_custom() {
 			if(qa_opt('embed_smileys') && qa_opt('embed_smileys_markdown_button')) {
-				$this->output('<style>',qa_opt('embed_smileys_css'),'</style>');
-				$this->output('<script>',
+				$this->output('<style ' . qa_html_theme_base::nonce() . ' >',qa_opt('embed_smileys_css'),'</style>');
+				$this->output('<script ' . qa_html_theme_base::nonce() . ' >',
 				"
 				function toggleSmileyBox(idx) {
 					jQuery('#smiley-box'+idx).toggle();

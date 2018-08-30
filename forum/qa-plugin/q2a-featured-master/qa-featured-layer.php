@@ -48,7 +48,7 @@
 			qa_html_theme_base::q_list($q_list);
 		}
 		function head_custom() {
-			$this->output('<style>',qa_opt('featured_question_css'),'</style>');
+			$this->output('<style ' . qa_html_theme_base::nonce() . ' >',qa_opt('featured_question_css'),'</style>');
 			qa_html_theme_base::head_custom();
 		}
 

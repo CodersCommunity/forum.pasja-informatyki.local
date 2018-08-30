@@ -129,7 +129,7 @@
 
 			if ($this->request == 'admin/plugins' && qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN) {
 				$this->output("
-				<script>".(qa_opt('badge_notify_time') != '0'?"
+				<script". qa_html_theme_base::nonce()." >".(qa_opt('badge_notify_time') != '0'?"
 					jQuery('document').ready(function() { jQuery('.notify-container').delay(".((int)qa_opt('badge_notify_time')*1000).").slideUp('fast'); });":"")."
 					function badgeEdit(slug,end) {
 						if(end) {
@@ -146,11 +146,11 @@
 			}
 			else if (isset($this->badge_notice)) {
 				$this->output("
-				<script>".(qa_opt('badge_notify_time') != '0'?"
+				<script ' . qa_html_theme_base::nonce() . ' >".(qa_opt('badge_notify_time') != '0'?"
 					jQuery('document').ready(function() { jQuery('.notify-container').delay(".((int)qa_opt('badge_notify_time')*1000).").slideUp('fast'); });":"")."
 				</script>");
 			}
-			$this->output('<style>',qa_opt('badges_css'),'</style>');
+			$this->output('<style ' . qa_html_theme_base::nonce() . ' >',qa_opt('badges_css'),'</style>');
 		}
 
 		function body_prefix()

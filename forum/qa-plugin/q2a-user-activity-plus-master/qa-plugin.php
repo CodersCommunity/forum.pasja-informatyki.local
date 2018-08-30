@@ -41,7 +41,7 @@ qa_register_plugin_phrases('qa-uact-lang-*.php', 'useractivity');
 function uact_css()
 {
 	return
-		"<style>\n" .
+		"<style". qa_html_theme_base::nonce() .">\n" .
 		".qa-useract-page-links { margin: 16px 0; color: #555753; font-size: 16px; text-align: center; }\n" .
 		".qa-useract-page-links > a { font-weight: bold; }\n" .
 		".qa-useract-stats { margin: 8px 0; text-align: center; }\n" .

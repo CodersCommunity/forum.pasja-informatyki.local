@@ -117,9 +117,9 @@
             parent::head_css();
 
             //$this->output( '<link rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/icons.css?'.SOCIAL_SHARE_PLUGIN_VERSION.'">' );
-            $this->output( '<link rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/social-share.css?'.SOCIAL_SHARE_PLUGIN_VERSION.'">' );
+            $this->output( '<link  ' . qa_html_theme_base::nonce() . ' rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/social-share.css?'.SOCIAL_SHARE_PLUGIN_VERSION.'">' );
 
-            $style_open = '<style type="text/css">';
+            $style_open = '<style  ' . qa_html_theme_base::nonce() . ' type="text/css">';
             $style_close = '</style>';
             $style_final = $style_open . qa_opt( qa_sss_opt::CUSTOM_CSS ) ;
 

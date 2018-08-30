@@ -107,7 +107,7 @@ class qa_html_theme extends qa_html_theme_base
      */
     private function head_inline_css()
     {
-        $css = ['<style>'];
+        $css = ['<style ' . qa_html_theme_base::nonce() . ' >'];
 
         if (!qa_is_logged_in()) {
             $css[] = '.qa-nav-user { margin: 0 !important; }';
@@ -145,8 +145,8 @@ class qa_html_theme extends qa_html_theme_base
     public function head_script()
     {
         $jsUrl = $this->rooturl . $this->js_dir . 'snow-core.js?' . QA_VERSION;
-        $this->content['script'][] = '<script src="' . $jsUrl . '"></script>';
-        $this->content['script'][] = '<script src="' . $this->rooturl . $this->js_dir .'selectLanguage.js' . '"></script>';
+        $this->content['script'][] = '<script  ' . qa_html_theme_base::nonce() . ' src="' . $jsUrl . '"></script>';
+        $this->content['script'][] = '<script  ' . qa_html_theme_base::nonce() . ' src="' . $this->rooturl . $this->js_dir .'selectLanguage.js' . '"></script>';
 
         qa_html_theme_base::head_script();
     }
@@ -267,7 +267,7 @@ class qa_html_theme extends qa_html_theme_base
         }
 
 
-        $this->output('<div id="fb-root"></div><script>(function(d, s, id) {  var js, fjs = d.getElementsByTagName(s)[0];  if (d.getElementById(id)) return;  js = d.createElement(s); js.id = id;  js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.4&appId=1423095607985502";  fjs.parentNode.insertBefore(js, fjs);}(document, \'script\', \'facebook-jssdk\'));</script>');
+        $this->output('<div id="fb-root"></div><script ' . qa_html_theme_base::nonce() . ' >(function(d, s, id) {  var js, fjs = d.getElementsByTagName(s)[0];  if (d.getElementById(id)) return;  js = d.createElement(s); js.id = id;  js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.4&appId=1423095607985502";  fjs.parentNode.insertBefore(js, fjs);}(document, \'script\', \'facebook-jssdk\'));</script>');
         $this->widgets('full', 'high');
 
         $this->output('<div class="qa-main-wrapper">', '');
