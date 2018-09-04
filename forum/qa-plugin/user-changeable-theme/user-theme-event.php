@@ -7,7 +7,7 @@ class user_theme_event
         if (qa_opt('user_theme_enable') && $event === 'u_login') {
             $sql = 'SELECT `theme` FROM `^users` WHERE `userid` = #';
             $theme = qa_db_read_one_value(qa_db_query_sub($sql, $userid));
-            setcookie('qa_user_theme', $theme, time()+31556926, '/', QA_COOKIE_DOMAIN);
+            setcookie('qa_user_theme', $theme, time()+31556926, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
         }
     }
 

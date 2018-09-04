@@ -11,7 +11,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         } elseif ($user = qa_get_logged_in_userid()) {
             $sql = 'SELECT `theme` FROM `^users` WHERE `userid` = #';
             $theme = qa_db_read_one_value(qa_db_query_sub($sql, $user));
-            setcookie($this->cookie, $theme, time()+31556926, '/', QA_COOKIE_DOMAIN);
+            setcookie($this->cookie, $theme, time()+31556926, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
             return (bool)$theme;
         }
         return false;
@@ -25,7 +25,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                     $sql = 'UPDATE `^users` SET `theme` = # WHERE `userid` = #';
                     qa_db_query_sub($sql, $theme, $user);
                 }
-                setcookie($this->cookie, $theme, time()+31556926, '/', QA_COOKIE_DOMAIN);
+                setcookie($this->cookie, $theme, time()+31556926, '/', QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
             }
         }
         qa_redirect(qa_request());

@@ -92,13 +92,15 @@
 
 /*
     Secure flag for cookies and session cookie - set true if you use https
-    define('QA_COOKIE_SECURE', false);
 */
+    define('QA_COOKIE_SECURE', true);
+
 
 /*
     httponly flag for cookies and session cookie
-    define('QA_COOKIE_HTTPONLY', true);
 */
+    define('QA_COOKIE_HTTPONLY', true);
+
 
 /*
 	If you wish, you can define an array $QA_CONST_PATH_MAP to modify the URLs used in your Q2A site.
