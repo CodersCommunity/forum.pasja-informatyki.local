@@ -96,7 +96,7 @@ if (!isset($pass_failure_type) && qa_clicked('super')) {
 <html>
 	<head>
 		<meta charset="utf-8">
-		<style  <?=qa_html_theme_base::nonce();?> >
+		<style>
 			body, input { font: 16px Verdana, Arial, Helvetica, sans-serif; }
 			body { text-align: center; width: 640px; margin: 64px auto; }
 			table { margin: 16px auto; }

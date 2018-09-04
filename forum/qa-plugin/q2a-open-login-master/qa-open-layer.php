@@ -108,12 +108,12 @@ class qa_html_theme_layer extends qa_html_theme_base
 			// display CSS inline
 			$path = QA_HTML_THEME_LAYER_URLTOROOT;
 			
-			$this->output('<style  ' . qa_html_theme_base::nonce() . ' type="text/css"><!--');
+			$this->output('<style type="text/css"><!--');
 			$this->output(@file_get_contents( QA_HTML_THEME_LAYER_URLTOROOT . 'qa-open-login.css'));
 			$this->output('//--></style>');
 			
 			if($zocial) {
-				$this->output('<style  ' . qa_html_theme_base::nonce() . ' type="text/css"><!--');
+				$this->output('<style type="text/css"><!--');
 				$this->output("@import url('{$path}css/zocial.css');");
 				$this->output('//--></style>');
 			}

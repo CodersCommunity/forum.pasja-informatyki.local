@@ -103,7 +103,7 @@ class Q2A_Util_Usage
 	{
 		$totaldelta = $this->delta($this->startUsage, $this->getCurrent());
 ?>
-		<style <?=  qa_html_theme_base::nonce();  ?>>
+		<style>
 		.debug-table { border-collapse: collapse; width: auto; margin: 20px auto; }
 		.debug-table th, .debug-table td { border: 1px solid #aaa; background-color: #ddd; padding: 5px 10px; }
 		.debug-table td { text-align: right; }

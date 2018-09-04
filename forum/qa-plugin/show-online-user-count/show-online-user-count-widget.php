@@ -100,7 +100,7 @@ class show_online_user_count_widget {
 		$online_member_html='<span class="show-online-user-count-data">'.$online_member_count['COUNT(*)'].'</span>';
 		$tempStr=str_replace('^1',$online_member_html,qa_lang_html('show_online_user_count_lang/online_guest_member'));
 		$tempStr=str_replace('^2',$online_quest_html,$tempStr);
-		$themeobject->output('<link  ' . qa_html_theme_base::nonce() . ' rel="stylesheet" type="text/css" href="'.qa_opt('site_url').'qa-plugin/show-online-user-count/css/style.css">');
+		$themeobject->output('<link rel="stylesheet" type="text/css" href="'.qa_opt('site_url').'qa-plugin/show-online-user-count/css/style.css">');
 		$themeobject->output('<div class="show-online-user-count-total">');
 		$themeobject->output(str_replace('^',$total_onilne_html,qa_lang_html('show_online_user_count_lang/total_online_users')));
 		$themeobject->output('</div>');

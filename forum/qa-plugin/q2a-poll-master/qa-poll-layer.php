@@ -130,7 +130,7 @@
 		function head_custom() {
 			if(qa_opt('poll_enable')) {
 				if($this->template == 'ask') {
-					$this->output_raw('<script ' . qa_html_theme_base::nonce() . ' >
+					$this->output_raw('<script>
 	var poll_answer_index = 2;
 	jQuery("document").ready(function(){jQuery("#is_poll").removeAttr("checked")});
 	function addPollAnswer(idx) {
@@ -154,9 +154,9 @@
 </script>');
 				}
 				else if($this->template == 'question' && @$this->poll && !qa_user_permit_error('permit_post_q')) {
-					$this->output('<style ' . qa_html_theme_base::nonce() . ' >',str_replace('^',QA_HTML_THEME_LAYER_URLTOROOT,qa_opt('poll_css')),'</style>');
+					$this->output('<style>',str_replace('^',QA_HTML_THEME_LAYER_URLTOROOT,qa_opt('poll_css')),'</style>');
 					if(qa_permit_check('permit_vote_poll'))
-						$this->output_raw("<script ". qa_html_theme_base::nonce() .">
+						$this->output_raw("<script>
 function pollVote(qid,uid,vid,cancel) {
 	var dataString = 'ajax_poll_id='+qid+'&ajax_poll_voter='+uid+'&ajax_poll_vote='+vid+(cancel?'&ajax_poll_cancel='+cancel:'');
 	jQuery.ajax({

@@ -8,8 +8,8 @@
 		{
 			qa_html_theme_base::head_custom();
 			if(qa_opt('embed_enable_thickbox')) { 
-				$this->output('<script  ' . qa_html_theme_base::nonce() . ' type="text/javascript" src="'.QA_HTML_THEME_LAYER_URLTOROOT.'thickbox.js"></script>');
-				$this->output('<link  ' . qa_html_theme_base::nonce() . ' rel="stylesheet" href="'.QA_HTML_THEME_LAYER_URLTOROOT.'thickbox.css" type="text/css" media="screen" />');
+				$this->output('<script type="text/javascript" src="'.QA_HTML_THEME_LAYER_URLTOROOT.'thickbox.js"></script>');
+				$this->output('<link rel="stylesheet" href="'.QA_HTML_THEME_LAYER_URLTOROOT.'thickbox.css" type="text/css" media="screen" />');
 			}
 		}
 		function q_view_content($q_view)

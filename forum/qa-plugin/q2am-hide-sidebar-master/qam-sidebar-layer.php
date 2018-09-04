@@ -61,7 +61,7 @@ class qa_html_theme_layer extends qa_html_theme_base {
             
                                  
 		)
-			$this->output('<style  ' . qa_html_theme_base::nonce() . ' type="text/css">
+			$this->output('<style type="text/css">
 				.qa-main{
 					width:100%;
 					padding-right:10px;

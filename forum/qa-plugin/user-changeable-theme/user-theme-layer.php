@@ -37,7 +37,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             if (isset($_POST['select_theme'])) {
                 $this->save_theme($_POST['select_theme']);
             }
-            $this->content['head_lines'][] = '<style ' . qa_html_theme_base::nonce() . ' >
+            $this->content['head_lines'][] = '<style>
 				.widget-select-theme {
 					display: -webkit-flex;
 					display: -ms-flexbox;

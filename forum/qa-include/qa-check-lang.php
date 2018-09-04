@@ -34,7 +34,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 		<title>Question2Answer Language Check</title>
-		<style <?= qa_html_theme_base::nonce();?>>
+		<style>
 			code {font-size:125%;}
 		</style>
 	</head>

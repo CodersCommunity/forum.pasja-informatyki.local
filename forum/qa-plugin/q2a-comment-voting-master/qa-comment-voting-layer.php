@@ -124,7 +124,7 @@
 			if(qa_opt('voting_on_cs')) {
 				
 				$this->output('
-<style ' . qa_html_theme_base::nonce() . ' >
+<style>
 	.comment-votable-container {
 		width:100% !important;
 	}

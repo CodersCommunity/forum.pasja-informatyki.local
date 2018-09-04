@@ -274,16 +274,16 @@ class qa_html_theme_base
 	public function head_links()
 	{
 		if (isset($this->content['canonical']))
-			$this->output('<link  ' . qa_html_theme_base::nonce() . ' rel="canonical" href="'.$this->content['canonical'].'"/>');
+			$this->output('<link rel="canonical" href="'.$this->content['canonical'].'"/>');
 
 		if (isset($this->content['feed']['url']))
-			$this->output('<link  ' . qa_html_theme_base::nonce() . ' rel="alternate" type="application/rss+xml" href="'.$this->content['feed']['url'].'" title="'.@$this->content['feed']['label'].'"/>');
+			$this->output('<link rel="alternate" type="application/rss+xml" href="'.$this->content['feed']['url'].'" title="'.@$this->content['feed']['label'].'"/>');
 
 		// convert page links to rel=prev and rel=next tags
 		if (isset($this->content['page_links']['items'])) {
 			foreach ($this->content['page_links']['items'] as $page_link) {
 				if (in_array($page_link['type'], array('prev', 'next')))
-					$this->output('<link  ' . qa_html_theme_base::nonce() . ' rel="' . $page_link['type'] . '" href="' . $page_link['url'] . '" />');
+					$this->output('<link rel="' . $page_link['type'] . '" href="' . $page_link['url'] . '" />');
 			}
 		}
 	}
@@ -296,26 +296,18 @@ class qa_html_theme_base
 		}
 	}
 
-    public static function nonce()
-    {
-        $hash = strtolower(qa_calc_form_security_hash('nonce', time()));
-        header('Content-Security-Policy: base-uri \'self\'; script-src \'self\' \'unsafe-inline\'; img-src \'self\' forum.pasja-informatyki.pl; default-src \'none\'; object-src \'none\'; style-src \'self\' fonts.gstatic.com fonts.googleapis.com \'nonce-' . $hash . '\'; font-src \'self\' fonts.gstatic.com fonts.googleapis.com data:;');
-
-        return 'nonce="' . $hash . '"';
-    }
-
 	public function head_css()
 	{
-		$this->output('<link ' . qa_html_theme_base::nonce() . ' rel="stylesheet" href="'.$this->rooturl.$this->css_name().'"/>');
+		$this->output('<link rel="stylesheet" href="'.$this->rooturl.$this->css_name().'"/>');
 
 		if (isset($this->content['css_src'])) {
 			foreach ($this->content['css_src'] as $css_src)
-				$this->output('<link  ' . qa_html_theme_base::nonce() . ' rel="stylesheet" href="'.$css_src.'" ' . qa_html_theme_base::nonce() . ' />');
+				$this->output('<link rel="stylesheet" href="'.$css_src.'"/>');
 		}
 
 		if (!empty($this->content['notices'])) {
 			$this->output(
-                '<style ' . qa_html_theme_base::nonce() . ' >',
+                '<style>',
                 '.qa-body-js-on .qa-notice {display:none;}',
                 '</style>'
 			);
@@ -371,7 +363,7 @@ class qa_html_theme_base
 	public function body_script()
 	{
 		$this->output(
-			'<script ' . qa_html_theme_base::nonce() . ' >',
+			'<script>',
 			"var b=document.getElementsByTagName('body')[0];",
 			"b.className=b.className.replace('qa-body-js-off', 'qa-body-js-on');",
 			'</script>'

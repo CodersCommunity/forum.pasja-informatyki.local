@@ -154,7 +154,7 @@ class qa_most_active_users {
 		/* 	Tip: you can style the most active user box by css selector: #mostactiveusers
 			Example below: 
 		*/
-		$themeobject->output('<style  ' . qa_html_theme_base::nonce() . ' type="text/css">#mostactiveusers { padding:0; font-size: 12px; } #mostactiveusers img {  vertical-align:middle; margin:5px; } #mostactiveusers ol { margin:0;} #mostactiveusers .qa-nav-cat-list { margin:0; }
+		$themeobject->output('<style type="text/css">#mostactiveusers { padding:0; font-size: 12px; } #mostactiveusers img {  vertical-align:middle; margin:5px; } #mostactiveusers ol { margin:0;} #mostactiveusers .qa-nav-cat-list { margin:0; }
 		</style>');
 
 	}
