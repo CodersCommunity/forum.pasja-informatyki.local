@@ -37,6 +37,9 @@ class qa_html_theme_layer extends qa_html_theme_base
             if (isset($_POST['select_theme'])) {
                 $this->save_theme($_POST['select_theme']);
             }
+            if ($this->check_theme()) {
+                $this->content['head_lines'][] = '<meta name="theme-color" content="#181a1f">';
+            }
             $this->content['head_lines'][] = '<style>
 				.widget-select-theme {
 					display: -webkit-flex;
