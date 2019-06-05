@@ -218,7 +218,7 @@
 		$qa_content['form']['fields']['terms'] = array(
 			'type' => 'checkbox',
 			'label' => trim(qa_opt('register_terms')),
-			'tags' => 'name="terms" id="terms"',
+			'tags' => 'name="terms_input" id="terms"',
 			'value' => qa_html(@$interms),
 			'error' => qa_html(@$errors['terms']),
 		);
