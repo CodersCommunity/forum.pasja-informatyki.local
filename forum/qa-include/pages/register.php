@@ -75,10 +75,10 @@
 		if (qa_user_limits_remaining(QA_LIMIT_REGISTRATIONS)) {
 			require_once QA_INCLUDE_DIR.'app/users-edit.php';
 
-			$inemail = qa_post_text('email');
-			$inpassword = qa_post_text('password');
-			$inhandle = qa_post_text('handle');
-			$interms = (int) qa_post_text('terms');
+			$inemail = qa_post_text('email_input');
+			$inpassword = qa_post_text('password_input');
+			$inhandle = qa_post_text('handle_input');
+			$interms = (int) qa_post_text('terms_input');
 
 			$inprofile = array();
 			foreach ($userfields as $userfield)
@@ -150,7 +150,7 @@
 		'fields' => array(
 			'handle' => array(
 				'label' => qa_lang_html('users/handle_label'),
-				'tags' => 'name="handle" id="handle" dir="auto"',
+				'tags' => 'name="handle_input" id="handle" dir="auto"',
 				'value' => qa_html(@$inhandle),
 				'error' => qa_html(@$errors['handle']),
 			),
@@ -158,14 +158,14 @@
 			'password' => array(
 				'type' => 'password',
 				'label' => qa_lang_html('users/password_label'),
-				'tags' => 'name="password" id="password" dir="auto"',
+				'tags' => 'name="password_input" id="password" dir="auto"',
 				'value' => qa_html(@$inpassword),
 				'error' => qa_html(@$errors['password']),
 			),
 
 			'email' => array(
 				'label' => qa_lang_html('users/email_label'),
-				'tags' => 'name="email" id="email" dir="auto"',
+				'tags' => 'name="email_input" id="email" dir="auto"',
 				'value' => qa_html(@$inemail),
 				'note' => qa_opt('email_privacy'),
 				'error' => qa_html(@$errors['email']),
