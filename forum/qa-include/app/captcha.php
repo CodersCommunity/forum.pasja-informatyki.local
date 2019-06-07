@@ -88,7 +88,6 @@ function qa_set_up_captcha_field(&$qa_content, &$fields, $errors, $note=null)
 
 	$fields['captcha'] = array(
 		'type' => 'custom',
-		'label' => qa_lang_html('misc/captcha_label'),
 		'html' => '<div id="qa_captcha_div_'.$count.'">'.$html.'</div>',
 		'error' => @array_key_exists('captcha', $errors) ? qa_lang_html('misc/captcha_error') : null,
 		'note' => $note,
