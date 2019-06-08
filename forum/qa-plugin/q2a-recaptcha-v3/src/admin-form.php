@@ -4,13 +4,12 @@ class admin_form
 {
     public function __construct()
     {
-        $this->publicKey = qa_opt('recaptcha_public_key');
-        $this->privateKey = qa_opt('recaptcha_private_key');
-        $this->minScore = qa_opt('recaptcha_min_score');
+        $this->set_fields_with_default_values();
     }
 
     public function generate_view()
     {
+        $this->set_fields_with_actual_values();
         $this->updated = qa_clicked('recaptcha_save_button');
 
         if ($this->updated) {
@@ -59,27 +58,31 @@ class admin_form
 
         return $form;
     }
-    
+
     public function get_public_key()
     {
+        $this->set_fields_with_actual_values();
         return $this->publicKey;
     }
 
     public function get_private_key()
     {
+        $this->set_fields_with_actual_values();
         return $this->privateKey;
     }
 
     public function get_min_score()
     {
+        $this->set_fields_with_actual_values();
         return $this->minScore;
     }
 
     public function is_filled()
     {
+        $this->set_fields_with_actual_values();
         return !(empty($this->publicKey) || empty($this->privateKey) || empty($this->minScore));
     }
-    
+
 
     public static function get_default_value($option)
     {
@@ -105,7 +108,7 @@ class admin_form
                 '$1' => '<a href="https://www.google.com/recaptcha/admin" target="_blank">',
                 '$2' => '</a>',
             ]);
-            
+
             return [
                 'success' => false,
                 'message' => $message,
@@ -113,6 +116,20 @@ class admin_form
         }
     }
 
+    private function set_fields_with_default_values()
+    {
+        $this->publicKey = self::get_default_value('recaptcha_public_key');
+        $this->privateKey = self::get_default_value('recaptcha_private_key');
+        $this->minScore = self::get_default_value('recaptcha_min_score');
+    }
+
+    // You shouldn't run this method in constructor, because of an error with maximum function nesting level
+    private function set_fields_with_actual_values()
+    {
+        $this->publicKey = qa_opt('recaptcha_public_key');
+        $this->privateKey = qa_opt('recaptcha_private_key');
+        $this->minScore = qa_opt('recaptcha_min_score');
+    }
 
     private $updated;
 
