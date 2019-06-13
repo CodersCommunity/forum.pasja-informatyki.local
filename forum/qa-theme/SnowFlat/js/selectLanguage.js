@@ -19,8 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 {category: 'Arduino', language: 'cpp'}
             ];
 
-            const codeBlock = document.getElementById('cke_42');
-
             let clickHandler;
             if (location.href.includes('/ask')) {
                 clickHandler = () => {
@@ -74,7 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
             }
 
-            codeBlock.addEventListener('click', clickHandler);
+            const codeBlocks = document.getElementsByClassName('cke_button__syntaxhighlight');
+            for (const codeBlock of codeBlocks) {
+                codeBlock.addEventListener('click', clickHandler);
+            }
         });
     }
 });
