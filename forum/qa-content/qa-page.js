@@ -586,13 +586,14 @@ function qa_ajax_error()
     {
         var modalParent = document.querySelector('.qa-main-wrapper');
 
-        var showModalBtn = document.createElement('button');
-
         var modalBackground = document.createElement('div');
         modalBackground.classList.add('modal-background');
 
+
+        var showModalBtn = document.createElement('input');
+        showModalBtn.type = 'button';
         showModalBtn.id = 'get-content-preview';
-        showModalBtn.innerHTML = 'Podgląd posta';
+        showModalBtn.value = 'Podgląd posta';
         showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
 
         if (!placeForBtn)
