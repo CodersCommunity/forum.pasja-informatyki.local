@@ -116,6 +116,26 @@ div#qa-poll-div {
 	border-top: none;
 }
 
+.modal-background {
+	.qa-flag-reasons-wrap {
+		-webkit-box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
+		box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
+		background-color: #282c34;
+
+		.qa-spam-reason-text::-webkit-input-placeholder {
+			color: #181a1f
+		}
+
+		.qa-spam-reason-text::-moz-placeholder {
+			color: #181a1f
+		}
+
+		.qa-spam-reason-text::placeholder {
+			color: #181a1f
+		}
+	}
+}
+
 // snippets
 .snippets-parent:hover::before {
 	border: 1px solid white;

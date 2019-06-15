@@ -1,0 +1,102 @@
+.qa-flag-reasons-wrap {
+    z-index: 3335;
+    margin: 10px 0 30px;
+    text-align: left;
+    display: inline-block;
+    min-width: 50px;
+    position: relative;
+    background-color: white;
+    border: 1px solid #658296;
+    font-size: 15px;
+    padding: 30px;
+    -webkit-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.5);
+}
+
+.qa-flag-reasons-wrap p {
+    margin-bottom: 10px;
+}
+
+.qa-flag-reasons-wrap p:nth-of-type(2) {
+    margin-top: 10px;
+}
+
+.qa-flag-reasons-wrap label {
+    display: block;
+    padding: 3px 0;
+}
+
+input.qa-spam-reason-radio {
+    margin-right: 2px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    vertical-align: middle;
+}
+
+input.qa-spam-reason-radio:hover {
+    cursor: pointer;
+}
+
+input.qa-spam-reason-radio:checked + span {
+    font-weight: bold;
+}
+
+.qa-spam-reason-text-wrap {
+    display: block;
+    margin: 10px 0;
+}
+
+.qa-spam-reason-text {
+    padding: 7px;
+    height: auto;
+}
+
+.qa-go-flag-send-button {
+    margin-top: 15px;
+}
+
+.flagbox-popup {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.flagbox-center {
+    margin: 6% auto;
+    width: auto;
+    text-align: center;
+}
+
+@keyframes flagNotify {
+    from {
+        border-color: orange;
+    }
+
+    to {
+        border-color: red;
+    }
+}
+
+.qa-flagreason {
+    text-align: center;
+    border: 1px solid orange;
+    padding: 5px;
+    animation: flagNotify 2s infinite;
+}
+.hide {
+    display: none !important;
+}
+
+.show {
+    display: block !important;
+}
+
+.qa-c-list-item .qa-form-light-button-flag,
+.qa-c-list-item .qa-form-light-button-unflag,
+.qa-c-list-item .qa-form-light-button-clearflags,
+.qa-form-light-button-flag {
+	cursor: pointer;
+}
