@@ -586,10 +586,10 @@ function qa_ajax_error()
     function destroyModal()
     {
         const modal = document.querySelector('.post-preview-parent');
-        modal.parentNode.removeChild(modal);
+        modal.remove();
 
         const modalBackground = document.querySelector('.modal-background');
-        modalBackground.parentNode.removeChild(modalBackground);
+        modalBackground.remove();
     }
 
     function createPostPreviewModal(ckeInstanceName)
@@ -598,7 +598,7 @@ function qa_ajax_error()
         modal.classList.add('post-preview-parent');
 
         const closeModalButton = document.createElement('button');
-        closeModalButton.innerHTML = 'X';
+        closeModalButton.textContent = 'X';
         closeModalButton.classList.add('close-preview-btn');
         closeModalButton.addEventListener('click', destroyModal);
         modal.appendChild(closeModalButton);
@@ -639,7 +639,7 @@ function qa_ajax_error()
 
         showPostPreviewButton.addEventListener('click', function()
         {
-           let modal = document.querySelector('.post-preview-parent');
+           const modal = document.querySelector('.post-preview-parent');
            if (modal === null) {
                createPostPreviewModal(ckeInstanceName);
            }
@@ -653,7 +653,7 @@ function qa_ajax_error()
     window.addEventListener('load', function()
     {
         const questionId = parseInt(location.pathname.split('/')[1]);
-        const newQuestion = location.pathname.indexOf('ask') > -1;
+        const newQuestion = location.pathname.includes('ask');
 
         if (questionId)
         {
