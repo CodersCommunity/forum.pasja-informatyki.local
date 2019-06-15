@@ -1,0 +1,21 @@
+{
+  "name": "report-reason-plugin",
+  "version": "1.0.0",
+  "description": "Plugin purpose is to make descriptive reason of flagged post. Thus it will be more understandable for Administration to consider if certain post violates regulations.",
+  "main": "./src/index.js",
+  "scripts": {
+    "dev": "onchange \"./src/**/*.js\" -- npm run build:dev",
+    "build:dev": "webpack --mode=development ./src/index.js -o ./reportReason.js",
+    "build": "webpack --mode=production ./src/index.js -o ./reportReason.js"
+  },
+  "keywords": [],
+  "author": "JSHolic",
+  "license": "MIT",
+  "dependencies": {
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2"
+  },
+  "devDependencies": {
+    "onchange": "^6.0.0"
+  }
+}
