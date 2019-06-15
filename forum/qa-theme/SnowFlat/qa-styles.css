@@ -4578,7 +4578,7 @@ pre[class*="brush:"]
 {
 	color: #252525;
 	position: relative;
-	height: 110px;
+	max-height: 110px;
 	overflow: scroll;
 }
 
