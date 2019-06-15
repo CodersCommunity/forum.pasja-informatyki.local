@@ -8,7 +8,7 @@
     Plugin Author: https://forum.pasja-informatyki.pl/user/Mariusz08 & http://q2apro.com
     Plugin License: GPLv3
     Plugin Minimum Question2Answer Version: 1.7
-    Plugin Update Check URI: 
+    Plugin Update Check URI:
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
     GNU General Public License for more details.
 
     More about this license: http://www.gnu.org/licenses/gpl.html
-    
+
 */
 
 if (!defined('QA_VERSION')) {
@@ -30,14 +30,14 @@ if (!defined('QA_VERSION')) {
 }
 
 // language file
-qa_register_plugin_phrases('q2apro-flag-reasons-lang-*.php', 'q2apro_flagreasons_lang');
+qa_register_plugin_phrases('q2apro-flag-reasons-lang-default.php', 'q2apro_flagreasons_lang');
 
 // page
 qa_register_plugin_module(
     'page', 'q2apro-flag-reasons-page.php', 'q2apro_flag_reasons_page', 'q2apro flag reasons Page'
 );
 
-// layer 
+// layer
 qa_register_plugin_layer('q2apro-flag-reasons-layer.php', 'q2apro flag reasons layer');
 
 // admin
@@ -50,55 +50,80 @@ qa_register_plugin_module(
     'event', 'q2apro-flag-reasons-event.php', 'q2apro_flagreasons_event', 'q2apro flag reasons Event'
 );
 
+// TODO: secure path from case when folder structure/name will change
+//$flagReasonsMapFilePath = dirname(dirname(__FILE__)).'/' . 'report-reason/q2apro-flag-reasons-lang-default.php';
+//var_dump('$flagReasonsMapFilePath: ', $flagReasonsMapFilePath);
+//$flagReasonsMap = require $flagReasonsMapFilePath;
+
 function q2apro_flag_reasonid_to_readable($reasonId)
 {
+    // TODO: make a consistent place to put flag reason translations
     $translationArray = [
-        1 => 'quality',
-        2 => 'spam',
-        3 => 'rude',
-        4 => 'edit',
-        5 => 'duplicate',
-        6 => 'migrate'
+        'SPAM',
+        'Wypowiedź jest obraźliwa',
+        'Nieprawidłowy temat/kategoria/otagowanie',
+        'Niepełna lub niezrozumiała treść',
+        'Kod nie jest umieszczony w odpowiednim bloczku',
+        'Duplikat pytania (podaj link)',
+        'Inny (podaj własny opis)'
     ];
-    
-    return qa_lang('q2apro_flagreasons_lang/reason_' . $translationArray[$reasonId]);
+
+//    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
+    return $translationArray[$reasonId];
+//    return qa_lang('q2apro_flagreasons_lang/' . $translationArray[$reasonId]);
 }
 
 function q2apro_get_postflags($postId)
 {
-    return qa_db_read_all_assoc(
+    $arr = qa_db_read_all_assoc(
         qa_db_query_sub(
             '
-            SELECT `userid`, `postid`, `reasonid`, `notice` 
+            SELECT `userid`, `postid`, `reasonid`, `notice`
             FROM ^flagreasons
             WHERE `postid` = #
             ', $postId
         )
     );
+
+//    var_dump('<br>??? q2apro_get_postflags(',$postId,') /$arr:', $arr);
+    return $arr;
 }
 
 function q2apro_count_postflags_output($postId)
 {
     $flags = q2apro_get_postflags($postId);
+//var_dump('<br> ???!!! $flags: ', serialize($flags));
+    if (empty($flags)) {
+        return '';
+    }
 
     $flagOutput = [];
+    $flagOutput[] = '<ul>';
 
     // count reasons
     foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
-        $flagOutput[] = ' Post zgłoszony z powodu <b>' . q2apro_flag_reasonid_to_readable($flag['reasonid']) . '</b> przez <a href="' . qa_path('user') . '/' . $handle . '">' . $handle . '</a>.';
+        $flagOutput[] =
+            '<li data-flag-author="' . $handle . '">Post zgłoszony z powodu <strong class="flag-reason">' .
+            q2apro_flag_reasonid_to_readable($flag['reasonid']) .
+            '</strong> przez <a href="' . qa_path('user') . '/' .
+            $handle . '">' . $handle . '</a>.'
+        ;
+
         if (!empty($flag['notice'])) {
             $flagOutput[] = ' Treść notatki: ' . $flag['notice'];
         }
-        $flagOutput[] = '<br>';
-    }
-    unset($flagOutput[count($flagOutput)-1]);
 
-    $flagsOutput = '';
-    
-    foreach ($flagOutput as $flag) {
-        $flagsOutput .= $flag;
+        $flagOutput[] = '</li>';
     }
-    
+//    unset($flagOutput[count($flagOutput)-1]);
+
+    $flagOutput[] = '</ul>';
+    $flagsOutput = implode('', $flagOutput);
+
+//    foreach ($flagOutput as $flag) {
+//        $flagsOutput .= $flag;
+//    }
+
     return $flagsOutput;
 }

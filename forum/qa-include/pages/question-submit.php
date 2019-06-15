@@ -37,6 +37,16 @@
     none). If there is an error to display, it will be passed out in $error.
 */
     {
+//        var_dump('qa_page_q_single_click_q()');
+
+//        foreach (debug_backtrace() as $k1 => $v1) {
+//            foreach ($v1 as $k2 => $v2) {
+//                if ($k2 == 'function') {
+//                    var_dump($v2);
+//                }
+//            }
+//        }
+
         require_once QA_INCLUDE_DIR.'app/post-update.php';
         require_once QA_INCLUDE_DIR.'app/limits.php';
 
@@ -97,8 +107,11 @@
             }
         }
 
+//        var_dump('qa_clicked("q_dounflag"): ', qa_clicked('q_dounflag'), ' /$question["unflaggable"]: ', $question['unflaggable'], " /qa_page_q_click_check_form_code(,): ", qa_page_q_click_check_form_code($question, $error));
         if (qa_clicked('q_dounflag') && $question['unflaggable'] && qa_page_q_click_check_form_code($question, $error)) {
             require_once QA_INCLUDE_DIR.'app/votes.php';
+
+//            var_dump('$question: ', $question, ' /$userid: ', $userid, ' /$handle: ', $handle, ' /$cookieid: ', $cookieid);
 
             qa_flag_clear($question, $userid, $handle, $cookieid);
             return true;

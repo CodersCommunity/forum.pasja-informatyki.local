@@ -140,7 +140,9 @@
 		if (qa_php_version_below('5.1.6'))
 			qa_fatal_error('Q2A requires PHP 5.1.6 or later');
 
-		error_reporting(E_ALL); // be ultra-strict about error checking
+//		error_reporting(E_ALL); // be ultra-strict about error checking
+        // just for development tests
+        error_reporting(E_ALL & ~E_WARNING & ~E_DEPRECATED);
 
 		@ini_set('magic_quotes_runtime', 0);
 
@@ -1047,7 +1049,7 @@
 */
 	{
 		if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
-
+//        var_dump('qa_clicked() /$_POST: ', $_POST, ' /$name: ', $name);
 		return isset($_POST[$name]) || isset($_POST[$name.'_x']) || (qa_post_text('qa_click')==$name);
 	}
 
@@ -1539,6 +1541,8 @@
 */
 	{
 		if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
+//        var_dump('qa_redirect_raw('.$url.')');
+//        var_dump(debug_print_backtrace());
 
 		header('Location: '.$url);
 		qa_exit('redirect');

@@ -122,7 +122,9 @@ class qa_html_theme_layer extends qa_html_theme_base
 
 		if (isset($postid)) {
 			$votersflaggers = $this->get_post_voters_flaggers($post, $postid);
+//			var_dump('<br> ???$votersflaggers: ', $votersflaggers, ' /qa_html: ', qa_html($votersflaggers[0]['handle']));
 
+//            var_dump('<br>??? $votersflaggers: ', $votersflaggers);
 			if (isset($votersflaggers)) {
 				foreach ($votersflaggers as $voterflagger) {
 					if ($voterflagger['flag'] > 0)
@@ -131,6 +133,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 			}
 		}
 
+//        var_dump('<br>??? $flaggers: ', @$flaggers);
 		if (!empty($flaggers))
 			$this->output('<span title="&#9873; ' . implode(', ', $flaggers) . '">');
 

@@ -19,6 +19,7 @@
 
 	More about this license: http://www.question2answer.org/license.php
 */
+//var_dump('hello???');
 
 	if (!defined('QA_VERSION')) { // don't allow this page to be requested directly from browser
 		header('Location: ../');
@@ -104,7 +105,8 @@
 
 //	Process any single click operations or delete button for question
 
-	if (qa_page_q_single_click_q($question, $answers, $commentsfollows, $closepost, $pageerror))
+	// TODO: double check if redirection is disabled by prevent_refresh flag!!!
+	if (qa_page_q_single_click_q($question, $answers, $commentsfollows, $closepost, $pageerror) && !isset($_POST['prevent_refresh']))
 		qa_page_q_refresh($pagestart);
 
 	if (qa_clicked('q_dodelete') && $question['deleteable'] && qa_page_q_click_check_form_code($question, $pageerror)) {

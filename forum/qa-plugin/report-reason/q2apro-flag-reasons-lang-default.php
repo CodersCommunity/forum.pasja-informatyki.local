@@ -1,18 +1,10 @@
 <?php
-
 return [
-    'reason'           => 'Powód:',
-    'reason_spam'      => 'Kod bez bloczka',
-    'reason_quality'   => 'SPAM',
-    'reason_rude'      => 'Wulgaryzmy',
-    'reason_edit'      => 'Złe otagowanie',
-    'reason_duplicate' => 'Duplikat',
-    'reason_offtopic'  => 'Obraza',
-    'reason_migrate'   => 'Inne',
-    'reason_close'     => 'Niepoprawna kategoria',
-    'reason_other'     => 'Inne',
-    'note'             => 'Notatka:',
-    'enter_details'    => 'Wpisz notatkę',
-    'send'             => 'Wyślij',
-    'flaglist_head'    => 'Flagi:'
+    'spam' => 'SPAM',
+    'insult' => 'Wypowiedź jest obraźliwa',
+    'incorrectDescription' => 'Nieprawidłowy temat/kategoria/otagowanie',
+    'misunderstoodContent' => 'Niepełna lub niezrozumiała treść',
+    'codeNotInBlock' => 'Kod nie jest umieszczony w odpowiednim bloczku',
+    'duplicate' => 'Duplikat pytania (podaj link)',
+    'custom' => 'Inny (podaj własny opis)'
 ];
