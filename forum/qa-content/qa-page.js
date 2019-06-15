@@ -582,192 +582,100 @@ function qa_ajax_error()
      * Feature: Post content preview as Modal
      * Date: 07.07.2016r.
      */
-    function postPreview(ckeCurrentInstance, placeForBtn)
+
+    function destroyModal()
     {
-        var modalParent = document.querySelector('.qa-main-wrapper');
+        const modal = document.querySelector('.post-preview-parent');
+        modal.parentNode.removeChild(modal);
 
-        var modalBackground = document.createElement('div');
+        const modalBackground = document.querySelector('.modal-background');
+        modalBackground.parentNode.removeChild(modalBackground);
+    }
+
+    function createPostPreviewModal(ckeInstanceName)
+    {
+        const modal = document.createElement('div');
+        modal.classList.add('post-preview-parent');
+
+        const closeModalButton = document.createElement('button');
+        closeModalButton.innerHTML = 'X';
+        closeModalButton.classList.add('close-preview-btn');
+        closeModalButton.addEventListener('click', destroyModal);
+        modal.appendChild(closeModalButton);
+
+        const modalContent = document.createElement('div');
+        modalContent.innerHTML = CKEDITOR.instances[ckeInstanceName].getData();
+        modalContent.classList.add('post-preview');
+        modal.appendChild(modalContent);
+
+        const modalBackground = document.createElement('div');
         modalBackground.classList.add('modal-background');
+        modalBackground.addEventListener('click', destroyModal);
+        document.body.insertBefore(modalBackground, document.body.firstChild);
 
+        const modalParent = document.querySelector('.qa-main-wrapper');
+        modalParent.appendChild(modal);
 
-        var showModalBtn = document.createElement('input');
-        showModalBtn.type = 'button';
-        showModalBtn.id = 'get-content-preview';
-        showModalBtn.value = 'Podgląd posta';
-        showModalBtn.classList.add('qa-form-tall-button', 'get-content-preview');
-
-        if (!placeForBtn)
+        if (window.hasOwnProperty('SyntaxHighlighter'))
         {
-            var alternativePlaceForBtn = document.querySelector('.qa-form-tall-buttons [value="Zadaj pytanie"]')
-                                        || document.querySelector('.qa-form-tall-buttons [value="Zapisz"]')
-                                        || document.querySelector('.qa-form-tall-buttons [value="Odpowiedz"]');
-            alternativePlaceForBtn.parentNode.appendChild(showModalBtn);
-        } else if ( placeForBtn.querySelector( '#' + showModalBtn.id ) )
-            return;
-        else if (placeForBtn)
-            placeForBtn.appendChild(showModalBtn);
-
-        function modalEventHandler(modalWrapper, closeBtn)
-        {
-            function hideModal()
-            {
-                var modalWrapperParent = modalWrapper.parentNode;
-
-                closeBtn.removeEventListener('click', hideModal);
-                modalBackground.removeEventListener('click', hideModal);
-
-                document.body.removeChild(modalBackground);
-                                modalWrapperParent.removeChild(modalWrapper);
-            }
-
-            // close Modal on btn click
-            closeBtn.addEventListener('click', hideModal);
-            // close Modal on background click
-            modalBackground.addEventListener('click', hideModal);
+            SyntaxHighlighter.highlight();
         }
 
-        showModalBtn.addEventListener('click', function(ev)
-        {
-            ev.preventDefault();
-
-            var modal = document.getElementById('content-preview-parent');
-
-            if (!modal)
-            {
-                var modalContent = document.createElement('div');
-                var closeModalBtn = document.createElement('button');
-                var ckeFullInstanceName = ckeCurrentInstance ? ckeCurrentInstance + '_content' : Object.keys(CKEDITOR.instances)[0];
-
-                                modal = document.createElement('div');
-
-                modal.classList.add('post-preview-parent');
-
-                // get current CKEditor content (provided by it's API) and insert it to <div>
-                modalContent.innerHTML = CKEDITOR.instances[ckeFullInstanceName].getData();
-                modalContent.classList.add('post-preview');
-
-                closeModalBtn.innerHTML = 'X';
-                closeModalBtn.classList.add('close-preview-btn');
-
-                // invoke function and pass it Modal, then it can be possible to remove Modal as well as it's eventListener
-                modalEventHandler(modal, closeModalBtn);
-
-                document.body.insertBefore(modalBackground, document.body.firstChild);
-                modal.appendChild(closeModalBtn);
-
-                modal.appendChild(modalContent);
-                modalParent.appendChild(modal);
-
-                if (window.hasOwnProperty('SyntaxHighlighter'))
-                    SyntaxHighlighter.highlight();
-
-                /*
-                 * prepare blocks of code inside Preview to be collapsed/expanded
-                 * "true" parameter lets to display collapsing blocks inside Preview Modal
-                 */
-                handleCodeCollapsing(true, isClipboardSupported);
-            }
-        });
+        /*
+         * prepare blocks of code inside Preview to be collapsed/expanded
+         * "true" parameter lets to display collapsing blocks inside Preview Modal
+         */
+        handleCodeCollapsing(true, isClipboardSupported);
     }
+
+    function createPostPreviewButton(postForm, ckeInstanceName) {
+        const buttonsLocation = postForm.querySelector('.qa-form-tall-buttons');
+
+        const showPostPreviewButton = document.createElement('input');
+        showPostPreviewButton.type = 'button';
+        showPostPreviewButton.id = 'get-content-preview';
+        showPostPreviewButton.value = 'Podgląd posta';
+        showPostPreviewButton.classList.add('qa-form-tall-button', 'get-content-preview');
+
+        showPostPreviewButton.addEventListener('click', function()
+        {
+           let modal = document.querySelector('.post-preview-parent');
+           if (modal === null) {
+               createPostPreviewModal(ckeInstanceName);
+           }
+        });
+
+        buttonsLocation.appendChild(showPostPreviewButton);
+    }
+
 
     // when Forum (sub)page DOM with it's CSSes and synchronously loaded scripts (excluding CKEDITOR, which needs separate Event Handling) are ready
     window.addEventListener('load', function()
     {
-        function addListener(ev)
-        {
-            checkCkeditor(ev.target);
-        }
+        const questionId = parseInt(location.pathname.split('/')[1]);
+        const newQuestion = location.pathname.indexOf('ask') > -1;
 
-        function checkCkeditor(btnLocation)
+        if (questionId)
         {
             /*
-             * Explicit CKEDITOR EventHandling
-             * When editor is available: get it's instance, then get place for preview-button location based on it.
-             */
-            CKEDITOR.on("instanceReady", function()
-            {
-                if (btnLocation)
-                {
-                    var prepareCkeInstance = btnLocation.getAttribute('onclick');
-                    var ckeInstanceName = prepareCkeInstance.slice(prepareCkeInstance.indexOf('(') + 2, -2);
-
-                    if (ckeInstanceName === 'anew')
-                        ckeInstanceName = 'a';
-
-                    var ckeInstanceParent = Array.from(document.querySelectorAll('.qa-form-tall-table')).find(function(elem)
-                    {
-                        return elem.querySelector('iframe[title*="Edytor tekstu sformatowanego, ' + ckeInstanceName + '"]');
-                    });
-
-                    var previewBtnLocation = ckeInstanceParent.querySelector('.qa-form-tall-buttons');
-
-                    postPreview(ckeInstanceName, previewBtnLocation);
-                }
-                else
-                    postPreview();
-            });
-        }
-
-        /*
-         * In the following Forum link example: "http://forum.pasja-informatyki.pl/153635/pracujmy-razem-nad-kodem-forum"
-         * , the number between slashes (as above it's: "/153635/") allows to be sure, that opened subpage is displaying some Topic.
-         * So to recognize if opened page is Topic indeed - let's find number in URL
-         */
-        var numFoundInLink = location.pathname.split('/').findIndex(function(elem)
-        {
-            return Number(elem);
-        });
-
-        var inTopic = numFoundInLink > 0;
-        var inPostEdit = location.href.indexOf('state=') > -1;
-        var inCreatingQuestion = location.pathname.indexOf('ask') > -1;
-
-        if (inTopic && !inPostEdit)
-        {
-            // prepare Array for actions like: Answer, Comment, Edit
-            var actionBtns = [];
-
-            var mainAnswerBtn = document.getElementById('q_doanswer');
-            /** Be sure there is answer button. It's not available when topic is closed */
-            if ( mainAnswerBtn )
-                actionBtns.push( mainAnswerBtn );
-
-            Array.from(document.querySelectorAll('input[name*="_docomment"]')).forEach(function(comment)
-            {
-                actionBtns.push( comment );
-            });
-
-            Array.from(document.querySelectorAll('input[name*="_doedit"]')).forEach(function(edit)
-            {
-                actionBtns.push( edit );
-            });
-
-            /*
-             * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
-             * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
-             */
+			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
+			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
+			 */
             handleCodeCollapsing(false, isClipboardSupported);
-
-            var foundAnyAnswerInTopic = document.querySelector('.answer');
-
-                        if (!foundAnyAnswerInTopic)
-                checkCkeditor(false);
-            else
-            {
-                actionBtns.forEach(function(btn)
-                {
-                    btn.addEventListener('click', addListener);
-                });
-            }
-
-            // run function that will add buttons to dynamically make codepen.io/jsfiddle.net snippets for HTML/CSS/JavaScript
-            viewHtmlCssJs();
         }
 
-        // when user wants to add new question or edit his question/answer/comment
-        else if (inCreatingQuestion || inPostEdit)
+        if (questionId || newQuestion)
         {
-            checkCkeditor(false);
+            viewHtmlCssJs();
+
+            CKEDITOR.on("instanceReady", function(event)
+            {
+                const currentInstanceName = event.editor.name;
+                const contentTextarea = document.getElementsByName(currentInstanceName)[0];
+                const postForm = contentTextarea.closest('form');
+
+                createPostPreviewButton(postForm, currentInstanceName);
+            });
         }
     });
 }(document));
