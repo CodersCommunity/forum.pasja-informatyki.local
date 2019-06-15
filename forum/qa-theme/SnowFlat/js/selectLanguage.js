@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof CKEDITOR != 'undefined') {
-        CKEDITOR.on('instanceReady', function() {
+        CKEDITOR.on('instanceReady', function(event) {
             const categories = [
                 {category: 'HTML i CSS', language: 'xml'},
                 {category: 'C i C++', language: 'cpp'},
@@ -72,10 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
             }
 
-            const codeBlocks = document.getElementsByClassName('cke_button__syntaxhighlight');
-            for (const codeBlock of codeBlocks) {
-                codeBlock.addEventListener('click', clickHandler);
-            }
+            const postContentTextarea = document.getElementsByName(event.editor.name)[0];
+            const editorParent = postContentTextarea.parentNode;
+
+            const codeBlock = editorParent.querySelector('.cke_button__syntaxhighlight');
+            codeBlock.addEventListener('click', clickHandler);
         });
     }
 });
