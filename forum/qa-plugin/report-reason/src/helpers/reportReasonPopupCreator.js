@@ -1,27 +1,4 @@
-const reasonsCollection = [
-    {
-        value: 'spam',
-        description: 'SPAM'
-    }, {
-        value: 'insult',
-        description: 'Wypowiedź jest obraźliwa',
-    }, {
-        value: 'incorrectDescription',
-        description: 'Nieprawidłowy temat/kategoria/otagowanie',
-    }, {
-        value: 'misunderstoodContent',
-        description: 'Niepełna lub niezrozumiała treść',
-    }, {
-        value: 'duplicate',
-        description: 'Duplikat pytania'
-    }, {
-        value: 'codeNotInBlock',
-        description: 'Kod nie jest umieszczony w odpowiednim bloczku'
-    }, {
-        value: 'custom',
-        description: 'Inny (dodaj opis)'
-    }
-];
+import reasonsCollection from '../data/reasonsCollection';
 
 const listItemsDOM = reasonsCollection.reduce((listItems, reason, index, reasonsCollection) => {
     const reasonItemId = `reportReasonItem${ index }`;
