@@ -4671,9 +4671,10 @@ pre[class*="brush:"]::after
 
 .post-preview
 {
+	word-wrap: break-word;
 	overflow-y: auto;
 	max-height: 70vh;
-	width: 585px;
+	padding: 40px;
 }
 
 .post-preview-parent
@@ -4681,9 +4682,9 @@ pre[class*="brush:"]::after
 	position: fixed;
 	background: white;
 	z-index: 11;
-	padding: 40px;
+	width: 600px;
 	top: 10vh;
-	left: calc(50vw - 585px/2);
+	left: calc(50vw - 600px/2);
 	-webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
 	-moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
 	box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.5);
@@ -4694,14 +4695,59 @@ pre[class*="brush:"]::after
 	position: absolute;
 	top: -10px;
 	right: -10px;
-	background: white;
-	border-radius: 4px;
+	height: 30px;
+	width: 30px;
+	font-size: 14px;
+	text-align: center;
 	border: 2px solid white;
+	border-radius: 50%;
 	background-color: black;
-	padding: 4px 6px;
 	color: white;
 	font-weight: bold;
 }
+
+
+.close-preview-btn:hover
+{
+	background-color: #202020;
+}
+
+
+@media (max-width: 640px)
+{
+	.post-preview-parent
+	{
+		padding: 0;
+
+		left: 0;
+		width: 100vw;
+
+		text-align: right;
+		overflow-y: auto;
+	}
+
+	.post-preview
+	{
+		text-align: left;
+		overflow-y: visible;
+		padding: 10px 30px;
+	}
+
+	.close-preview-btn
+	{
+		position: static;
+		margin: 10px;
+	}
+}
+
+@media (max-width: 440px)
+{
+	.post-preview
+	{
+		padding: 15px;
+	}
+}
+
 
 /*
  *	Source: http://stackoverflow.com/a/30810322/4983840
