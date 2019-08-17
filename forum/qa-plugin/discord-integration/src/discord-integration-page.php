@@ -2,7 +2,7 @@
 
 class discord_integration_page
 {
-    protected $page_uri = 'discord-integration';
+    protected $page_uri = 'chat-discord';
 
     protected $api;
 
