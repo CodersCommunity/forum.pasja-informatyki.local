@@ -280,7 +280,7 @@
 			'user' => 'nav6',
 			'users' => 'nav6',
 			'zasluzeni-pasjonaci-hall-of-fame' => 'nav7',
-			'chat-irc' => 'nav8',
+			'chat-discord' => 'nav8',
 			'faq' => 'nav9',
 			'regulamin-forum' => 'nav10',
 			'ksiazki-informatyczne-warte-uwagi' => 'nav11',
@@ -602,8 +602,8 @@
 		);
 
 		$qa_content['navigation']['main']['nav8']=array(
-			'url' => qa_path_html('chat-irc'),
-			'label' => '<dfn data-info="Chat IRC"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav8.png" alt="IRC"/></dfn>',
+			'url' => qa_path_html('chat-discord'),
+			'label' => '<dfn data-info="Chat Discord"><img src="//forum.pasja-informatyki.pl/qa-theme/SnowFlat/icons/nav8.png" alt="IRC"/></dfn>',
 		);
 
 		$qa_content['navigation']['main']['nav9']=array(
