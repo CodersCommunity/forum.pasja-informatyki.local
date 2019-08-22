@@ -16,7 +16,7 @@ class discord_api
             'client_id' => qa_opt('discord_integration_client_id'),
             'client_secret' => qa_opt('discord_integration_client_secret'),
             'grant_type' => 'authorization_code',
-            'redirect_uri' => qa_path_absolute('discord-integration')
+            'redirect_uri' => qa_path_absolute('chat-discord')
         ]), [], 'POST');
     }
 
