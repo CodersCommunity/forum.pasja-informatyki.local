@@ -32,7 +32,7 @@ class discord_integration_event
                 }
 
                 break;
-            case 'u_delete':
+            case 'u_block':
                 $result = qa_db_query_sub(
                     'SELECT id_integration, discord_id FROM ^discord_integrations WHERE id_user=$ AND disconnected_date IS NULL LIMIT 1',
                     $params['userid']
