@@ -1,0 +1,12 @@
+{
+    "name": "Discord integration",
+    "uri": "https://github.com/awaluk/q2a-discord-integration",
+    "description": "Plugin to link Discord account with Q2A account",
+    "version": "1.0",
+    "date": "2019-08-15",
+    "author": "Arkadiusz Waluk",
+    "author_uri": "http://waluk.pl",
+    "license": "MIT",
+    "update_uri": "https://raw.githubusercontent.com/awaluk/q2a-discord-integration/master/metadata.json",
+    "min_q2a": "1.5"
+}
