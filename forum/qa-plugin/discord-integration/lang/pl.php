@@ -6,7 +6,7 @@ return [
     'join_error' => 'Błąd dołączania! Spróbuj ponownie lub ^1skontaktuj się z nami^2 jeśli problem się powtórzy.',
     'not_logged' => '^1Zaloguj się^2 lub ^3zarejestruj^4, aby dołączyć do Discorda',
     'already_joined' => 'Jesteś już na naszym serwerze jako',
-    'success_joined' => 'Gratulacje, dołączyłeś właśnie na nasz serwer!',
+    'success_joined' => 'Gratulacje, zostałeś dołączony na serwer! Teraz wystarczy, że włączysz Discorda, wybierzesz nasz serwer i możesz rozmawiać.',
     'disconnect_button' => 'Odłącz powiązanie i opuść serwer',
     'disconnected_success' => 'Twoje konto zostało pomyślnie odłączone.',
     'user_blocked' => 'Twoje konto jest zablokowane - nie możesz dołączyć do Discorda.',
