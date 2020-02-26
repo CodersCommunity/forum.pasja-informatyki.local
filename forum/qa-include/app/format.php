@@ -1391,7 +1391,16 @@
 				'label' => qa_lang_html('misc/nav_user_as'),
 				'url' => qa_path_html('user/'.$handle.'/answers'),
 			),
+			
+            'blocklist' => array(
+                'label' => 'Zablokowani użytkownicy',
+                'url' => qa_path_html('blocked-users-list')
+            ),
 		);
+		
+        if (empty(qa_get_logged_in_userid()) || $handle !== qa_get_logged_in_handle()) {
+            unset($navigation['blocklist']);
+        }
 
 		if (isset($navigation[$selected]))
 			$navigation[$selected]['selected']=true;

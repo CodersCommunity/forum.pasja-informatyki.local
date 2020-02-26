@@ -165,11 +165,13 @@
 
 		$requestlower = strtolower(qa_request());
 
-		if ($requestlower == 'install')
-			require QA_INCLUDE_DIR.'qa-install.php';
-		elseif ($requestlower == 'url/test/'.QA_URL_TEST_STRING)
-			require QA_INCLUDE_DIR.'qa-url-test.php';
-		else {
+		if ($requestlower == 'install') {
+			require QA_INCLUDE_DIR . 'qa-install.php';
+		} elseif ($requestlower == 'url/test/'.QA_URL_TEST_STRING) {
+			require QA_INCLUDE_DIR . 'qa-url-test.php';
+		} elseif ($requestlower == 'blocked-users-list') {
+		    require QA_INCLUDE_DIR . 'qa-pw-blocked-list.php';
+		} else {
 			// enable gzip compression for output (needs to come early)
 			// skip admin pages since some of these contain lengthy processes
 			if (QA_HTML_COMPRESSION && substr($requestlower, 0, 6) != 'admin/') {

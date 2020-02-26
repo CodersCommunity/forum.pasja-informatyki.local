@@ -473,6 +473,7 @@
 			'users' => 'pages/users.php',
 			'users/blocked' => 'pages/users-blocked.php',
 			'users/special' => 'pages/users-special.php',
+			'blocked-users-list' => 'pages/pw-blocked-list.php'
 		);
 	}
 

@@ -67,24 +67,7 @@
 
 
 //    Check the user exists and work out what can and can't be set (if not using single sign-on)
-        $blockedPrivateMessages = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
-        $allowedPrivateMessages = qa_opt('allow_private_messages');
-        $toAccountLevelPass = QA_USER_LEVEL_EXPERT > $toaccount['level'];
-        $blockedPrivateMessageBool = 0 !== $blockedPrivateMessages->num_rows;
-        $flagsNoMessages = ($toaccount['flags'] & QA_USER_FLAGS_NO_MESSAGES);
-        if (
-            $toAccountLevelPass &&
-            $blockedPrivateMessageBool ||
-            !$allowedPrivateMessages ||
-            !is_array($toaccount) ||
-            $flagsNoMessages
-        ) {
-            $userLevel = qa_get_logged_in_level();
-            if($userLevel < QA_USER_LEVEL_EDITOR) {
-                return include QA_INCLUDE_DIR.'qa-page-not-found.php';
-            }    
-
-        }
+        
 
 
 //    Check that we have permission and haven't reached the limit, but don't quit just yet
@@ -185,38 +168,65 @@
 
     $qa_content['error'] = @$pageerror;
 
-    $qa_content['form_message'] = array(
-        'tags' => 'id="__form" method="post" action="'.qa_self_html().'"',
-
-        'style' => 'tall',
-
-        'ok' => $messagesent ? qa_lang_html('misc/message_sent') : null,
-
-        'fields' => array(
-            'message' => array(
-                'type' => $hideForm ? 'static' : '',
-                'label' => qa_lang_html_sub('misc/message_for_x', qa_get_one_user_html($handle, false)),
-                'tags' => 'name="message" id="message"',
-                'value' => qa_html(@$inmessage, $messagesent),
-                'rows' => 8,
-                'note' => qa_lang_html_sub('misc/message_explanation', qa_html(qa_opt('site_title'))),
-                'error' => qa_html(@$errors['message']),
-            ),
-        ),
-
-        'buttons' => array(
-            'send' => array(
-                'tags' => 'id="__form-send" onclick="qa_show_waiting_after(this, false);"',
-                'label' => qa_lang_html('main/send_button'),
-            ),
-        ),
-
-        'hidden' => array(
-            'domessage' => '1',
-            'code' => qa_get_form_security_code('message-'.$handle),
-        ),
-    );
-
+    $blockedPrivateMessages = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
+    $allowedPrivateMessages = qa_opt('allow_private_messages');
+    $blockedPrivateMessageBool = 0 != $blockedPrivateMessages->num_rows;
+    
+    if (
+        $blockedPrivateMessageBool ||
+        !$allowedPrivateMessages
+    ) {
+        $userLevel = qa_get_logged_in_level();
+        if($userLevel < QA_USER_LEVEL_EDITOR) {
+            $qa_content['form_message'] = [
+                'tags' => '',
+                'style' => 'tall',
+                'fields' => [
+                    'message' => [
+                        'type' => $hideForm ? 'static' : '',
+                        'label' => qa_lang_html_sub('misc/message_for_x', qa_get_one_user_html($handle, false)),
+                        'tags' => 'disabled',
+                        'value' => '',
+                        'rows' => 8,
+                        'note' => 'Z powodu blokady nie możesz wysłać wiadomości prywatnej do tego użytkownika',
+                     ],
+                ],
+                'buttons' => [
+                    'send' => [
+                        'tags' => 'disabled',
+                        'label' => qa_lang_html('main/send_button'),
+                    ],
+                ],
+            ];
+        } else {
+            $qa_content['form_message'] = [
+                'tags' => 'method="post" action="' . qa_self_html() . '"',
+                'style' => 'tall',
+                'ok' => $messagesent ? qa_lang_html('misc/message_sent') : null,
+                'fields' => [
+                    'message' => [
+                        'type' => $hideForm ? 'static' : '',
+                        'label' => qa_lang_html_sub('misc/message_for_x', qa_get_one_user_html($handle, false)),
+                        'tags' => 'name="message" id="message"',
+                        'value' => qa_html(@$inmessage, $messagesent),
+                        'rows' => 8,
+                        'note' => qa_lang_html_sub('misc/message_explanation', qa_html(qa_opt('site_title'))),
+                        'error' => qa_html(@$errors['message']),
+                    ],
+                ],
+                'buttons' => [
+                    'send' => [
+                        'tags' => 'onclick="qa_show_waiting_after(this, false);"',
+                        'label' => qa_lang_html('main/send_button'),
+                    ],
+                ],
+                'hidden' => [
+                    'domessage' => '1',
+                    'code' => qa_get_form_security_code('message-' . $handle),
+                ],
+            ];
+        }
+    }	
     $qa_content['focusid'] = 'message';
 
     if ($hideForm) {

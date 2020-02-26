@@ -926,18 +926,18 @@
 
         $option = qa_opt('allow_private_messages');
         
-        $isBlocked = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND fromUserId = #', $loginuserid, $useraccount['userid'], $useraccount['userid'], $loginuserid);
+        $isBlocked = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid'], $useraccount['userid'], $loginuserid);
 
         $notBlocked = 0 === $isBlocked->num_rows;
         $notTheSameUser = ($loginuserid !== $userid);
         $notFlagNoMessage = !($useraccount['flags'] & QA_USER_FLAGS_NO_MESSAGES);
         
-        $optionOne = 1 === $option;
+        $optionOne = 1 == $option;
         $isAdministrationMember = qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR;
-        
+
         if (
             $notBlocked &&
-            $option &&
+            $optionOne &&
             isset($loginuserid) &&
             $notTheSameUser && 
             $notFlagNoMessage &&
@@ -953,7 +953,7 @@
             $notTheSameUser
         ) {
             $qa_content['form_profile']['fields']['level']['value'] .= strtr(qa_lang_html('profile/send_private_message'), array(
-                '^1' => '<br><dfn class="pw-link-admins" data-info="Użytkownik ma wyłączone otrzymywanie wiadomości od innych użytkowników, ale korzystając z uprawnień administracyjnych możesz skontaktować się z nim"><a href="'.qa_path_html('message/'.$handle).'">',
+                '^1' => '<br><dfn class="pw-link-admins" data-info="Użytkownik ma wyłączone otrzymywanie wiadomości od innych użytkowników, ale korzystając z uprawnień administracyjnych możesz się z nim skontaktować"><a href="'.qa_path_html('message/'.$handle).'">',
                 '^2' => '</a></dfn>',
             ));
         }
@@ -2041,17 +2041,25 @@
 
     $canBlock = qa_db_query_sub('SELECT `toUserId`, `fromUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid']);
     $canBlockUser = (0 === $canBlock->num_rows);
+    
+    $blocked = qa_db_query_sub('SELECT `toUserId`, `fromUserId` FROM ^blockedpw WHERE toUserId = # AND fromUserId = #', $loginuserid, $useraccount['userid']);
+    $isBlocked = (0 != $blocked->num_rows);
     $isLogged = null !== qa_get_logged_in_userid();
     $notTheSameUser = ($loginuserid !== $useraccount['userid']);
-    if ($canBlockUser && $isLogged && $notTheSameUser) {
+    if (!$isBlocked && $canBlockUser && $isLogged && $notTheSameUser) {
         $qa_content['form_profile']['buttons'][] = [
             'tags' => 'name="doblockpw"',
             'label' => 'Zablokuj wiadomości prywatne od tego użytkownika'
         ];
-    } elseif (!$canBlockUser && $isLogged && $notTheSameUser) {
+    } elseif (!$isBlocked && !$canBlockUser && $isLogged && $notTheSameUser) {
         $qa_content['form_profile']['buttons'][] = [
             'tags' => 'name="dounblockpw"',
             'label' => 'Odblokuj wiadomości prywatne od tego użytkownika'
+        ];
+    } elseif ($isBlocked && $isLogged && $notTheSameUser) {
+        $qa_content['form_profile']['buttons'][] = [
+            'tags' => 'disabled',
+            'label' => 'Wygląda na to że jesteś zablokowany :('
         ];
     }
 
