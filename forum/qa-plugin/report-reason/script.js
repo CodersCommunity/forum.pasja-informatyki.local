@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
             location.reload();
         }
         if (event.target.matches("input.qa-form-light-button-flag")) {
-            const flagButton = document.querySelector("input.qa-form-light-button-flag");
+            const flagButton = event.target;
             flagButton.type = "button";
             
             event.preventDefault();
@@ -68,14 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const flagReason = document.querySelector("input.qa-spam-reason-radio:checked");
                 const flagNotice = document.querySelector(".qa-spam-reason-text").value;
-                
+
                 if (!flagReason) {
                     showError(reportReasonEmptyError);
                     return false;
                 }
-                
+
                 const { postid: postId, posttype: postType, parentid: parentId } = flagButton.dataset;
-                
                 const dataArray = {questionid: flagQuestionid, postid: postId, posttype: postType, reasonid: flagReason.value, notice: flagNotice};
                 const sendData = JSON.stringify(dataArray);
                 let isError = false;
@@ -92,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         cache: false,
                         success: function(data) {
                             if(data.error) {
-                                //alert(data.error);
+                                alert(data.error);
                                 if ("Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę" === data.error) {
                                     showError(tooManyReportError);
                                     return false;
@@ -100,9 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     isError = true;
                                 }
                             } else if(data.success) {
-                                location.reload();
+								alert("nie");
+                                //location.reload();
                             } else {
-                                isError = true;
+                                alert("tak");
                             }
                         },
                         error: function(data) {

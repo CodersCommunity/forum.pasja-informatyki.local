@@ -50,8 +50,7 @@ class q2apro_flag_reasons_page
             $notice     = empty($newData['notice']) ? null : trim($newData['notice']);
 
             if (empty($questionId) || empty($postId) || empty($postType) || empty($reasonId)) {
-                $reply = ['
-                ' => 'missing'];
+                $reply = ['error' => 'missing data'];
                 echo json_encode($reply);
 
                 return;
@@ -62,6 +61,7 @@ class q2apro_flag_reasons_page
             $error = '';
 
             require_once QA_INCLUDE_DIR . 'app/votes.php';
+            require_once QA_INCLUDE_DIR . 'app/posts.php';
             require_once QA_INCLUDE_DIR . 'pages/question-view.php';
 
             if ('q' === $postType) {
@@ -120,7 +120,7 @@ class q2apro_flag_reasons_page
 
                     if (qa_flag_set_tohide($answer, $userId, $handle, $cookieId, $question)) {
                         qa_answer_set_status(
-                            $answer, QA_POST_STATUS_HIDDEN, null, null, null, $question, $commentsFollows
+                            $answer, QA_POST_STATUS_HIDDEN, null, null, null, $question, null//$commentsFollows
                         ); // hiding not really by this user so pass nulls
                     }
 
@@ -128,11 +128,10 @@ class q2apro_flag_reasons_page
                         '
                         INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`) 
                         VALUES (#, #, #, $)
-                    ', $userId, $postId, $reasonId, $notice
+                    ', $userId, $answer['postid'], $reasonId, $notice
                     );
                 }
             } elseif ('c' === $postType) {
-
                 $commentId = $postId;
 
                 $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $commentId));
@@ -142,10 +141,8 @@ class q2apro_flag_reasons_page
                     $handle   = qa_userid_to_handle($userId);
                     $cookieId = qa_cookie_get();
 
-                    if (qa_flag_set_tohide($comment, $userId, $handle, $cookieId, $question)) {
-                        qa_comment_set_status(
-                            $comment, QA_POST_STATUS_HIDDEN, null, null, null, $question, $parent
-                        ); // hiding not really by this user so pass nulls
+                    if (qa_flag_set_tohide($comment, $userId, $handle, $cookieId, $comment['parentid'])) {
+                        qa_post_set_hidden($comment);
                     }
 
                     qa_db_query_sub(
