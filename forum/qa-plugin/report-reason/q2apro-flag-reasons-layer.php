@@ -26,6 +26,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             );
         }
     }
+
     public function q_view_buttons($q_view)
     {
         if ($this->isLogged && isset($q_view['form']['buttons']['flag'], $q_view['raw']['postid'])) {
@@ -34,6 +35,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::q_view_buttons($q_view);
     }
+
     public function a_item_buttons($a_item)
     {
         if ($this->isLogged && isset($a_item['form']['buttons']['flag'], $a_item['raw']['postid'])) {
@@ -42,6 +44,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::a_item_buttons($a_item);
     }
+
     public function c_item_buttons($c_item)
     {
         if ($this->isLogged && isset($c_item['form']['buttons']['flag'], $c_item['raw']['postid'])) {
@@ -49,6 +52,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::c_item_buttons($c_item);
     }
+
     public function body_hidden()
     {
         if ($this->isLogged && 'question' === $this->template) {
@@ -95,9 +99,10 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::body_hidden();
     }
+
     public function post_meta_flags($post, $class)
     {
-        if ('qa-a-item' === $class || 'qa-c-item' === $class || 'qa-q-view' === $class) {
+        if ('qa-q-item' == $class || 'qa-a-item' === $class || 'qa-c-item' === $class || 'qa-q-view' === $class) {
             if (isset($post['raw']['postid'])) {
                 $flagInfo = q2apro_count_postflags_output($post['raw']['postid']);
                 if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
