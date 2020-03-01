@@ -91,7 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         cache: false,
                         success: function(data) {
                             if(data.error) {
-                                alert(data.error);
                                 if ("Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę" === data.error) {
                                     showError(tooManyReportError);
                                     return false;
@@ -99,10 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                     isError = true;
                                 }
                             } else if(data.success) {
-								alert("nie");
-                                //location.reload();
+                                location.reload();
                             } else {
-                                alert("tak");
+                                //
                             }
                         },
                         error: function(data) {
