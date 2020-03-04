@@ -91,16 +91,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         cache: false,
                         success: function(data) {
                             if(data.error) {
-                                if ("Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę" === data.error) {
+                                if (data.error.includes("Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę")) {
                                     showError(tooManyReportError);
                                     return false;
                                 } else {
                                     isError = true;
                                 }
-                            } else if(data.success) {
+                            } else if(data.success.includes("true")) {
                                 location.reload();
-                            } else {
-                                //
                             }
                         },
                         error: function(data) {

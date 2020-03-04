@@ -11,7 +11,7 @@ class q2apro_flagreasons_admin
             require_once QA_INCLUDE_DIR . 'qa-app-users.php';
 
             $result = '
-                CREATE TABLE `^flagreasons` (
+                CREATE TABLE IF NOT EXISTS `' . $tableName . '` (
                   `userid` int(10) UNSIGNED NOT NULL,
                   `postid` int(10) UNSIGNED NOT NULL,
                   `reasonid` int(10) UNSIGNED NOT NULL,
@@ -21,7 +21,6 @@ class q2apro_flagreasons_admin
                 ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ';
         }
-
         return $result;
     }
 
