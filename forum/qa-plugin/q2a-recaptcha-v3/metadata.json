@@ -1,0 +1,13 @@
+{
+    "name": "reCAPTCHA v3",
+    "uri": "https://github.com/qwercik/q2a-recaptcha-v3",
+    "description": "Provides reCAPTCHA v3 services",
+    "version": "1.0",
+    "date": "2019-06-07",
+    "author": "Eryk Andrzejewski",
+    "author_uri": "https://github.com/qwercik",
+    "update_uri": "https://raw.githubusercontent.com/qwercik/q2a-recaptcha-v3/master/metadata.json",
+    "license": "GPLv2",
+    "min_q2a": "1.7",
+    "load_order": "after_db_init"
+}
