@@ -91,7 +91,7 @@ class q2apro_flag_reasons_page
                             $question, QA_POST_STATUS_HIDDEN, null, null, null, $answers, $commentsFollows, $closePost
                         ); // hiding not really by this user so pass nulls
                     }
-                    if($reasonId > 0 && $reasonId < 6) {
+                    if($reasonId >= 0 && $reasonId <= 6) {
                         qa_db_query_sub(
                         '
                             INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`) 
