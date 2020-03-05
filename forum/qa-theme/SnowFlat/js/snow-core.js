@@ -61,12 +61,6 @@ $(document).ready(function () {
 		$('#the-top-search').slideToggle('fast');
 	});
 
-
-	/*
-	 * Add wrapper to users point on users list
-	 */
-	$('.qa-top-users-score').wrapInner('<div class="qam-user-score-icon"></div>');
-
 	/*
 	 * add wrapper to the message sent note 'td'
 	 */
@@ -74,7 +68,7 @@ $(document).ready(function () {
 
 	// fix the visible issue for main nav, top search-box
 	$(window).resize(function () {
-		if (window.matchMedia('(min-width: 1180px)').matches) {
+		if (window.matchMedia('(min-width: 980px)').matches) {
 			$(".qam-search.the-top .qa-search").hide();
 			$(".qa-nav-main").show('fast', function() { $(this).css('display','inline-block'); });
 		} else {

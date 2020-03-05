@@ -25,7 +25,6 @@ class qa_html_theme_layer extends qa_html_theme_base
 	public function q_list($q_list)
 	{
 		if (!empty($q_list['qs']) && qa_opt('mouseover_content_on')) { // first check it is not an empty list and the feature is turned on
-
 			// Collect the question ids of all items in the question list (so we can do this in one DB query)
 
 			$postids = array();
@@ -35,9 +34,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 			}
 
 			if (!empty($postids)) {
-
 				// Retrieve the content for these questions from the database
-
 				$maxlength = qa_opt('mouseover_content_max_len');
 				$result = qa_db_query_sub('SELECT postid, content, format FROM ^posts WHERE postid IN (#)', $postids);
 				$postinfo = qa_db_read_all_assoc($result, 'postid');
