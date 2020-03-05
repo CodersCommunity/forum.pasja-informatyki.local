@@ -1,22 +1,22 @@
 ---
 - name: Add ppa Repository
-  sudo: yes
+  become: true
   apt_repository: repo=ppa:ondrej/{{ php.ppa }}
 
 - name: Update apt
-  sudo: yes
+  become: true
   apt: update_cache=yes
 
 - name: Install php5
-  sudo: yes
+  become: true
   apt: pkg=php5.6 state=latest
 
 - name: Install php5-fpm
-  sudo: yes
+  become: true
   apt: pkg=php5.6-fpm state=latest
 
 - name: Install PHP Packages
-  sudo: yes
+  become: true
   apt: pkg={{ item }} state=latest
   with_items: 
    - php5.6-cli

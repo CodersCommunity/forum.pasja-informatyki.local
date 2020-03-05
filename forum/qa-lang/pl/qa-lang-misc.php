@@ -24,7 +24,7 @@
 		'block_ip_button' => 'Zablokuj adres IP',
 		'browse_categories' => 'Wybierz kategorię',
 		'captcha_confirm_fix' => '^5Potwierdź swój adres email^6, aby nie przechodzić procesu weryfikacji w przyszłości.',
-		'captcha_error' => 'Zakończ proces weryfikacji antyspamowej',
+		'captcha_error' => 'Weryfikacja antyspamowa nie powiodła się. Spróbuj ponownie.',
 		'captcha_label' => 'Weryfikacja antyspamowa:',
 		'captcha_login_fix' => '^1Zaloguj^2 lub ^3zarejestruj się^4, aby nie przechodzić procesu weryfikacji w przyszłości.',
 		'feed_a_edited_prefix' => 'Zmieniona odpowiedź: ',

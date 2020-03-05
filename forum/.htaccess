@@ -5,13 +5,19 @@ DirectoryIndex index.php
 ErrorDocument 403 /vagrant/forum/index.php
 
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www.forum.pasja-informatyki.pl$ [NC]
-RewriteRule ^(.*)$ http://forum.pasja-informatyki.pl/$1 [R=301,L]
-#RewriteBase /
-RewriteCond %{REQUEST_URI} ^(.*)//(.*)$
-RewriteRule . %1/%2 [R=301,L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ index.php?qa-rewrite=$0&%{QUERY_STRING} [L]
+    RewriteEngine On
+
+    RewriteCond %{HTTP_HOST} ^www.forum.pasja-informatyki.pl$ [NC]
+    RewriteRule ^(.*)$ https://forum.pasja-informatyki.pl/$1 [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^forum.pasja-informatyki.pl$ [NC]
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    #RewriteBase /
+    RewriteCond %{REQUEST_URI} ^(.*)//(.*)$
+    RewriteRule . %1/%2 [R=301,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^.*$ index.php?qa-rewrite=$0&%{QUERY_STRING} [L]
 </IfModule>

@@ -55,7 +55,7 @@
 		'email_label' => 'Adres email:',
 		'email_not_confirmed' => 'Niepotwierdzony',
 		'email_please_confirm' => '^5Potwierdź^6',
-		'email_required' => 'Adres email jest wymagany (nie będzie udostępniany)',
+		'email_required' => 'Adres email jest wymagany (nie będzie udostępniony osobom trzecim)',
 		'forgot_link' => 'Przypomnij hasło',
 		'full_name' => 'Imię i nazwisko',
 		'handle_empty' => 'Podaj nazwę użytkownika',
@@ -80,7 +80,7 @@
 		'mass_mailings_explanation' => 'Zapisz się na powiadomienia dla użytkowników',
 		'mass_mailings' => 'Powiadomienia użytkowników:',
 		'member_for' => 'Zarejestrowany od:',
-		'member_type' => 'Rodzaj:',
+		'member_type' => 'Ranga:',
 		'new_password_1' => 'Nowe hasło:',
 		'new_password_2' => 'Powtórz nowe hasło:',
 		'no_blocked_users' => 'Nie znaleziono zablokowanych użytkowników',
@@ -92,7 +92,7 @@
 		'only_shown_experts' => "(widoczne tylko dla ekspertów i wyżej)",
 		'password_changed' => 'Hasło zostało zmienione',
 		'password_label' => 'Hasło:',
-		'password_min' => 'Hasło musi mieć przynajmniej ^ znaków',
+		'password_min' => 'Hasło musi mieć przynajmniej ^ znaki',
 		'password_mismatch' => 'Nowe hasła nie są identyczne',
 		'password_none' => 'Brak. Aby się zalogować bezpośrednio, ustaw hasło poniżej.',
 		'password_sent' => 'Twoje nowe hasło zostało wysłane na Twój adres email',
@@ -137,7 +137,7 @@
 		'user_not_found' => 'Nie znaleziono użytkownika',
 		'website' => 'Strona',
 		'x_ago_from_y' => '^1 temu z ^2',
-		'terms_not_accepted' => "Musisz to zaznaczyć.",
+		'terms_not_accepted' => "Zgoda jest wymagana do założenia konta",
 	);
 
 
