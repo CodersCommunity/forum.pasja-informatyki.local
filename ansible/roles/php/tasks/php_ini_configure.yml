@@ -3,29 +3,29 @@
 
 - name: Display Errors in /etc/php/5.6/apache2/php.ini
   shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/5.6/apache2/php.ini
-  sudo: yes
+  become: true
 
 - name: Display Errors in /etc/php/5.6/cli/php.ini
   shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/5.6/cli/php.ini
-  sudo: yes
+  become: true
 
 - name: Display Errors in /etc/php/5.6/fpm/php.ini
   shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/5.6/fpm/php.ini
-  sudo: yes
+  become: true
 
 # Error Reporting
 - name: Error Reporting in /etc/php/5.6/apache2/php.ini
   shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/5.6/apache2/php.ini
-  sudo: yes
+  become: true
 
 - name: Error Reporting in //etc/php/5.6/cli/php.ini
   shell:  sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/5.6/cli/php.ini
-  sudo: yes
+  become: true
 
 - name: Display Errors in /etc/php/5.6/fpm/php.ini
   shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/5.6/fpm/php.ini
-  sudo: yes
+  become: true
 
 - name: Reload all
   shell: service php5.6-fpm restart && service apache2 restart
-  sudo: yes
+  become: true
