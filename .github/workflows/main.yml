@@ -24,10 +24,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v1
-      - uses: graychen/phpunit-action@v1.0.0
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-      - name: PHPUnit tests
-        uses: graychen/phpunit-action@v1.0.0
+      - name: PHPUnit (php-actions)
+        uses: php-actions/phpunit@v1
         with:
+          # Configuration file location
           config: forum/phpunit.xml
+          bootstrap: forum/qa-tests/autoload.php
+          # Memory limit
+          memory: 512M
