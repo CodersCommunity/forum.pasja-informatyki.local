@@ -1,25 +1,45 @@
 <?php
 
-class BaseTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class BaseTest extends TestCase
 {
-	public function test__qa_js()
-	{
-		$test = qa_js('test');
-		$this->assertSame("'test'", $test);
+    /**
+     * @dataProvider qa_js_dataprovider
+     */
+    public function test__qa_js($input, bool $forceQuotes, $expectedResult): void
+    {
+        $test = qa_js($input, $forceQuotes);
+        $this->assertSame($expectedResult, $test);
+    }
 
-		$test = qa_js('test', true);
-		$this->assertSame("'test'", $test);
+    /**
+     * @dataProvider qa_version_to_float_dataprovider
+     */
+    public function test__qa_version_to_float($version, $expectedResult): void
+    {
+        $test = qa_version_to_float($version);
+        $this->assertSame($expectedResult, $test);
+    }
 
-		$test = qa_js(123);
-		$this->assertSame(123, $test);
+    public function qa_version_to_float_dataprovider(): array
+    {
+        return [
+            ['1.0', 1.0],
+            ['1.6.2.2', 1.006002002],
+            [1.6, 1.006],
+        ];
+    }
 
-		$test = qa_js(123, true);
-		$this->assertSame("'123'", $test);
-
-		$test = qa_js(true);
-		$this->assertSame('true', $test);
-
-		$test = qa_js(true, true);
-		$this->assertSame("'true'", $test);
-	}
+    public function qa_js_dataprovider(): array
+    {
+        return [
+            [ 'test', false, "'test'"],
+            [ 'test', true, "'test'"],
+            [ 123, false, 123],
+            [ 123, true, "'123'"],
+            [ true, false, 'true'],
+            [ true, true, "'true'"],
+        ];
+    }
 }

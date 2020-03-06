@@ -1,5 +1,5 @@
 .idea/
 .vagrant/
 *.retry
-
+.phpunit.result.cache
 /vendor/
