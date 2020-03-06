@@ -104,9 +104,11 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         if ('qa-q-item' == $class || 'qa-a-item' === $class || 'qa-c-item' === $class || 'qa-q-view' === $class) {
             if (isset($post['raw']['postid'])) {
-                $flagInfo = q2apro_count_postflags_output($post['raw']['postid']);
+                $postId = (empty(q2apro_count_postflags_output($post['raw']['postid'])) && isset($post['raw']['opostid'])) ? $post['raw']['opostid'] : $post['raw']['postid'];
+                $flagInfo = q2apro_count_postflags_output($postId);
+				
                 if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
-                    $flagsCount = count(q2apro_get_postflags($post['raw']['postid']));
+                    $flagsCount = count(q2apro_get_postflags($postId));
                     
                     unset($post['flags']);
                     
