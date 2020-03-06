@@ -32,5 +32,7 @@ jobs:
         with:
           # Configuration file location
           config: forum/phpunit.xml
+          # Autoload bootstrap
+          bootstrap: forum/qa-tests/autoload.php
           # Memory limit
           memory: 512M
