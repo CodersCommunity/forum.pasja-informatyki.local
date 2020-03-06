@@ -20,7 +20,7 @@ class qa_pw_event
                 $userId,
                 $messageContent,
                 '',
-				false
+                false
             );
                 
             $fromUserHandle = qa_db_query_sub('SELECT `handle` FROM ^users WHERE `userid` = #', $botId);
