@@ -27,12 +27,49 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: PHPUnit (php-actions)
-        uses: php-actions/phpunit@v1
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "7.3"
+          - "7.4"
+          - "8.0"
+
+        dependencies:
+          - lowest
+          - highest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@v1
         with:
-          # Configuration file location
-          config: forum/phpunit.xml
-          # Autoload bootstrap
-          bootstrap: forum/qa-tests/autoload.php
-          # Memory limit
-          memory: 512M
+          php-version: ${{ matrix.php-version }}
+          coverage: pcov
+          extensions: dom, json, libxml, mbstring, pdo_sqlite, soap, xml, xmlwriter
+          ini-values: assert.exception=1, zend.assertions=1
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
+      - name: Install lowest dependencies with composer
+        if: matrix.dependencies == 'lowest'
+        run: ./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest --prefer-lowest
+
+      - name: Install highest dependencies with composer
+        if: matrix.dependencies == 'highest'
+        run: ./tools/composer update --no-ansi --no-interaction --no-progress --no-suggest
+
+      - name: Run sanity check
+        run: bash ./build/scripts/sanity-check
+
+      - name: Run tests with phpunit
+        run: ./phpunit --configuration forum/phpunit.xml --bootstrap forum/qa-tests/autoload.php
