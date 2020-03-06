@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: PHPUnit (php-actions)
-        uses: php-actions/phpunit@v1
+        uses: php-actions/phpunit@master
         with:
           # Configuration file location
           config: forum/phpunit.xml
