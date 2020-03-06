@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 } else {
                                     isError = true;
                                 }
-                            } else if(data.success.includes("true")) {
+                            } else if(data.success.includes("1")) {
                                 location.reload();
                             }
                         },

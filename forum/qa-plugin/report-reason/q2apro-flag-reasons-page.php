@@ -141,7 +141,7 @@ class q2apro_flag_reasons_page
                     $handle   = qa_userid_to_handle($userId);
                     $cookieId = qa_cookie_get();
 
-                    if (qa_flag_set_tohide($comment, $userId, $handle, $cookieId, $comment['parentid'])) {
+                    if (qa_flag_set_tohide($comment, $userId, $handle, $cookieId, $comment)) {
                         qa_post_set_hidden($comment);
                     }
 
