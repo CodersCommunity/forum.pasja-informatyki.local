@@ -604,6 +604,12 @@
 			}
 
 			@error_log('PHP Question2Answer more info: '.$php_errormsg." in eval()'d code from ".qa_html($filename));
+
+			global $client;
+            $client->captureException(
+                new \RuntimeException('PHP Question2Answer more info: '.$php_errormsg." in eval()'d code from ".qa_html($filename)),
+                [$eval, $filename]
+            );
 		}
 
 		@ini_set('track_errors', $oldtrackerrors);
@@ -693,6 +699,12 @@
 
 		echo 'Question2Answer fatal error:<p><font color="red">'.qa_html($message, true).'</font></p>';
 		@error_log('PHP Question2Answer fatal error: '.$message);
+
+        global $client;
+        $client->captureException(
+            new \RuntimeException('PHP Question2Answer fatal error: '.$message)
+        );
+
 		echo '<p>Stack trace:<p>';
 
 		$backtrace=array_reverse(array_slice(debug_backtrace(), 1));

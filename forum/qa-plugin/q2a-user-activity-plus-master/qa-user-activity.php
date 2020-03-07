@@ -209,21 +209,27 @@ class qa_user_activity
 	private function questions_stats($handle)
 	{
 		$sql_count =
-			'SELECT u.userid, count(p.postid) AS qs, count(p.selchildid) AS selected
+			'SELECT
+			    ANY_VALUE(u.userid) AS userid, 
+                count(p.postid) AS qs, 
+                count(p.selchildid) AS selected
 			 FROM ^users u
 			   LEFT JOIN ^posts p ON u.userid=p.userid AND p.type="Q"
 			 WHERE u.handle=$';
 		$result = qa_db_query_sub($sql_count, $handle);
 		$row = qa_db_read_one_assoc($result);
 
-		return array( $row['userid'], $row['qs'], $row['selected'] );
+		return [ $row['userid'], $row['qs'], $row['selected'] ];
 	}
 
-	// userid, answer count and selected count
+    // userid, answer count and selected count
 	private function answer_stats($handle)
 	{
 		$sql_count =
-			'SELECT u.userid, COUNT(a.postid) AS qs, SUM(q.selchildid=a.postid) AS selected
+			'SELECT 
+                 ANY_VALUE(u.userid) AS userid, 
+                 COUNT(a.postid) AS qs, 
+                 SUM(q.selchildid=a.postid) AS selected
 			 FROM ^users u
 			   LEFT JOIN ^posts a ON u.userid=a.userid AND a.type="A"
 			   LEFT JOIN ^posts q ON a.parentid=q.postid AND q.type="Q"
@@ -231,10 +237,11 @@ class qa_user_activity
 		$result = qa_db_query_sub($sql_count, $handle);
 		$row = qa_db_read_one_assoc($result);
 
-		if ( $row['selected'] == null )
-			$row['selected'] = 0;
+		if ($row['selected'] === null) {
+            $row['selected'] = 0;
+        }
 
-		return array( $row['userid'], $row['qs'], $row['selected'] );
+		return [$row['userid'], $row['qs'], $row['selected']];
 	}
 
 	private function answer_tmpl( $ans )
@@ -268,5 +275,4 @@ class qa_user_activity
 
 		return $qa_html;
 	}
-
 }

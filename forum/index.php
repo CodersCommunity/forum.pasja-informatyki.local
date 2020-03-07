@@ -1,4 +1,5 @@
 <?php
+require_once 'vendor/autoload.php';
 /*
 	Question2Answer by Gideon Greenspan and contributors
 	http://www.question2answer.org/
@@ -19,13 +20,19 @@
 
 	More about this license: http://www.question2answer.org/license.php
 */
-
 //	Set base path here so this works with symbolic links for multiple installations
+require_once 'vendor/sentry/sentry/lib/Raven/Autoloader.php';
+Raven_Autoloader::register();
+global $client;
+$client = new Raven_Client('',['environment' => 'local']);
+$error_handler = new Raven_ErrorHandler($client);
+$error_handler->registerExceptionHandler();
+$error_handler->registerErrorHandler();
+$error_handler->registerShutdownFunction();
 
-	define('QA_BASE_DIR', dirname(empty($_SERVER['SCRIPT_FILENAME']) ? __FILE__ : $_SERVER['SCRIPT_FILENAME']).'/');
+define('QA_BASE_DIR', dirname(empty($_SERVER['SCRIPT_FILENAME']) ? __FILE__ : $_SERVER['SCRIPT_FILENAME']) . '/');
 
-	require 'qa-include/qa-index.php';
-
+require 'qa-include/qa-index.php';
 
 /*
 	Omit PHP closing tag to help avoid accidental output
