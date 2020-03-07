@@ -1,5 +1,4 @@
 <?php
-require_once 'vendor/autoload.php';
 /*
 	Question2Answer by Gideon Greenspan and contributors
 	http://www.question2answer.org/
@@ -21,8 +20,8 @@ require_once 'vendor/autoload.php';
 	More about this license: http://www.question2answer.org/license.php
 */
 //	Set base path here so this works with symbolic links for multiple installations
-require_once 'vendor/sentry/sentry/lib/Raven/Autoloader.php';
-Raven_Autoloader::register();
+require_once 'vendor/autoload.php';
+
 global $client;
 $client = new Raven_Client('',['environment' => 'local']);
 $error_handler = new Raven_ErrorHandler($client);
