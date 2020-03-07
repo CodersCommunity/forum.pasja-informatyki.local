@@ -68,7 +68,9 @@
         foreach ($blockedUsers as $user) {
             $avatar = qa_get_user_avatar_html($user['flags'], $user['email'], $user['handle'], $user['avatarblobid'], $user['avatarwidth'], $user['avatarheight'], qa_opt('avatar_users_size'), true);
             $label = $user['handle'];
-            $score = ((qa_db_query_sub('SELECT `points` FROM ^userpoints WHERE userid = #', $user['userid']))->fetch_assoc())['points'];
+            $points = qa_db_query_sub('SELECT `points` FROM ^userpoints WHERE userid = #', $user['userid']);
+            $pointsArray = $points->fetch_assoc();
+            $score = $pointsArray['points'];
             $raw = $label;
             
             $qa_content['ranking']['items'][] = [
