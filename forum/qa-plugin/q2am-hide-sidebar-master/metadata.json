@@ -1,0 +1,12 @@
+{
+  "name": "Q2AM Hide Sidebar",
+  "uri": "http://store.q2amarket.com/store/products/hide-sidebar-plugin/",
+  "description": "Add recent questions widget on sidebar or template area",
+  "version": "1.2",
+  "date": "2013-07-19",
+  "author": "Q2A Market",
+  "author_uri": "http://www.q2amarket.com",
+  "license": "GPLv2",
+  "update_uri": "https://github.com/q2amarket/q2am-hide-sidebar/raw/master/qa-plugin.php",
+  "min_q2a": "1.5"
+}

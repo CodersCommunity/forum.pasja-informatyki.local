@@ -1,0 +1,12 @@
+{
+  "name": "User Activity Plus",
+  "uri": "https://github.com/svivian/q2a-user-activity-plus",
+  "description": "Shows all questions and answers of a user",
+  "version": "1.1",
+  "date": "2011-08-23",
+  "author": "Scott Vivian",
+  "author_uri": "http://codelair.co.uk/",
+  "license": "GPLv3",
+  "update_uri": "https://raw.github.com/svivian/q2a-user-activity-plus/master/qa-plugin.php",
+  "min_q2a": "1.4"
+}

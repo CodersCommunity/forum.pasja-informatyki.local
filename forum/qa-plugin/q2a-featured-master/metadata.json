@@ -1,0 +1,12 @@
+{
+  "name": "Featured Questions",
+  "uri": "https://github.com/NoahY/q2a-featured",
+  "description": "Keep featured questions at top of list",
+  "version": "1",
+  "date": "2011-12-28",
+  "author": "NoahY",
+  "author_uri": "",
+  "license": "GPLv2",
+  "update_uri": "https://raw.github.com/NoahY/q2a-featured/master/qa-plugin.php",
+  "min_q2a": "1.4"
+}

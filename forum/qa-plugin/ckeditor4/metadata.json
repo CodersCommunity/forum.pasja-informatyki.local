@@ -1,0 +1,12 @@
+{
+  "name": "CKEditor",
+  "uri": "",
+  "description": "New Editor for Forum",
+  "version": "1.6",
+  "date": "2016-10-10",
+  "author": "sama55@CMSBOX feat CodersCommunity",
+  "author_uri": "https://github.com/CodersCommunity",
+  "license": "GPLv2",
+  "update_uri": "",
+  "min_q2a": "1.5.1"
+}

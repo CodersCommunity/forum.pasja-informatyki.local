@@ -1,0 +1,13 @@
+{
+  "name": "Open Login",
+  "uri": "https://github.com/alixandru/q2a-open-login",
+  "description": "Allows users to log in via Facebook, Google and other Open Auth providers",
+  "version": "3.0.0",
+  "date": "2014-09-09",
+  "author": "Alex Lixandru",
+  "author_uri": "https://github.com/alixandru/",
+  "license": "GPLv2",
+  "update_uri": "https://raw.github.com/alixandru/q2a-open-login/master/qa-plugin.php",
+  "min_q2a": "1.6.3",
+  "min_php": "5"
+}

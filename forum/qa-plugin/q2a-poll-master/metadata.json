@@ -1,0 +1,12 @@
+{
+  "name": "Polls",
+  "uri": "https://github.com/NoahY/q2a-poll",
+  "description": "Ask poll questions",
+  "version": "2.4",
+  "date": "2011-09-05",
+  "author": "NoahY",
+  "author_uri": "",
+  "license": "GPLv2",
+  "update_uri": "https://raw.github.com/NoahY/q2a-poll/master/qa-plugin.php",
+  "min_q2a": "1.5"
+}

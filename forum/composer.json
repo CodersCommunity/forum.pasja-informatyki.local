@@ -1,0 +1,6 @@
+{
+  "name": "coderscommunity/forum",
+  "require": {
+    "sentry/sentry": "^1.0"
+  }
+}

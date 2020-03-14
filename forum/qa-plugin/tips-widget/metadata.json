@@ -1,0 +1,12 @@
+{
+  "name": "Tips Widget",
+  "uri": "",
+  "description": "Simple plugin for displaying random tip about forum as widget in sidebar",
+  "version": "0.2",
+  "date": "2017-11-19",
+  "author": "Patrycjerz",
+  "author_uri": "",
+  "license": "GPLv2",
+  "update_uri": "",
+  "min_q2a": "1.5"
+}

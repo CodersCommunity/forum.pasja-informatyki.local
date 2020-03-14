@@ -94,8 +94,15 @@
 
 		@error_log('PHP Question2Answer MySQL '.$type.' error '.$errno.': '.$error.(isset($query) ? (' - Query: '.$query) : ''));
 
-		if (function_exists($qa_db_fail_handler))
-			$qa_db_fail_handler($type, $errno, $error, $query);
+		global $client;
+        $client->captureException(
+            new \RuntimeException('PHP Question2Answer MySQL '.$type.' error '.$errno),
+            [$error, $query ?? '']
+        );
+
+		if (function_exists($qa_db_fail_handler)) {
+            $qa_db_fail_handler($type, $errno, $error, $query);
+        }
 
 		else {
 			echo '<hr><font color="red">Database '.htmlspecialchars($type.' error '.$errno).'<p>'.nl2br(htmlspecialchars($error."\n\n".$query));

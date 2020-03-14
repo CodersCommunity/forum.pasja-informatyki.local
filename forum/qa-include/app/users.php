@@ -1150,14 +1150,26 @@ in a category for which they have elevated privileges).
 				$reportproblems[]='code '.$value.' malformed';
 		}
 
-		if (count($reportproblems))
-			@error_log(
-				'PHP Question2Answer form security violation for '.$action.
-				' by '.(qa_is_logged_in() ? ('userid '.qa_get_logged_in_userid()) : 'anonymous').
-				' ('.implode(', ', array_merge($reportproblems, $silentproblems)).')'.
-				' on '.@$_SERVER['REQUEST_URI'].
-				' via '.@$_SERVER['HTTP_REFERER']
-			);
+		if (count($reportproblems)) {
+            @error_log(
+                'PHP Question2Answer form security violation for ' . $action .
+                ' by ' . (qa_is_logged_in() ? ('userid ' . qa_get_logged_in_userid()) : 'anonymous') .
+                ' (' . implode(', ', array_merge($reportproblems, $silentproblems)) . ')' .
+                ' on ' . @$_SERVER['REQUEST_URI'] .
+                ' via ' . @$_SERVER['HTTP_REFERER']
+            );
+
+            global $client;
+            $client->captureException(
+                new \RuntimeException(
+                    'PHP Question2Answer form security violation for ' . $action .
+                    ' by ' . (qa_is_logged_in() ? ('userid ' . qa_get_logged_in_userid()) : 'anonymous') .
+                    ' (' . implode(', ', array_merge($reportproblems, $silentproblems)) . ')' .
+                    ' on ' . @$_SERVER['REQUEST_URI'] .
+                    ' via ' . @$_SERVER['HTTP_REFERER']
+                )
+            );
+        }
 
 		return (empty($silentproblems) && empty($reportproblems));
 	}
