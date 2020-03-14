@@ -124,7 +124,7 @@
 
 		require_once QA_INCLUDE_DIR.'vendor/PHPMailer/PHPMailerAutoload.php';
 
-		$mailer=new PHPMailer();
+		$mailer=new PHPMailer(true);
 		$mailer->CharSet='utf-8';
 
 		$mailer->From=$params['fromemail'];
