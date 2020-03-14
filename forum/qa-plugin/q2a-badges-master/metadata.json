@@ -1,0 +1,12 @@
+{
+  "name": "Badges",
+  "uri": "https://github.com/NoahY/q2a-badges",
+  "description": "Awards Badges",
+  "version": "4.8",
+  "date": "2011-07-30",
+  "author": "NoahY",
+  "author_uri": "",
+  "license": "GPLv3+",
+  "update_uri": "https://raw.github.com/NoahY/q2a-badges/master/qa-plugin.php",
+  "min_q2a": "1.5"
+}

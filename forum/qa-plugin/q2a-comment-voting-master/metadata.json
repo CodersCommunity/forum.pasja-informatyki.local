@@ -1,0 +1,12 @@
+{
+  "name": "Comment Voting",
+  "uri": "https://github.com/NoahY/q2a-comment-voting",
+  "description": "Vote on comments",
+  "version": "1.4",
+  "date": "2011-08-15",
+  "author": "NoahY",
+  "author_uri": "",
+  "license": "GPLv2",
+  "update_uri": "https://raw.github.com/NoahY/q2a-comment-voting/master/qa-plugin.php",
+  "min_q2a": "1.3"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "show online user count",
+  "uri": "http://question2answer-farsi.com/",
+  "description": "Members and guests will display with username on the widget",
+  "version": "1.0",
+  "date": "2013-12-16",
+  "author": "Ali sayahiyan",
+  "author_uri": "http://question2answer-farsi.com",
+  "license": "GPLv2",
+  "update_uri": "",
+  "min_q2a": "1.6"
+}
