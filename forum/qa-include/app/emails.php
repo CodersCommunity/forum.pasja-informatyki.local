@@ -152,7 +152,19 @@
 			}
 		}
 
-		return $mailer->Send();
+		try {
+		    return $mailer->send();
+		} catch (\Throwable $exception) {
+            global $client;
+            $client->captureException(
+                new \RuntimeException(
+                    'PHP Question2Answer send_email error with params: ' . PHP_EOL . json_encode($params) .
+                    PHP_EOL . ' by ' . (qa_is_logged_in() ? ('userid ' . qa_get_logged_in_userid()) : 'anonymous') .
+                    PHP_EOL . ' on ' . $_SERVER['REQUEST_URI'] .
+                    PHP_EOL . ' via ' . $_SERVER['HTTP_REFERER']
+                )
+            );
+        }
 	}
 
 
