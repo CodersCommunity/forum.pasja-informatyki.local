@@ -44,7 +44,7 @@ W systemach Unix'owych po prostu w ```/etc/hosts```.
 ## Serwer
 Na serwerze zainstalowano:
 
- - PHP 5.6
+ - PHP 7.1
  - xdebug
  - Composer
  - mysql (bez phpmydamin) **[Zamiast phpmyadmin świetnie spisuje się MySQL Workbench]**

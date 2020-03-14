@@ -4,7 +4,7 @@ Jest to drugi najważniejszy plik po README w projekcie. Dotyczy on osób, któr
 
 ## Standardy kodu
 
-Tworzony kod PHP **musi przestrzegać standardu [PSR-2](http://www.php-fig.org/psr/psr-2/)** tam, gdzie tylko jest to możliwe - zdajemy sobie sprawę, że w niektórych miejscach będzie to niewykonalne przez już napisany kod Question2Answer. Twój kod musi działać z **PHP w wersji 5.6** - z takiej obecnie korzystamy.
+Tworzony kod PHP **musi przestrzegać standardu [PSR-2](http://www.php-fig.org/psr/psr-2/)** tam, gdzie tylko jest to możliwe - zdajemy sobie sprawę, że w niektórych miejscach będzie to niewykonalne przez już napisany kod Question2Answer. Twój kod musi działać z **PHP w wersji 7.1** - z takiej obecnie korzystamy.
 
 Kod w języku JavaScript **powinien być pisany z użyciem standardu ES6**. Jeśli jednak masz zamiar użyć czegoś, z czym potencjalnie mogą mieć problem nawet najpopularniejsze przeglądarki internetowe, warto wspomnieć o tym w pull requeście, abyśmy mogli razem to przedyskutować.
 
