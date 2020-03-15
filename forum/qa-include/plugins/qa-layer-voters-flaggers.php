@@ -3,7 +3,6 @@
 	Question2Answer by Gideon Greenspan and contributors
 	http://www.question2answer.org/
 
-	File: qa-include/qa-layer-voters-flaggers.php
 	Description: Theme layer class for viewing voters and flaggers
 
 
@@ -26,7 +25,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 	private $qa_voters_flaggers_cache = array();
 
 
-//	Collect up all required postids for the entire page to save DB queries - common case where whole page output
+	// Collect up all required postids for the entire page to save DB queries - common case where whole page output
 
 	public function main()
 	{
@@ -55,7 +54,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 	}
 
 
-//	Other functions which also collect up required postids for lists to save DB queries - helps with widget output and Ajax calls
+	// Other functions which also collect up required postids for lists to save DB queries - helps with widget output and Ajax calls
 
 	public function q_list_items($q_items)
 	{
@@ -79,7 +78,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 	}
 
 
-//	Actual output of the voters and flaggers
+	// Actual output of the voters and flaggers
 
 	public function vote_count($post)
 	{
@@ -141,13 +140,9 @@ class qa_html_theme_layer extends qa_html_theme_base
 	}
 
 
-//	Utility functions for this layer
+	// Utility functions for this layer
 
-	/**
-	 * @deprecated This function will become private in Q2A 1.8. It is specific to this plugin and
-	 * should not be used by outside code.
-	 */
-	public function queue_post_voters_flaggers($post)
+	private function queue_post_voters_flaggers($post)
 	{
 		if (!qa_user_post_permit_error('permit_view_voters_flaggers', $post)) {
 			$postkeys = array('postid', 'opostid');
@@ -158,11 +153,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 		}
 	}
 
-	/**
-	 * @deprecated This function will become private in Q2A 1.8. It is specific to this plugin and
-	 * should not be used by outside code.
-	 */
-	public function queue_raw_posts_voters_flaggers($posts)
+	private function queue_raw_posts_voters_flaggers($posts)
 	{
 		if (is_array($posts)) {
 			foreach ($posts as $post) {
@@ -172,44 +163,40 @@ class qa_html_theme_layer extends qa_html_theme_base
 		}
 	}
 
-	/**
-	 * @deprecated This function will become private in Q2A 1.8. It is specific to this plugin and
-	 * should not be used by outside code.
-	 */
-	public function retrieve_queued_voters_flaggers()
+	private function retrieve_queued_voters_flaggers()
 	{
 		if (count($this->qa_voters_flaggers_queue)) {
 			require_once QA_INCLUDE_DIR . 'db/votes.php';
 
 			$postids = array_keys($this->qa_voters_flaggers_queue);
 
-			foreach ($postids as $postid)
+			foreach ($postids as $postid) {
 				$this->qa_voters_flaggers_cache[$postid] = array();
+			}
 
 			$newvotersflaggers = qa_db_uservoteflag_posts_get($postids);
 
 			if (QA_FINAL_EXTERNAL_USERS) {
 				$keyuserids = array();
-				foreach ($newvotersflaggers as $voterflagger)
+				foreach ($newvotersflaggers as $voterflagger) {
 					$keyuserids[$voterflagger['userid']] = true;
+				}
 
 				$useridhandles = qa_get_public_from_userids(array_keys($keyuserids));
-				foreach ($newvotersflaggers as $index => $voterflagger)
+				foreach ($newvotersflaggers as $index => $voterflagger) {
 					$newvotersflaggers[$index]['handle'] = isset($useridhandles[$voterflagger['userid']]) ? $useridhandles[$voterflagger['userid']] : null;
+				}
 			}
 
-			foreach ($newvotersflaggers as $voterflagger)
+			foreach ($newvotersflaggers as $voterflagger) {
 				$this->qa_voters_flaggers_cache[$voterflagger['postid']][] = $voterflagger;
+			}
 
 			$this->qa_voters_flaggers_queue = array();
 		}
 	}
 
-	/**
-	 * @deprecated This function will become private in Q2A 1.8. It is specific to this plugin and
-	 * should not be used by outside code.
-	 */
-	public function get_post_voters_flaggers($post, $postid)
+	private function get_post_voters_flaggers($post, $postid)
 	{
 		require_once QA_INCLUDE_DIR . 'util/sort.php';
 
