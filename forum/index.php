@@ -23,7 +23,7 @@
 require_once 'vendor/autoload.php';
 
 global $client;
-$client = new Raven_Client('https://2a54544850e24243abfa7afc0b22c79a@sentry.io/1271245',['environment' => 'local']);
+$client = new Raven_Client('',['environment' => 'local']);
 $error_handler = new Raven_ErrorHandler($client);
 $error_handler->registerExceptionHandler();
 $error_handler->registerErrorHandler();
