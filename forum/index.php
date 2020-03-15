@@ -25,14 +25,15 @@ require_once 'vendor/autoload.php';
 // Set base path here so this works with symbolic links for multiple installations
 define('QA_BASE_DIR', dirname(empty($_SERVER['SCRIPT_FILENAME']) ? __FILE__ : $_SERVER['SCRIPT_FILENAME']) . '/');
 
-if (file_exists(QA_BASE_DIR . 'qa-config.php')) {
-    require_once QA_BASE_DIR . 'qa-config.php';
+if (!file_exists(QA_BASE_DIR . 'qa-config.php')) {
+    throw new RuntimeException(
+        'The config file could not be found. Please copy qa-config-example.php to qa-config.php and modify if you need.'
+    );
 }
+require_once QA_BASE_DIR . 'qa-config.php';
 
 global $client;
-$client = new Raven_Client(SENTRY_DSN ?? '', [
-    'environment' => SENTRY_ENVIRONMENT ?? 'local'
-]);
+$client = new Raven_Client(SENTRY_DSN, ['environment' => SENTRY_ENVIRONMENT]);
 $error_handler = new Raven_ErrorHandler($client);
 $error_handler->registerExceptionHandler();
 $error_handler->registerErrorHandler();

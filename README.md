@@ -40,7 +40,9 @@ W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z upra
 W systemach Unix'owych po prostu w ```/etc/hosts```.
 
 ### Konfiguracja
-Domyślna konfiguracja jest przystosowana do działania w przygotowanym przez nas środowisku lokalnym. Jeśli jednak potrzebujesz ją zmienić, skopiuj plik `qa-config-example.php` do `qa-config.php` i nanieś konieczne modyfikacje. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
+Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
+
+W razie potrzeby zmodyfikuj konfigurację w pliku `qa-config.php`. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
 
 # Co tu znajdę?
 ## Serwer

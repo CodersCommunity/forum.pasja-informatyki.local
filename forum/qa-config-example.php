@@ -1,5 +1,4 @@
 <?php
-
 /*
     Question2Answer by Gideon Greenspan and contributors
     http://www.question2answer.org/
@@ -20,7 +19,7 @@
 /*
     IMPORTANT!
     This is file with default configuration.
-    If you need override values, please copy this file to qa-config.php and change therein.
+    To start, copy this file to qa-config.php and modify it if you need.
     Don't modify and don't remove this file!
 */
 

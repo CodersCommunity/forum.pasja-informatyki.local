@@ -202,12 +202,6 @@
 
 	//	Default values if not set in qa-config.php
 
-        defined('QA_MYSQL_HOSTNAME') || define('QA_MYSQL_HOSTNAME', 'localhost');
-        defined('QA_MYSQL_USERNAME') || define('QA_MYSQL_USERNAME', 'test');
-        defined('QA_MYSQL_PASSWORD') || define('QA_MYSQL_PASSWORD', 'test');
-        defined('QA_MYSQL_DATABASE') || define('QA_MYSQL_DATABASE', 'forum');
-        defined('QA_MYSQL_TABLE_PREFIX') || define('QA_MYSQL_TABLE_PREFIX', 'qa_');
-        defined('QA_EXTERNAL_USERS') || define('QA_EXTERNAL_USERS', false);
         defined('QA_COOKIE_DOMAIN') || define('QA_COOKIE_DOMAIN', '');
         defined('QA_COOKIE_SECURE') || define('QA_COOKIE_SECURE', false);
         defined('QA_COOKIE_HTTPONLY') || define('QA_COOKIE_HTTPONLY', true);
