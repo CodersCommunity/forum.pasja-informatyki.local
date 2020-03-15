@@ -29,6 +29,9 @@
 
 	For persistent connections, set the QA_PERSISTENT_CONN_DB at the bottom of this file; do NOT
 	prepend the hostname with 'p:'.
+
+	To use a non-default port, add the following line to the list of defines, with the appropriate port number:
+	define('QA_MYSQL_PORT', '3306');
 */
 
 	define('QA_MYSQL_HOSTNAME', 'localhost');
@@ -58,15 +61,19 @@
 	MySQL database, or to include the Question2Answer tables in an existing MySQL database.
 */
 
-	define('QA_MYSQL_TABLE_PREFIX', 'qa_');
+define('QA_MYSQL_TABLE_PREFIX', 'qa_');
 
 /*
 	If you wish, you can define QA_MYSQL_USERS_PREFIX separately from QA_MYSQL_TABLE_PREFIX.
-	If so, it is used instead of QA_MYSQL_TABLE_PREFIX as the prefix for tables containing
-	information about user accounts (not including users' activity and points). This allows
-	multiple Q2A sites to have shared logins and users, but separate posts and activity.
+	If so, tables containing information about user accounts (not including users' activity and points)
+	get the prefix of QA_MYSQL_TABLE_PREFIX. This allows multiple Q2A sites to have shared logins
+	and users, but separate posts and activity.
 
-	define('QA_MYSQL_USERS_PREFIX', 'qa_users_');
+	If you have installed question2answer with default "qa_" prefix and want to setup a second
+	installation, you define the QA_MYSQL_USERS_PREFIX as "qa_" so this new installation
+	can access the same database as the first installation.
+
+	define('QA_MYSQL_USERS_PREFIX', 'sharedusers_');
 */
 
 /*
@@ -83,6 +90,15 @@
 */
 
 /*
+	If you wish to use file-based caching, you must define QA_CACHE_DIRECTORY to store the cache
+	files. The directory must be writable by the web server. For maximum security it's STRONGLY
+	recommended to place the folder outside of the web root (so they can never be accessed via a
+	web browser).
+
+	define('QA_CACHE_DIRECTORY', '/path/to/writable_cache_directory/');
+*/
+
+/*
 	If you wish, you can define QA_COOKIE_DOMAIN so that any cookies created by Q2A are assigned
 	to a specific domain name, instead of the full domain name of the request by default. This is
 	useful if you're running multiple Q2A sites on subdomains with a shared user base.
@@ -91,22 +107,12 @@
 */
 
 /*
-    Secure flag for cookies and session cookie - set true if you use https
-    define('QA_COOKIE_SECURE', false);
-*/
-
-/*
-    httponly flag for cookies and session cookie
-    define('QA_COOKIE_HTTPONLY', true);
-*/
-
-/*
 	If you wish, you can define an array $QA_CONST_PATH_MAP to modify the URLs used in your Q2A site.
 	The key of each array element should be the standard part of the path, e.g. 'questions',
 	and the value should be the replacement for that standard part, e.g. 'topics'. If you edit this
 	file in UTF-8 encoding you can also use non-ASCII characters in these URLs.
 
-	$QA_CONST_PATH_MAP=array(
+	$QA_CONST_PATH_MAP = array(
 		'questions' => 'topics',
 		'categories' => 'sections',
 		'users' => 'contributors',
@@ -123,7 +129,7 @@
 	effect can now be achieved in plugins by using function overrides.
 */
 
-	define('QA_EXTERNAL_USERS', false);
+define('QA_EXTERNAL_USERS', false);
 
 /*
 	Out-of-the-box WordPress 3.x integration - to integrate with your WordPress site and user
@@ -135,11 +141,22 @@
 */
 
 /*
+	Out-of-the-box Joomla! 3.x integration - to integrate with your Joomla! site, define
+	QA_JOOMLA_INTEGRATE_PATH. as the full path to the Joomla! directory. If your Q2A
+	site is a subdirectory of your main Joomla site (recommended), you can specify
+	dirname(__DIR__) rather than the full path.
+	With this set, you do not need to set the QA_MYSQL_* constants above since these
+	will be taken from Joomla automatically. See online documentation for more details.
+
+	define('QA_JOOMLA_INTEGRATE_PATH', dirname(__DIR__));
+*/
+
+/*
 	Some settings to help optimize your Question2Answer site's performance.
 
-	If QA_HTML_COMPRESSION is true, HTML web pages will be output using Gzip compression, if
-	the user's browser indicates this is supported. This will increase the performance of your
-	site, but may make debugging harder if PHP does not complete execution.
+	If QA_HTML_COMPRESSION is true, HTML web pages will be output using Gzip compression, which
+	will increase the performance of your site (if the user's browser indicates this is supported).
+	This is best done at the server level if possible, but many hosts don't provide server access.
 
 	QA_MAX_LIMIT_START is the maximum start parameter that can be requested, for paging through
 	long lists of questions, etc... As the start parameter gets higher, queries tend to get
@@ -154,13 +171,14 @@
 	are not indexed efficiently. For example, this will enable browsing unanswered questions per
 	category. If your database becomes large, these queries could become costly.
 
-	Set QA_OPTIMIZE_LOCAL_DB to true if your web server and MySQL are running on the same box.
+	Set QA_OPTIMIZE_DISTANT_DB to false if your web server and MySQL are running on the same box.
 	When viewing a page on your site, this will use many simple MySQL queries instead of fewer
 	complex ones, which makes sense since there is no latency for localhost access.
+	Otherwise, set it to true if your web server and MySQL are far enough apart to create
+	significant latency. This will minimize the number of database queries as much as is possible,
+	even at the cost of significant additional processing at each end.
 
-	Set QA_OPTIMIZE_DISTANT_DB to true if your web server and MySQL are far enough apart to
-	create significant latency. This will minimize the number of database queries as much as
-	is possible, even at the cost of significant additional processing at each end.
+	The option QA_OPTIMIZE_LOCAL_DB is no longer used, since QA_OPTIMIZE_DISTANT_DB covers our uses.
 
 	Set QA_PERSISTENT_CONN_DB to true to use persistent database connections. Requires PHP 5.3.
 	Only use this if you are absolutely sure it is a good idea under your setup - generally it is
@@ -170,22 +188,15 @@
 	bottom of every Question2Answer page.
 */
 
-	define('QA_HTML_COMPRESSION', true);
-	define('QA_MAX_LIMIT_START', 19999);
-	define('QA_IGNORED_WORDS_FREQ', 10000);
-	define('QA_ALLOW_UNINDEXED_QUERIES', false);
-	define('QA_OPTIMIZE_LOCAL_DB', false);
-	define('QA_OPTIMIZE_DISTANT_DB', false);
-	define('QA_PERSISTENT_CONN_DB', false);
-	define('QA_DEBUG_PERFORMANCE', false);
-	define('QA_DB_MAX_CONTENT_LENGTH', 15000);
+define('QA_HTML_COMPRESSION', true);
+define('QA_MAX_LIMIT_START', 19999);
+define('QA_IGNORED_WORDS_FREQ', 10000);
+define('QA_ALLOW_UNINDEXED_QUERIES', false);
+define('QA_OPTIMIZE_DISTANT_DB', true);
+define('QA_PERSISTENT_CONN_DB', false);
+define('QA_DEBUG_PERFORMANCE', true);
 
 /*
 	And lastly... if you want to, you can predefine any constant from qa-db-maxima.php in this
 	file to override the default setting. Just make sure you know what you're doing!
-*/
-
-
-/*
-	Omit PHP closing tag to help avoid accidental output
 */
