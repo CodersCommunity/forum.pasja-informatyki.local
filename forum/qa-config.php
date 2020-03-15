@@ -194,7 +194,7 @@ define('QA_IGNORED_WORDS_FREQ', 10000);
 define('QA_ALLOW_UNINDEXED_QUERIES', false);
 define('QA_OPTIMIZE_DISTANT_DB', true);
 define('QA_PERSISTENT_CONN_DB', false);
-define('QA_DEBUG_PERFORMANCE', true);
+define('QA_DEBUG_PERFORMANCE', false);
 
 /*
 	And lastly... if you want to, you can predefine any constant from qa-db-maxima.php in this
