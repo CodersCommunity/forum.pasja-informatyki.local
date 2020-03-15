@@ -3,3 +3,4 @@
 *.retry
 /vendor/
 /forum/vendor/
+/forum/qa-config.php

@@ -182,11 +182,6 @@
 		define('QA_THEME_DIR', QA_BASE_DIR.'qa-theme/');
 		define('QA_PLUGIN_DIR', QA_BASE_DIR.'qa-plugin/');
 
-		if (!file_exists(QA_BASE_DIR.'qa-config.php'))
-			qa_fatal_error('The config file could not be found. Please read the instructions in qa-config-example.php.');
-
-		require_once QA_BASE_DIR.'qa-config.php';
-
 		$qa_request_map=is_array(@$QA_CONST_PATH_MAP) ? $QA_CONST_PATH_MAP : array();
 
 		if (defined('QA_WORDPRESS_INTEGRATE_PATH') && strlen(QA_WORDPRESS_INTEGRATE_PATH)) {
@@ -207,6 +202,12 @@
 
 	//	Default values if not set in qa-config.php
 
+        defined('QA_MYSQL_HOSTNAME') || define('QA_MYSQL_HOSTNAME', 'localhost');
+        defined('QA_MYSQL_USERNAME') || define('QA_MYSQL_USERNAME', 'test');
+        defined('QA_MYSQL_PASSWORD') || define('QA_MYSQL_PASSWORD', 'test');
+        defined('QA_MYSQL_DATABASE') || define('QA_MYSQL_DATABASE', 'forum');
+        defined('QA_MYSQL_TABLE_PREFIX') || define('QA_MYSQL_TABLE_PREFIX', 'qa_');
+        defined('QA_EXTERNAL_USERS') || define('QA_EXTERNAL_USERS', false);
         defined('QA_COOKIE_DOMAIN') || define('QA_COOKIE_DOMAIN', '');
         defined('QA_COOKIE_SECURE') || define('QA_COOKIE_SECURE', false);
         defined('QA_COOKIE_HTTPONLY') || define('QA_COOKIE_HTTPONLY', true);
