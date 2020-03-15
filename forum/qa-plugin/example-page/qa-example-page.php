@@ -44,7 +44,6 @@ class qa_example_page
 		);
 	}
 
-
 	public function match_request($request)
 	{
 		return $request == 'example-plugin-page';
