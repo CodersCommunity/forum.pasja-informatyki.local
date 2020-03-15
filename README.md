@@ -39,6 +39,8 @@ W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka 
 W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
 W systemach Unix'owych po prostu w ```/etc/hosts```.
 
+### Konfiguracja
+Domyślna konfiguracja jest przystosowana do działania w przygotowanym przez nas środowisku lokalnym. Jeśli jednak potrzebujesz ją zmienić, skopiuj plik `qa-config-example.php` do `qa-config.php` i nanieś konieczne modyfikacje. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
 
 # Co tu znajdę?
 ## Serwer
