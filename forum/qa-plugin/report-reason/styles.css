@@ -94,3 +94,7 @@ input.qa-spam-reason-radio:checked + span {
 .hide {
     display: none !important;
 }
+
+.qa-c-list-item .qa-form-light-button-flag, .qa-c-list-item .qa-form-light-button-unflag, .qa-c-list-item .qa-form-light-button-clearflags, .qa-form-light-button-flag {
+	cursor: pointer;
+}
