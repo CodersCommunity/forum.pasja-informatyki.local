@@ -28,7 +28,7 @@
 		var $plugin_url_warnonleave;
 
 		// needed to get the plugin url
-		public function __construct($template, $content, $rooturl, $request)
+		function qa_html_theme_layer($template, $content, $rooturl, $request)
 		{
 			if(qa_opt('q2apro_warnonleave_enabled')) {
 				global $qa_layers;

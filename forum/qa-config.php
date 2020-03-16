@@ -32,8 +32,8 @@
 */
 
 	define('QA_MYSQL_HOSTNAME', 'localhost');
-	define('QA_MYSQL_USERNAME', 'root');
-	define('QA_MYSQL_PASSWORD', 'root');
+	define('QA_MYSQL_USERNAME', 'test');
+	define('QA_MYSQL_PASSWORD', 'test');
 	define('QA_MYSQL_DATABASE', 'forum');
 
 /*
