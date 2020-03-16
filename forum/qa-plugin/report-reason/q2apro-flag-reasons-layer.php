@@ -6,7 +6,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     
     public function head_script()
     {      
-        qa_html_theme_base::head_script();
+        parent::head_script();
         $this->isLogged = qa_is_logged_in(); 
         
         if ($this->isLogged && 'question' === $this->template) {
@@ -16,10 +16,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                     const flagAjaxURL = "' . qa_path('ajaxflagger') . '";
                     const flagQuestionid = ' . $this->content['q_view']['raw']['postid'] . ';
                 </script>
-            '
-            );
-            $this->output(
-                '
+
                 <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'script.js"></script>
                 <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'styles.css">
             '
@@ -29,28 +26,28 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function q_view_buttons($q_view)
     {
-        if ($this->isLogged && isset($q_view['form']['buttons']['flag'], $q_view['raw']['postid'])) {
+        if ($this->checkPostData($q_view)) {
             $q_view['form']['buttons']['flag']['tags'] =
                 'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" ';
         }
-        qa_html_theme_base::q_view_buttons($q_view);
+        parent::q_view_buttons($q_view);
     }
 
     public function a_item_buttons($a_item)
     {
-        if ($this->isLogged && isset($a_item['form']['buttons']['flag'], $a_item['raw']['postid'])) {
+        if ($this->checkPostData($a_item)) {
             $a_item['form']['buttons']['flag']['tags'] =
                 'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" ';
         }
-        qa_html_theme_base::a_item_buttons($a_item);
+        parent::a_item_buttons($a_item);
     }
 
     public function c_item_buttons($c_item)
     {
-        if ($this->isLogged && isset($c_item['form']['buttons']['flag'], $c_item['raw']['postid'])) {
+        if ($this->checkPostData($c_item)) {
             $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" ';
         }
-        qa_html_theme_base::c_item_buttons($c_item);
+        parent::c_item_buttons($c_item);
     }
 
     public function body_hidden()
@@ -97,12 +94,12 @@ class qa_html_theme_layer extends qa_html_theme_base
             </div>
             ');
         }
-        qa_html_theme_base::body_hidden();
+        parent::body_hidden();
     }
 
     public function post_meta_flags($post, $class)
     {
-        if ('qa-q-item' == $class || 'qa-a-item' === $class || 'qa-c-item' === $class || 'qa-q-view' === $class) {
+        if (in_array($class, ['qa-q-item', 'qa-a-item', 'qa-c-item', 'qa-q-view'])) {
             if (isset($post['raw']['postid'])) {
                 $postId = (empty(q2apro_count_postflags_output($post['raw']['postid'])) && isset($post['raw']['opostid'])) ? $post['raw']['opostid'] : $post['raw']['postid'];
                 $flagInfo = q2apro_count_postflags_output($postId);
@@ -117,7 +114,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                 }
             }
         }
-        qa_html_theme_base::post_meta_flags($post, $class);
+        parent::post_meta_flags($post, $class);
     }
     
     private function prepareFlagSuffix($flagsCount)
@@ -133,5 +130,10 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         
         return $flagsCount . $flagsCountText;
+    }
+    
+    private function checkPostData($item)
+    {
+        return $this->isLogged && isset($item['form']['buttons']['flag'], $item['raw']['postid'])
     }
 }

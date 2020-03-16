@@ -30,7 +30,6 @@ class q2apro_flag_reasons_page
 
     public function process_request($request)
     {
-
         $logged = qa_is_logged_in();
         if (!$logged) {
             exit();
@@ -124,12 +123,14 @@ class q2apro_flag_reasons_page
                         ); // hiding not really by this user so pass nulls
                     }
 
-                    qa_db_query_sub(
-                        '
-                        INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`) 
-                        VALUES (#, #, #, $)
-                    ', $userId, $answer['postid'], $reasonId, $notice
-                    );
+                    if ($answer != null) {
+                        qa_db_query_sub(
+                            '
+                                INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`) 
+                                VALUES (#, #, #, $)
+                            ', $userId, $answer['postid'], $reasonId, $notice
+                        );
+                    }
                 }
             } elseif ('c' === $postType) {
                 $commentId = $postId;
