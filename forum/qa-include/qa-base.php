@@ -182,11 +182,6 @@
 		define('QA_THEME_DIR', QA_BASE_DIR.'qa-theme/');
 		define('QA_PLUGIN_DIR', QA_BASE_DIR.'qa-plugin/');
 
-		if (!file_exists(QA_BASE_DIR.'qa-config.php'))
-			qa_fatal_error('The config file could not be found. Please read the instructions in qa-config-example.php.');
-
-		require_once QA_BASE_DIR.'qa-config.php';
-
 		$qa_request_map=is_array(@$QA_CONST_PATH_MAP) ? $QA_CONST_PATH_MAP : array();
 
 		if (defined('QA_WORDPRESS_INTEGRATE_PATH') && strlen(QA_WORDPRESS_INTEGRATE_PATH)) {
