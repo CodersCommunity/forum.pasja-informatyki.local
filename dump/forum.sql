@@ -1748,8 +1748,8 @@ INSERT INTO `qa_words` (`wordid`, `word`, `titlecount`, `contentcount`, `tagword
 --
 
 CREATE TABLE IF NOT EXISTS `qa_blockedpw` (
-  `fromUserId` int(10) unsigned NOT NULL,
-  `toUserId` int(10) unsigned NOT NULL
+  `from_user_id` int(10) unsigned NOT NULL,
+  `to_user_id` int(10) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

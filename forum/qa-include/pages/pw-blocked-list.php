@@ -35,18 +35,18 @@
     
     $userId = qa_get_logged_in_userid();
     if (empty($userId)) {
-        $qa_content['error'] = 'Musisz być zalogowany aby wykonać tą czynność';
+        $qa_content['error'] = 'Musisz być zalogowany, aby wykonać tą czynność';
         
         return $qa_content;
     }
     
     if (qa_post_text('userid')) {
-        qa_db_query_sub('DELETE FROM `^blockedpw` WHERE `fromUserId` = # AND `toUserId` = #', $userId, (int) qa_post_text('userid'));
+        qa_db_query_sub('DELETE FROM `^blockedpw` WHERE `from_user_id` = # AND `to_user_id` = #', $userId, (int) qa_post_text('userid'));
     }
     
     $blockedUsers = qa_db_select_with_pending([
                 'columns' => ['^users.userid', '^users.handle',  '^users.flags', '^users.email', 'avatarblobid' => 'BINARY avatarblobid', '^users.avatarwidth', '^users.avatarheight'],
-                'source' => '^users JOIN (SELECT toUserId FROM ^blockedpw WHERE fromUserId = #) s ON ^users.userid=s.toUserId',//'^users JOIN (SELECT userid FROM ^userpoints ORDER BY points DESC LIMIT #,#) y ON ^users.userid=y.userid JOIN ^userpoints ON ^users.userid=^userpoints.userid',
+                'source' => '^users JOIN (SELECT to_user_id FROM ^blockedpw WHERE from_user_id = #) s ON ^users.userid=s.to_user_id',
                 'arguments' => [$userId],
                 'arraykey' => 'userid',
             ]);
@@ -56,7 +56,6 @@
     if (0 === count($blockedUsers)) {
         $pageContent = 'Nikogo jeszcze nie zablokowałeś, ale gdy zajdzie taka potrzeba, nie wahaj się';
     } else {
-    
         $qa_content['ranking'] = [
             'items' => [],
             'rows' => 2,

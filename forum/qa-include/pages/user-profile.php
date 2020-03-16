@@ -271,9 +271,9 @@
     }
 
     if (qa_clicked('doblockpw')) {
-        qa_db_query_sub('INSERT INTO ^blockedpw(`fromUserId`, `toUserId`) VALUES (#, #)', $loginuserid, $useraccount['userid']);
+        qa_db_query_sub('INSERT INTO ^blockedpw(`from_user_id`, `to_user_id`) VALUES (#, #)', $loginuserid, $useraccount['userid']);
     } else if (qa_clicked('dounblockpw')) {
-        qa_db_query_sub('DELETE FROM ^blockedpw WHERE fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid']);
+        qa_db_query_sub('DELETE FROM ^blockedpw WHERE from_user_id = # AND to_user_id = #', $loginuserid, $useraccount['userid']);
     }
 
 
@@ -926,7 +926,7 @@
 
         $option = qa_opt('allow_private_messages');
         
-        $isBlocked = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid'], $useraccount['userid'], $loginuserid);
+        $isBlocked = qa_db_query_sub('SELECT `from_user_id`, `to_user_id` FROM ^blockedpw WHERE from_user_id = # AND to_user_id = # OR from_user_id = # AND to_user_id = #', $loginuserid, $useraccount['userid'], $useraccount['userid'], $loginuserid);
 
         $notBlocked = 0 === $isBlocked->num_rows;
         $notTheSameUser = ($loginuserid !== $userid);
@@ -956,7 +956,7 @@
                 '^1' => '<br><dfn class="pw-link-admins" data-info="Użytkownik ma wyłączone otrzymywanie wiadomości od innych użytkowników lub po prostu Ciebie zablokował, ale korzystając z uprawnień administracyjnych możesz się z nim skontaktować"><a href="'.qa_path_html('message/'.$handle).'">',
                 '^2' => '</a></dfn>',
             ));
-        } else {
+        } else if ($notTheSameUser) {
             $qa_content['form_profile']['fields']['level']['value'] .= strtr('^1^2', array(
                 '^1' => '<a href="'.qa_path_html('message/'.$handle).'">Zobacz historię prywatnych wiadomości',
                 '^2' => '</a>',
@@ -2044,7 +2044,7 @@
 
 
 
-    $canBlock = qa_db_query_sub('SELECT `toUserId`, `fromUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = #', $loginuserid, $useraccount['userid']);
+    $canBlock = qa_db_query_sub('SELECT `to_user_id`, `from_user_id` FROM ^blockedpw WHERE from_user_id = # AND to_user_id = #', $loginuserid, $useraccount['userid']);
     $canBlockUser = (0 === $canBlock->num_rows);
 
     $isLogged = null !== qa_get_logged_in_userid();

@@ -94,9 +94,27 @@
     if ($state == 'email-error')
         $pageerror = qa_lang_html('main/email_error');
 
+    $hideForm = !empty($pageerror) || $messagesent;
+
+    $qa_content['title'] = qa_lang_html('misc/private_message_title');
+
+    $qa_content['error'] = @$pageerror;
+
+    $blockedPrivateMessages = qa_db_query_sub('SELECT `from_user_id`, `to_user_id` FROM ^blockedpw WHERE from_user_id = # AND to_user_id = # OR from_user_id = # AND to_user_id = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
+    $allowedPrivateMessages = qa_opt('allow_private_messages');
+    $blockedPrivateMessageBool = 0 != $blockedPrivateMessages->num_rows;
+
     if (qa_post_text('domessage')) {
         $inmessage = qa_post_text('message');
 
+        if ($blockedPrivateMessageBool ||
+        !$allowedPrivateMessages) {
+            $userLevel = qa_get_logged_in_level();
+            if($userLevel < QA_USER_LEVEL_EDITOR) {
+                $qa_content['error'] = 'Nie możesz wysłać wiadomości prywatnej do tego użytkownika';
+                return $qa_content;
+            }
+        }
         if (isset($pageerror)) {
             // not permitted to post, so quit here
             $qa_content['error'] = $pageerror;
@@ -162,24 +180,12 @@
 
 //    Prepare content for theme
 
-    $hideForm = !empty($pageerror) || $messagesent;
-
-    $qa_content['title'] = qa_lang_html('misc/private_message_title');
-
-    $qa_content['error'] = @$pageerror;
-
-    $blockedPrivateMessages = qa_db_query_sub('SELECT `fromUserId`, `toUserId` FROM ^blockedpw WHERE fromUserId = # AND toUserId = # OR fromUserId = # AND toUserId = #', $loginuserid, $toaccount['userid'], $toaccount['userid'], $loginuserid);
-    $allowedPrivateMessages = qa_opt('allow_private_messages');
-    $blockedPrivateMessageBool = 0 != $blockedPrivateMessages->num_rows;
-
-    if (
-        $blockedPrivateMessageBool ||
-        !$allowedPrivateMessages
-    ) {
+    if ($blockedPrivateMessageBool ||
+        !$allowedPrivateMessages) {
         $userLevel = qa_get_logged_in_level();
         if($userLevel < QA_USER_LEVEL_EDITOR) {
             // user blocked pw and loggedin can't send messages
-            $qa_content['custom'] = 'Nie możesz wysłać wiadomości prywatnej do tego uzytkownika.';
+            $qa_content['custom'] = 'Nie możesz wysłać wiadomości prywatnej do tego użytkownika.';
         } else {
             // user blocked pw, but loggedin is admin and can send message
             $qa_content['form_message'] = [
