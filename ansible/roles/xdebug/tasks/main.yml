@@ -1,4 +1,10 @@
 ---
 - name: Install xDebug
   become: true
-  apt: pkg=php5.6-xdebug state=latest
+  apt: pkg=php7.1-xdebug state=latest
+
+- name: configure xdebug
+  template: src=xdebug.ini.j2 dest=/etc/php/7.1/apache2/conf.d/20-xdebug.ini
+  notify:
+    - restart php-fpm7.1
+    - restart apache
