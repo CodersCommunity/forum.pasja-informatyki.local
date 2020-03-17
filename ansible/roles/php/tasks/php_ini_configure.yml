@@ -18,7 +18,7 @@
   shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/7.1/apache2/php.ini
   become: true
 
-- name: Error Reporting in //etc/php/7.1/cli/php.ini
+- name: Error Reporting in /etc/php/7.1/cli/php.ini
   shell:  sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/7.1/cli/php.ini
   become: true
 

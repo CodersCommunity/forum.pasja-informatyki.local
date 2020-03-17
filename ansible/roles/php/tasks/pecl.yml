@@ -13,7 +13,7 @@
 - name: Create extension .ini file
   template: >
     src="extension.tpl"
-    dest="/etc/php7/mods-available/{{ item }}.ini"
+    dest="/{{ item }}.ini"
     owner="root"
     group="root"
     mode=0644

@@ -20,6 +20,7 @@
   apt: pkg={{ item }} state=latest
   with_items: 
    - php7.1-cli
+   - php7.1-xdebug
    - php7.1-intl
    - php7.1-mcrypt
    - php7.1-curl
