@@ -182,11 +182,6 @@
 		define('QA_THEME_DIR', QA_BASE_DIR.'qa-theme/');
 		define('QA_PLUGIN_DIR', QA_BASE_DIR.'qa-plugin/');
 
-		if (!file_exists(QA_BASE_DIR.'qa-config.php'))
-			qa_fatal_error('The config file could not be found. Please read the instructions in qa-config-example.php.');
-
-		require_once QA_BASE_DIR.'qa-config.php';
-
 		$qa_request_map=is_array(@$QA_CONST_PATH_MAP) ? $QA_CONST_PATH_MAP : array();
 
 		if (defined('QA_WORDPRESS_INTEGRATE_PATH') && strlen(QA_WORDPRESS_INTEGRATE_PATH)) {
@@ -604,6 +599,12 @@
 			}
 
 			@error_log('PHP Question2Answer more info: '.$php_errormsg." in eval()'d code from ".qa_html($filename));
+
+			global $client;
+            $client->captureException(
+                new \RuntimeException('PHP Question2Answer more info: '.$php_errormsg." in eval()'d code from ".qa_html($filename)),
+                [$eval, $filename]
+            );
 		}
 
 		@ini_set('track_errors', $oldtrackerrors);
@@ -693,6 +694,12 @@
 
 		echo 'Question2Answer fatal error:<p><font color="red">'.qa_html($message, true).'</font></p>';
 		@error_log('PHP Question2Answer fatal error: '.$message);
+
+        global $client;
+        $client->captureException(
+            new \RuntimeException('PHP Question2Answer fatal error: '.$message)
+        );
+
 		echo '<p>Stack trace:<p>';
 
 		$backtrace=array_reverse(array_slice(debug_backtrace(), 1));

@@ -1,0 +1,12 @@
+{
+  "name": "On-Site-Notifications",
+  "uri": "http://www.q2apro.com/plugins/on-site-notifications",
+  "description": "Facebook-like / Stackoverflow-like notifications on your question2answer forum that can replace all email-notifications.",
+  "version": "1.2",
+  "date": "2014-11-14",
+  "author": "q2apro.com",
+  "author_uri": "http://www.q2apro.com/",
+  "license": "GPLv3",
+  "update_uri": "https://raw.githubusercontent.com/q2apro/q2apro-on-site-notifications/master/qa-plugin.php",
+  "min_q2a": "1.6"
+}

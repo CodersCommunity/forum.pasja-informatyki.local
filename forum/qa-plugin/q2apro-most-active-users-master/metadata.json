@@ -1,0 +1,12 @@
+{
+  "name": "Most active users (per time interval)",
+  "uri": "https://www.github.com/echteinfachtv/q2a-most-active-users/",
+  "description": "Displays the most active users of the current week or month in a widget",
+  "version": "1.2",
+  "date": "2013-02-07",
+  "author": "echteinfachtv",
+  "author_uri": "http://www.echteinfach.tv/",
+  "license": "GPLv3",
+  "update_uri": "https://raw.github.com/echteinfachtv/q2a-most-active-users/master/qa-plugin.php",
+  "min_q2a": "1.4"
+}

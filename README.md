@@ -39,12 +39,16 @@ W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka 
 W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
 W systemach Unix'owych po prostu w ```/etc/hosts```.
 
+### Konfiguracja
+Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
+
+W razie potrzeby zmodyfikuj konfigurację w pliku `qa-config.php`. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
 
 # Co tu znajdę?
 ## Serwer
 Na serwerze zainstalowano:
 
- - PHP 5.6
+ - PHP 7.1
  - xdebug
  - Composer
  - mysql (bez phpmydamin) **[Zamiast phpmyadmin świetnie spisuje się MySQL Workbench]**

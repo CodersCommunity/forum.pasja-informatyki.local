@@ -28,13 +28,13 @@
 		var $plugin_url_warnonleave;
 
 		// needed to get the plugin url
-		function qa_html_theme_layer($template, $content, $rooturl, $request)
+		public function __construct($template, $content, $rooturl, $request)
 		{
 			if(qa_opt('q2apro_warnonleave_enabled')) {
 				global $qa_layers;
 				$this->plugin_url_warnonleave = $qa_layers['Warn-On-Leave Layer']['urltoroot'];
 			}
-			qa_html_theme_base::qa_html_theme_base($template, $content, $rooturl, $request);
+			qa_html_theme_base::__construct($template, $content, $rooturl, $request);
 		}
 		
 		function head_script(){

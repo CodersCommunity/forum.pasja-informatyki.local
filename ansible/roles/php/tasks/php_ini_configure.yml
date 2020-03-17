@@ -1,31 +1,31 @@
 ---
 # application tasks to be customized and to run after the main provision
 
-- name: Display Errors in /etc/php/5.6/apache2/php.ini
-  shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/5.6/apache2/php.ini
+- name: Display Errors in /etc/php/7.1/apache2/php.ini
+  shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/7.1/apache2/php.ini
   become: true
 
-- name: Display Errors in /etc/php/5.6/cli/php.ini
-  shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/5.6/cli/php.ini
+- name: Display Errors in /etc/php/7.1/cli/php.ini
+  shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/7.1/cli/php.ini
   become: true
 
-- name: Display Errors in /etc/php/5.6/fpm/php.ini
-  shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/5.6/fpm/php.ini
+- name: Display Errors in /etc/php/7.1/fpm/php.ini
+  shell: sed -i -e 's/^display_errors =.*/display_errors = On/g' /etc/php/7.1/fpm/php.ini
   become: true
 
 # Error Reporting
-- name: Error Reporting in /etc/php/5.6/apache2/php.ini
-  shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/5.6/apache2/php.ini
+- name: Error Reporting in /etc/php/7.1/apache2/php.ini
+  shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/7.1/apache2/php.ini
   become: true
 
-- name: Error Reporting in //etc/php/5.6/cli/php.ini
-  shell:  sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/5.6/cli/php.ini
+- name: Error Reporting in //etc/php/7.1/cli/php.ini
+  shell:  sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/7.1/cli/php.ini
   become: true
 
-- name: Display Errors in /etc/php/5.6/fpm/php.ini
-  shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/5.6/fpm/php.ini
+- name: Display Errors in /etc/php/7.1/fpm/php.ini
+  shell: sed -i -e 's/^error_reporting =.*/error_reporting = E_ALL/g' /etc/php/7.1/fpm/php.ini
   become: true
 
 - name: Reload all
-  shell: service php5.6-fpm restart && service apache2 restart
+  shell: service php7.1-fpm restart && service apache2 restart
   become: true

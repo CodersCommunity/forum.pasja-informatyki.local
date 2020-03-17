@@ -1,2 +1,4 @@
----
-# application tasks to be customized and to run after the main provision
+- name: Copy application configuration
+  copy:
+    src: "{{ apache.docroot }}qa-config-example.php"
+    dest: "{{ apache.docroot }}qa-config.php"

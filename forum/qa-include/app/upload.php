@@ -39,13 +39,13 @@
 
 		switch (strtolower(substr($minphp, -1))) {
 			case 'g':
-				$minphp *= 1024;
+				$minphp = (int) $minphp * 1024;
 				// fall-through
 			case 'm':
-				$minphp *= 1024;
+				$minphp = (int) $minphp * 1024;
 				// fall-through
 			case 'k':
-				$minphp *= 1024;
+				$minphp = (int) $minphp * 1024;
 		}
 
 		return min($mindb, $minphp);

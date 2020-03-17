@@ -7,29 +7,29 @@
   become: true
   apt: update_cache=yes
 
-- name: Install php5
+- name: Install php7
   become: true
-  apt: pkg=php5.6 state=latest
+  apt: pkg=php7.1 state=latest
 
-- name: Install php5-fpm
+- name: Install php7-fpm
   become: true
-  apt: pkg=php5.6-fpm state=latest
+  apt: pkg=php7.1-fpm state=latest
 
 - name: Install PHP Packages
   become: true
   apt: pkg={{ item }} state=latest
   with_items: 
-   - php5.6-cli
-   - php5.6-intl
-   - php5.6-mcrypt
-   - php5.6-curl
-   - php5.6-imagick
-   - php5.6-common 
-   - php5.6-memcache
-   - php5.6-mysql 
-   - php5.6-readline
-   - php5.6-sqlite3
-   - php5.6-gd
+   - php7.1-cli
+   - php7.1-intl
+   - php7.1-mcrypt
+   - php7.1-curl
+   - php7.1-imagick
+   - php7.1-common
+   - php7.1-memcache
+   - php7.1-mysql
+   - php7.1-readline
+   - php7.1-sqlite3
+   - php7.1-gd
 - include: configure.yml
 - include: pecl.yml
 - include:  php_ini_configure.yml
