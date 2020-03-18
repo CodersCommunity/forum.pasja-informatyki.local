@@ -65,8 +65,7 @@ W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka 
 W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
 W systemach Unix'owych po prostu w ```/etc/hosts```.
 
-
-Strona forum powinna być pod adresem: http://forum.pasja-informatyki.local:8181
+Strona forum powinna być pod adresem: http://forum.pasja-informatyki.local
 
 ### Konfiguracja
 Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
