@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 require_once QA_INCLUDE_DIR . 'db/users.php';
 
-class block_pw_page
+class block_pm_page
 {
     private $directory;
     private $urltoroot;
@@ -21,7 +22,7 @@ class block_pw_page
         return $this->requestParts[0] === 'message';
     }
 
-    public function process_request(string $request): ?array
+    public function process_request(): ?array
     {
         // logged in user id
         $loggedIn = qa_get_logged_in_userid();
@@ -34,24 +35,28 @@ class block_pw_page
         
         if (empty($loggedIn)) {
             $qa_content = qa_content_prepare();
-            $qa_content['error'] = qa_lang_html('block_pw/logged_in');
+            $qa_content['error'] = qa_lang_html('block_pm/logged_in');
             
             return $qa_content;
         }
         
         $qa_content = require QA_INCLUDE_DIR . '/pages/message.php';
 
-        if (checkIfUserIsBlocked($loggedIn, $user) && qa_get_logged_in_level() == QA_USER_LEVEL_BASIC) {
-            $qa_content['custom'] = 'Nie możesz wysłać wiadomości prywatnej do tego użytkownika.';
+        if (ifUserIsBlocked($loggedIn, $user) && qa_get_logged_in_level() === QA_USER_LEVEL_BASIC) {
+            $qa_content['custom'] = qa_lang_html('block_pm/cannot_send');
             unset($qa_content['form_message']);
         }
 
         return $qa_content;
     }
     
-    private function getUser()
+    private function getUser(): ?array
     {
-        $user = qa_db_user_find_by_handle($this->requestParts[1]);
+        if (isset($this->requestParts[1])) {
+            $user = qa_db_user_find_by_handle($this->requestParts[1]);
+        } else {
+            $user = null;
+        }
         
         return $user;
     }

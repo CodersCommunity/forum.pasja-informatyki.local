@@ -7,9 +7,8 @@ function qa_get_request_content(): ?array
     $routing      = qa_page_routing();
     $page         = $firstlower . '/';
 
-    // todo: to wiadomo, że jest do poprawy, ale tu dalem koncept tylko
     if (isset($routing[$page]) && $requestparts[0] === 'message') {
-        qa_set_template($firstlower !== '' ? $firstlower : 'qa'); // will be changed later
+        qa_set_template($firstlower !== '' ? $firstlower : 'qa');
         $qa_content = require QA_INCLUDE_DIR . 'pages/default.php';
 
         if (isset($qa_content)) {
@@ -22,7 +21,7 @@ function qa_get_request_content(): ?array
     return qa_get_request_content_base();
 }
 
-function qa_user_permit_error($permitoption=null, $limitaction=null, $userlevel=null, $checkblocks=true)
+function qa_user_permit_error(string $permitoption=null, string $limitaction=null, string $userlevel=null, bool $checkblocks=true)
 {
     if (qa_post_text('domessage')) {
         $toUserId = qa_request_parts()[1] ?? '';
@@ -32,11 +31,7 @@ function qa_user_permit_error($permitoption=null, $limitaction=null, $userlevel=
             return;
         }
         
-        $blockedPrivateMessages = qa_db_query_sub('SELECT `from_user_id`, `to_user_id` FROM ^blockedpw WHERE (from_user_id = # AND to_user_id = #) OR (from_user_id = # AND to_user_id = #)', $loggedIn, $toUserId, $toUserId, $loggedIn);
-        $allowedPrivateMessages = qa_opt('allow_private_messages');
-        $blockedPrivateMessageBool = 0 != $blockedPrivateMessages->num_rows;
-        
-        if (checkIfUserIsBlocked($loggedIn, $toUserId)) {
+        if (ifUserIsBlocked($loggedIn, $toUserId)) {
             return 'userblock'; // user is blocked so return missing permissions error
         }
     }
