@@ -32,7 +32,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         $allowedToSeeButtons = $dbUser['handle'] !== qa_get_logged_in_handle() && strpos(qa_request(), 'user/') !== false && count(qa_request_parts()) === 2;
 
         if (!empty($dbUser)
-            && ((int) $dbUser['level']) === QA_USER_LEVEL_BASIC // cannot use `===` - $dbUser['level'] is string, const is int 
+            && ((int) $dbUser['level']) === QA_USER_LEVEL_BASIC 
             && $class === 'nav-sub'
             && $allowedToSeeButtons
         ) {
