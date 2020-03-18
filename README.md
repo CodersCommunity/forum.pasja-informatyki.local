@@ -11,6 +11,32 @@ Aby móc korzystać z *developerskiego środowiska* wymagane jest posiadanie nas
  - NFS server
 
 ## Instalacja
+### Docker i docker compose
+
+Musimy pobrać i zainstalować aktualną wersję dockera zgodnie z instrukcją: https://docs.docker.com/install/
+
+Musimy również mieć pobraną i zainstalowaną aktualną wersję docker compose: https://docs.docker.com/compose/install/
+
+Po zainstalowaniu powyższego oprogramowania pozostaje nam ściągnąć projekt z GitHuba:
+```git clone https://github.com/CodersCommunity/forum.pasja-informatyki.local.git```
+
+I ostatnim krokiem jest wykonanie w katalogu projektu:
+```
+docker-compose up -d
+```
+#### Ustawienie /etc/hosts
+Ponieważ mamy do czynienia z **wirtualną maszyną**, będziemy musieli zapewnić z nią wygodną komunikację. Domyślnym adresem, pod którym jest dostępny *mirror* forum jest ```192.168.122.122```.
+W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka w pliku ```/etc/hosts```, dopisując to na samym końcu tego pliku:
+```
+127.0.0.1 forum.pasja-informatyki.local
+```
+
+W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
+W systemach Unix'owych po prostu w ```/etc/hosts```.
+
+Strona forum powinna być pod adresem: http://forum.pasja-informatyki.local:8181
+
+### Vagrant
 Serwer NFS instalujemy na systemach Unix'owych w następujący sposób:
 ```sudo apt-get install nfs-common nfs-kernel-server```
 
@@ -29,7 +55,7 @@ I ostatnim krokiem jest wykonanie w katalogu projektu:
 
 Inną możliwością jest skorzystanie z programu **XAMPP** lub podobnego, oferującego serwer ```Apache``` i postępowanie zgodnie z niniejszą instrukcją: https://drive.google.com/file/d/0B_0lVIhwL9LWMjV1eGJyTk0yMTQ/view?pref=2&pli=1
 
-### Ustawienie /etc/hosts
+#### Ustawienie /etc/hosts
 Ponieważ mamy do czynienia z **wirtualną maszyną**, będziemy musieli zapewnić z nią wygodną komunikację. Domyślnym adresem, pod którym jest dostępny *mirror* forum jest ```192.168.122.122```.
 W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka w pliku ```/etc/hosts```, dopisując to na samym końcu tego pliku:
 ```
@@ -38,6 +64,9 @@ W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka 
 
 W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
 W systemach Unix'owych po prostu w ```/etc/hosts```.
+
+
+Strona forum powinna być pod adresem: http://forum.pasja-informatyki.local:8181
 
 ### Konfiguracja
 Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
