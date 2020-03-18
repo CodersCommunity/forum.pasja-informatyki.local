@@ -18,7 +18,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         parent::nav_list($navigation, $class, $level);
     }
     
-    private function performFormAction(int $loggedInId, int $profileUserId): void
+    private function performFormAction(?int $loggedInId, int $profileUserId): void
     {
         if (qa_clicked('douserblock')) {
             qa_db_query_sub('INSERT INTO `^blockedpw` VALUES (#, #)', $loggedInId, $profileUserId);
@@ -27,12 +27,12 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
     }
     
-    private function prepareProfileButtons(string $class, int $loggedInId, ?array $dbUser): void
+    private function prepareProfileButtons(string $class, ?int $loggedInId, ?array $dbUser): void
     {
         $allowedToSeeButtons = $dbUser['handle'] !== qa_get_logged_in_handle() && strpos(qa_request(), 'user/') !== false && count(qa_request_parts()) === 2;
 
         if (!empty($dbUser)
-            && $dbUser['level'] == QA_USER_LEVEL_BASIC // cannot use `===` - $dbUser['level'] is string, const is int 
+            && ((int) $dbUser['level']) === QA_USER_LEVEL_BASIC // cannot use `===` - $dbUser['level'] is string, const is int 
             && $class === 'nav-sub'
             && $allowedToSeeButtons
         ) {
@@ -69,7 +69,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
     }
     
-    private function changePrivateMessageButton(int $loggedInId, ?array $profileUser): void
+    private function changePrivateMessageButton(?int $loggedInId, ?array $profileUser): void
     {
         if (is_null($profileUser)) {
             return;
