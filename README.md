@@ -36,23 +36,6 @@ W systemach Unix'owych po prostu w ```/etc/hosts```.
 
 Strona forum powinna być pod adresem: http://forum.pasja-informatyki.local:8181
 
-### Vagrant
-Serwer NFS instalujemy na systemach Unix'owych w następujący sposób:
-```sudo apt-get install nfs-common nfs-kernel-server```
-
-Vagranta instalujemy korzystając z odnośnika: https://www.vagrantup.com/downloads.html
-
-VirtualBox możemy zainstalować w Ubuntu (i pochodnych) za pomocą
-```sudo apt-get install VirtualBox```. Następnie musimy sprawdzić, czy wersja się zgadza.
-
-Możemy też skorzystać z https://www.virtualbox.org/wiki/Linux_Downloads
-
-Po zainstalowaniu powyższego oprogramowania pozostaje nam ściągnąć projekt z GitHuba:
-```git clone https://github.com/CodersCommunity/forum.pasja-informatyki.local.git```
-
-I ostatnim krokiem jest wykonanie w katalogu projektu:
-```vagrant up```
-
 Inną możliwością jest skorzystanie z programu **XAMPP** lub podobnego, oferującego serwer ```Apache``` i postępowanie zgodnie z niniejszą instrukcją: https://drive.google.com/file/d/0B_0lVIhwL9LWMjV1eGJyTk0yMTQ/view?pref=2&pli=1
 
 #### Ustawienie /etc/hosts
