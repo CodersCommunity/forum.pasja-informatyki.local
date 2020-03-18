@@ -4,3 +4,9 @@
 /vendor/
 /forum/vendor/
 /forum/qa-config.php
+/.env
+/.vscode
+/config/*
+/data/*
+/logs/*
+.DS_Store
