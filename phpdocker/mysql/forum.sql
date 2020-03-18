@@ -20,6 +20,9 @@ SET time_zone = "+00:00";
 -- Baza danych: `forum`
 --
 
+CREATE DATABASE IF NOT EXISTS forum;
+USE forum;
+
 -- --------------------------------------------------------
 
 --
@@ -470,7 +473,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('badge_commentator_name', 'Commentator'),
 ('badge_commentator_var', '100'),
 ('badge_commenter_desc', ''),
-('badge_commenter_enabled', '0'),
+('badge_commenter_enabled', '0');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('badge_commenter_name', 'Commenter'),
 ('badge_commenter_var', '50'),
 ('badge_copy_editor_desc', ''),
@@ -528,7 +533,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('badge_good_question_desc', ''),
 ('badge_good_question_enabled', '0'),
 ('badge_good_question_name', 'Good Question'),
-('badge_good_question_var', '5'),
+('badge_good_question_var', '5');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('badge_grateful_desc', ''),
 ('badge_grateful_enabled', '0'),
 ('badge_grateful_name', 'Grateful'),
@@ -620,7 +627,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('badge_questioner_var', '25'),
 ('badge_reader_desc', ''),
 ('badge_reader_enabled', '0'),
-('badge_reader_name', 'Reader'),
+('badge_reader_name', 'Reader');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('badge_reader_var', '20'),
 ('badge_regular_desc', ''),
 ('badge_regular_enabled', '0'),
@@ -691,7 +700,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('cache_unaqcount', '7'),
 ('cache_unselqcount', '7'),
 ('cache_unupaqcount', '7'),
-('cache_userpointscount', '7'),
+('cache_userpointscount', '7');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('captcha_module', 'reCAPTCHA'),
 ('captcha_on_anon_post', '1'),
 ('captcha_on_feedback', '1'),
@@ -757,7 +768,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('embed_smileys_animated', ''),
 ('embed_smileys_css', '\r\n				.smiley-button {\r\n					cursor:pointer !important;\r\n				}\r\n				.smiley-box {\r\n					background: none repeat scroll 0 0 rgba(255, 255, 255, 0.8) !important;\r\n					border: 1px solid black !important;\r\n					padding: 10px !important;\r\n					display: none;\r\n					width: 378px;\r\n					margin: 7px 0 0 20px;\r\n					z-index: 1000 !important;\r\n					position: absolute !important;\r\n				}\r\n				.wmd-button-bar{\r\n					min-height:16px;\r\n					width:auto !important;\r\n					margin-right:36px !important;\r\n					position:relative !important;\r\n				}\r\n				.wmd-button-bar .smiley-button {\r\n					position:absolute !important;\r\n					right:-25px !important;\r\n					top:3px !important;\r\n				}\r\n				.wmd-button-bar	.smiley-box {\r\n					margin: 24px 0 0 169px !important;\r\n				}\r\n				.smiley-child {\r\n					margin:4px !important;\r\n					cursor:pointer !important;\r\n				}\r\n				'),
 ('embed_smileys_editor_button', ''),
-('embed_smileys_markdown_button', ''),
+('embed_smileys_markdown_button', '');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('embed_video_height', '349'),
 ('embed_video_width', '425'),
 ('event_logger_directory', ''),
@@ -871,7 +884,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('moderate_unconfirmed', ''),
 ('moderate_update_time', '1'),
 ('moderate_users', '0'),
-('mouseover_content_max_len', '480'),
+('mouseover_content_max_len', '480');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('mouseover_content_on', '1'),
 ('myspace_app_enabled', '0'),
 ('myspace_app_id', ''),
@@ -945,7 +960,8 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('permit_post_q', '110'),
 ('permit_post_q_points', ''),
 ('permit_post_wall', '110'),
-('permit_post_wall_points', ''),
+('permit_post_wall_points', '');
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('permit_retag_cat', '70'),
 ('permit_retag_cat_points', ''),
 ('permit_select_a', '100'),
@@ -987,7 +1003,9 @@ INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('points_vote_up_a', '1'),
 ('points_vote_up_q', '1'),
 ('poll_css', '#qa-poll-div {\n	background-color: #D9E3EA;\n	border: 1px solid #658296;\n	font-size: 14px;\n	padding: 10px;\n	margin-top: 15px;\n	margin-bottom: 10px;\n}\n#qa-poll-choices-title {\n	font-weight:bold;\n	margin-bottom:20px;\n	font-size: 15px;\n\n}\n.qa-poll-choice {\n	clear:both;\n	padding: 8px 0 8px 10px;\n        max-width:540px;\n}\n#qa-poll-choices > div:last-child  {\n	padding-bottom:0px;\n}\n#qa-poll-choices > div:first-child  {\n	padding-top:0px;\n}\n\n.qa-poll-choice-title {\n	line-height:12px;\n	margin-left:10px;\n}\n.qa-poll-votes {\n	max-width:500px;\n	height:10px;\n	margin: 5px 0px 0px 0px;\n}\n.qa-poll-vote-block {\n	width:10px;\n	height:20px;\n	background-color:#3498DB;\n}\n.qa-poll-vote-block-empty {\n	width:10px;\n	height:10px;\n}\n.qa-poll-voted-button, .qa-poll-vote-button {\n	cursor:pointer;\n	width:12px;\n	height:12px;\n	float:left;\n	margin-top: 1px;\n}\n.qa-poll-disabled-button {\n	width:12px;\n	height:12px;\n	float:left;\n	margin-top: 1px;\n	background-image:url(^button_vote.png);\n        margin-top: 5px;\n}\n.qa-poll-voted-button {\n	background-image:url(^button_voted.png);\n        margin-top: 5px;\n}\n.qa-poll-vote-button {\n	background-image:url(^button_vote.png);\n        margin-top: 5px;\n}\n.qa-poll-vote-button:hover, .qa-poll-voted-button:hover {\n	background-image:url(^button_voting.png);\n        margin-top: 5px;\n}'),
-('poll_enable', '1'),
+('poll_enable', '1');
+
+INSERT INTO `qa_options` (`title`, `content`) VALUES
 ('poll_enable_subnav', '1'),
 ('poll_update_on_vote', ''),
 ('poll_votes_hide', ''),
