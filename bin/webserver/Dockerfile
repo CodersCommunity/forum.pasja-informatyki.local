@@ -18,7 +18,7 @@ RUN apt-get -y install --fix-missing apt-utils build-essential git curl libcurl4
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # PHP Extensions
-RUN pecl install xdebug-2.5.5 \
+RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && pecl install memcached \
     && docker-php-ext-enable memcached \
@@ -36,7 +36,6 @@ RUN pecl install xdebug-2.5.5 \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN printf "\n| | echo extension=calendar.so > /usr/local/etc/php/conf.d/10-calendar.ini
 # Enable apache modules
 RUN a2enmod rewrite headers
 

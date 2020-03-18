@@ -6,6 +6,8 @@ services:
       context: ./bin/webserver
     container_name: '7.1.x-webserver'
     restart: 'always'
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal
     ports:
       - "8181:80"
       - "8282:443"
