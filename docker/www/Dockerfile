@@ -1,7 +1,12 @@
 FROM php:7.1-apache
 
-ARG XDEBUG_REMOTE_HOST=172.17.0.1
+ARG XDEBUG_REMOTE_ENABLE=1
+ARG XDEBUG_REMOTE_CONNECT_BACK=0
+ARG XDEBUG_REMOTE_HOST=host.docker.internal
+ARG XDEBUG_REMOTE_PORT=9000
 ARG XDEBUG_IDEKEY=PHPSTORM
+ARG XDEBUG_AUTOSTART=1
+ARG XDEBUG_REMOTE_LOG
 
 RUN apt-get update -y
 RUN apt-get install -y --no-install-recommends libzip-dev zip unzip git libfreetype6-dev libjpeg62-turbo-dev libpng-dev
@@ -9,9 +14,13 @@ RUN apt-get install -y --no-install-recommends libzip-dev zip unzip git libfreet
 RUN docker-php-ext-install mysqli calendar mbstring
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install -j$(nproc) gd
 RUN pecl install xdebug && docker-php-ext-enable xdebug && \
-    echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo "xdebug.remote_host=$XDEBUG_REMOTE_HOST" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo "xdebug.idekey=$XDEBUG_IDEKEY" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    echo "xdebug.remote_enable=${XDEBUG_REMOTE_ENABLE}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.remote_connect_back=${XDEBUG_REMOTE_CONNECT_BACK}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.remote_host=${XDEBUG_REMOTE_HOST}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.remote_port=${XDEBUG_REMOTE_PORT}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.autostart=${XDEBUG_AUTOSTART}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.remote_log=${XDEBUG_REMOTE_LOG}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN curl -o /usr/local/bin/composer https://getcomposer.org/composer.phar && chmod +x /usr/local/bin/composer
 
