@@ -30,5 +30,3 @@ qa_register_plugin_module(
   'qa-pw-event.php',
   'qa_pw_event',
   'PW Event');
-
-?>
