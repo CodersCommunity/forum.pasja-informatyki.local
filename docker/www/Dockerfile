@@ -24,6 +24,8 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug && \
 
 RUN curl -o /usr/local/bin/composer https://getcomposer.org/composer.phar && chmod +x /usr/local/bin/composer
 
+RUN echo "sendmail_path=/usr/local/bin/mhsendmail" >> /usr/local/etc/php/conf.d/php.ini
+
 COPY forum.conf /etc/apache2/sites-available/
 RUN a2enmod rewrite
 RUN a2dissite 000-default && a2ensite forum.conf
