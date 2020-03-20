@@ -23,7 +23,7 @@
     Don't modify and don't remove this file!
 */
 
-define('QA_MYSQL_HOSTNAME', 'mysql');
+define('QA_MYSQL_HOSTNAME', 'forum-mysql');
 define('QA_MYSQL_USERNAME', 'test');
 define('QA_MYSQL_PASSWORD', 'test');
 define('QA_MYSQL_DATABASE', 'forum');
