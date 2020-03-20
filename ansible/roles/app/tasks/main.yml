@@ -1,4 +1,0 @@
-- name: Copy application configuration
-  copy:
-    src: "{{ apache.docroot }}qa-config-example.php"
-    dest: "{{ apache.docroot }}qa-config.php"

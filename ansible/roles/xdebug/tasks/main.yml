@@ -1,4 +1,0 @@
----
-- name: Install xDebug
-  become: true
-  apt: pkg=php5.6-xdebug state=latest
