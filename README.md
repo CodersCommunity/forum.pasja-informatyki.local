@@ -1,6 +1,5 @@
 # Opis
-To repozytorium zawiera skonfigurowaną **wirtualną maszynę** przygotowaną specjalnie do tego, aby nie dokonywać zmian bezpośrednio na serwerze **produkcyjnym**.
-Grupa **CodersCommunity** postanowiła stworzyć środowisko developerskie naszego forum.
+To repozytorium zawiera skonfigurowane **środowisko deweloperskie** naszego forum - przygotowane przez grupę **CodersCommunity** - specjalnie na potrzeby tego, by nie dokonywać zmian bezpośrednio na serwerze **produkcyjnym**.
 
 # Informacje techniczne
 ## Wirtualna maszyna
@@ -42,10 +41,10 @@ W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z upra
 W systemach Unix'owych po prostu w `/etc/hosts`.
 
 ### Konfiguracja
-Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. 
-Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
+Należy skopiować plik `qa-config-example.php` do `qa-config.php`. Jest to wymagane do poprawnego uruchomienia forum.
+W razie, gdy zapomnisz o tym - stosowny wyjątek poinformuje Cię o tym wymogu.
 
-W razie potrzeby zmodyfikuj konfigurację w pliku `qa-config.php`. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
+W razie potrzeby możesz zmodyfikować konfigurację w pliku `qa-config.php`. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
 
 # Co tu znajdę?
 ## Serwer
