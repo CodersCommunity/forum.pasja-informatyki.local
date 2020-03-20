@@ -4,3 +4,4 @@
 /vendor/
 /forum/vendor/
 /forum/qa-config.php
+/docker/apache2/**
