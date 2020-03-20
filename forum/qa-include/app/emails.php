@@ -156,7 +156,6 @@
 		    return $mailer->send();
 		} catch (\Throwable $exception) {
             global $client;
-            qa_debug($mailer);
             $client->captureException(
                 new \RuntimeException(
                     'PHP Question2Answer send_email error with params: ' . PHP_EOL . json_encode($params) .

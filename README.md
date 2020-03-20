@@ -6,41 +6,44 @@ Grupa **CodersCommunity** postanowiła stworzyć środowisko developerskie nasze
 ## Wirtualna maszyna
 Aby móc korzystać z *developerskiego środowiska* wymagane jest posiadanie następującego oprogramowania:
 
- - Vagrant >= 1.8.1
- - VirtualBox 5.0.18 (nowsze wersje w tym momencie powodują problemy uniemożliwiające postawienie projektu)
- - NFS server
+ - Docker >= 19.0.0
+ - Docker Compose >= 1.25
 
 ## Instalacja
-Serwer NFS instalujemy na systemach Unix'owych w następujący sposób:
-```sudo apt-get install nfs-common nfs-kernel-server```
+Dockera instalujemy korzystając z odnośnika: https://docs.docker.com/install/
 
-Vagranta instalujemy korzystając z odnośnika: https://www.vagrantup.com/downloads.html
-
-VirtualBox możemy zainstalować w Ubuntu (i pochodnych) za pomocą
-```sudo apt-get install VirtualBox```. Następnie musimy sprawdzić, czy wersja się zgadza.
-
-Możemy też skorzystać z https://www.virtualbox.org/wiki/Linux_Downloads
+Docker Compose instalujemy korzystając z odnośnika: https://docs.docker.com/compose/install/
 
 Po zainstalowaniu powyższego oprogramowania pozostaje nam ściągnąć projekt z GitHuba:
-```git clone https://github.com/CodersCommunity/forum.pasja-informatyki.local.git```
+
+```
+git clone https://github.com/CodersCommunity/forum.pasja-informatyki.local.git
+```
 
 I ostatnim krokiem jest wykonanie w katalogu projektu:
-```vagrant up```
 
-Inną możliwością jest skorzystanie z programu **XAMPP** lub podobnego, oferującego serwer ```Apache``` i postępowanie zgodnie z niniejszą instrukcją: https://drive.google.com/file/d/0B_0lVIhwL9LWMjV1eGJyTk0yMTQ/view?pref=2&pli=1
+```
+docker-compose up -d
+```
+
+Inną możliwością jest skorzystanie z programu **XAMPP** lub podobnego, oferującego serwer `Apache` i postępowanie zgodnie z niniejszą instrukcją: 
+https://drive.google.com/file/d/0B_0lVIhwL9LWMjV1eGJyTk0yMTQ/view?pref=2&pli=1
 
 ### Ustawienie /etc/hosts
-Ponieważ mamy do czynienia z **wirtualną maszyną**, będziemy musieli zapewnić z nią wygodną komunikację. Domyślnym adresem, pod którym jest dostępny *mirror* forum jest ```192.168.122.122```.
-W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka w pliku ```/etc/hosts```, dopisując to na samym końcu tego pliku:
+Ponieważ mamy do czynienia z **wirtualną maszyną**, będziemy musieli zapewnić z nią wygodną komunikację. 
+Domyślnym adresem, pod którym jest dostępna jest wersja deweloperska forum jest `127.0.0.1`.
+W celu ułatwienia pracy, zamieniamy ten adres IP na zrozumiały dla człowieka w pliku `/etc/hosts`, dopisując to na samym końcu tego pliku:
+
 ```
-192.168.112.112 forum.pasja-informatyki.local
+127.0.0.1 forum.pasja-informatyki.local
 ```
 
-W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w ```C:\Windows\System32\drivers\etc\```.
-W systemach Unix'owych po prostu w ```/etc/hosts```.
+W systemie Windows ten plik należy uruchomić w dowolnym edytorze tekstu z uprawnieniami administracyjnymi. Powinien znajdować się w `C:\Windows\System32\drivers\etc\`.
+W systemach Unix'owych po prostu w `/etc/hosts`.
 
 ### Konfiguracja
-Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
+Podczas tworzenia środowiska przez Vagranta przygotowanie właściwej konfiguracji następuje automatycznie. 
+Jeżeli uruchamiasz środowisko samemu, skopiuj plik `qa-config-example.php` do `qa-config.php`.
 
 W razie potrzeby zmodyfikuj konfigurację w pliku `qa-config.php`. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
 
@@ -53,6 +56,7 @@ Na serwerze zainstalowano:
  - Composer
  - mysql (bez phpmydamin) **[Zamiast phpmyadmin świetnie spisuje się MySQL Workbench]**
  - Apache
+ - mailhog
 
 ## Pliki skryptu z forum
 Najważniejszym punktem jest katalog **/forum**. W nim znajduje się *mirror* naszego forum, włącznie z pluginami.
@@ -60,17 +64,17 @@ Istnieje również katalog **/tests**, w którym trzeba umieszczać kod testują
 
 Repozytorium zawiera:
 
- - Przygotowany "config" zawierający dane do bazy
+ - Przygotowany "docker-compose.yml" zawierający dane do bazy, mailhoga i konfigurację portów
  - aktualny dump testowej bazy, zawierający tylko niezbędne dane takie jak:
    - Użytkownika testowego z loginem: `test` i hasłem `test`
-   - Niezbędną konfigurację pluginow
+   - Niezbędną konfigurację pluginów
  - Kod strony, obecne Q2A wraz ze zmianami wprowadzonymi do szablonu strony.
   - Kod strony **nie zawiera**: cache, avatarów, danych do bazy.
   - specjalnie przygotowany plik `.gitignore`
 
 ## Baza danych
 Dane do bazy mysql:
-*(znajdują się w pliku ansible/vars/all.yml)*
+*(znajdują się w pliku docker-compose.yml)*
 
 ```
 mysql:
