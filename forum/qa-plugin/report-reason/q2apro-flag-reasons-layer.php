@@ -134,6 +134,6 @@ class qa_html_theme_layer extends qa_html_theme_base
     
     private function checkPostData($item)
     {
-        return $this->isLogged && isset($item['form']['buttons']['flag'], $item['raw']['postid'])
+        return $this->isLogged && isset($item['form']['buttons']['flag'], $item['raw']['postid']);
     }
 }
