@@ -932,25 +932,23 @@ blockquote p {
 	background-color: transparent;
 }
 
-.qa-nav-user-facebook {
+.qa-nav-user-facebook, .qa-nav-user-facebook:hover {
 	margin-bottom: 13px;
-	border: 0 solid #34495E;
-	background-color: #34495E;
+    border: none;
+    background: transparent;
 	font-size: 0.875em;
 	text-align: center;
 	font-family: "Ubuntu", "Helvetica", "Arial", "FreeSans", sans-serif;
-
 }
 
-.action-login{
+.action-login {
 	background-color: #4965B8;
 	padding: 5px;
 	text-decoration:none !important;
 	color: white !important;
 }
 
-.action-login:hover
-{
+.action-login:hover {
 	background-color: #3D5391;
 }
 
