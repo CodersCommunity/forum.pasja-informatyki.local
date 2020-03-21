@@ -210,7 +210,7 @@ class qa_user_activity
 	{
 		$sql_count =
 			'SELECT
-			    ANY_VALUE(u.userid) AS userid, 
+			    MAX(u.userid) AS userid, 
                 count(p.postid) AS qs, 
                 count(p.selchildid) AS selected
 			 FROM ^users u
@@ -227,7 +227,7 @@ class qa_user_activity
 	{
 		$sql_count =
 			'SELECT 
-                 ANY_VALUE(u.userid) AS userid, 
+                 MAX(u.userid) AS userid, 
                  COUNT(a.postid) AS qs, 
                  SUM(q.selchildid=a.postid) AS selected
 			 FROM ^users u
