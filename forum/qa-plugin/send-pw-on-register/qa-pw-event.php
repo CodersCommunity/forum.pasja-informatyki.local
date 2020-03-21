@@ -7,11 +7,12 @@ class qa_pw_event
         if (qa_opt('sendPwMessageOnRegister_enabled') && 'u_register' === $event) {
             require_once QA_INCLUDE_DIR . 'db/messages.php';
             require_once QA_INCLUDE_DIR . 'db/selects.php';
+            require_once QA_INCLUDE_DIR . 'db/users.php';
                 
             $botId = qa_opt('sendPwMessageOnRegister_botId');
             $messageContent = qa_opt('sendPwMessageOnRegister_messageContent');
             
-            if (empty($botId) || empty($messageContent)) {
+            if (empty($botId) || empty($messageContent) || [] === qa_db_user_get_userid_handles(qa_post_text('botId'))) {
                 return;
             }
 			
