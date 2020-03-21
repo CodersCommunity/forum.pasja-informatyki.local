@@ -22,6 +22,11 @@ docker-compose up -d
 Alternatywnym sposobem  jest skorzystanie z programu **XAMPP** lub podobnego, oferującego Apache, PHP oraz MySQL. W tym celu kieruj się niniejszą instrukcją: 
 https://drive.google.com/file/d/0B_0lVIhwL9LWMjV1eGJyTk0yMTQ/view. Zalecamy jednak skorzystanie z Dockera, aby każdy z nas miał identyczne środowisko.
 
+Gdy mamy już uruchomione kontenery, instalujemy zależności przy użyciu Composera będąc w katalogu `forum`. Możemy to zrobić np. przy użyciu poniższego polecenia:
+```
+docker-compose exec -u 1000 www bash -c "cd forum && composer install"
+```
+
 Teraz należy skopiować plik `forum/qa-config-example.php` do `forum/qa-config.php`. Jest to wymagane do poprawnego uruchomienia forum. W przypadku braku pliku konfiguracyjnego, po uruchomieniu poinformuje Cię o tym stosowny wyjątek.
 
 **Forum zostało uruchomione - wejdź pod adres http://localhost!**
