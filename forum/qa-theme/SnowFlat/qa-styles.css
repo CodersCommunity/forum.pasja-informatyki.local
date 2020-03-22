@@ -876,6 +876,7 @@ blockquote p {
 .qa-nav-user-item {
 	padding: 0 20px;
 	border-bottom: 1px solid #2c3e50;
+	transition: 350ms all !important;
 }
 .qa-nav-user-item:last-child {
 	border-bottom: none;
