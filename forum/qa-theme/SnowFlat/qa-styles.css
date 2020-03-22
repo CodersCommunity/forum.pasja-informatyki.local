@@ -4964,3 +4964,7 @@ form div.qa-q-view-content
 width: 300px;
 padding: 10px;
 }
+
+button, a {
+transition: 350ms all;
+}
