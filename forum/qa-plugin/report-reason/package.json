@@ -4,13 +4,16 @@
   "description": "Plugin purpose is to make descriptive reason of flagged post. Thus it will be more understandable for Administration to consider if certain post violates regulations.",
   "main": "./src/index.js",
   "scripts": {
+    "prettier": "prettier --write ./src/",
     "dev": "webpack --mode=development --watch ./src/index.js -o dist/script.js",
+    "prebuild": "npm run prettier",
     "build": "webpack --mode=production ./src/index.js -o dist/script.js"
   },
   "keywords": [],
   "author": "JSHolic",
   "license": "MIT",
   "devDependencies": {
+    "prettier": "^2.0.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }
