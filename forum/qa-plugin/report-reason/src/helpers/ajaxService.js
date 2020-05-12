@@ -1,6 +1,6 @@
-const httpTimeoutReason = 'Ajax timeout';
+const httpTimeoutReason = 'AJAX_TIMEOUT';
 
-const ajax = (url, data, timeout) => {
+const sendAjax = (url, data, timeout) => {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: 'POST',
@@ -13,4 +13,4 @@ const ajax = (url, data, timeout) => {
   });
 };
 
-export default ajax;
+export default sendAjax;

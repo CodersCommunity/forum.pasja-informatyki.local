@@ -1,4 +1,4 @@
-import ajax from './ajaxService';
+import sendAjax from './ajaxService';
 import reportReasonPopupDOMWrapper, {
   reportReasonPopupDOMReferences,
 } from './reportReasonPopupCreator';
@@ -150,7 +150,7 @@ function initButtons() {
   const sendButton = reportReasonPopupDOMWrapper.querySelector(
     '#sendReportReason'
   );
-  sendButton.addEventListener('click', sendForm);
+  sendButton.addEventListener('click', submitForm);
 
   const closeReportReasonSentInfo = reportReasonPopupDOMWrapper.querySelector(
     '#closeReportReasonSentInfo'
@@ -163,7 +163,7 @@ function initPopupContainer() {
   popupContainer.appendChild(reportReasonPopupDOMWrapper);
 }
 
-function sendForm(event) {
+function submitForm(event) {
   event.preventDefault();
 
   const sendButton = event.target;
@@ -175,13 +175,13 @@ function sendForm(event) {
   }
 
   toggleSendWaitingState(sendButton, true);
-  ajax(
+  sendAjax(
     reportReasonPopupForm.action,
     prepareFormData(),
     responseWaitTimeoutMs
   ).then(
-      () => onAjaxSuccess(sendButton),
-      (ajaxError) => onAjaxError(sendButton, ajaxError)
+    () => onAjaxSuccess(sendButton),
+    (ajaxError) => onAjaxError(sendButton, ajaxError)
   );
 }
 

@@ -106,9 +106,9 @@ module.exports = JSON.parse("[{\"value\":\"spam\",\"description\":\"SPAM\"},{\"v
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const httpTimeoutReason = 'Ajax timeout';
+const httpTimeoutReason = 'AJAX_TIMEOUT';
 
-const ajax = (url, data, timeout) => {
+const sendAjax = (url, data, timeout) => {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: 'POST',
@@ -121,7 +121,7 @@ const ajax = (url, data, timeout) => {
   });
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (ajax);
+/* harmony default export */ __webpack_exports__["default"] = (sendAjax);
 
 
 /***/ }),
@@ -287,7 +287,7 @@ function initButtons() {
   const sendButton = _reportReasonPopupCreator__WEBPACK_IMPORTED_MODULE_1__["default"].querySelector(
     '#sendReportReason'
   );
-  sendButton.addEventListener('click', sendForm);
+  sendButton.addEventListener('click', submitForm);
 
   const closeReportReasonSentInfo = _reportReasonPopupCreator__WEBPACK_IMPORTED_MODULE_1__["default"].querySelector(
     '#closeReportReasonSentInfo'
@@ -300,7 +300,7 @@ function initPopupContainer() {
   popupContainer.appendChild(_reportReasonPopupCreator__WEBPACK_IMPORTED_MODULE_1__["default"]);
 }
 
-function sendForm(event) {
+function submitForm(event) {
   event.preventDefault();
 
   const sendButton = event.target;
@@ -317,8 +317,8 @@ function sendForm(event) {
     prepareFormData(),
     responseWaitTimeoutMs
   ).then(
-      () => onAjaxSuccess(sendButton),
-      (ajaxError) => onAjaxError(sendButton, ajaxError)
+    () => onAjaxSuccess(sendButton),
+    (ajaxError) => onAjaxError(sendButton, ajaxError)
   );
 }
 
