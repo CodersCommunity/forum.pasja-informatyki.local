@@ -106,18 +106,22 @@ module.exports = JSON.parse("[{\"value\":\"spam\",\"description\":\"SPAM\"},{\"v
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const httpTimeoutReason = 'AJAX_TIMEOUT';
+const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
+const TIMEOUT = 5000;
 
-const sendAjax = (url, data, timeout) => {
+const sendAjax = (url, data) => {
   return new Promise((resolve, reject) => {
-    fetch(url, {
+    const timeoutId = setTimeout(() => {
+      reject(AJAX_TIMEOUT_REASON);
+    }, TIMEOUT);
+
+    return fetch(url, {
       method: 'POST',
       body: data,
-    }).then(resolve, reject);
-
-    setTimeout(() => {
-      reject(httpTimeoutReason);
-    }, timeout);
+    }).then((value) => {
+      clearTimeout(timeoutId);
+      resolve(value);
+    });
   });
 };
 
@@ -148,7 +152,6 @@ const {
   requirableFormElements,
   reportReasonValidationError,
 } = _reportReasonPopupCreator__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMReferences"];
-const responseWaitTimeoutMs = 5000;
 const flagButtonNamePart = 'doflag';
 const doCommentInputNameSuffix = '_docomment';
 const reportFlagMap = {
@@ -314,8 +317,7 @@ function submitForm(event) {
   toggleSendWaitingState(sendButton, true);
   Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(
     reportReasonPopupForm.action,
-    prepareFormData(),
-    responseWaitTimeoutMs
+    prepareFormData()
   ).then(
     () => onAjaxSuccess(sendButton),
     (ajaxError) => onAjaxError(sendButton, ajaxError)

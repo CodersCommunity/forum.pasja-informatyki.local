@@ -11,7 +11,6 @@ const {
   requirableFormElements,
   reportReasonValidationError,
 } = reportReasonPopupDOMReferences;
-const responseWaitTimeoutMs = 5000;
 const flagButtonNamePart = 'doflag';
 const doCommentInputNameSuffix = '_docomment';
 const reportFlagMap = {
@@ -177,8 +176,7 @@ function submitForm(event) {
   toggleSendWaitingState(sendButton, true);
   sendAjax(
     reportReasonPopupForm.action,
-    prepareFormData(),
-    responseWaitTimeoutMs
+    prepareFormData()
   ).then(
     () => onAjaxSuccess(sendButton),
     (ajaxError) => onAjaxError(sendButton, ajaxError)

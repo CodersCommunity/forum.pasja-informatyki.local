@@ -1,15 +1,19 @@
-const httpTimeoutReason = 'AJAX_TIMEOUT';
+const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
+const TIMEOUT = 5000;
 
-const sendAjax = (url, data, timeout) => {
+const sendAjax = (url, data) => {
   return new Promise((resolve, reject) => {
-    fetch(url, {
+    const timeoutId = setTimeout(() => {
+      reject(AJAX_TIMEOUT_REASON);
+    }, TIMEOUT);
+
+    return fetch(url, {
       method: 'POST',
       body: data,
-    }).then(resolve, reject);
-
-    setTimeout(() => {
-      reject(httpTimeoutReason);
-    }, timeout);
+    }).then((value) => {
+      clearTimeout(timeoutId);
+      resolve(value);
+    });
   });
 };
 
