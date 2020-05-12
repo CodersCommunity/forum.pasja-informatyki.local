@@ -178,9 +178,10 @@ function sendForm(event) {
   ajax(
     reportReasonPopupForm.action,
     prepareFormData(),
-    () => onAjaxSuccess(sendButton),
-    (ajaxError) => onAjaxError(sendButton, ajaxError),
     responseWaitTimeoutMs
+  ).then(
+      () => onAjaxSuccess(sendButton),
+      (ajaxError) => onAjaxError(sendButton, ajaxError)
   );
 }
 

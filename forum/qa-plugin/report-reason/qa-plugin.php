@@ -8,7 +8,7 @@
     Plugin Author: https://forum.pasja-informatyki.pl/user/Mariusz08 & http://q2apro.com
     Plugin License: GPLv3
     Plugin Minimum Question2Answer Version: 1.7
-    Plugin Update Check URI: 
+    Plugin Update Check URI:
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
     GNU General Public License for more details.
 
     More about this license: http://www.gnu.org/licenses/gpl.html
-    
+
 */
 
 if (!defined('QA_VERSION')) {
@@ -30,14 +30,14 @@ if (!defined('QA_VERSION')) {
 }
 
 // language file
-qa_register_plugin_phrases('q2apro-flag-reasons-lang-*.php', 'q2apro_flagreasons_lang');
+qa_register_plugin_phrases('q2apro-flag-reasons-lang-default.php', 'q2apro_flagreasons_lang');
 
 // page
 qa_register_plugin_module(
     'page', 'q2apro-flag-reasons-page.php', 'q2apro_flag_reasons_page', 'q2apro flag reasons Page'
 );
 
-// layer 
+// layer
 qa_register_plugin_layer('q2apro-flag-reasons-layer.php', 'q2apro flag reasons layer');
 
 // admin
@@ -60,7 +60,7 @@ function q2apro_flag_reasonid_to_readable($reasonId)
         5 => 'duplicate',
         6 => 'migrate'
     ];
-    
+
     return qa_lang('q2apro_flagreasons_lang/reason_' . $translationArray[$reasonId]);
 }
 
@@ -69,7 +69,7 @@ function q2apro_get_postflags($postId)
     return qa_db_read_all_assoc(
         qa_db_query_sub(
             '
-            SELECT `userid`, `postid`, `reasonid`, `notice` 
+            SELECT `userid`, `postid`, `reasonid`, `notice`
             FROM ^flagreasons
             WHERE `postid` = #
             ', $postId
@@ -95,10 +95,10 @@ function q2apro_count_postflags_output($postId)
     unset($flagOutput[count($flagOutput)-1]);
 
     $flagsOutput = '';
-    
+
     foreach ($flagOutput as $flag) {
         $flagsOutput .= $flag;
     }
-    
+
     return $flagsOutput;
 }

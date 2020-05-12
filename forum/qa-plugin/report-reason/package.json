@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "prettier": "prettier --write ./src/",
-    "dev": "webpack --mode=development --watch ./src/index.js -o dist/script.js",
+    "dev": "webpack --mode=development --watch --devtool source-map ./src/index.js -o dist/script.js",
     "prebuild": "npm run prettier",
     "build": "webpack --mode=production ./src/index.js -o dist/script.js"
   },
