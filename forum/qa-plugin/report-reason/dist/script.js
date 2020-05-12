@@ -106,16 +106,17 @@ module.exports = JSON.parse("[{\"value\":\"spam\",\"description\":\"SPAM\"},{\"v
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+const URL = '/ajaxflagger';
 const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
 const TIMEOUT = 5000;
 
-const sendAjax = (url, data) => {
+const sendAjax = (data) => {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(AJAX_TIMEOUT_REASON);
     }, TIMEOUT);
 
-    return fetch(url, {
+    return fetch(URL, {
       method: 'POST',
       body: data,
     }).then((value) => {
@@ -315,10 +316,7 @@ function submitForm(event) {
   }
 
   toggleSendWaitingState(sendButton, true);
-  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(
-    reportReasonPopupForm.action,
-    prepareFormData()
-  ).then(
+  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(prepareFormData()).then(
     () => onAjaxSuccess(sendButton),
     (ajaxError) => onAjaxError(sendButton, ajaxError)
   );

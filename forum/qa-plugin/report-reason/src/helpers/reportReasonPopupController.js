@@ -174,10 +174,7 @@ function submitForm(event) {
   }
 
   toggleSendWaitingState(sendButton, true);
-  sendAjax(
-    reportReasonPopupForm.action,
-    prepareFormData()
-  ).then(
+  sendAjax(prepareFormData()).then(
     () => onAjaxSuccess(sendButton),
     (ajaxError) => onAjaxError(sendButton, ajaxError)
   );
