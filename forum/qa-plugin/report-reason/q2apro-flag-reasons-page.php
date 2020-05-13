@@ -45,15 +45,15 @@ class q2apro_flag_reasons_page
         require_once QA_INCLUDE_DIR . 'app/posts.php';
         require_once QA_INCLUDE_DIR . 'pages/question-view.php';
 
-//        $processingFlagError = processFlag($userId, $postId, $questionId, $reasonId, $notice);
+        $processingFlagError = $this->processFlag($postType, $userId, $postId, $questionId, $reasonId, $notice);
 
-        if ('q' === $postType) {
-            $processingFlagError = $this->processFlagToQuestion($userId, $postId,$questionId, $reasonId, $notice);
-        } elseif ('a' === $postType) {
-            $processingFlagError = $this->processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice);
-        } elseif ('c' === $postType) {
-            $processingFlagError = $this->processFlagToComment($userId, $postId, $questionId, $reasonId, $notice);
-        }
+//        if ('q' === $postType) {
+//            $processingFlagError = $this->processFlagToQuestion($userId, $postId,$questionId, $reasonId, $notice);
+//        } elseif ('a' === $postType) {
+//            $processingFlagError = $this->processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice);
+//        } elseif ('c' === $postType) {
+//            $processingFlagError = $this->processFlagToComment($userId, $postId, $questionId, $reasonId, $notice);
+//        }
 
         $reply = $processingFlagError ? ['processingFlagError' => $processingFlagError] : ['currentFlags' => q2apro_count_postflags_output($postId)];
 
@@ -62,15 +62,16 @@ class q2apro_flag_reasons_page
         echo json_encode($reply);
     }
 
-    private function processFlag($userId, $postId, $questionId, $reasonId, $notice) {
+    private function processFlag($postType, ...$flagParams) {
+        var_dump('$flagParams:' , $flagParams);
         $processingFlagError = '';
 
-        if ('answerId') {
-            $processingFlagError = $this->processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice);
-        } else if ('commentId') {
-            $processingFlagError = $this->processFlagToComment($userId, $postId, $questionId, $reasonId, $notice);
+        if ($postType === 'answerId') {
+            $processingFlagError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
+        } else if ($postType === 'commentId') {
+            $processingFlagError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
         } else {
-            $processingFlagError = $this->processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice);
+            $processingFlagError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
         }
 
         return $processingFlagError;
