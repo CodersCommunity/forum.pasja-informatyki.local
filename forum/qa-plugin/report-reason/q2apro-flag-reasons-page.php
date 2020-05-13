@@ -58,9 +58,9 @@ class q2apro_flag_reasons_page
         if ('q' === $postType) {
             $processingFlagError = $this->processFlagToQuestion($userId, $postId,$questionId, $reasonId, $notice);
         } elseif ('a' === $postType) {
-            $processingFlagError = $this->processFlagToAnswer();
+            $processingFlagError = $this->processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice);
         } elseif ('c' === $postType) {
-            $processingFlagError = $this->processFlagToComment();
+            $processingFlagError = $this->processFlagToComment($userId, $postId, $questionId, $reasonId, $notice);
         }
 
         $reply = $processingFlagError ? ['processingFlagError' => $processingFlagError] : ['currentFlags' => q2apro_count_postflags_output($postId)];
@@ -74,11 +74,11 @@ class q2apro_flag_reasons_page
         $processingFlagError = '';
 
         if ('answerId') {
-            $processingFlagError = $this->processFlagToAnswer();
+            $processingFlagError = $this->processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice);
         } else if ('commentId') {
-            $processingFlagError = $this->processFlagToComment();
+            $processingFlagError = $this->processFlagToComment($userId, $postId, $questionId, $reasonId, $notice);
         } else {
-            $processingFlagError = $this->processFlagToQuestion($userId, $questionId, $reasonId, $notice);
+            $processingFlagError = $this->processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice);
         }
 
         return $processingFlagError;
@@ -121,7 +121,7 @@ class q2apro_flag_reasons_page
         }
     }
 
-    private function processFlagToAnswer() {
+    private function processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice) {
         $answerData = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $postId),
             qa_db_full_post_selectspec($userId, $questionId),
@@ -154,7 +154,7 @@ class q2apro_flag_reasons_page
         }
     }
 
-    private function processFlagToComment() {
+    private function processFlagToComment($userId, $postId, $questionId, $reasonId, $notice) {
         $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $postId));
 
         $commentFlagError = qa_flag_error_html($comment, $userId, $questionId);
