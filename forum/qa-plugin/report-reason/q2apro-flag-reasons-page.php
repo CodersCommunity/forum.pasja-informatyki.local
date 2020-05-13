@@ -37,14 +37,6 @@ class q2apro_flag_reasons_page
         $postType   = $newData['posttype'];
         $reasonId   = (int) $newData['reasonid'];
 
-        // TODO: refactor to separate method
-        if (empty($questionId) || empty($postId) || empty($postType) || empty($reasonId)) {
-            $reply = ['processingFlagError' => 'missing data'];
-            echo json_encode($reply);
-
-            return;
-        }
-
         $parentId = empty($newData['parentid']) ? null : (int) $newData['parentid']; // only C
         $notice = empty($newData['notice']) ? null : trim($newData['notice']);
         $userId = qa_get_logged_in_userid();
@@ -53,7 +45,7 @@ class q2apro_flag_reasons_page
         require_once QA_INCLUDE_DIR . 'app/posts.php';
         require_once QA_INCLUDE_DIR . 'pages/question-view.php';
 
-//        $processingFlagError = processFlag($postType, $questionId, $reasonId,$notice);
+//        $processingFlagError = processFlag($userId, $postId, $questionId, $reasonId, $notice);
 
         if ('q' === $postType) {
             $processingFlagError = $this->processFlagToQuestion($userId, $postId,$questionId, $reasonId, $notice);
@@ -70,7 +62,7 @@ class q2apro_flag_reasons_page
         echo json_encode($reply);
     }
 
-    private function processFlag($postType, $questionId, $reasonId, $notice) {
+    private function processFlag($userId, $postId, $questionId, $reasonId, $notice) {
         $processingFlagError = '';
 
         if ('answerId') {
@@ -190,8 +182,21 @@ class q2apro_flag_reasons_page
             exit();
         }
 
-        if (empty($flagData)) {
-            echo 'Error: no data in ajax!';
+        function hasRequiredProps($obj) {
+            $optionalKey = 'notice';
+
+            foreach ($obj as $key => $value) {
+                if ($key !== $optionalKey && empty($value)) {
+                    echo json_encode(['processingFlagError' => 'missing data']);
+                    exit();
+                }
+            }
+
+            return true;
+        }
+
+        if (empty($flagData) || !hasRequiredProps($flagData)) {
+            echo 'Error: ajax data is empty or not have required data!';
             exit();
         }
     }
