@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     const flagboxPopup = document.querySelector("#flagbox-popup");
     const wrap = document.querySelector(".qa-flag-reasons-wrap");
     const body = document.body;
     const closer = document.querySelector(".close-preview-btn");
     const sendButton = document.querySelector(".qa-go-flag-send-button");
     const commentSubmitButton = document.querySelector('.qa-form-tall-button-comment')
-    
+
     const errorMessage = "Błąd serwera. Proszę spróbować za jakiś czas";
     const errorPopup = document.querySelector("#qa-spam-reason-error");
     const tooManyReportError = "Zbyt dużo zgłoszeń z tego adresu IP. Spróbuj za godzinę";
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function showError(errorText) {
         const paragraph = document.createElement("p");
         paragraph.textContent = errorText;
-                    
+
         removeAllChildFromErrorPopup();
         errorPopup.hidden = false
         errorPopup.appendChild(paragraph);
@@ -37,22 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.addEventListener("click", (e) => {
         e.stopPropagation();
     });
-    
+
     commentSubmitButton.addEventListener("click", () => {
-       location.reload(); 
+       location.reload();
     });
-    
+
     body.addEventListener("click", (event) => {
         if (event.target.matches(".qa-form-light-button-unflag, .qa-form-light-button-clearflags")) {
             location.reload();
         }
-    
+
         if (event.target.matches("input.qa-form-light-button-flag")) {
             const flagButton = event.target;
             flagButton.type = "button";
-            
+
             event.preventDefault();
-            showPopup();    
+            showPopup();
 
             flagboxPopup.addEventListener("click", showPopup());
 
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             sendButton.addEventListener("click", (event) => {
-    
+
                 const flagReason = document.querySelector("input.qa-spam-reason-radio:checked");
                 const flagNotice = document.querySelector(".qa-spam-reason-text").value;
 
@@ -77,11 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if(flagReason) {
                     blockSendButton(sendButton);
-                    
+
                     $.ajax({
                         type: "POST",
                         url: flagAjaxURL,
-                        data: { ajaxdata: sendData },
+                        data: { flagData: sendData },
                         dataType:"json",
                         cache: false,
                         success: function(data) {
@@ -94,10 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         error: function(data) {
                             isError = true;
                         }
-                    });    
-                }        
+                    });
+                }
             });
-        }   
+        }
     });
 });
 
