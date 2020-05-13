@@ -140,7 +140,9 @@
 		if (qa_php_version_below('5.1.6'))
 			qa_fatal_error('Q2A requires PHP 5.1.6 or later');
 
-		error_reporting(E_ALL); // be ultra-strict about error checking
+//		error_reporting(E_ALL); // be ultra-strict about error checking
+        // just for development tests
+        error_reporting(E_ALL & ~E_WARNING & ~E_DEPRECATED);
 
 		@ini_set('magic_quotes_runtime', 0);
 
