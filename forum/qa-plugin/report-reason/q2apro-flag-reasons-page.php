@@ -30,18 +30,7 @@ class q2apro_flag_reasons_page
 
     public function process_request($request)
     {
-        $logged = qa_is_logged_in();
-        if (!$logged) {
-            exit();
-        }
-
-        $transferString = qa_post_text('ajaxdata');
-        var_dump('$transferString', $transferString);
-
-        if (empty($transferString)) {
-            echo 'Unexpected problem detected. No transfer string.';
-            exit();
-        }
+        $this->exitIfInvalidEssentials(qa_post_text('ajaxdata'));
 
         $newData = json_decode($transferString, true);
         $newData = str_replace('&quot;', '"', $newData); // see stackoverflow.com/questions/3110487/
@@ -49,35 +38,27 @@ class q2apro_flag_reasons_page
         $questionId = (int) $newData['questionid'];
         $postId     = (int) $newData['postid'];
         $postType   = $newData['posttype'];
-        $parentId   = empty($newData['parentid']) ? null : (int) $newData['parentid']; // only C
         $reasonId   = (int) $newData['reasonid'];
-        $notice     = empty($newData['notice']) ? null : trim($newData['notice']);
 
         if (empty($questionId) || empty($postId) || empty($postType) || empty($reasonId)) {
-            $reply = ['error' => 'missing data'];
+            $reply = ['processingFlagError' => 'missing data'];
             echo json_encode($reply);
 
             return;
-        } else {
-
         }
 
+        $parentId = empty($newData['parentid']) ? null : (int) $newData['parentid']; // only C
+        $notice = empty($newData['notice']) ? null : trim($newData['notice']);
         $userId = qa_get_logged_in_userid();
 
         require_once QA_INCLUDE_DIR . 'app/votes.php';
         require_once QA_INCLUDE_DIR . 'app/posts.php';
         require_once QA_INCLUDE_DIR . 'pages/question-view.php';
 
-        if ('answerId') {
-            //$this->processFlagToAnswer();
-        } else if ('commentId') {
-            //$this->processFlagToComment();
-        } else {
-            //$this->processFlagToQuestion();
-        }
+//        $processingFlagError = processFlag($postType, $questionId, $reasonId,$notice);
 
         if ('q' === $postType) {
-            $processingFlagError = $this->processFlagToQuestion();
+            $processingFlagError = $this->processFlagToQuestion($userId, $postId,$questionId, $reasonId, $notice);
         } elseif ('a' === $postType) {
             $processingFlagError = $this->processFlagToAnswer();
         } elseif ('c' === $postType) {
@@ -91,7 +72,21 @@ class q2apro_flag_reasons_page
         echo json_encode($reply);
     }
 
-    private function processFlagToQuestion() {
+    private function processFlag($postType, $questionId, $reasonId, $notice) {
+        $processingFlagError = '';
+
+        if ('answerId') {
+            $processingFlagError = $this->processFlagToAnswer();
+        } else if ('commentId') {
+            $processingFlagError = $this->processFlagToComment();
+        } else {
+            $processingFlagError = $this->processFlagToQuestion($userId, $questionId, $reasonId, $notice);
+        }
+
+        return $processingFlagError;
+    }
+
+    private function processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice) {
         $questionData = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $questionId),
             qa_db_full_child_posts_selectspec($userId, $questionId),
@@ -186,6 +181,20 @@ class q2apro_flag_reasons_page
                 VALUES (#, #, #, $)
             ', $userId, $postId, $reasonId, $notice
             );
+        }
+    }
+
+    private function exitIfInvalidEssentials($ajaxData) {
+        var_dump('$ajaxData:' . $ajaxData);
+
+        if (!qa_is_logged_in()) {
+            echo('Error: Player is logged out!');
+            exit();
+        }
+
+        if (empty($ajaxData)) {
+            echo 'Error: no data in ajax!';
+            exit();
         }
     }
 }
