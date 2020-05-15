@@ -3,22 +3,16 @@
 class qa_html_theme_layer extends qa_html_theme_base
 {
     private $isLogged;
-    
-    public function head_script()
-    {      
-        parent::head_script();
-        $this->isLogged = qa_is_logged_in(); 
-        
-        if ($this->isLogged && 'question' === $this->template) {
-            $this->output(
-                '
-                <script>
-                    const flagAjaxURL = "' . qa_path('ajaxflagger') . '";
-                    const flagQuestionid = ' . $this->content['q_view']['raw']['postid'] . ';
-                </script>
 
-                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'script.js"></script>
-                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'styles.css">
+    public function head_script()
+    {
+        parent::head_script();
+        $this->isLogged = qa_is_logged_in();
+
+        if ($this->isLogged && 'question' === $this->template) {
+            $this->output('
+                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . '/dist/script.js"></script>
+                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'style.css">
             '
             );
         }
@@ -83,14 +77,14 @@ class qa_html_theme_layer extends qa_html_theme_base
                 . qa_lang('q2apro_flagreasons_lang/enter_details')
                 . '">
                         <div id="qa-spam-reason-error" class="qa-error" hidden></div></div>
-                        
+
                         <input type="button" class="qa-form-tall-button qa-form-tall-button-ask qa-form-wide-text qa-go-flag-send-button" value="'
                 . qa_lang('q2apro_flagreasons_lang/send')
                 . '">
-                        
+
                         <button class="close-preview-btn">X</button>
                     </div>
-                </div> 
+                </div>
             </div>
             ');
         }
@@ -103,12 +97,12 @@ class qa_html_theme_layer extends qa_html_theme_base
             if (isset($post['raw']['postid'])) {
                 $postId = (empty(q2apro_count_postflags_output($post['raw']['postid'])) && isset($post['raw']['opostid'])) ? $post['raw']['opostid'] : $post['raw']['postid'];
                 $flagInfo = q2apro_count_postflags_output($postId);
-				
+
                 if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
                     $flagsCount = count(q2apro_get_postflags($postId));
-                    
+
                     unset($post['flags']);
-                    
+
                     $post['flags']['suffix'] = $this->prepareFlagSuffix($flagsCount);
                     $post['flags']['suffix'] .= ': <br>' . $flagInfo;
                 }
@@ -116,11 +110,11 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         parent::post_meta_flags($post, $class);
     }
-    
+
     private function prepareFlagSuffix($flagsCount)
     {
         $flagsCountText = '';
-        
+
         if (1 === $flagsCount) {
             $flagsCountText = ' zgłoszenie';
         } elseif ((1 === $flagsCount%10 && 1 !== $flagsCount) || (4 < $flagsCount%10)) {
@@ -128,10 +122,10 @@ class qa_html_theme_layer extends qa_html_theme_base
         } elseif (1 < $flagsCount%10 && 5 > $flagsCount%10) {
             $flagsCountText = ' zgłoszenia';
         }
-        
+
         return $flagsCount . $flagsCountText;
     }
-    
+
     private function checkPostData($item)
     {
         return $this->isLogged && isset($item['form']['buttons']['flag'], $item['raw']['postid']);

@@ -449,8 +449,6 @@ const reportReasonPopupDOMWrapper = (function createReportReasonPopupWrapper() {
   const popupWrapper = document.createElement('div');
   popupWrapper.classList.add('report-reason-wrapper');
   popupWrapper.innerHTML = `
-        <link href="../qa-plugin/report-reason/style.css" rel="stylesheet" type="text/css">
-         
         <div id="reportReasonPopup" class="report-reason-popup">
             <p>Zaznacz proszę powód zgłoszenia lub podaj własny:</p>
             

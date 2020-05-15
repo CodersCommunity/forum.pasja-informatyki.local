@@ -67,12 +67,17 @@ class q2apro_flag_reasons_page
         $processingFlagError = '';
 
         switch ($postType) {
-            case 'a' /*'answerId'*/: {
-                $processingFlagError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
-            case 'c' /*'commentId'*/ {
-                $processingFlagError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
             case 'q' /*'questionId'*/: {
                 $processingFlagError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
+                break;
+            }
+            case 'a' /*'answerId'*/: {
+                $processingFlagError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
+                break;
+            }
+            case 'c' /*'commentId'*/: {
+                $processingFlagError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
+                break;
             }
             default: {
                 $processingFlagError = 'Incorrect $postType:' . $postType;
