@@ -66,12 +66,17 @@ class q2apro_flag_reasons_page
         var_dump('$flagParams:' , $flagParams);
         $processingFlagError = '';
 
-        if ($postType === 'answerId') {
-            $processingFlagError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
-        } else if ($postType === 'commentId') {
-            $processingFlagError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
-        } else {
-            $processingFlagError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
+        switch ($postType) {
+            case 'a' /*'answerId'*/: {
+                $processingFlagError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
+            case 'c' /*'commentId'*/ {
+                $processingFlagError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
+            case 'q' /*'questionId'*/: {
+                $processingFlagError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
+            }
+            default: {
+                $processingFlagError = 'Incorrect $postType:' . $postType;
+            }
         }
 
         return $processingFlagError;
@@ -149,6 +154,7 @@ class q2apro_flag_reasons_page
 
     private function processFlagToComment($userId, $postId, $questionId, $reasonId, $notice) {
         $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $postId));
+//        var_dump('processFlagToComment /$postId:',$postId , ' /$comment:',$comment);
 
         $commentFlagError = qa_flag_error_html($comment, $userId, $questionId);
         if ($commentFlagError) {
