@@ -175,8 +175,8 @@ function submitForm(event) {
 
   toggleSendWaitingState(sendButton, true);
   sendAjax(prepareFormData()).then(
-    async (value) => {
-      console.warn('value:', await value.text());
+    (value) => {
+      console.warn('value:', value);
       onAjaxSuccess(sendButton);
     },
     (ajaxError) => onAjaxError(sendButton, ajaxError)

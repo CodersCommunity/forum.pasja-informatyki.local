@@ -28,7 +28,7 @@ const sendAjax = (data) => {
       body: `flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
-      resolve(value);
+      resolve(value.json());
     });
   });
 };

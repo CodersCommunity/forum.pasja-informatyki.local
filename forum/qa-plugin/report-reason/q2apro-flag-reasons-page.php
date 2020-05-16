@@ -30,7 +30,7 @@ class q2apro_flag_reasons_page
 
     public function process_request($request)
     {
-        var_dump('??? ', $request);
+//        var_dump('??? ', $request);
 
         $newData =  $this->getFlagData();
 
@@ -65,7 +65,7 @@ class q2apro_flag_reasons_page
     }
 
     private function processFlag($postType, ...$flagParams) {
-        var_dump('$flagParams:' , $flagParams);
+//        var_dump('$flagParams:' , $flagParams);
         $processingFlagError = '';
 
         switch ($postType) {
@@ -182,7 +182,7 @@ class q2apro_flag_reasons_page
 
     private function getFlagData() {
         $flagData = qa_post_text('flagData');
-        var_dump('$flagData:' . $flagData);
+//        var_dump('$flagData:' . $flagData);
 
         $this->exitIfInvalidEssentials($flagData);
 
@@ -192,7 +192,7 @@ class q2apro_flag_reasons_page
 
     private function exitIfInvalidEssentials($flagData) {
         if (!qa_is_logged_in()) {
-            echo('Error: Player is logged out!');
+            echo json_encode(['processingFlagError' => 'Player is logged out!']);
             exit();
         }
 
@@ -210,7 +210,7 @@ class q2apro_flag_reasons_page
         }
 
         if (empty($flagData) || !hasRequiredProps($flagData)) {
-            echo 'Error: ajax data is empty or not have required data!';
+            echo json_encode(['processingFlagError' => 'Ajax data is empty or not have required data!']);
             exit();
         }
     }

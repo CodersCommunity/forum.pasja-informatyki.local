@@ -136,7 +136,7 @@ const sendAjax = (data) => {
       body: `flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
-      resolve(value);
+      resolve(value.json());
     });
   });
 };
@@ -332,8 +332,8 @@ function submitForm(event) {
 
   toggleSendWaitingState(sendButton, true);
   Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(prepareFormData()).then(
-    async (value) => {
-      console.warn('value:', await value.text());
+    (value) => {
+      console.warn('value:', value);
       onAjaxSuccess(sendButton);
     },
     (ajaxError) => onAjaxError(sendButton, ajaxError)
