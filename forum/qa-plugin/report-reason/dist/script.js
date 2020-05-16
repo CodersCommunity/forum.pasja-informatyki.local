@@ -116,9 +116,24 @@ const sendAjax = (data) => {
       reject(AJAX_TIMEOUT_REASON);
     }, TIMEOUT);
 
+    // return new Promise((res, rej) => {
+    //   $.ajax({
+    //     type: "POST",
+    //     url: URL,
+    //     data: { flagData: JSON.stringify(data) },
+    //     dataType:"json",
+    //     cache: false,
+    //     success: res,
+    //     error: rej
+    //   });
+    // })
+
     return fetch(URL, {
       method: 'POST',
-      body: data,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      body: `flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
       resolve(value);
@@ -317,7 +332,10 @@ function submitForm(event) {
 
   toggleSendWaitingState(sendButton, true);
   Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(prepareFormData()).then(
-    () => onAjaxSuccess(sendButton),
+    async (value) => {
+      console.warn('value:', await value.text());
+      onAjaxSuccess(sendButton);
+    },
     (ajaxError) => onAjaxError(sendButton, ajaxError)
   );
 }
@@ -375,17 +393,36 @@ function prepareFormData() {
 
   // Avoid form data duplication, because of <textarea>, which can has custom reason with the same [name] attribute
   const valueIndex = Number(reportReasons[0] === 'custom');
-  formData.set('reportReason', reportReasons[valueIndex]);
-  formData.set('questionId', reportMetaData.rootId);
+  // formData.set('reportReason', reportReasons[valueIndex]);
+  // formData.set('questionId', reportMetaData.rootId);
+
+  const res = {
+    formData: {
+      "questionid": reportMetaData.rootId,
+      // "postid": reportMetaData.,
+      // "posttype":"c",
+      "reasonid":"1",
+      "notice":""
+    }
+  }
 
   if (reportMetaData.answerId) {
-    formData.set('answerId', reportMetaData.answerId);
+    // formData.set('answerId', reportMetaData.answerId);
+    res.formData.posttype = 'a';
+    res.formData.postid = reportMetaData.answerId;
   }
   if (reportMetaData.commentId) {
-    formData.set('commentId', reportMetaData.commentId);
+    // formData.set('commentId', reportMetaData.commentId);
+    res.formData.posttype = 'c';
+    res.formData.postid = reportMetaData.commentId;
   }
 
-  return formData;
+  // formData.set('flagData',JSON.stringify({ "questionid":6,"postid":"42","posttype":"a","reasonid":"1","notice":"" }))
+  return {
+    "questionid": 6, "postid": "42", "posttype": "a", "reasonid": "1", "notice": ""
+  };
+
+  // return formData;
 }
 
 function toggleSendWaitingState(buttonReference, isWaiting) {

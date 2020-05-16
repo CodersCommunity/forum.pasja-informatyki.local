@@ -30,6 +30,8 @@ class q2apro_flag_reasons_page
 
     public function process_request($request)
     {
+        var_dump('??? ', $request);
+
         $newData =  $this->getFlagData();
 
         $questionId = (int) $newData['questionid'];

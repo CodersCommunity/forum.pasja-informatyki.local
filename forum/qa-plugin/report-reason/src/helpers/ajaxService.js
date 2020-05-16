@@ -8,9 +8,24 @@ const sendAjax = (data) => {
       reject(AJAX_TIMEOUT_REASON);
     }, TIMEOUT);
 
+    // return new Promise((res, rej) => {
+    //   $.ajax({
+    //     type: "POST",
+    //     url: URL,
+    //     data: { flagData: JSON.stringify(data) },
+    //     dataType:"json",
+    //     cache: false,
+    //     success: res,
+    //     error: rej
+    //   });
+    // })
+
     return fetch(URL, {
       method: 'POST',
-      body: data,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      body: `flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
       resolve(value);

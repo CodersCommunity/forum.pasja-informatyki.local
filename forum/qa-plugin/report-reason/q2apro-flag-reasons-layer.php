@@ -21,8 +21,8 @@ class qa_html_theme_layer extends qa_html_theme_base
     public function q_view_buttons($q_view)
     {
         if ($this->checkPostData($q_view)) {
-            $q_view['form']['buttons']['flag']['tags'] =
-                'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" ';
+//            $q_view['form']['buttons']['flag']['tags'] =
+//                'data-postid="' . $q_view['raw']['postid'] . '" data-posttype="q" ';
         }
         parent::q_view_buttons($q_view);
     }
@@ -30,8 +30,8 @@ class qa_html_theme_layer extends qa_html_theme_base
     public function a_item_buttons($a_item)
     {
         if ($this->checkPostData($a_item)) {
-            $a_item['form']['buttons']['flag']['tags'] =
-                'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" ';
+//            $a_item['form']['buttons']['flag']['tags'] =
+//                'data-postid="' . $a_item['raw']['postid'] . '" data-posttype="a" ';
         }
         parent::a_item_buttons($a_item);
     }
@@ -39,7 +39,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     public function c_item_buttons($c_item)
     {
         if ($this->checkPostData($c_item)) {
-            $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" ';
+//            $c_item['form']['buttons']['flag']['tags'] = 'data-postid="' . $c_item['raw']['postid'] . '" data-posttype="c" data-parentid="' . $c_item['raw']['parentid'] . '" ';
         }
         parent::c_item_buttons($c_item);
     }
