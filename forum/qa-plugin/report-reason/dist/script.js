@@ -120,9 +120,9 @@ const sendAjax = (data) => {
     return fetch(URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Content-Type': 'application/json'// 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      body: `flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
+      body: JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
       resolve(value.json());
@@ -180,7 +180,7 @@ const reportFlagMap = {
     const postRootSource = inputDOM.form.getAttribute('action');
     const postMetaData = {
       questionId: postRootSource.split('/')[1],
-      postType: postType.slice(0, 1)
+      postType: postType.slice(0, 1),
     };
     postMetaData.postId = this.getPostIdFromInputName(postType, inputDOM.name) || postMetaData.questionId;
 
@@ -379,49 +379,12 @@ function notifyAboutValidationError(sendButton) {
 
 function prepareFormData() {
   const reportMetaData = reportFlagMap.collectForumPostMetaData(flagButtonDOM);
-  const formData = new FormData(/*reportReasonPopupForm*/);
-  const reportReasons = formData.getAll('reportReason');
-
-  // Avoid form data duplication, because of <textarea>, which can has custom reason with the same [name] attribute
-  const valueIndex = Number(reportReasons[0] === 'custom');
-  // formData.set('reportReason', reportReasons[valueIndex]);
-  // formData.set('questionId', reportMetaData.questionId);
+  const [reasonId, notice] = new FormData(reportReasonPopupForm).getAll('reportReason');
 
   return {
-    questionId: reportMetaData.questionId,
-    postId: reportMetaData.postId,
-    postType: reportMetaData.postType,
-    reasonId: 1,
-    notice: ''
+    ...reportMetaData,
+    reasonId, notice
   };
-
-  // const res = {
-  //   formData: {
-  //     "questionid": reportMetaData.questionId,
-  //     // "postid": reportMetaData.,
-  //     // "posttype":"c",
-  //     "reasonid":"1",
-  //     "notice":""
-  //   }
-  // }
-  //
-  // if (reportMetaData.answerId) {
-  //   // formData.set('answerId', reportMetaData.answerId);
-  //   res.formData.posttype = 'a';
-  //   res.formData.postid = reportMetaData.answerId;
-  // }
-  // if (reportMetaData.commentId) {
-  //   // formData.set('commentId', reportMetaData.commentId);
-  //   res.formData.posttype = 'c';
-  //   res.formData.postid = reportMetaData.commentId;
-  // }
-
-  // formData.set('flagData',JSON.stringify({ "questionid":6,"postid":"42","posttype":"a","reasonid":"1","notice":"" }))
-  // return {
-  //   "questionid": 6, "postid": "42", "posttype": "a", "reasonid": "1", "notice": ""
-  // };
-
-  // return formData;
 }
 
 function toggleSendWaitingState(buttonReference, isWaiting) {
@@ -449,12 +412,10 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMReferences", function() { return reportReasonPopupDOMReferences; });
-// import reasonsCollection from '../data/reasonsCollection';
-
-const listItemsDOM = Object.entries(FLAG_REASONS_MAP)/*reasonsCollection*/.reduce(
-  (listItems, [reasonKey, reasonValue], index, reasonsCollection) => {
-    const reasonItemId = `reportReasonItem${index}`;
-    const isLast = index === reasonsCollection.length - 1;
+const listItemsDOM = Object.entries(FLAG_REASONS_MAP).reduce(
+  (listItems, [reasonKey, reasonValue], index, flagReasonsCollection) => {
+    // const reasonItemId = `reportReasonItem${index}`;
+    const isLast = index === flagReasonsCollection.length - 1;
     const textAreaDOM =
       isLast &&
       `<textarea id="customReportReason" rows="3" cols="47" name="reportReason" class="report-reason-popup__custom-report-reason" data-requirable="true"></textarea>`;
@@ -463,10 +424,10 @@ const listItemsDOM = Object.entries(FLAG_REASONS_MAP)/*reasonsCollection*/.reduc
       listItems +
       `
         <li>
-            <label for="${reasonItemId}">
-                <input id="${reasonItemId}" 
+            <label for="${reasonKey}">
+                <input id="${reasonKey}" 
                         type="radio" 
-                        value="${reasonKey}" 
+                        value="${index}" 
                         name="reportReason" 
                         data-requirable="true">
                 ${reasonValue}
@@ -484,7 +445,7 @@ const reportReasonPopupDOMWrapper = (function createReportReasonPopupWrapper() {
   popupWrapper.classList.add('report-reason-wrapper');
   popupWrapper.innerHTML = `
         <div id="reportReasonPopup" class="report-reason-popup">
-            <p>Zaznacz proszę powód zgłoszenia lub podaj własny:</p>
+            <p>Zaznacz powód zgłoszenia lub podaj własny:</p>
             
             <form method="post" class="report-reason-popup__form">
                 <ul id="reportReasonList" class="report-reason-popup__list">${listItemsDOM}</ul>

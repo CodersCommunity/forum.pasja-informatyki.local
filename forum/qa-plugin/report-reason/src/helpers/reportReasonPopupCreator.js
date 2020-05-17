@@ -1,9 +1,7 @@
-// import reasonsCollection from '../data/reasonsCollection';
-
-const listItemsDOM = Object.entries(FLAG_REASONS_MAP)/*reasonsCollection*/.reduce(
-  (listItems, [reasonKey, reasonValue], index, reasonsCollection) => {
-    const reasonItemId = `reportReasonItem${index}`;
-    const isLast = index === reasonsCollection.length - 1;
+const listItemsDOM = Object.entries(FLAG_REASONS_MAP).reduce(
+  (listItems, [reasonKey, reasonValue], index, flagReasonsCollection) => {
+    // const reasonItemId = `reportReasonItem${index}`;
+    const isLast = index === flagReasonsCollection.length - 1;
     const textAreaDOM =
       isLast &&
       `<textarea id="customReportReason" rows="3" cols="47" name="reportReason" class="report-reason-popup__custom-report-reason" data-requirable="true"></textarea>`;
@@ -12,10 +10,10 @@ const listItemsDOM = Object.entries(FLAG_REASONS_MAP)/*reasonsCollection*/.reduc
       listItems +
       `
         <li>
-            <label for="${reasonItemId}">
-                <input id="${reasonItemId}" 
+            <label for="${reasonKey}">
+                <input id="${reasonKey}" 
                         type="radio" 
-                        value="${reasonKey}" 
+                        value="${index}" 
                         name="reportReason" 
                         data-requirable="true">
                 ${reasonValue}
@@ -33,7 +31,7 @@ const reportReasonPopupDOMWrapper = (function createReportReasonPopupWrapper() {
   popupWrapper.classList.add('report-reason-wrapper');
   popupWrapper.innerHTML = `
         <div id="reportReasonPopup" class="report-reason-popup">
-            <p>Zaznacz proszę powód zgłoszenia lub podaj własny:</p>
+            <p>Zaznacz powód zgłoszenia lub podaj własny:</p>
             
             <form method="post" class="report-reason-popup__form">
                 <ul id="reportReasonList" class="report-reason-popup__list">${listItemsDOM}</ul>

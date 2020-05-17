@@ -34,7 +34,7 @@ const reportFlagMap = {
     const postRootSource = inputDOM.form.getAttribute('action');
     const postMetaData = {
       questionId: postRootSource.split('/')[1],
-      postType: postType.slice(0, 1)
+      postType: postType.slice(0, 1),
     };
     postMetaData.postId = this.getPostIdFromInputName(postType, inputDOM.name) || postMetaData.questionId;
 
@@ -233,49 +233,12 @@ function notifyAboutValidationError(sendButton) {
 
 function prepareFormData() {
   const reportMetaData = reportFlagMap.collectForumPostMetaData(flagButtonDOM);
-  const formData = new FormData(/*reportReasonPopupForm*/);
-  const reportReasons = formData.getAll('reportReason');
-
-  // Avoid form data duplication, because of <textarea>, which can has custom reason with the same [name] attribute
-  const valueIndex = Number(reportReasons[0] === 'custom');
-  // formData.set('reportReason', reportReasons[valueIndex]);
-  // formData.set('questionId', reportMetaData.questionId);
+  const [reasonId, notice] = new FormData(reportReasonPopupForm).getAll('reportReason');
 
   return {
-    questionId: reportMetaData.questionId,
-    postId: reportMetaData.postId,
-    postType: reportMetaData.postType,
-    reasonId: 1,
-    notice: ''
+    ...reportMetaData,
+    reasonId, notice
   };
-
-  // const res = {
-  //   formData: {
-  //     "questionid": reportMetaData.questionId,
-  //     // "postid": reportMetaData.,
-  //     // "posttype":"c",
-  //     "reasonid":"1",
-  //     "notice":""
-  //   }
-  // }
-  //
-  // if (reportMetaData.answerId) {
-  //   // formData.set('answerId', reportMetaData.answerId);
-  //   res.formData.posttype = 'a';
-  //   res.formData.postid = reportMetaData.answerId;
-  // }
-  // if (reportMetaData.commentId) {
-  //   // formData.set('commentId', reportMetaData.commentId);
-  //   res.formData.posttype = 'c';
-  //   res.formData.postid = reportMetaData.commentId;
-  // }
-
-  // formData.set('flagData',JSON.stringify({ "questionid":6,"postid":"42","posttype":"a","reasonid":"1","notice":"" }))
-  // return {
-  //   "questionid": 6, "postid": "42", "posttype": "a", "reasonid": "1", "notice": ""
-  // };
-
-  // return formData;
 }
 
 function toggleSendWaitingState(buttonReference, isWaiting) {

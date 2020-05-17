@@ -32,7 +32,7 @@ class q2apro_flag_reasons_page
     {
 //        var_dump('??? ', $request);
 
-        $newData =  $this->getFlagData();
+        $newData =  $this->getFlagData($request);
 
         $questionId = (int) $newData['questionId'];
         $postId     = (int) $newData['postId'];
@@ -180,9 +180,12 @@ class q2apro_flag_reasons_page
         );
     }
 
-    private function getFlagData() {
-        $flagData = qa_post_text('flagData');
-//        var_dump('$flagData:' . $flagData);
+    private function getFlagData($request) {
+//        $flagData = qa_post_text('flagData');
+        var_dump(debug_print_backtrace());
+        var_dump('$request:' . $request);
+        $flagData = json_decode($request);
+        var_dump('parsed $flagData:' . $flagData);
 
         $this->exitIfInvalidEssentials($flagData);
 
