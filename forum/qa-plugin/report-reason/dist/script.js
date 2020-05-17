@@ -86,17 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/data/reasonsCollection.json":
-/*!*****************************************!*\
-  !*** ./src/data/reasonsCollection.json ***!
-  \*****************************************/
-/*! exports provided: 0, 1, 2, 3, 4, 5, 6, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("[{\"value\":\"spam\",\"description\":\"SPAM\"},{\"value\":\"insult\",\"description\":\"Wypowiedź jest obraźliwa\"},{\"value\":\"incorrectDescription\",\"description\":\"Nieprawidłowy temat/kategoria/otagowanie\"},{\"value\":\"misunderstoodContent\",\"description\":\"Niepełna lub niezrozumiała treść\"},{\"value\":\"duplicate\",\"description\":\"Duplikat pytania\"},{\"value\":\"codeNotInBlock\",\"description\":\"Kod nie jest umieszczony w odpowiednim bloczku\"},{\"value\":\"custom\",\"description\":\"Inny (dodaj opis)\"}]");
-
-/***/ }),
-
 /***/ "./src/helpers/ajaxService.js":
 /*!************************************!*\
   !*** ./src/helpers/ajaxService.js ***!
@@ -460,12 +449,10 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMReferences", function() { return reportReasonPopupDOMReferences; });
-/* harmony import */ var _data_reasonsCollection__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/reasonsCollection */ "./src/data/reasonsCollection.json");
-var _data_reasonsCollection__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../data/reasonsCollection */ "./src/data/reasonsCollection.json", 1);
+// import reasonsCollection from '../data/reasonsCollection';
 
-
-const listItemsDOM = _data_reasonsCollection__WEBPACK_IMPORTED_MODULE_0__.reduce(
-  (listItems, reason, index, reasonsCollection) => {
+const listItemsDOM = Object.entries(FLAG_REASONS_MAP)/*reasonsCollection*/.reduce(
+  (listItems, [reasonKey, reasonValue], index, reasonsCollection) => {
     const reasonItemId = `reportReasonItem${index}`;
     const isLast = index === reasonsCollection.length - 1;
     const textAreaDOM =
@@ -479,10 +466,10 @@ const listItemsDOM = _data_reasonsCollection__WEBPACK_IMPORTED_MODULE_0__.reduce
             <label for="${reasonItemId}">
                 <input id="${reasonItemId}" 
                         type="radio" 
-                        value="${reason.value}" 
+                        value="${reasonKey}" 
                         name="reportReason" 
                         data-requirable="true">
-                ${reason.description}
+                ${reasonValue}
             </label>
             ${isLast ? textAreaDOM : ''}
         </li>

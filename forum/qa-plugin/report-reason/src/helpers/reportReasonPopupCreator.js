@@ -1,7 +1,7 @@
-import reasonsCollection from '../data/reasonsCollection';
+// import reasonsCollection from '../data/reasonsCollection';
 
-const listItemsDOM = reasonsCollection.reduce(
-  (listItems, reason, index, reasonsCollection) => {
+const listItemsDOM = Object.entries(FLAG_REASONS_MAP)/*reasonsCollection*/.reduce(
+  (listItems, [reasonKey, reasonValue], index, reasonsCollection) => {
     const reasonItemId = `reportReasonItem${index}`;
     const isLast = index === reasonsCollection.length - 1;
     const textAreaDOM =
@@ -15,10 +15,10 @@ const listItemsDOM = reasonsCollection.reduce(
             <label for="${reasonItemId}">
                 <input id="${reasonItemId}" 
                         type="radio" 
-                        value="${reason.value}" 
+                        value="${reasonKey}" 
                         name="reportReason" 
                         data-requirable="true">
-                ${reason.description}
+                ${reasonValue}
             </label>
             ${isLast ? textAreaDOM : ''}
         </li>

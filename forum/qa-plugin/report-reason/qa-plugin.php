@@ -62,7 +62,7 @@ function q2apro_flag_reasonid_to_readable($reasonId)
     ];
 
     var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
-    return qa_lang('q2apro_flagreasons_lang/reason_' . $translationArray[$reasonId]);
+    return qa_lang('q2apro_flagreasons_lang/' . /*$translationArray[*/$reasonId/*]*/);
 }
 
 function q2apro_get_postflags($postId)
