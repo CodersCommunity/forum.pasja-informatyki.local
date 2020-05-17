@@ -34,10 +34,10 @@ class q2apro_flag_reasons_page
 
         $newData =  $this->getFlagData();
 
-        $questionId = (int) $newData['questionid'];
-        $postId     = (int) $newData['postid'];
-        $postType   = $newData['posttype'];
-        $reasonId   = (int) $newData['reasonid'];
+        $questionId = (int) $newData['questionId'];
+        $postId     = (int) $newData['postId'];
+        $postType   = $newData['postType'];
+        $reasonId   = (int) $newData['reasonId'];
 
         $parentId = empty($newData['parentid']) ? null : (int) $newData['parentid']; // only C
         $notice = empty($newData['notice']) ? null : trim($newData['notice']);
@@ -154,7 +154,7 @@ class q2apro_flag_reasons_page
                 '
                     INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`)
                     VALUES (#, #, #, $)
-                ', $userId, $answer['postid'], $reasonId, $notice
+                ', $userId, $answer['postId'], $reasonId, $notice
             );
         }
     }

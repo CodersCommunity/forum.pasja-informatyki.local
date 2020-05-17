@@ -61,6 +61,7 @@ function q2apro_flag_reasonid_to_readable($reasonId)
         6 => 'migrate'
     ];
 
+    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
     return qa_lang('q2apro_flagreasons_lang/reason_' . $translationArray[$reasonId]);
 }
 

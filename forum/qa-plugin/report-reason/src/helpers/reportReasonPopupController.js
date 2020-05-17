@@ -12,7 +12,7 @@ const {
   reportReasonValidationError,
 } = reportReasonPopupDOMReferences;
 const flagButtonNamePart = 'doflag';
-const doCommentInputNameSuffix = '_docomment';
+// const doCommentInputNameSuffix = '_docomment';
 const reportFlagMap = {
   regex: {
     question: /q_doflag/,
@@ -20,42 +20,44 @@ const reportFlagMap = {
     comment: /^c(\d+)_doflag/,
     doComment: /^a(\d+)_docomment/,
   },
-  getNumberFromInputName(regexKey, inputName) {
-    return (this.regex[regexKey].exec(inputName) || [])[1];
+  getPostIdFromInputName( postType, inputName) {
+    const [, postId] = this.regex[postType].exec(inputName);
+    return postId;
   },
   recognizeInputKindByName(inputName) {
-    const mappedInputNameRegexKey = Object.entries(this.regex).find(
-      ([regexKey, regexValue]) => {
-        return regexValue.test(inputName);
-      }
-    )[0];
+    const [mappedInputNameRegexKey] = Object.entries(this.regex).find(
+      ([regexKey, regexValue]) => regexValue.test(inputName));
     return mappedInputNameRegexKey;
   },
   collectForumPostMetaData(inputDOM) {
-    const postKind = this.recognizeInputKindByName(inputDOM.name);
+    const postType = this.recognizeInputKindByName(inputDOM.name);
     const postRootSource = inputDOM.form.getAttribute('action');
     const postMetaData = {
-      rootId: postRootSource.split('/')[1],
+      questionId: postRootSource.split('/')[1],
+      postType: postType.slice(0, 1)
     };
+    postMetaData.postId = this.getPostIdFromInputName(postType, inputDOM.name) || postMetaData.questionId;
 
-    if (postKind === 'answer') {
-      postMetaData.answerId = this.getNumberFromInputName(
-        'answer',
-        inputDOM.name
-      );
-    } else if (postKind === 'comment') {
-      const doCommentInputDOM = inputDOM.parentElement.querySelector(
-        `[name*="${doCommentInputNameSuffix}"]`
-      );
-      postMetaData.answerId = this.getNumberFromInputName(
-        'doComment',
-        doCommentInputDOM.name
-      );
-      postMetaData.commentId = this.getNumberFromInputName(
-        'comment',
-        inputDOM.name
-      );
-    }
+    // if (postType === 'answer') {
+    //   postMetaData.answerId = this.getPostIdFromInputName(
+    //     'answer',
+    //     inputDOM.name
+    //   );
+    // } else if (postType === 'comment') {
+
+      // const doCommentInputDOM = inputDOM.parentElement.querySelector(
+      //   `[name*="${doCommentInputNameSuffix}"]`
+      // );
+      // postMetaData.answerId = this.getPostIdFromInputName(
+      //   'doComment',
+      //   doCommentInputDOM.name
+      // );
+
+    //   postMetaData.commentId = this.getPostIdFromInputName(
+    //     'comment',
+    //     inputDOM.name
+    //   );
+    // }
 
     return postMetaData;
   },
@@ -231,39 +233,47 @@ function notifyAboutValidationError(sendButton) {
 
 function prepareFormData() {
   const reportMetaData = reportFlagMap.collectForumPostMetaData(flagButtonDOM);
-  const formData = new FormData(reportReasonPopupForm);
+  const formData = new FormData(/*reportReasonPopupForm*/);
   const reportReasons = formData.getAll('reportReason');
 
   // Avoid form data duplication, because of <textarea>, which can has custom reason with the same [name] attribute
   const valueIndex = Number(reportReasons[0] === 'custom');
   // formData.set('reportReason', reportReasons[valueIndex]);
-  // formData.set('questionId', reportMetaData.rootId);
+  // formData.set('questionId', reportMetaData.questionId);
 
-  const res = {
-    formData: {
-      "questionid": reportMetaData.rootId,
-      // "postid": reportMetaData.,
-      // "posttype":"c",
-      "reasonid":"1",
-      "notice":""
-    }
-  }
+  return {
+    questionId: reportMetaData.questionId,
+    postId: reportMetaData.postId,
+    postType: reportMetaData.postType,
+    reasonId: 1,
+    notice: ''
+  };
 
-  if (reportMetaData.answerId) {
-    // formData.set('answerId', reportMetaData.answerId);
-    res.formData.posttype = 'a';
-    res.formData.postid = reportMetaData.answerId;
-  }
-  if (reportMetaData.commentId) {
-    // formData.set('commentId', reportMetaData.commentId);
-    res.formData.posttype = 'c';
-    res.formData.postid = reportMetaData.commentId;
-  }
+  // const res = {
+  //   formData: {
+  //     "questionid": reportMetaData.questionId,
+  //     // "postid": reportMetaData.,
+  //     // "posttype":"c",
+  //     "reasonid":"1",
+  //     "notice":""
+  //   }
+  // }
+  //
+  // if (reportMetaData.answerId) {
+  //   // formData.set('answerId', reportMetaData.answerId);
+  //   res.formData.posttype = 'a';
+  //   res.formData.postid = reportMetaData.answerId;
+  // }
+  // if (reportMetaData.commentId) {
+  //   // formData.set('commentId', reportMetaData.commentId);
+  //   res.formData.posttype = 'c';
+  //   res.formData.postid = reportMetaData.commentId;
+  // }
 
   // formData.set('flagData',JSON.stringify({ "questionid":6,"postid":"42","posttype":"a","reasonid":"1","notice":"" }))
-  return {
-    "questionid": 6, "postid": "42", "posttype": "a", "reasonid": "1", "notice": ""
-  };
+  // return {
+  //   "questionid": 6, "postid": "42", "posttype": "a", "reasonid": "1", "notice": ""
+  // };
 
   // return formData;
 }
