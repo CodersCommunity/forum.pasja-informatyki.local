@@ -336,6 +336,12 @@ function submitForm(event) {
 function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
   updateCurrentPostFlags(response.currentFlags, formData);
+  swapPostFlagButton(getUnflagButton({
+    postType: formData.postType,
+    questionId: formData.questionId,
+    postId: formData.postId,
+    parentId: getPostParentId()
+  }));
   showSuccessPopup();
 }
 
@@ -397,7 +403,9 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
 }
 
 function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
-  const flagsMetadataWrapper = document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
+  const flagsMetadataWrapper = postType === 'q' ?
+      document.querySelector('.qa-q-view-meta') :
+      document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
   const targetElementSelector = `.qa-${postType}-item-flags`;
   const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
 
@@ -415,6 +423,59 @@ function showSuccessPopup() {
       'report-reason-popup',
       'report-reason-popup__success-info--show'
   );
+}
+
+function getPostParentId() {
+  const parentElement = flagButtonDOM.closest('[id*="_list"]');
+
+  if (!parentElement) {
+    return null;
+  }
+
+  const parentElementPostId = parentElement.id.slice(1, parentElement.id.indexOf('_'));
+  return parentElementPostId;
+}
+
+function getUnflagButton({postType, questionId, postId, parentId}) {
+  switch (postType) {
+    case 'q': {
+      return `
+        <input name="q_dounflag" 
+          onclick="qa_show_waiting_after(this, false);" 
+          value="wycofaj zgłoszenie" 
+          title="Wycofaj zgłoszenie tej treści" 
+          type="submit" 
+          class="qa-form-light-button qa-form-light-button-unflag">
+      `;
+    }
+    case 'a': {
+      return `
+        <input name="a${postId}_dounflag" 
+            onclick="return qa_answer_click(${postId}, ${questionId}, this);" 
+            value="wycofaj zgłoszenie" 
+            title="Wycofaj zgłoszenie tej treści" 
+            type="submit" 
+            class="qa-form-light-button qa-form-light-button-unflag">
+      `;
+    }
+    case 'c': {
+      return `
+        <input name="c${postId}_dounflag" 
+            onclick="return qa_comment_click(${postId}, ${questionId}, ${parentId}, this);" 
+            value="wycofaj zgłoszenie" 
+            title="Wycofaj zgłoszenie tej treści" 
+            type="submit" 
+            class="qa-form-light-button qa-form-light-button-unflag">
+      `;
+    }
+    default: {
+      console.error('Unrecognized postType!', postType, ' /questionId: ', questionId, ' /postId: ', postId);
+    }
+  }
+}
+
+function swapPostFlagButton(unflagBtnHTML) {
+  flagButtonDOM.outerHTML = unflagBtnHTML;
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (bootstrapReportReasonPopup);
