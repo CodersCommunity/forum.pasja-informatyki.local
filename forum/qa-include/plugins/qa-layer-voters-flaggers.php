@@ -122,6 +122,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
 		if (isset($postid)) {
 			$votersflaggers = $this->get_post_voters_flaggers($post, $postid);
+			var_dump('$votersflaggers: ', $votersflaggers, ' /qa_html: ', qa_html($votersflaggers[0]['handle']));
 
 			if (isset($votersflaggers)) {
 				foreach ($votersflaggers as $voterflagger) {

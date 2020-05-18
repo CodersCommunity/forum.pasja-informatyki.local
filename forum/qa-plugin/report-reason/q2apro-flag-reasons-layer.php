@@ -111,7 +111,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
                     unset($post['flags']);
 
-                    $post['flags']['suffix'] = $this->prepareFlagSuffix($flagsCount);
+                    $post['flags']['suffix'] = self::prepareFlagSuffix($flagsCount);
                     $post['flags']['suffix'] .= ': <br>' . $flagInfo;
                 }
             }
@@ -119,7 +119,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         parent::post_meta_flags($post, $class);
     }
 
-    private function prepareFlagSuffix($flagsCount)
+    public static function prepareFlagSuffix($flagsCount)
     {
         $flagsCountText = '';
 

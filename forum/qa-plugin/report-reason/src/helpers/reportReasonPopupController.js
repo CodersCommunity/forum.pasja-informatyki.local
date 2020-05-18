@@ -29,23 +29,23 @@ const reportFlagMap = {
       ([regexKey, regexValue]) => regexValue.test(inputName));
     return mappedInputNameRegexKey;
   },
-  collectForumPostMetaData(inputDOM) {
-    const postType = this.recognizeInputKindByName(inputDOM.name);
-    const postRootSource = inputDOM.form.getAttribute('action');
+  collectForumPostMetaData() {
+    const postType = this.recognizeInputKindByName(flagButtonDOM.name);
+    const postRootSource = flagButtonDOM.form.getAttribute('action');
     const postMetaData = {
       questionId: postRootSource.split('/')[1],
       postType: postType.slice(0, 1),
     };
-    postMetaData.postId = this.getPostIdFromInputName(postType, inputDOM.name) || postMetaData.questionId;
+    postMetaData.postId = this.getPostIdFromInputName(postType, flagButtonDOM.name) || postMetaData.questionId;
 
     // if (postType === 'answer') {
     //   postMetaData.answerId = this.getPostIdFromInputName(
     //     'answer',
-    //     inputDOM.name
+    //     flagButtonDOM.name
     //   );
     // } else if (postType === 'comment') {
 
-      // const doCommentInputDOM = inputDOM.parentElement.querySelector(
+      // const doCommentInputDOM = flagButtonDOM.parentElement.querySelector(
       //   `[name*="${doCommentInputNameSuffix}"]`
       // );
       // postMetaData.answerId = this.getPostIdFromInputName(
@@ -55,7 +55,7 @@ const reportFlagMap = {
 
     //   postMetaData.commentId = this.getPostIdFromInputName(
     //     'comment',
-    //     inputDOM.name
+    //     flagButtonDOM.name
     //   );
     // }
 
@@ -176,22 +176,21 @@ function submitForm(event) {
   }
 
   toggleSendWaitingState(sendButton, true);
-  sendAjax(prepareFormData()).then(
-    (value) => {
-      console.warn('value:', value);
-      onAjaxSuccess(sendButton);
+
+  const formData = prepareFormData();
+  sendAjax(formData).then(
+    (response) => {
+      console.warn('response:', response);
+      onAjaxSuccess(response, formData, sendButton);
     },
     (ajaxError) => onAjaxError(sendButton, ajaxError)
   );
 }
 
-function onAjaxSuccess(sendButton) {
+function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
-  reportReasonPopup.classList.add('report-reason-popup--hide');
-  reportReasonSuccessInfo.classList.add(
-    'report-reason-popup',
-    'report-reason-popup__success-info--show'
-  );
+  updateCurrentPostFlags(response.currentFlags, formData);
+  showSuccessPopup();
 }
 
 function onAjaxError(sendButton, ajaxError) {
@@ -232,7 +231,7 @@ function notifyAboutValidationError(sendButton) {
 }
 
 function prepareFormData() {
-  const reportMetaData = reportFlagMap.collectForumPostMetaData(flagButtonDOM);
+  const reportMetaData = reportFlagMap.collectForumPostMetaData();
   const [reasonId, notice] = new FormData(reportReasonPopupForm).getAll('reportReason');
 
   return {
@@ -249,6 +248,26 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
     window.qa_hide_waiting(buttonReference);
     buttonReference.disabled = false;
   }
+}
+
+function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
+  const flagsMetadataWrapper = document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
+  const targetElementSelector = `.qa-${postType}-item-flags`
+
+  if (flagsMetadataWrapper.matches(targetElementSelector)) {
+    flagsMetadataWrapper.querySelector(targetElementSelector).outerHTML = currentFlagsHTML;
+  } else {
+    const responseAsDOM = new DOMParser().parseFromString(currentFlagsHTML, 'text/html').querySelector(targetElementSelector);
+    flagsMetadataWrapper.appendChild(responseAsDOM);
+  }
+}
+
+function showSuccessPopup() {
+  reportReasonPopup.classList.add('report-reason-popup--hide');
+  reportReasonSuccessInfo.classList.add(
+      'report-reason-popup',
+      'report-reason-popup__success-info--show'
+  );
 }
 
 export default bootstrapReportReasonPopup;
