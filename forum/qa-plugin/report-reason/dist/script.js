@@ -398,10 +398,11 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
 
 function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
   const flagsMetadataWrapper = document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
-  const targetElementSelector = `.qa-${postType}-item-flags`
+  const targetElementSelector = `.qa-${postType}-item-flags`;
+  const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
 
-  if (flagsMetadataWrapper.matches(targetElementSelector)) {
-    flagsMetadataWrapper.querySelector(targetElementSelector).outerHTML = currentFlagsHTML;
+  if (targetElement) {
+    targetElement.outerHTML = currentFlagsHTML;
   } else {
     const responseAsDOM = new DOMParser().parseFromString(currentFlagsHTML, 'text/html').querySelector(targetElementSelector);
     flagsMetadataWrapper.appendChild(responseAsDOM);
