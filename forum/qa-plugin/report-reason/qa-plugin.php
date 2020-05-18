@@ -50,19 +50,27 @@ qa_register_plugin_module(
     'event', 'q2apro-flag-reasons-event.php', 'q2apro_flagreasons_event', 'q2apro flag reasons Event'
 );
 
+// TODO: secure path from case when folder structure/name will change
+//$flagReasonsMapFilePath = dirname(dirname(__FILE__)).'/' . 'report-reason/q2apro-flag-reasons-lang-default.php';
+//var_dump('$flagReasonsMapFilePath: ', $flagReasonsMapFilePath);
+//$flagReasonsMap = require $flagReasonsMapFilePath;
+
 function q2apro_flag_reasonid_to_readable($reasonId)
 {
+    // TODO: make a consistent place to put flag reason translations
     $translationArray = [
-        1 => 'quality',
-        2 => 'spam',
-        3 => 'rude',
-        4 => 'edit',
-        5 => 'duplicate',
-        6 => 'migrate'
+        'SPAM',
+        'Wypowiedź jest obraźliwa',
+        'Nieprawidłowy temat/kategoria/otagowanie',
+        'Niepełna lub niezrozumiała treść',
+        'Kod nie jest umieszczony w odpowiednim bloczku',
+        'Duplikat pytania (podaj link)',
+        'Inny (podaj własny opis)'
     ];
 
-    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
-    return qa_lang('q2apro_flagreasons_lang/' . /*$translationArray[*/$reasonId/*]*/);
+//    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
+    return $translationArray[$reasonId];
+//    return qa_lang('q2apro_flagreasons_lang/' . $translationArray[$reasonId]);
 }
 
 function q2apro_get_postflags($postId)

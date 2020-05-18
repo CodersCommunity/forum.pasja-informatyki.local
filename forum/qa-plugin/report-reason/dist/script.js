@@ -120,7 +120,7 @@ const sendAjax = (data) => {
     return fetch(URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'// 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Content-Type': 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
       },
       body: JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {

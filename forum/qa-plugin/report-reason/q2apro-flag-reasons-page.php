@@ -28,36 +28,30 @@ class q2apro_flag_reasons_page
         return 'ajaxflagger' === $request;
     }
 
-    public function process_request($request)
+    public function process_request()
     {
-//        var_dump('??? ', $request);
+        $requestJSONData = file_get_contents('php://input');
+        $this->validateJSON($requestJSONData);
+        $flagData = $this->getFlagData($requestJSONData);
 
-        $newData =  $this->getFlagData($request);
+        $questionId = (int) $flagData['questionId'];
+        $postId     = (int) $flagData['postId'];
+        $postType   = $flagData['postType'];
+        $reasonId   = (int) $flagData['reasonId'];
 
-        $questionId = (int) $newData['questionId'];
-        $postId     = (int) $newData['postId'];
-        $postType   = $newData['postType'];
-        $reasonId   = (int) $newData['reasonId'];
-
-        $parentId = empty($newData['parentid']) ? null : (int) $newData['parentid']; // only C
-        $notice = empty($newData['notice']) ? null : trim($newData['notice']);
+        $parentId = empty($flagData['parentid']) ? null : (int) $flagData['parentid']; // only C
+        $notice = empty($flagData['notice']) ? null : trim($flagData['notice']);
         $userId = qa_get_logged_in_userid();
 
         require_once QA_INCLUDE_DIR . 'app/votes.php';
         require_once QA_INCLUDE_DIR . 'app/posts.php';
         require_once QA_INCLUDE_DIR . 'pages/question-view.php';
 
-        $processingFlagError = $this->processFlag($postType, $userId, $postId, $questionId, $reasonId, $notice);
+        $processingFlagReasonError = $this->processFlag($postType, $userId, $postId, $questionId, $reasonId, $notice);
 
-//        if ('q' === $postType) {
-//            $processingFlagError = $this->processFlagToQuestion($userId, $postId,$questionId, $reasonId, $notice);
-//        } elseif ('a' === $postType) {
-//            $processingFlagError = $this->processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice);
-//        } elseif ('c' === $postType) {
-//            $processingFlagError = $this->processFlagToComment($userId, $postId, $questionId, $reasonId, $notice);
-//        }
-
-        $reply = $processingFlagError ? ['processingFlagError' => $processingFlagError] : ['currentFlags' => q2apro_count_postflags_output($postId)];
+        $reply = $processingFlagReasonError ?
+            ['processingFlagReasonError' => $processingFlagReasonError] :
+            ['currentFlags' => q2apro_count_postflags_output($postId)];
 
 //            var_dump('current flags:' . q2apro_count_postflags_output($postId));
 
@@ -66,27 +60,27 @@ class q2apro_flag_reasons_page
 
     private function processFlag($postType, ...$flagParams) {
 //        var_dump('$flagParams:' , $flagParams);
-        $processingFlagError = '';
+        $processingFlagReasonError = '';
 
         switch ($postType) {
             case 'q' /*'questionId'*/: {
-                $processingFlagError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
+                $processingFlagReasonError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
                 break;
             }
             case 'a' /*'answerId'*/: {
-                $processingFlagError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
+                $processingFlagReasonError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
                 break;
             }
             case 'c' /*'commentId'*/: {
-                $processingFlagError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
+                $processingFlagReasonError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
                 break;
             }
             default: {
-                $processingFlagError = 'Incorrect $postType:' . $postType;
+                $processingFlagReasonError = 'Incorrect $postType:' . $postType;
             }
         }
 
-        return $processingFlagError;
+        return $processingFlagReasonError;
     }
 
     private function processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice) {
@@ -180,22 +174,37 @@ class q2apro_flag_reasons_page
         );
     }
 
-    private function getFlagData($request) {
+    private function validateJSON($requestJSONData) {
+        if (strlen($requestJSONData) > 0) {
+            json_decode($requestJSONData);
+
+            if (json_last_error() != JSON_ERROR_NONE) {
+                echo json_encode(['processingFlagReasonError' => 'Request is not valid JSON!']);
+                exit();
+            }
+        } else {
+            echo json_encode(['processingFlagReasonError' => 'Request is empty!']);
+            exit();
+        }
+    }
+
+    private function getFlagData($requestJSONData) {
 //        $flagData = qa_post_text('flagData');
-        var_dump(debug_print_backtrace());
-        var_dump('$request:' . $request);
-        $flagData = json_decode($request);
-        var_dump('parsed $flagData:' . $flagData);
+//        var_dump(debug_print_backtrace());
+        var_dump('$requestJSONData: ', $requestJSONData);
+//        $flagData = json_decode($request);
 
-        $this->exitIfInvalidEssentials($flagData);
+        $this->exitIfInvalidEssentials($requestJSONData);
 
-        $flagData = str_replace('&quot;', '"', json_decode($flagData, true)); // see stackoverflow.com/questions/3110487/
+        $flagData = str_replace('&quot;', '"', json_decode($requestJSONData, true)); // see stackoverflow.com/questions/3110487/
+        var_dump('parsed $flagData: ', $flagData);
+
         return $flagData;
     }
 
     private function exitIfInvalidEssentials($flagData) {
         if (!qa_is_logged_in()) {
-            echo json_encode(['processingFlagError' => 'Player is logged out!']);
+            echo json_encode(['processingFlagReasonError' => 'Player is logged out!']);
             exit();
         }
 
@@ -204,7 +213,7 @@ class q2apro_flag_reasons_page
 
             foreach ($obj as $key => $value) {
                 if ($key !== $optionalKey && empty($value)) {
-                    echo json_encode(['processingFlagError' => 'missing data']);
+                    echo json_encode(['processingFlagReasonError' => 'missing data']);
                     exit();
                 }
             }
@@ -213,7 +222,7 @@ class q2apro_flag_reasons_page
         }
 
         if (empty($flagData) || !hasRequiredProps($flagData)) {
-            echo json_encode(['processingFlagError' => 'Ajax data is empty or not have required data!']);
+            echo json_encode(['processingFlagReasonError' => 'Ajax data is empty or not have required data!']);
             exit();
         }
     }

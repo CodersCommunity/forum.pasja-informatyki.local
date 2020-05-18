@@ -13,7 +13,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             // TODO: secure path from case when folder structure/name will change
             $flagReasonsMapFilePath = QA_PLUGIN_DIR . '/report-reason/q2apro-flag-reasons-lang-default.php';
             $flagReasonsMap = json_encode(require $flagReasonsMapFilePath);
-            var_dump('$flagReasonsMap:', $flagReasonsMap);
+//            var_dump('$flagReasonsMap:', $flagReasonsMap);
 
             $this->output('
                 <script>
