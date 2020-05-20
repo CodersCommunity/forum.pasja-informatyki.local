@@ -2,6 +2,7 @@ import sendAjax from './ajaxService';
 import reportReasonPopupDOMWrapper, {
   reportReasonPopupDOMReferences,
 } from './reportReasonPopupCreator';
+import handleRemovingFlagsFromQuestion from './reportReasonUnflagController';
 
 const {
   reportReasonPopup,

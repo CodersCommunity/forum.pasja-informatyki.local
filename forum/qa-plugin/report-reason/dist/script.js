@@ -90,16 +90,35 @@
 /*!************************************!*\
   !*** ./src/helpers/ajaxService.js ***!
   \************************************/
-/*! exports provided: default */
+/*! exports provided: sendAjax, AJAX_PURPOSE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const URL = '/ajaxflagger';
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendAjax", function() { return sendAjax; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AJAX_PURPOSE", function() { return AJAX_PURPOSE; });
 const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
 const TIMEOUT = 5000;
 
-const sendAjax = (data) => {
+const URL = {
+  FLAG: '/ajaxflagger',
+  UN_FLAG: window.location.origin
+};
+const CONTENT_TYPE = {
+  FLAG: 'application/json',
+  UN_FLAG: 'application/x-www-form-urlencoded'
+};
+
+const AJAX_PURPOSE = Object.freeze({
+  FLAG: 'FLAG',
+  UN_FLAG: 'UN_FLAG'
+});
+
+function prepareBody(data, purpose) {
+  return purpose === 'FLAG' ? JSON.stringify(data) : data;
+}
+
+const sendAjax = (data, purpose) => {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(AJAX_TIMEOUT_REASON);
@@ -117,12 +136,13 @@ const sendAjax = (data) => {
     //   });
     // })
 
-    return fetch(URL, {
+    // TODO: ensure the `return` is meaningless
+    return fetch(URL[purpose], {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      body: JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
+      body: prepareBody(data, purpose) // JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
       resolve(value.json());
@@ -130,7 +150,7 @@ const sendAjax = (data) => {
   });
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (sendAjax);
+
 
 
 /***/ }),
@@ -146,6 +166,8 @@ const sendAjax = (data) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ajaxService */ "./src/helpers/ajaxService.js");
 /* harmony import */ var _reportReasonPopupCreator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reportReasonPopupCreator */ "./src/helpers/reportReasonPopupCreator.js");
+/* harmony import */ var _reportReasonUnflagController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reportReasonUnflagController */ "./src/helpers/reportReasonUnflagController.js");
+
 
 
 
@@ -565,6 +587,75 @@ const reportReasonPopupDOMReferences = {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (reportReasonPopupDOMWrapper);
+
+
+/***/ }),
+
+/***/ "./src/helpers/reportReasonUnflagController.js":
+/*!*****************************************************!*\
+  !*** ./src/helpers/reportReasonUnflagController.js ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ajaxService */ "./src/helpers/ajaxService.js");
+
+
+const noop = () => {};
+const questionFlagBtnHTML = `
+    <input name="q_doflag" 
+        onclick="qa_show_waiting_after(this, false);" 
+        value="zgłoś" 
+        type="submit" 
+        class="qa-form-light-button qa-form-light-button-flag" 
+        original-title="Zgłoś to pytanie jako spam lub niezgodne z regulaminem" 
+        title="">
+`;
+
+function removeFlagFromQuestion({target}) {
+    window.qa_show_waiting_after(target, false);
+
+    const requestParams = new FormData(target.form);
+    requestParams.append(target.name, target.value);
+
+    Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(window.location.origin, requestParams, AJAX_PURPOSE.UNFLAG)
+        .then(() => swapUnFlagBtnToFlagBtn(target), (reason) => notifyRemovingFlagFailed(reason, target));
+
+}
+
+function swapUnFlagBtnToFlagBtn(unFlagBtn) {
+    window.qa_hide_waiting(unFlagBtn);
+
+    unFlagBtn.outerHTML = questionFlagBtnHTML;
+    unFlagBtn.addEventListener('click', ({target}) => {
+        console.warn('swapped unflag clicked: ', target);
+    });
+}
+
+function notifyRemovingFlagFailed(reason, unFlagBtn) {
+    window.qa_hide_waiting(unFlagBtn);
+
+    console.warn('notifyRemovingFlagFailed: /reason: ' ,reason);
+}
+
+const handleRemovingFlagsFromQuestion = (unFlagQuestionBtn, clearFlagsQuestionBtn) => {
+    // Get rid of available buttons "onclick"
+    [unFlagQuestionBtn, clearFlagsQuestionBtn].forEach(btn => {
+        btn.setAttribute('onclick', noop);
+        btn.onclick = noop;
+    });
+
+    unFlagQuestionBtn = unFlagQuestionBtn || document.querySelector('[name="q_dounflag"]');
+    unFlagQuestionBtn.addEventListener('click', removeFlagFromQuestion);
+
+    clearFlagsQuestionBtn = clearFlagsQuestionBtn || document.querySelector('[name="q_doclearflags"]');
+    clearFlagsQuestionBtn.addEventListener('click', removeFlagFromQuestion);
+};
+handleRemovingFlagsFromQuestion();
+
+/* harmony default export */ __webpack_exports__["default"] = (handleRemovingFlagsFromQuestion);
 
 
 /***/ }),
