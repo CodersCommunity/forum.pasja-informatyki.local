@@ -1,4 +1,4 @@
-import bootstrapReportReasonPopup from './helpers/reportReasonPopupController';
+import bootstrapReportReasonPopup from './helpers/popupController';
 
 document.addEventListener(
   'DOMContentLoaded',

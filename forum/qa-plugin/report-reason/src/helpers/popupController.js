@@ -1,8 +1,9 @@
 import { sendAjax, AJAX_PURPOSE } from './ajaxService';
 import reportReasonPopupDOMWrapper, {
   reportReasonPopupDOMReferences,
-} from './reportReasonPopupCreator';
-import handleRemovingFlagsFromQuestion from './reportReasonUnflagController';
+} from './popupFactory';
+import { swapElement } from './misc';
+import handleRemovingFlagsFromQuestion from './unflagController';
 
 const {
   reportReasonPopup,
@@ -191,7 +192,7 @@ function submitForm(event) {
 function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
   updateCurrentPostFlags(response.currentFlags, formData);
-  swapPostFlagButton(getUnflagButton({
+  swapElement(flagButtonDOM, getUnflagButtonHTML({
     postType: formData.postType,
     questionId: formData.questionId,
     postId: formData.postId,
@@ -265,7 +266,7 @@ function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
   const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
 
   if (targetElement) {
-    targetElement.outerHTML = currentFlagsHTML;
+    swapElement(targetElement, currentFlagsHTML); //targetElement.outerHTML = currentFlagsHTML;
   } else {
     const responseAsDOM = new DOMParser().parseFromString(currentFlagsHTML, 'text/html').querySelector(targetElementSelector);
     flagsMetadataWrapper.appendChild(responseAsDOM);
@@ -291,7 +292,7 @@ function getPostParentId() {
   return parentElementPostId;
 }
 
-function getUnflagButton({postType, questionId, postId, parentId}) {
+function getUnflagButtonHTML({postType, questionId, postId, parentId}) {
   switch (postType) {
     case 'q': {
       return `
@@ -327,10 +328,6 @@ function getUnflagButton({postType, questionId, postId, parentId}) {
       console.error('Unrecognized postType!', postType, ' /questionId: ', questionId, ' /postId: ', postId);
     }
   }
-}
-
-function swapPostFlagButton(unflagBtnHTML) {
-  flagButtonDOM.outerHTML = unflagBtnHTML;
 }
 
 export default bootstrapReportReasonPopup;

@@ -1,4 +1,5 @@
 import { sendAjax, AJAX_PURPOSE } from "./ajaxService";
+import {swapElement} from "./misc";
 
 const noop = () => {};
 const questionFlagBtnHTML = `
@@ -34,8 +35,8 @@ function swapUnFlagBtnToFlagBtn(r,unFlagBtn) {
     console.warn('r',r);
     window.qa_hide_waiting(unFlagBtn);
 
-    unFlagBtn.outerHTML = questionFlagBtnHTML;
-    unFlagBtn.addEventListener('click', ({target}) => {
+    const newUnFlagBtn = swapElement(unFlagBtn, questionFlagBtnHTML); // unFlagBtn.outerHTML = questionFlagBtnHTML;
+    newUnFlagBtn.addEventListener('click', ({target}) => {
         console.warn('swapped unflag clicked: ', target);
     });
 }
