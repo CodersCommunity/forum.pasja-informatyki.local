@@ -19,17 +19,19 @@ function removeFlagFromQuestion(event) {
 
     window.qa_show_waiting_after(target, false);
     sendAjax(getRequestParams(target), AJAX_PURPOSE.UN_FLAG)
-        .then(() => swapUnFlagBtnToFlagBtn(target), (reason) => notifyRemovingFlagFailed(reason, target));
+        .then((r) => swapUnFlagBtnToFlagBtn(r,target), (reason) => notifyRemovingFlagFailed(reason, target));
 }
 
 function getRequestParams(target) {
     const requestParams = new FormData(target.form);
     requestParams.append(target.name, target.value);
+    requestParams.append('prevent_refresh', 'true');
 
     return requestParams;
 }
 
-function swapUnFlagBtnToFlagBtn(unFlagBtn) {
+function swapUnFlagBtnToFlagBtn(r,unFlagBtn) {
+    console.warn('r',r);
     window.qa_hide_waiting(unFlagBtn);
 
     unFlagBtn.outerHTML = questionFlagBtnHTML;
@@ -45,7 +47,7 @@ function notifyRemovingFlagFailed(reason, unFlagBtn) {
 }
 
 const handleRemovingFlagsFromQuestion = () => {
-    return;
+    // return;
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', handleRemovingFlagsFromQuestion, {once: true});
         return;
