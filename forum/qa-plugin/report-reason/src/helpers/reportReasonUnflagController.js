@@ -1,4 +1,4 @@
-import sendAjax from "./ajaxService";
+import { sendAjax, AJAX_PURPOSE } from "./ajaxService";
 
 const noop = () => {};
 const questionFlagBtnHTML = `
@@ -11,15 +11,22 @@ const questionFlagBtnHTML = `
         title="">
 `;
 
-function removeFlagFromQuestion({target}) {
-    window.qa_show_waiting_after(target, false);
+function removeFlagFromQuestion(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
+    const {target} = event;
+
+    window.qa_show_waiting_after(target, false);
+    sendAjax(getRequestParams(target), AJAX_PURPOSE.UN_FLAG)
+        .then(() => swapUnFlagBtnToFlagBtn(target), (reason) => notifyRemovingFlagFailed(reason, target));
+}
+
+function getRequestParams(target) {
     const requestParams = new FormData(target.form);
     requestParams.append(target.name, target.value);
 
-    sendAjax(window.location.origin, requestParams, AJAX_PURPOSE.UNFLAG)
-        .then(() => swapUnFlagBtnToFlagBtn(target), (reason) => notifyRemovingFlagFailed(reason, target));
-
+    return requestParams;
 }
 
 function swapUnFlagBtnToFlagBtn(unFlagBtn) {
@@ -37,18 +44,24 @@ function notifyRemovingFlagFailed(reason, unFlagBtn) {
     console.warn('notifyRemovingFlagFailed: /reason: ' ,reason);
 }
 
-const handleRemovingFlagsFromQuestion = (unFlagQuestionBtn, clearFlagsQuestionBtn) => {
-    // Get rid of available buttons "onclick"
-    [unFlagQuestionBtn, clearFlagsQuestionBtn].forEach(btn => {
-        btn.setAttribute('onclick', noop);
-        btn.onclick = noop;
-    });
+const handleRemovingFlagsFromQuestion = () => {
+    return;
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', handleRemovingFlagsFromQuestion, {once: true});
+        return;
+    }
 
-    unFlagQuestionBtn = unFlagQuestionBtn || document.querySelector('[name="q_dounflag"]');
-    unFlagQuestionBtn.addEventListener('click', removeFlagFromQuestion);
+    console.warn('???: ', document.querySelectorAll('[name="q_dounflag"], [name="q_doclearflags"]'));
+    [...document.querySelectorAll('[name="q_dounflag"], [name="q_doclearflags"]')]
+        .forEach(btn => {
+            if (btn) {
+                // Get rid of available buttons "onclick"
+                btn.setAttribute( 'onclick', noop );
+                btn.onclick = noop;
 
-    clearFlagsQuestionBtn = clearFlagsQuestionBtn || document.querySelector('[name="q_doclearflags"]');
-    clearFlagsQuestionBtn.addEventListener('click', removeFlagFromQuestion);
+                btn.addEventListener( 'click', removeFlagFromQuestion, true);
+            }
+        });
 };
 handleRemovingFlagsFromQuestion();
 

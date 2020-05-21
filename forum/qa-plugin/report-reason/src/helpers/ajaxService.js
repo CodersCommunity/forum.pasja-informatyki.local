@@ -3,7 +3,7 @@ const TIMEOUT = 5000;
 
 const URL = {
   FLAG: '/ajaxflagger',
-  UN_FLAG: window.location.origin
+  UN_FLAG: window.location.href
 };
 const CONTENT_TYPE = {
   FLAG: 'application/json',
@@ -46,7 +46,9 @@ const sendAjax = (data, purpose) => {
       body: prepareBody(data, purpose) // JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
-      resolve(value.json());
+
+      const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
+      resolve(resolveValue);
     });
   });
 };

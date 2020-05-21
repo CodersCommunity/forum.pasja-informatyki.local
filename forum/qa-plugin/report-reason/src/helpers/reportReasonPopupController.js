@@ -1,4 +1,4 @@
-import sendAjax from './ajaxService';
+import { sendAjax, AJAX_PURPOSE } from './ajaxService';
 import reportReasonPopupDOMWrapper, {
   reportReasonPopupDOMReferences,
 } from './reportReasonPopupCreator';
@@ -179,7 +179,7 @@ function submitForm(event) {
   toggleSendWaitingState(sendButton, true);
 
   const formData = prepareFormData();
-  sendAjax(formData).then(
+  sendAjax(formData, AJAX_PURPOSE.FLAG).then(
     (response) => {
       console.warn('response:', response);
       onAjaxSuccess(response, formData, sendButton);

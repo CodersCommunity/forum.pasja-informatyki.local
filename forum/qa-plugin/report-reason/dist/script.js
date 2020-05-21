@@ -102,7 +102,7 @@ const TIMEOUT = 5000;
 
 const URL = {
   FLAG: '/ajaxflagger',
-  UN_FLAG: window.location.origin
+  UN_FLAG: window.location.href
 };
 const CONTENT_TYPE = {
   FLAG: 'application/json',
@@ -145,7 +145,9 @@ const sendAjax = (data, purpose) => {
       body: prepareBody(data, purpose) // JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
     }).then((value) => {
       clearTimeout(timeoutId);
-      resolve(value.json());
+
+      const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
+      resolve(resolveValue);
     });
   });
 };
@@ -346,7 +348,7 @@ function submitForm(event) {
   toggleSendWaitingState(sendButton, true);
 
   const formData = prepareFormData();
-  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(formData).then(
+  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["sendAjax"])(formData, _ajaxService__WEBPACK_IMPORTED_MODULE_0__["AJAX_PURPOSE"].FLAG).then(
     (response) => {
       console.warn('response:', response);
       onAjaxSuccess(response, formData, sendButton);
@@ -614,15 +616,22 @@ const questionFlagBtnHTML = `
         title="">
 `;
 
-function removeFlagFromQuestion({target}) {
-    window.qa_show_waiting_after(target, false);
+function removeFlagFromQuestion(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
+    const {target} = event;
+
+    window.qa_show_waiting_after(target, false);
+    Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["sendAjax"])(getRequestParams(target), _ajaxService__WEBPACK_IMPORTED_MODULE_0__["AJAX_PURPOSE"].UN_FLAG)
+        .then(() => swapUnFlagBtnToFlagBtn(target), (reason) => notifyRemovingFlagFailed(reason, target));
+}
+
+function getRequestParams(target) {
     const requestParams = new FormData(target.form);
     requestParams.append(target.name, target.value);
 
-    Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(window.location.origin, requestParams, AJAX_PURPOSE.UNFLAG)
-        .then(() => swapUnFlagBtnToFlagBtn(target), (reason) => notifyRemovingFlagFailed(reason, target));
-
+    return requestParams;
 }
 
 function swapUnFlagBtnToFlagBtn(unFlagBtn) {
@@ -640,18 +649,24 @@ function notifyRemovingFlagFailed(reason, unFlagBtn) {
     console.warn('notifyRemovingFlagFailed: /reason: ' ,reason);
 }
 
-const handleRemovingFlagsFromQuestion = (unFlagQuestionBtn, clearFlagsQuestionBtn) => {
-    // Get rid of available buttons "onclick"
-    [unFlagQuestionBtn, clearFlagsQuestionBtn].forEach(btn => {
-        btn.setAttribute('onclick', noop);
-        btn.onclick = noop;
-    });
+const handleRemovingFlagsFromQuestion = () => {
+    return;
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', handleRemovingFlagsFromQuestion, {once: true});
+        return;
+    }
 
-    unFlagQuestionBtn = unFlagQuestionBtn || document.querySelector('[name="q_dounflag"]');
-    unFlagQuestionBtn.addEventListener('click', removeFlagFromQuestion);
+    console.warn('???: ', document.querySelectorAll('[name="q_dounflag"], [name="q_doclearflags"]'));
+    [...document.querySelectorAll('[name="q_dounflag"], [name="q_doclearflags"]')]
+        .forEach(btn => {
+            if (btn) {
+                // Get rid of available buttons "onclick"
+                btn.setAttribute( 'onclick', noop );
+                btn.onclick = noop;
 
-    clearFlagsQuestionBtn = clearFlagsQuestionBtn || document.querySelector('[name="q_doclearflags"]');
-    clearFlagsQuestionBtn.addEventListener('click', removeFlagFromQuestion);
+                btn.addEventListener( 'click', removeFlagFromQuestion, true);
+            }
+        });
 };
 handleRemovingFlagsFromQuestion();
 
