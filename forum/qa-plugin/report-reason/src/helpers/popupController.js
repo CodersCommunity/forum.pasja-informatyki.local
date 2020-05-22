@@ -3,7 +3,7 @@ import reportReasonPopupDOMWrapper, {
   reportReasonPopupDOMReferences,
 } from './popupFactory';
 import { swapElement } from './misc';
-import handleRemovingFlagsFromQuestion from './unflagController';
+import removeFlagFromQuestion from './unflagController';
 
 const {
   reportReasonPopup,
@@ -13,7 +13,8 @@ const {
   requirableFormElements,
   reportReasonValidationError,
 } = reportReasonPopupDOMReferences;
-const flagButtonNamePart = 'doflag';
+const BTN_NAME_SUFFIXES_REGEX = /do(clear|un)?flag[s]?/;
+const FLAG_BTN_NAME_SUFFIX = 'doflag';
 // const doCommentInputNameSuffix = '_docomment';
 const reportFlagMap = {
   regex: {
@@ -23,7 +24,8 @@ const reportFlagMap = {
     doComment: /^a(\d+)_docomment/,
   },
   getPostIdFromInputName( postType, inputName) {
-    const [, postId] = this.regex[postType].exec(inputName);
+    // TODO: check if it works (changed exec to match)...
+    const [, postId] = inputName.match(this.regex[postType]);
     return postId;
   },
   recognizeInputKindByName(inputName) {
@@ -101,12 +103,22 @@ const bootstrapReportReasonPopup = () => {
 bootstrapReportReasonPopup.handler = reportReasonFlagButtonHandler;
 
 function reportReasonFlagButtonHandler(event) {
-  if (event.target.name && event.target.name.includes(flagButtonNamePart)) {
+  // TODO: check if it can also be used to handle unflag clicks
+  if (event.target.name && BTN_NAME_SUFFIXES_REGEX.test(event.target.name)) {
     event.preventDefault();
     event.stopPropagation();
-    flagButtonDOM = event.target;
-    showReportReasonPopup(event.target.form.action);
+
+    if (event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
+      handleFlagClick( event.target );
+    } else {
+      removeFlagFromQuestion(event.target);
+    }
   }
+}
+
+function handleFlagClick(target) {
+  flagButtonDOM = target;
+  showReportReasonPopup(target.form.action);
 }
 
 function initOffClickHandler() {
@@ -197,7 +209,7 @@ function onAjaxSuccess(response, formData, sendButton) {
     questionId: formData.questionId,
     postId: formData.postId,
     parentId: getPostParentId()
-  }));
+  })); //.addEventListener('click', removeFlagFromQuestion);
   showSuccessPopup();
 }
 
@@ -266,7 +278,8 @@ function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
   const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
 
   if (targetElement) {
-    swapElement(targetElement, currentFlagsHTML); //targetElement.outerHTML = currentFlagsHTML;
+    /*swapElement(targetElement, currentFlagsHTML);*/
+    targetElement.outerHTML = currentFlagsHTML;
   } else {
     const responseAsDOM = new DOMParser().parseFromString(currentFlagsHTML, 'text/html').querySelector(targetElementSelector);
     flagsMetadataWrapper.appendChild(responseAsDOM);

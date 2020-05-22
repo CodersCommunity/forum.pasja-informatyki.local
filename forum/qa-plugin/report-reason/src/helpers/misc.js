@@ -6,7 +6,7 @@ export const swapElement = (referenceNode, html) => {
   referenceNode.parentNode.insertBefore(newElement, referenceNode);
   referenceNode.remove();
 
-  return newElement;
+  // return newElement;
 };
 
 export const elementsHTMLMap = new Map([

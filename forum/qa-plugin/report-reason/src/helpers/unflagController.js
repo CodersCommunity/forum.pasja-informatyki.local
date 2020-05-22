@@ -12,11 +12,11 @@ const questionFlagBtnHTML = `
         title="">
 `;
 
-function removeFlagFromQuestion(event) {
-    event.preventDefault();
-    event.stopPropagation();
+function removeFlagFromQuestion(target) {
+    // event.preventDefault();
+    // event.stopPropagation();
 
-    const {target} = event;
+    // const {target} = event;
 
     window.qa_show_waiting_after(target, false);
     sendAjax(getRequestParams(target), AJAX_PURPOSE.UN_FLAG)
@@ -35,10 +35,10 @@ function swapUnFlagBtnToFlagBtn(r,unFlagBtn) {
     console.warn('r',r);
     window.qa_hide_waiting(unFlagBtn);
 
-    const newUnFlagBtn = swapElement(unFlagBtn, questionFlagBtnHTML); // unFlagBtn.outerHTML = questionFlagBtnHTML;
-    newUnFlagBtn.addEventListener('click', ({target}) => {
-        console.warn('swapped unflag clicked: ', target);
-    });
+    /*const newUnFlagBtn =*/ swapElement(unFlagBtn, questionFlagBtnHTML); // unFlagBtn.outerHTML = questionFlagBtnHTML;
+    // newUnFlagBtn.addEventListener('click', ({target}) => {
+    //     console.warn('swapped unflag clicked: ', target);
+    // });
 }
 
 function notifyRemovingFlagFailed(reason, unFlagBtn) {
@@ -62,10 +62,10 @@ const handleRemovingFlagsFromQuestion = () => {
                 btn.setAttribute( 'onclick', noop );
                 btn.onclick = noop;
 
-                btn.addEventListener( 'click', removeFlagFromQuestion, true);
+                btn.addEventListener( 'click', removeFlagFromQuestion/*, true*/);
             }
         });
 };
-handleRemovingFlagsFromQuestion();
+// handleRemovingFlagsFromQuestion();
 
-export default handleRemovingFlagsFromQuestion;
+export default removeFlagFromQuestion;

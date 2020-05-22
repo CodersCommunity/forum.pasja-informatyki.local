@@ -188,7 +188,7 @@ const swapElement = (referenceNode, html) => {
   referenceNode.parentNode.insertBefore(newElement, referenceNode);
   referenceNode.remove();
 
-  return newElement;
+  // return newElement;
 };
 
 const elementsHTMLMap = new Map([
@@ -267,7 +267,8 @@ const {
   requirableFormElements,
   reportReasonValidationError,
 } = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMReferences"];
-const flagButtonNamePart = 'doflag';
+const BTN_NAME_SUFFIXES_REGEX = /do(clear|un)?flag[s]?/;
+const FLAG_BTN_NAME_SUFFIX = 'doflag';
 // const doCommentInputNameSuffix = '_docomment';
 const reportFlagMap = {
   regex: {
@@ -277,7 +278,8 @@ const reportFlagMap = {
     doComment: /^a(\d+)_docomment/,
   },
   getPostIdFromInputName( postType, inputName) {
-    const [, postId] = this.regex[postType].exec(inputName);
+    // TODO: check if it works (changed exec to match)...
+    const [, postId] = inputName.match(this.regex[postType]);
     return postId;
   },
   recognizeInputKindByName(inputName) {
@@ -355,12 +357,22 @@ const bootstrapReportReasonPopup = () => {
 bootstrapReportReasonPopup.handler = reportReasonFlagButtonHandler;
 
 function reportReasonFlagButtonHandler(event) {
-  if (event.target.name && event.target.name.includes(flagButtonNamePart)) {
+  // TODO: check if it can also be used to handle unflag clicks
+  if (event.target.name && BTN_NAME_SUFFIXES_REGEX.test(event.target.name)) {
     event.preventDefault();
     event.stopPropagation();
-    flagButtonDOM = event.target;
-    showReportReasonPopup(event.target.form.action);
+
+    if (event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
+      handleFlagClick( event.target );
+    } else {
+      Object(_unflagController__WEBPACK_IMPORTED_MODULE_3__["default"])(event.target);
+    }
   }
+}
+
+function handleFlagClick(target) {
+  flagButtonDOM = target;
+  showReportReasonPopup(target.form.action);
 }
 
 function initOffClickHandler() {
@@ -451,7 +463,7 @@ function onAjaxSuccess(response, formData, sendButton) {
     questionId: formData.questionId,
     postId: formData.postId,
     parentId: getPostParentId()
-  }));
+  })); //.addEventListener('click', removeFlagFromQuestion);
   showSuccessPopup();
 }
 
@@ -520,7 +532,8 @@ function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
   const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
 
   if (targetElement) {
-    Object(_misc__WEBPACK_IMPORTED_MODULE_2__["swapElement"])(targetElement, currentFlagsHTML); //targetElement.outerHTML = currentFlagsHTML;
+    /*swapElement(targetElement, currentFlagsHTML);*/
+    targetElement.outerHTML = currentFlagsHTML;
   } else {
     const responseAsDOM = new DOMParser().parseFromString(currentFlagsHTML, 'text/html').querySelector(targetElementSelector);
     flagsMetadataWrapper.appendChild(responseAsDOM);
@@ -670,11 +683,11 @@ const questionFlagBtnHTML = `
         title="">
 `;
 
-function removeFlagFromQuestion(event) {
-    event.preventDefault();
-    event.stopPropagation();
+function removeFlagFromQuestion(target) {
+    // event.preventDefault();
+    // event.stopPropagation();
 
-    const {target} = event;
+    // const {target} = event;
 
     window.qa_show_waiting_after(target, false);
     Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["sendAjax"])(getRequestParams(target), _ajaxService__WEBPACK_IMPORTED_MODULE_0__["AJAX_PURPOSE"].UN_FLAG)
@@ -693,10 +706,10 @@ function swapUnFlagBtnToFlagBtn(r,unFlagBtn) {
     console.warn('r',r);
     window.qa_hide_waiting(unFlagBtn);
 
-    const newUnFlagBtn = Object(_misc__WEBPACK_IMPORTED_MODULE_1__["swapElement"])(unFlagBtn, questionFlagBtnHTML); // unFlagBtn.outerHTML = questionFlagBtnHTML;
-    newUnFlagBtn.addEventListener('click', ({target}) => {
-        console.warn('swapped unflag clicked: ', target);
-    });
+    /*const newUnFlagBtn =*/ Object(_misc__WEBPACK_IMPORTED_MODULE_1__["swapElement"])(unFlagBtn, questionFlagBtnHTML); // unFlagBtn.outerHTML = questionFlagBtnHTML;
+    // newUnFlagBtn.addEventListener('click', ({target}) => {
+    //     console.warn('swapped unflag clicked: ', target);
+    // });
 }
 
 function notifyRemovingFlagFailed(reason, unFlagBtn) {
@@ -720,13 +733,13 @@ const handleRemovingFlagsFromQuestion = () => {
                 btn.setAttribute( 'onclick', noop );
                 btn.onclick = noop;
 
-                btn.addEventListener( 'click', removeFlagFromQuestion, true);
+                btn.addEventListener( 'click', removeFlagFromQuestion/*, true*/);
             }
         });
 };
-handleRemovingFlagsFromQuestion();
+// handleRemovingFlagsFromQuestion();
 
-/* harmony default export */ __webpack_exports__["default"] = (handleRemovingFlagsFromQuestion);
+/* harmony default export */ __webpack_exports__["default"] = (removeFlagFromQuestion);
 
 
 /***/ }),
@@ -741,6 +754,7 @@ handleRemovingFlagsFromQuestion();
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_popupController__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/popupController */ "./src/helpers/popupController.js");
+// TODO: load it lazily
 
 
 document.addEventListener(
@@ -752,7 +766,7 @@ document.addEventListener(
     eventDelegationRoot.addEventListener(
       'click',
       _helpers_popupController__WEBPACK_IMPORTED_MODULE_0__["default"].handler,
-      true
+      true /* use capture phase to fire handler before Q2A listeners on (un)flag buttons will */
     );
   }
 );
