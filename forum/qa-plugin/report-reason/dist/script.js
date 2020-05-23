@@ -673,6 +673,13 @@ function removeFlagFromQuestion(target) {
   Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["sendAjax"])(getRequestParams(target), _ajaxService__WEBPACK_IMPORTED_MODULE_0__["AJAX_PURPOSE"].UN_FLAG).then(
     (unFlagResult) => {
       console.warn('unFlagResult: ', unFlagResult);
+
+      // TODO: just for tests
+      const regRes = target.name.split('_')[0].match(/\d+/);
+      const postType = regRes.input.slice(0, regRes.index);
+      const postId = regRes[0];
+
+      updateCurrentPostFlags(unFlagResult, {postType, postId});
       swapUnFlagBtnToFlagBtn(target);
     },
     (reason) => notifyRemovingFlagFailed(reason, target)
@@ -690,6 +697,16 @@ function getRequestParams(target) {
 function swapUnFlagBtnToFlagBtn(unFlagBtn) {
   window.qa_hide_waiting(unFlagBtn);
   Object(_misc__WEBPACK_IMPORTED_MODULE_1__["swapElement"])(unFlagBtn, questionFlagBtnHTML);
+}
+
+function updateCurrentPostFlags(currentFlagsHTML, {postType, postId})  {
+  const flagsMetadataWrapper = postType === 'q' ?
+      document.querySelector('.qa-q-view-meta') :
+      document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
+  const targetElementSelector = `.qa-${postType}-item-flags`;
+  const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
+
+  targetElement.outerHTML = currentFlagsHTML;
 }
 
 function notifyRemovingFlagFailed(reason, unFlagBtn) {

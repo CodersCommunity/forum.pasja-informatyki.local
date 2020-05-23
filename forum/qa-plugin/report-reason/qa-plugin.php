@@ -91,17 +91,27 @@ function q2apro_count_postflags_output($postId)
     $flags = q2apro_get_postflags($postId);
 
     $flagOutput = [];
+    $flagOutput[] = '<ul>';
 
     // count reasons
     foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
-        $flagOutput[] = ' Post zgłoszony z powodu <b>' . q2apro_flag_reasonid_to_readable($flag['reasonid']) . '</b> przez <a href="' . qa_path('user') . '/' . $handle . '">' . $handle . '</a>.';
+        $flagOutput[] =
+            '<li data-flag-author="' . $handle . '">Post zgłoszony z powodu <strong class="flag-reason">' .
+            q2apro_flag_reasonid_to_readable($flag['reasonid']) .
+            '</strong> przez <a href="' . qa_path('user') . '/' .
+            $handle . '">' . $handle . '</a>.'
+        ;
+
         if (!empty($flag['notice'])) {
             $flagOutput[] = ' Treść notatki: ' . $flag['notice'];
         }
-        $flagOutput[] = '<br>';
+
+        $flagOutput[] = '</li>';
     }
-    unset($flagOutput[count($flagOutput)-1]);
+//    unset($flagOutput[count($flagOutput)-1]);
+
+    $flagOutput[] = '</ul>';
 
     $flagsOutput = '';
 

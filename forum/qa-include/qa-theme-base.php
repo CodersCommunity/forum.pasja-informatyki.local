@@ -129,6 +129,26 @@ class qa_html_theme_base
 		if (empty($parts) && strtolower($outertag) != 'td')
 			return;
 
+//        if (strlen(@$parts['prefix'])) {
+//            echo('<br> $parts[prefix]: ');
+//            echo($parts['prefix']);
+//        }
+//        if (strlen(@$parts['data'])) {
+//            echo('<br> $parts[data]: ');
+//            echo($parts['data']);
+//        }
+        if (strlen(@$parts['suffix']) && strpos(@$parts['suffix'], 'zgłosz')) {
+            echo('<br> $parts[suffix]: ');
+            echo($parts['suffix'] . '<br>');
+
+//            foreach (debug_backtrace() as $key1 => $value1) {
+//                foreach ($value1 as $key2 => $value2) {
+//                    if ($key2 == 'function')
+//                        var_dump('<br>', $value2);
+//                }
+//            }
+        }
+
 		$this->output(
 			'<'.$outertag.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'">',
 			(strlen(@$parts['prefix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['prefix'].'</'.$innertag.'>') : '').
@@ -1812,6 +1832,9 @@ class qa_html_theme_base
 					break;
 			}
 		}
+
+		if (strlen(@$post['flags']))
+		    var_dump('post_meta() /$post: ', $post['flags']);
 
 		$this->post_meta_flags($post, $class);
 
