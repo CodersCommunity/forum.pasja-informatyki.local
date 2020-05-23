@@ -115,7 +115,7 @@ const AJAX_PURPOSE = Object.freeze({
 });
 
 function prepareBody(data, purpose) {
-  return purpose === 'FLAG' ? JSON.stringify(data) : data;
+  return purpose === AJAX_PURPOSE.FLAG ? JSON.stringify(data) : data;
 }
 
 const sendAjax = (data, purpose) => {
@@ -124,26 +124,12 @@ const sendAjax = (data, purpose) => {
       reject(AJAX_TIMEOUT_REASON);
     }, TIMEOUT);
 
-    // return new Promise((res, rej) => {
-    //   $.ajax({
-    //     type: "POST",
-    //     url: URL,
-    //     data: { flagData: JSON.stringify(data) },
-    //     dataType:"json",
-    //     cache: false,
-    //     success: res,
-    //     error: rej
-    //   });
-    // })
-
-    // TODO: ensure the `return` is meaningless
-    return fetch(URL[purpose], {
+    fetch(URL[purpose], {
       method: 'POST',
       headers: {
         // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      // redirect: 'manual',
-      body: prepareBody(data, purpose) // JSON.stringify(data) //`flagData=${ encodeURIComponent(JSON.stringify(data)) }`,
+      body: prepareBody(data, purpose)
     }).then(async (value) => {
       clearTimeout(timeoutId);
 
