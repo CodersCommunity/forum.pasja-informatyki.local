@@ -25,12 +25,12 @@ const sendAjax = (data, purpose) => {
       reject(AJAX_TIMEOUT_REASON);
     }, TIMEOUT);
 
-    fetch(URL[purpose], {
+    fetch('/ajaxflagger'/*URL[purpose]*/, {
       method: 'POST',
       headers: {
         // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      body: prepareBody(data, purpose)
+      body: JSON.stringify(data) // prepareBody(data, purpose)
     }).then(async (value) => {
       clearTimeout(timeoutId);
 

@@ -19,10 +19,19 @@ function removeFlagFromQuestion(target) {
 
       // TODO: just for tests
       const regRes = target.name.split('_')[0].match(/\d+/);
-      const postType = regRes.input.slice(0, regRes.index);
-      const postId = regRes[0];
 
-      updateCurrentPostFlags(unFlagResult, {postType, postId});
+      let postType;
+      let postId;
+
+      if (!regRes) {
+        postType = 'q';
+        postId = window.location.pathname.split('/').find(Number);
+      } else {
+        postType = regRes.input.slice(0, regRes.index);
+        postId = regRes[0];
+      }
+
+      updateCurrentPostFlags(unFlagResult, { postType, postId });
       swapUnFlagBtnToFlagBtn(target);
     },
     (reason) => notifyRemovingFlagFailed(reason, target)
@@ -30,9 +39,20 @@ function removeFlagFromQuestion(target) {
 }
 
 function getRequestParams(target) {
-  const requestParams = new FormData(target.form);
-  requestParams.append(target.name, target.value);
-  requestParams.append('prevent_refresh', 'true');
+  const requestParams = {
+      reportType: 'removeFlag',
+      code: target.form.elements.code.value,
+      questionId: window.location.pathname.split('/').find(Number),
+      postType: target.name.slice(0, 1),
+      action: target.name.split('_')[1].slice(2)
+      // prevent_refresh: true,
+  }; // new FormData(target.form);
+
+    requestParams.postId = target.name.startsWith('q') ? requestParams.questionId : target.closest('.hentry').id.slice(1)
+
+  // requestParams.append(target.name, target.value);
+  // requestParams.append('prevent_refresh', 'true');
+  // requestParams.append('reportType','addFlag');
 
   return requestParams;
 }
@@ -42,12 +62,17 @@ function swapUnFlagBtnToFlagBtn(unFlagBtn) {
   swapElement(unFlagBtn, questionFlagBtnHTML);
 }
 
-function updateCurrentPostFlags(currentFlagsHTML, {postType, postId})  {
-  const flagsMetadataWrapper = postType === 'q' ?
-      document.querySelector('.qa-q-view-meta') :
-      document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
+function updateCurrentPostFlags(currentFlagsHTML, { postType, postId }) {
+  const flagsMetadataWrapper =
+    postType === 'q'
+      ? document.querySelector('.qa-q-view-meta')
+      : document.querySelector(
+          `#${postType}${postId} .qa-${postType}-item-meta`
+        );
   const targetElementSelector = `.qa-${postType}-item-flags`;
-  const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
+  const targetElement = flagsMetadataWrapper.querySelector(
+    targetElementSelector
+  );
 
   targetElement.outerHTML = currentFlagsHTML;
 }

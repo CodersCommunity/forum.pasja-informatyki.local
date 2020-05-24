@@ -256,7 +256,8 @@ function prepareFormData() {
 
   return {
     ...reportMetaData,
-    reasonId, notice
+    reasonId, notice,
+    reportType: 'addFlag'
   };
 }
 
