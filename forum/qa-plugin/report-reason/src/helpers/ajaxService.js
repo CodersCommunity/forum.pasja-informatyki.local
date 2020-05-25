@@ -34,19 +34,19 @@ const sendAjax = (data, purpose) => {
     }).then(async (value) => {
       clearTimeout(timeoutId);
 
-      let text = null;
-      if (purpose === AJAX_PURPOSE.UN_FLAG) {
-        try {
-          text = await value.text();
-        } catch ( e ) {
-          console.error( 'value.text not worked... /e: ', e );
-        }
-      }
+      // let text = null;
+      // if (purpose === AJAX_PURPOSE.UN_FLAG) {
+      //   try {
+      //     text = await value.text();
+      //   } catch ( e ) {
+      //     console.error( 'value.text not worked... /e: ', e );
+      //   }
+      // }
 
-      console.warn('fetch response: ', value, ' /?:', text);
+      console.warn('fetch response: ', value/*, ' /?:', text*/);
 
-      const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
-      resolve(resolveValue);
+      // const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
+      resolve(value.json());
     });
   });
 };

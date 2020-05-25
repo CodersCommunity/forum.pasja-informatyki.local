@@ -31,7 +31,7 @@ function removeFlagFromQuestion(target) {
         postId = regRes[0];
       }
 
-      updateCurrentPostFlags(unFlagResult, { postType, postId });
+      updateCurrentPostFlags(unFlagResult.currentFlags, { postType, postId });
       swapUnFlagBtnToFlagBtn(target);
     },
     (reason) => notifyRemovingFlagFailed(reason, target)

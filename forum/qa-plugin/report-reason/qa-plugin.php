@@ -75,7 +75,7 @@ function q2apro_flag_reasonid_to_readable($reasonId)
 
 function q2apro_get_postflags($postId)
 {
-    return qa_db_read_all_assoc(
+    $arr = qa_db_read_all_assoc(
         qa_db_query_sub(
             '
             SELECT `userid`, `postid`, `reasonid`, `notice`
@@ -84,11 +84,18 @@ function q2apro_get_postflags($postId)
             ', $postId
         )
     );
+
+//    var_dump('<br>??? q2apro_get_postflags(',$postId,') /$arr:', $arr);
+    return $arr;
 }
 
 function q2apro_count_postflags_output($postId)
 {
     $flags = q2apro_get_postflags($postId);
+//var_dump('<br> ???!!! $flags: ', serialize($flags));
+    if (empty($flags)) {
+        return '';
+    }
 
     $flagOutput = [];
     $flagOutput[] = '<ul>';
@@ -112,12 +119,11 @@ function q2apro_count_postflags_output($postId)
 //    unset($flagOutput[count($flagOutput)-1]);
 
     $flagOutput[] = '</ul>';
+    $flagsOutput = implode('', $flagOutput);
 
-    $flagsOutput = '';
-
-    foreach ($flagOutput as $flag) {
-        $flagsOutput .= $flag;
-    }
+//    foreach ($flagOutput as $flag) {
+//        $flagsOutput .= $flag;
+//    }
 
     return $flagsOutput;
 }

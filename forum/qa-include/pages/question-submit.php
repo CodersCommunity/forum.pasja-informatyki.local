@@ -37,15 +37,15 @@
     none). If there is an error to display, it will be passed out in $error.
 */
     {
-        var_dump('qa_page_q_single_click_q()');
+//        var_dump('qa_page_q_single_click_q()');
 
-        foreach (debug_backtrace() as $k1 => $v1) {
-            foreach ($v1 as $k2 => $v2) {
-                if ($k2 == 'function') {
-                    var_dump($v2);
-                }
-            }
-        }
+//        foreach (debug_backtrace() as $k1 => $v1) {
+//            foreach ($v1 as $k2 => $v2) {
+//                if ($k2 == 'function') {
+//                    var_dump($v2);
+//                }
+//            }
+//        }
 
         require_once QA_INCLUDE_DIR.'app/post-update.php';
         require_once QA_INCLUDE_DIR.'app/limits.php';

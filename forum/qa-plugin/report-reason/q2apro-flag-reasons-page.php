@@ -14,7 +14,7 @@ class q2apro_flag_reasons_page
 
     public function suggest_requests()
     {
-        echo('??? suggest_requests ajaxflagger ???');
+        //echo('??? suggest_requests ajaxflagger ???');
 
         return [
             [
@@ -27,14 +27,14 @@ class q2apro_flag_reasons_page
 
     public function match_request($request)
     {
-        echo('??? match_request ajaxflagger ???');
-        foreach (debug_backtrace() as $k1 => $v1) {
-            foreach ($v1 as $k2 => $v2) {
-                if ($k2 == 'function') {
-                    var_dump($v2);
-                }
-            }
-        }
+//        echo('??? match_request ajaxflagger ???');
+//        foreach (debug_backtrace() as $k1 => $v1) {
+//            foreach ($v1 as $k2 => $v2) {
+//                if ($k2 == 'function') {
+//                    var_dump($v2);
+//                }
+//            }
+//        }
 
         return 'ajaxflagger' === $request;
     }
@@ -47,7 +47,7 @@ class q2apro_flag_reasons_page
 
         $reportType = $reportData['reportType'];
 
-        echo '??? $reportType ???'.$reportType;
+//        echo '??? $reportType ???'.$reportType;
 
         if ($reportType == 'addFlag') {
             $this->flagPost($reportData);
@@ -110,7 +110,7 @@ class q2apro_flag_reasons_page
             ['processingFlagReasonError' => $processingFlagReasonError] :
             ['currentFlags' => $this->wrapOutput(q2apro_count_postflags_output($postId), $postType, $postId)];
 
-//            var_dump('current flags:' . q2apro_count_postflags_output($postId));
+//        var_dump('current flags: ' . q2apro_count_postflags_output($postId));
 
         echo json_encode($reply);
     }
@@ -288,11 +288,19 @@ class q2apro_flag_reasons_page
         require QA_INCLUDE_DIR . 'qa-theme-base.php';
         require QA_PLUGIN_DIR . 'report-reason/q2apro-flag-reasons-layer.php';
 
-        return '<span class="qa-' . $postType . '-item-flags">' .
-            qa_html_theme_layer::prepareFlagSuffix(count(q2apro_get_postflags($postId))) .
-            '<br>' .
-            '<span class="qa-' . $postType .
-            '-item-flags-pad">' . $currentFlags .
-            '</span></span>';
+        $postFlagsCount = count(q2apro_get_postflags($postId));
+
+//        var_dump('<br>??? $postFlagsCount: ', $postFlagsCount);
+
+        if ($postFlagsCount) {
+            return '<span class="qa-' . $postType . '-item-flags">' .
+                        qa_html_theme_layer::prepareFlagSuffix($postFlagsCount) .
+                        '<br>' .
+                        '<span class="qa-' . $postType .
+                        '-item-flags-pad">' . $currentFlags .
+                        '</span></span>';
+        }
+
+        return '';
     }
 }

@@ -116,7 +116,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                 }
             }
         }
-        var_dump('<br> post_meta_flags() /$post[flags]: ', $post['flags']['suffix'], '<br>');
+//        var_dump('<br> ??? post_meta_flags() /$post[flags]: ', $post['flags']['suffix']);
 
         parent::post_meta_flags($post, $class);
     }

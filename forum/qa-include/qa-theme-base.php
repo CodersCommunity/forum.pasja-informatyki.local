@@ -137,9 +137,9 @@ class qa_html_theme_base
 //            echo('<br> $parts[data]: ');
 //            echo($parts['data']);
 //        }
-        if (strlen(@$parts['suffix']) && strpos(@$parts['suffix'], 'zgłosz')) {
-            echo('<br> $parts[suffix]: ');
-            echo($parts['suffix'] . '<br>');
+//        if (strlen(@$parts['suffix']) && strpos(@$parts['suffix'], 'zgłosz')) {
+            //echo('<br> $parts[suffix]: ');
+            //echo($parts['suffix'] . '<br>');
 
 //            foreach (debug_backtrace() as $key1 => $value1) {
 //                foreach ($value1 as $key2 => $value2) {
@@ -147,7 +147,9 @@ class qa_html_theme_base
 //                        var_dump('<br>', $value2);
 //                }
 //            }
-        }
+//        }
+
+//    var_dump('<br> ??? output_split() /$parts: ', $parts['suffix']);
 
 		$this->output(
 			'<'.$outertag.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'">',
@@ -1833,8 +1835,12 @@ class qa_html_theme_base
 			}
 		}
 
-		if (strlen(@$post['flags']))
-		    var_dump('post_meta() /$post: ', $post['flags']);
+//		var_dump('<br> ??? post_meta() /$post: ', @$post['flags']);
+//		foreach (debug_backtrace() as $k1 => $v1) {
+//		    foreach ($v1 as $k2 => $v2) {
+//		        if ($k2 == 'function') echo('<br>TRACE '.$v2);
+//		    }
+//		}
 
 		$this->post_meta_flags($post, $class);
 
