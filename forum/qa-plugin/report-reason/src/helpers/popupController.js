@@ -3,7 +3,6 @@ import reportReasonPopupDOMWrapper, {
   reportReasonPopupDOMReferences,
 } from './popupFactory';
 import { swapElement } from './misc';
-import removeFlagFromQuestion from './unflagController';
 
 const {
   reportReasonPopup,
@@ -103,16 +102,11 @@ const bootstrapReportReasonPopup = () => {
 bootstrapReportReasonPopup.handler = reportReasonFlagButtonHandler;
 
 function reportReasonFlagButtonHandler(event) {
-  // TODO: check if it can also be used to handle unflag clicks
-  if (event.target.name && BTN_NAME_SUFFIXES_REGEX.test(event.target.name)) {
+  if (event.target.name && event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
-      handleFlagClick( event.target );
-    } else {
-      removeFlagFromQuestion(event.target);
-    }
+    handleFlagClick( event.target );
   }
 }
 
@@ -209,7 +203,7 @@ function onAjaxSuccess(response, formData, sendButton) {
     questionId: formData.questionId,
     postId: formData.postId,
     parentId: getPostParentId()
-  })); //.addEventListener('click', removeFlagFromQuestion);
+  }));
   showSuccessPopup();
 }
 

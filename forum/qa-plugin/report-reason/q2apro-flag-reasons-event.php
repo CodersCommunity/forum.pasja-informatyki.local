@@ -15,8 +15,8 @@ class q2apro_flagreasons_event
 //            }
 //        }
 
-        $this->processUnflagEvent($event, $userId, $params['postId']);
-        $this->processClearflagEvent($event, $params['postId']);
+        $this->processUnflagEvent($event, $userId, $params['postid']);
+        $this->processClearflagEvent($event, $params['postid']);
     }
 
     private function processUnflagEvent($event, $userId, $postId)

@@ -239,8 +239,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ajaxService */ "./src/helpers/ajaxService.js");
 /* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./popupFactory */ "./src/helpers/popupFactory.js");
 /* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc */ "./src/helpers/misc.js");
-/* harmony import */ var _unflagController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./unflagController */ "./src/helpers/unflagController.js");
-
 
 
 
@@ -343,16 +341,11 @@ const bootstrapReportReasonPopup = () => {
 bootstrapReportReasonPopup.handler = reportReasonFlagButtonHandler;
 
 function reportReasonFlagButtonHandler(event) {
-  // TODO: check if it can also be used to handle unflag clicks
-  if (event.target.name && BTN_NAME_SUFFIXES_REGEX.test(event.target.name)) {
+  if (event.target.name && event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
-      handleFlagClick( event.target );
-    } else {
-      Object(_unflagController__WEBPACK_IMPORTED_MODULE_3__["default"])(event.target);
-    }
+    handleFlagClick( event.target );
   }
 }
 
@@ -449,7 +442,7 @@ function onAjaxSuccess(response, formData, sendButton) {
     questionId: formData.questionId,
     postId: formData.postId,
     parentId: getPostParentId()
-  })); //.addEventListener('click', removeFlagFromQuestion);
+  }));
   showSuccessPopup();
 }
 
@@ -641,107 +634,6 @@ const reportReasonPopupDOMReferences = {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (reportReasonPopupDOMWrapper);
-
-
-/***/ }),
-
-/***/ "./src/helpers/unflagController.js":
-/*!*****************************************!*\
-  !*** ./src/helpers/unflagController.js ***!
-  \*****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ajaxService */ "./src/helpers/ajaxService.js");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./misc */ "./src/helpers/misc.js");
-
-
-
-const questionFlagBtnHTML = `
-    <input name="q_doflag" 
-        onclick="qa_show_waiting_after(this, false);" 
-        value="zgłoś" 
-        type="submit" 
-        class="qa-form-light-button qa-form-light-button-flag" 
-        original-title="Zgłoś to pytanie jako spam lub niezgodne z regulaminem" 
-        title="">
-`;
-
-function removeFlagFromQuestion(target) {
-  window.qa_show_waiting_after(target, false);
-  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["sendAjax"])(getRequestParams(target), _ajaxService__WEBPACK_IMPORTED_MODULE_0__["AJAX_PURPOSE"].UN_FLAG).then(
-    (unFlagResult) => {
-      console.warn('unFlagResult: ', unFlagResult);
-
-      // TODO: just for tests
-      const regRes = target.name.split('_')[0].match(/\d+/);
-
-      let postType;
-      let postId;
-
-      if (!regRes) {
-        postType = 'q';
-        postId = window.location.pathname.split('/').find(Number);
-      } else {
-        postType = regRes.input.slice(0, regRes.index);
-        postId = regRes[0];
-      }
-
-      updateCurrentPostFlags(unFlagResult.currentFlags, { postType, postId });
-      swapUnFlagBtnToFlagBtn(target);
-    },
-    (reason) => notifyRemovingFlagFailed(reason, target)
-  );
-}
-
-function getRequestParams(target) {
-  const requestParams = {
-      reportType: 'removeFlag',
-      code: target.form.elements.code.value,
-      questionId: window.location.pathname.split('/').find(Number),
-      postType: target.name.slice(0, 1),
-      action: target.name.split('_')[1].slice(2)
-      // prevent_refresh: true,
-  }; // new FormData(target.form);
-
-    requestParams.postId = target.name.startsWith('q') ? requestParams.questionId : target.closest('.hentry').id.slice(1)
-
-  // requestParams.append(target.name, target.value);
-  // requestParams.append('prevent_refresh', 'true');
-  // requestParams.append('reportType','addFlag');
-
-  return requestParams;
-}
-
-function swapUnFlagBtnToFlagBtn(unFlagBtn) {
-  window.qa_hide_waiting(unFlagBtn);
-  Object(_misc__WEBPACK_IMPORTED_MODULE_1__["swapElement"])(unFlagBtn, questionFlagBtnHTML);
-}
-
-function updateCurrentPostFlags(currentFlagsHTML, { postType, postId }) {
-  const flagsMetadataWrapper =
-    postType === 'q'
-      ? document.querySelector('.qa-q-view-meta')
-      : document.querySelector(
-          `#${postType}${postId} .qa-${postType}-item-meta`
-        );
-  const targetElementSelector = `.qa-${postType}-item-flags`;
-  const targetElement = flagsMetadataWrapper.querySelector(
-    targetElementSelector
-  );
-
-  targetElement.outerHTML = currentFlagsHTML;
-}
-
-function notifyRemovingFlagFailed(reason, unFlagBtn) {
-  window.qa_hide_waiting(unFlagBtn);
-
-  console.warn('notifyRemovingFlagFailed: /reason: ', reason);
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (removeFlagFromQuestion);
 
 
 /***/ }),
