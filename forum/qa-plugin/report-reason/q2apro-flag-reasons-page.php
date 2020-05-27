@@ -43,20 +43,8 @@ class q2apro_flag_reasons_page
     {
         $requestJSONData = file_get_contents('php://input');
         $this->validateJSON($requestJSONData);
-        $reportData = $this->getFlagData($requestJSONData);
+        $flagData = $this->getFlagData($requestJSONData);
 
-        $reportType = $reportData['reportType'];
-
-//        echo '??? $reportType ???'.$reportType;
-
-        if ($reportType == 'addFlag') {
-            $this->flagPost($reportData);
-        } else if ($reportType == 'removeFlag') {
-            $this->removeFlagFromPost($reportData);
-        }
-    }
-
-    private function flagPost($flagData) {
         $questionId = (int) $flagData['questionId'];
         $postId     = (int) $flagData['postId'];
         $postType   = $flagData['postType'];
@@ -77,40 +65,6 @@ class q2apro_flag_reasons_page
             ['currentFlags' => $this->wrapOutput(q2apro_count_postflags_output($postId), $postType, $postId)];
 
 //            var_dump('current flags:' . q2apro_count_postflags_output($postId));
-
-        echo json_encode($reply);
-    }
-
-    private function removeFlagFromPost($reportData) {
-        $questionId = (int) $reportData['questionId'];
-        $postId     = (int) $reportData['postId'];
-        $postType   = $reportData['postType'];
-//        $reasonId   = (int) $flagData['reasonId'];
-
-//        $parentId = empty($flagData['parentid']) ? null : (int) $flagData['parentid']; // only C
-//        $notice = empty($flagData['notice']) ? null : trim($flagData['notice']);
-        $userId = qa_get_logged_in_userid();
-
-        require_once QA_INCLUDE_DIR . 'app/votes.php';
-        require_once QA_INCLUDE_DIR . 'app/posts.php';
-        require_once QA_INCLUDE_DIR . 'pages/question-view.php';
-//        require_once QA_PLUGIN_DIR . 'report-reason/q2apro-flag-reasons-event.php';
-
-//        $processingFlagReasonError = $this->processFlag($postType, $userId, $postId, $questionId, null /*$reasonId*/, null /*$notice*/);
-        $param = [];
-        $param['postId'] = $postId;
-
-//        q2apro_flagreasons_event->process_event($reportData, $userId, null, null, $param);
-        $event = $postType . '_' . $reportData['action'];
-
-        qa_report_event($event, $userId, null, null, $param);
-        $processingFlagReasonError = null;
-
-        $reply = $processingFlagReasonError ?
-            ['processingFlagReasonError' => $processingFlagReasonError] :
-            ['currentFlags' => $this->wrapOutput(q2apro_count_postflags_output($postId), $postType, $postId)];
-
-//        var_dump('current flags: ' . q2apro_count_postflags_output($postId));
 
         echo json_encode($reply);
     }
