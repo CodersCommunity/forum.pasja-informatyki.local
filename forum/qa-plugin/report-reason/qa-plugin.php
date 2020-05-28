@@ -65,7 +65,7 @@ function q2apro_flag_reasonid_to_readable($reasonId)
         'Niepełna lub niezrozumiała treść',
         'Kod nie jest umieszczony w odpowiednim bloczku',
         'Duplikat pytania (podaj link)',
-        'Inny (podaj własny opis)'
+        'Inny - własny powód'
     ];
 
 //    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
@@ -92,38 +92,36 @@ function q2apro_get_postflags($postId)
 function q2apro_count_postflags_output($postId)
 {
     $flags = q2apro_get_postflags($postId);
-//var_dump('<br> ???!!! $flags: ', serialize($flags));
+
     if (empty($flags)) {
         return '';
     }
 
     $flagOutput = [];
-    $flagOutput[] = '<ul>';
+    $flagOutput[] = '<ul class="qa-item-flag-reason-list">';
 
-    // count reasons
     foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
-        $flagOutput[] =
-            '<li data-flag-author="' . $handle . '">Post zgłoszony z powodu <strong class="flag-reason">' .
-            q2apro_flag_reasonid_to_readable($flag['reasonid']) .
-            '</strong> przez <a href="' . qa_path('user') . '/' .
-            $handle . '">' . $handle . '</a>.'
-        ;
 
         if (!empty($flag['notice'])) {
-            $flagOutput[] = ' Treść notatki: ' . $flag['notice'];
+            $notice = ': <span class="qa-item-flag-reason-item--custom">"' . $flag['notice'] . '"</span>';
+        } else {
+            $notice = '';
         }
+
+        $flagOutput[] =
+            '<li><strong class="qa-item-flag-reason-item">' .
+            q2apro_flag_reasonid_to_readable($flag['reasonid']) .
+            $notice .
+            '</strong>, przez: <a href="' . qa_path('user') . '/' .
+            $handle . '">' . $handle . '</a>'
+        ;
 
         $flagOutput[] = '</li>';
     }
-//    unset($flagOutput[count($flagOutput)-1]);
 
     $flagOutput[] = '</ul>';
     $flagsOutput = implode('', $flagOutput);
-
-//    foreach ($flagOutput as $flag) {
-//        $flagsOutput .= $flag;
-//    }
 
     return $flagsOutput;
 }

@@ -2569,6 +2569,19 @@ input[type="submit"], button {
 	padding-left: 4px;
 }
 
+.qa-item-flag-reason-list {
+	font-weight: normal;
+	margin-top: 5px;
+}
+
+.qa-item-flag-reason-item {
+	letter-spacing: 0.25px;
+}
+
+.qa-item-flag-reason-item--custom {
+	font-style: italic;
+}
+
 
 /*------[ a-list ]------*/
 .qa-part-a-form h2 {
