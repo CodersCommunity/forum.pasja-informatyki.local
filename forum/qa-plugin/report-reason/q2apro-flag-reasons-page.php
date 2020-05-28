@@ -14,12 +14,10 @@ class q2apro_flag_reasons_page
 
     public function suggest_requests()
     {
-        //echo('??? suggest_requests ajaxflagger ???');
-
         return [
             [
-                'title'   => 'Ajax Flagger', // title of page
-                'request' => 'ajaxflagger', // request name
+                'title'   => 'Report flag', // title of page
+                'request' => 'report-flag', // request name
                 'nav'     => 'M', // 'M'=main, 'F'=footer, 'B'=before main, 'O'=opposite main, null=none
             ],
         ];
@@ -27,7 +25,7 @@ class q2apro_flag_reasons_page
 
     public function match_request($request)
     {
-        return 'ajaxflagger' === $request;
+        return 'report-flag' === $request;
     }
 
     public function process_request()

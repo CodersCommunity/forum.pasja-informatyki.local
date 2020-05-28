@@ -100,10 +100,7 @@ __webpack_require__.r(__webpack_exports__);
 const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
 const TIMEOUT = 5000;
 
-const URL = {
-  FLAG: '/ajaxflagger',
-  UN_FLAG: window.location.href
-};
+const URL = '/report-flag';
 const CONTENT_TYPE = {
   FLAG: 'application/json',
   UN_FLAG: 'application/x-www-form-urlencoded'
@@ -124,7 +121,7 @@ const sendAjax = (data, purpose) => {
       reject(AJAX_TIMEOUT_REASON);
     }, TIMEOUT);
 
-    fetch('/ajaxflagger'/*URL[purpose]*/, {
+    fetch(URL, {
       method: 'POST',
       headers: {
         // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
