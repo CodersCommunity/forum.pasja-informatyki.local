@@ -14,12 +14,10 @@ class q2apro_flag_reasons_page
 
     public function suggest_requests()
     {
-        //echo('??? suggest_requests ajaxflagger ???');
-
         return [
             [
-                'title'   => 'Ajax Flagger', // title of page
-                'request' => 'ajaxflagger', // request name
+                'title'   => 'Report flag', // title of page
+                'request' => 'report-flag', // request name
                 'nav'     => 'M', // 'M'=main, 'F'=footer, 'B'=before main, 'O'=opposite main, null=none
             ],
         ];
@@ -27,16 +25,7 @@ class q2apro_flag_reasons_page
 
     public function match_request($request)
     {
-//        echo('??? match_request ajaxflagger ???');
-//        foreach (debug_backtrace() as $k1 => $v1) {
-//            foreach ($v1 as $k2 => $v2) {
-//                if ($k2 == 'function') {
-//                    var_dump($v2);
-//                }
-//            }
-//        }
-
-        return 'ajaxflagger' === $request;
+        return 'report-flag' === $request;
     }
 
     public function process_request()
@@ -64,25 +53,22 @@ class q2apro_flag_reasons_page
             ['processingFlagReasonError' => $processingFlagReasonError] :
             ['currentFlags' => $this->wrapOutput(q2apro_count_postflags_output($postId), $postType, $postId)];
 
-//            var_dump('current flags:' . q2apro_count_postflags_output($postId));
-
         echo json_encode($reply);
     }
 
     private function processFlag($postType, ...$flagParams) {
-//        var_dump('$flagParams:' , $flagParams);
         $processingFlagReasonError = '';
 
         switch ($postType) {
-            case 'q' /*'questionId'*/: {
+            case 'q': {
                 $processingFlagReasonError = call_user_func_array([$this, 'processFlagToQuestion'], $flagParams);
                 break;
             }
-            case 'a' /*'answerId'*/: {
+            case 'a': {
                 $processingFlagReasonError = call_user_func_array([$this, 'processFlagToAnswer'], $flagParams);
                 break;
             }
-            case 'c' /*'commentId'*/: {
+            case 'c': {
                 $processingFlagReasonError = call_user_func_array([$this, 'processFlagToComment'], $flagParams);
                 break;
             }
@@ -166,7 +152,6 @@ class q2apro_flag_reasons_page
 
     private function processFlagToComment($userId, $postId, $questionId, $reasonId, $notice) {
         $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $postId));
-//        var_dump('processFlagToComment /$postId:',$postId , ' /$comment:',$comment);
 
         $commentFlagError = qa_flag_error_html($comment, $userId, $questionId);
         if ($commentFlagError) {
@@ -200,15 +185,9 @@ class q2apro_flag_reasons_page
     }
 
     private function getFlagData($requestJSONData) {
-//        $flagData = qa_post_text('flagData');
-//        var_dump(debug_print_backtrace());
-//        var_dump('$requestJSONData: ', $requestJSONData);
-//        $flagData = json_decode($request);
-
         $this->exitIfInvalidEssentials($requestJSONData);
 
         $flagData = str_replace('&quot;', '"', json_decode($requestJSONData, true)); // see stackoverflow.com/questions/3110487/
-//        var_dump('parsed $flagData: ', $flagData);
 
         return $flagData;
     }
@@ -244,15 +223,13 @@ class q2apro_flag_reasons_page
 
         $postFlagsCount = count(q2apro_get_postflags($postId));
 
-//        var_dump('<br>??? $postFlagsCount: ', $postFlagsCount);
-
         if ($postFlagsCount) {
             return '<span class="qa-' . $postType . '-item-flags">' .
-                        qa_html_theme_layer::prepareFlagSuffix($postFlagsCount) .
-                        '<br>' .
-                        '<span class="qa-' . $postType .
-                        '-item-flags-pad">' . $currentFlags .
-                        '</span></span>';
+                    qa_html_theme_layer::prepareFlagSuffix($postFlagsCount) .
+                    '<br>' .
+                    '<span class="qa-' . $postType .
+                    '-item-flags-pad">' . $currentFlags .
+                    '</span></span>';
         }
 
         return '';

@@ -105,8 +105,7 @@
 
 //	Process any single click operations or delete button for question
 
-	// TODO: double check if redirection is disabled by prevent_refresh flag!!!
-	if (qa_page_q_single_click_q($question, $answers, $commentsfollows, $closepost, $pageerror) && !isset($_POST['prevent_refresh']))
+	if (qa_page_q_single_click_q($question, $answers, $commentsfollows, $closepost, $pageerror))
 		qa_page_q_refresh($pagestart);
 
 	if (qa_clicked('q_dodelete') && $question['deleteable'] && qa_page_q_click_check_form_code($question, $pageerror)) {

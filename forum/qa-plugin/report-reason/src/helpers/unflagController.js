@@ -40,15 +40,17 @@ function removeFlagFromQuestion(target) {
 
 function getRequestParams(target) {
   const requestParams = {
-      reportType: 'removeFlag',
-      code: target.form.elements.code.value,
-      questionId: window.location.pathname.split('/').find(Number),
-      postType: target.name.slice(0, 1),
-      action: target.name.split('_')[1].slice(2)
-      // prevent_refresh: true,
+    reportType: 'removeFlag',
+    code: target.form.elements.code.value,
+    questionId: window.location.pathname.split('/').find(Number),
+    postType: target.name.slice(0, 1),
+    action: target.name.split('_')[1].slice(2),
+    // prevent_refresh: true,
   }; // new FormData(target.form);
 
-    requestParams.postId = target.name.startsWith('q') ? requestParams.questionId : target.closest('.hentry').id.slice(1)
+  requestParams.postId = target.name.startsWith('q')
+    ? requestParams.questionId
+    : target.closest('.hentry').id.slice(1);
 
   // requestParams.append(target.name, target.value);
   // requestParams.append('prevent_refresh', 'true');
