@@ -101,21 +101,18 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function post_meta_flags($post, $class)
     {
-        var_dump('$class: '.$class);
-        if (in_array($class, ['qa-q-item', 'qa-a-item', 'qa-c-item', 'qa-q-view'])) {
-            if (isset($post['raw']['postid'])) {
-                $postId = $postId = $post['raw']['opostid'] ?? $post['raw']['postid'];
-                $flagInfo = q2apro_count_postflags_output($postId);
+        if (isset($post['raw']['postid'], $post['form'])) {
+            $postId = $postId = $post['raw']['opostid'] ?? $post['raw']['postid'];
+            $flagInfo = q2apro_count_postflags_output($postId);
 
-                if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
-                    $flagsCount = count(q2apro_get_postflags($postId));
+            if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
+                $flagsCount = count(q2apro_get_postflags($postId));
 
-                    unset($post['flags']);
+                unset($post['flags']);
 
-                    $post['flags']['data'] = self::prepareFlagSuffix($flagsCount);
+                $post['flags']['data'] = self::prepareFlagSuffix($flagsCount);
 //                    $post['flags']['suffix'] = ': <br>' . $flagInfo;
-                    $post['flags']['suffix'] = $flagInfo;
-                }
+                $post['flags']['suffix'] = $flagInfo;
             }
         }
 
