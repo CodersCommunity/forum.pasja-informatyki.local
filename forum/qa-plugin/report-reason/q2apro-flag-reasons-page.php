@@ -27,15 +27,6 @@ class q2apro_flag_reasons_page
 
     public function match_request($request)
     {
-//        echo('??? match_request ajaxflagger ???');
-//        foreach (debug_backtrace() as $k1 => $v1) {
-//            foreach ($v1 as $k2 => $v2) {
-//                if ($k2 == 'function') {
-//                    var_dump($v2);
-//                }
-//            }
-//        }
-
         return 'ajaxflagger' === $request;
     }
 
@@ -201,7 +192,6 @@ class q2apro_flag_reasons_page
 
     private function getFlagData($requestJSONData) {
 //        $flagData = qa_post_text('flagData');
-//        var_dump(debug_print_backtrace());
 //        var_dump('$requestJSONData: ', $requestJSONData);
 //        $flagData = json_decode($request);
 

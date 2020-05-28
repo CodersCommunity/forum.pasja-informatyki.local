@@ -4,17 +4,6 @@ class q2apro_flagreasons_event
 {
     public function process_event($event, $userId, $handle, $cookieId, $params)
     {
-//        echo('??? q2apro_flagreasons_event process_event ???');
-//        var_dump($event);
-
-//        foreach (debug_backtrace() as $k1 => $v1) {
-//            foreach ($v1 as $k2 => $v2) {
-//                if ($k2 == 'function') {
-//                    var_dump($v2);
-//                }
-//            }
-//        }
-
         $this->processUnflagEvent($event, $userId, $params['postid']);
         $this->processClearflagEvent($event, $params['postid']);
     }
