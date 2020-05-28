@@ -103,12 +103,12 @@ const TIMEOUT = 5000;
 const URL = '/report-flag';
 const CONTENT_TYPE = {
   FLAG: 'application/json',
-  UN_FLAG: 'application/x-www-form-urlencoded'
+  UN_FLAG: 'application/x-www-form-urlencoded',
 };
 
 const AJAX_PURPOSE = Object.freeze({
   FLAG: 'FLAG',
-  UN_FLAG: 'UN_FLAG'
+  UN_FLAG: 'UN_FLAG',
 });
 
 function prepareBody(data, purpose) {
@@ -126,7 +126,7 @@ const sendAjax = (data, purpose) => {
       headers: {
         // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      body: JSON.stringify(data) // prepareBody(data, purpose)
+      body: JSON.stringify(data), // prepareBody(data, purpose)
     }).then(async (value) => {
       clearTimeout(timeoutId);
 
@@ -139,7 +139,7 @@ const sendAjax = (data, purpose) => {
       //   }
       // }
 
-      console.warn('fetch response: ', value/*, ' /?:', text*/);
+      console.warn('fetch response: ', value /*, ' /?:', text*/);
 
       // const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
       resolve(value.json());
@@ -261,14 +261,15 @@ const reportFlagMap = {
     comment: /^c(\d+)_doflag/,
     doComment: /^a(\d+)_docomment/,
   },
-  getPostIdFromInputName( postType, inputName) {
+  getPostIdFromInputName(postType, inputName) {
     // TODO: check if it works (changed exec to match)...
     const [, postId] = inputName.match(this.regex[postType]);
     return postId;
   },
   recognizeInputKindByName(inputName) {
-    const [mappedInputNameRegexKey] = Object.entries(this.regex).find(
-      ([regexKey, regexValue]) => regexValue.test(inputName));
+    const [mappedInputNameRegexKey] = Object.entries(
+      this.regex
+    ).find(([regexKey, regexValue]) => regexValue.test(inputName));
     return mappedInputNameRegexKey;
   },
   collectForumPostMetaData() {
@@ -278,7 +279,9 @@ const reportFlagMap = {
       questionId: postRootSource.split('/')[1],
       postType: postType.slice(0, 1),
     };
-    postMetaData.postId = this.getPostIdFromInputName(postType, flagButtonDOM.name) || postMetaData.questionId;
+    postMetaData.postId =
+      this.getPostIdFromInputName(postType, flagButtonDOM.name) ||
+      postMetaData.questionId;
 
     // if (postType === 'answer') {
     //   postMetaData.answerId = this.getPostIdFromInputName(
@@ -287,13 +290,13 @@ const reportFlagMap = {
     //   );
     // } else if (postType === 'comment') {
 
-      // const doCommentInputDOM = flagButtonDOM.parentElement.querySelector(
-      //   `[name*="${doCommentInputNameSuffix}"]`
-      // );
-      // postMetaData.answerId = this.getPostIdFromInputName(
-      //   'doComment',
-      //   doCommentInputDOM.name
-      // );
+    // const doCommentInputDOM = flagButtonDOM.parentElement.querySelector(
+    //   `[name*="${doCommentInputNameSuffix}"]`
+    // );
+    // postMetaData.answerId = this.getPostIdFromInputName(
+    //   'doComment',
+    //   doCommentInputDOM.name
+    // );
 
     //   postMetaData.commentId = this.getPostIdFromInputName(
     //     'comment',
@@ -345,7 +348,7 @@ function reportReasonFlagButtonHandler(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    handleFlagClick( event.target );
+    handleFlagClick(event.target);
   }
 }
 
@@ -437,12 +440,15 @@ function submitForm(event) {
 function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
   updateCurrentPostFlags(response.currentFlags, formData);
-  Object(_misc__WEBPACK_IMPORTED_MODULE_2__["swapElement"])(flagButtonDOM, getUnflagButtonHTML({
-    postType: formData.postType,
-    questionId: formData.questionId,
-    postId: formData.postId,
-    parentId: getPostParentId()
-  }));
+  Object(_misc__WEBPACK_IMPORTED_MODULE_2__["swapElement"])(
+    flagButtonDOM,
+    getUnflagButtonHTML({
+      postType: formData.postType,
+      questionId: formData.questionId,
+      postId: formData.postId,
+      parentId: getPostParentId(),
+    })
+  );
   showSuccessPopup();
 }
 
@@ -485,12 +491,15 @@ function notifyAboutValidationError(sendButton) {
 
 function prepareFormData() {
   const reportMetaData = reportFlagMap.collectForumPostMetaData();
-  const [reasonId, notice] = new FormData(reportReasonPopupForm).getAll('reportReason');
+  const [reasonId, notice] = new FormData(reportReasonPopupForm).getAll(
+    'reportReason'
+  );
 
   return {
     ...reportMetaData,
-    reasonId, notice,
-    reportType: 'addFlag'
+    reasonId,
+    notice,
+    reportType: 'addFlag',
   };
 }
 
@@ -504,18 +513,25 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
   }
 }
 
-function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
-  const flagsMetadataWrapper = postType === 'q' ?
-      document.querySelector('.qa-q-view-meta') :
-      document.querySelector(`#${postType}${postId} .qa-${postType}-item-meta`);
+function updateCurrentPostFlags(currentFlagsHTML, { postType, postId }) {
+  const flagsMetadataWrapper =
+    postType === 'q'
+      ? document.querySelector('.qa-q-view-meta')
+      : document.querySelector(
+          `#${postType}${postId} .qa-${postType}-item-meta`
+        );
   const targetElementSelector = `.qa-${postType}-item-flags`;
-  const targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
+  const targetElement = flagsMetadataWrapper.querySelector(
+    targetElementSelector
+  );
 
   if (targetElement) {
     /*swapElement(targetElement, currentFlagsHTML);*/
     targetElement.outerHTML = currentFlagsHTML;
   } else {
-    const responseAsDOM = new DOMParser().parseFromString(currentFlagsHTML, 'text/html').querySelector(targetElementSelector);
+    const responseAsDOM = new DOMParser()
+      .parseFromString(currentFlagsHTML, 'text/html')
+      .querySelector(targetElementSelector);
     flagsMetadataWrapper.appendChild(responseAsDOM);
   }
 }
@@ -523,8 +539,8 @@ function updateCurrentPostFlags(currentFlagsHTML, {postType, postId}) {
 function showSuccessPopup() {
   reportReasonPopup.classList.add('report-reason-popup--hide');
   reportReasonSuccessInfo.classList.add(
-      'report-reason-popup',
-      'report-reason-popup__success-info--show'
+    'report-reason-popup',
+    'report-reason-popup__success-info--show'
   );
 }
 
@@ -535,11 +551,14 @@ function getPostParentId() {
     return null;
   }
 
-  const parentElementPostId = parentElement.id.slice(1, parentElement.id.indexOf('_'));
+  const parentElementPostId = parentElement.id.slice(
+    1,
+    parentElement.id.indexOf('_')
+  );
   return parentElementPostId;
 }
 
-function getUnflagButtonHTML({postType, questionId, postId, parentId}) {
+function getUnflagButtonHTML({ postType, questionId, postId, parentId }) {
   switch (postType) {
     case 'q': {
       return `
@@ -572,7 +591,14 @@ function getUnflagButtonHTML({postType, questionId, postId, parentId}) {
       `;
     }
     default: {
-      console.error('Unrecognized postType!', postType, ' /questionId: ', questionId, ' /postId: ', postId);
+      console.error(
+        'Unrecognized postType!',
+        postType,
+        ' /questionId: ',
+        questionId,
+        ' /postId: ',
+        postId
+      );
     }
   }
 }
@@ -596,22 +622,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const reportReasonPopupDOMWrapper = (function () {
-    const listItemsDOM = Object.entries(FLAG_REASONS_MAP).reduce(
-        (listItems, [reasonKey, reasonValue], index, flagReasonsCollection) => {
-            // const reasonItemId = `reportReasonItem${index}`;
-            const isLast = index === flagReasonsCollection.length - 1;
-            const textAreaDOM = isLast && _misc__WEBPACK_IMPORTED_MODULE_0__["elementsHTMLMap"].get('textarea');
+  const listItemsDOM = Object.entries(FLAG_REASONS_MAP).reduce(
+    (listItems, [reasonKey, reasonValue], index, flagReasonsCollection) => {
+      // const reasonItemId = `reportReasonItem${index}`;
+      const isLast = index === flagReasonsCollection.length - 1;
+      const textAreaDOM = isLast && _misc__WEBPACK_IMPORTED_MODULE_0__["elementsHTMLMap"].get('textarea');
 
-            return listItems + _misc__WEBPACK_IMPORTED_MODULE_0__["elementsHTMLMap"].get('getListItem')({reasonKey, reasonValue, index, isLast, textAreaDOM});
-        },
-        ''
-    );
+      return (
+        listItems +
+        _misc__WEBPACK_IMPORTED_MODULE_0__["elementsHTMLMap"].get('getListItem')({
+          reasonKey,
+          reasonValue,
+          index,
+          isLast,
+          textAreaDOM,
+        })
+      );
+    },
+    ''
+  );
 
-    const popupWrapper = document.createElement('div');
-    popupWrapper.classList.add('report-reason-wrapper');
-    popupWrapper.innerHTML = _misc__WEBPACK_IMPORTED_MODULE_0__["elementsHTMLMap"].get('getPopupWrapper')(listItemsDOM);
+  const popupWrapper = document.createElement('div');
+  popupWrapper.classList.add('report-reason-wrapper');
+  popupWrapper.innerHTML = _misc__WEBPACK_IMPORTED_MODULE_0__["elementsHTMLMap"].get('getPopupWrapper')(listItemsDOM);
 
-    return popupWrapper;
+  return popupWrapper;
 })();
 
 const reportReasonPopupDOMReferences = {

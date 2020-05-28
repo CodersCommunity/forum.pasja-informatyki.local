@@ -4,12 +4,12 @@ const TIMEOUT = 5000;
 const URL = '/report-flag';
 const CONTENT_TYPE = {
   FLAG: 'application/json',
-  UN_FLAG: 'application/x-www-form-urlencoded'
+  UN_FLAG: 'application/x-www-form-urlencoded',
 };
 
 const AJAX_PURPOSE = Object.freeze({
   FLAG: 'FLAG',
-  UN_FLAG: 'UN_FLAG'
+  UN_FLAG: 'UN_FLAG',
 });
 
 function prepareBody(data, purpose) {
@@ -27,7 +27,7 @@ const sendAjax = (data, purpose) => {
       headers: {
         // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
       },
-      body: JSON.stringify(data) // prepareBody(data, purpose)
+      body: JSON.stringify(data), // prepareBody(data, purpose)
     }).then(async (value) => {
       clearTimeout(timeoutId);
 
@@ -40,7 +40,7 @@ const sendAjax = (data, purpose) => {
       //   }
       // }
 
-      console.warn('fetch response: ', value/*, ' /?:', text*/);
+      console.warn('fetch response: ', value /*, ' /?:', text*/);
 
       // const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
       resolve(value.json());
