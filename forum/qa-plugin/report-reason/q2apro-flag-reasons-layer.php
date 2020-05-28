@@ -103,9 +103,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         if (in_array($class, ['qa-q-item', 'qa-a-item', 'qa-c-item', 'qa-q-view'])) {
             if (isset($post['raw']['postid'])) {
-//                var_dump('$post[raw][postid]: ', $post['raw']['postid'], ' /$post[raw][opostid]: ', $post['raw']['opostid']);
-
-                $postId = $postId = $post['raw']['opostid'] ?? $post['raw']['postid']; // (empty(q2apro_count_postflags_output($post['raw']['postid'])) && isset($post['raw']['opostid'])) ? $post['raw']['opostid'] : $post['raw']['postid'];
+                $postId = $postId = $post['raw']['opostid'] ?? $post['raw']['postid'];
                 $flagInfo = q2apro_count_postflags_output($postId);
 
                 if (!empty($flagInfo) && qa_get_logged_in_level() > QA_USER_LEVEL_EXPERT) {
@@ -113,12 +111,12 @@ class qa_html_theme_layer extends qa_html_theme_base
 
                     unset($post['flags']);
 
-                    $post['flags']['suffix'] = self::prepareFlagSuffix($flagsCount);
-                    $post['flags']['suffix'] .= ': <br>' . $flagInfo;
+                    $post['flags']['data'] = self::prepareFlagSuffix($flagsCount);
+//                    $post['flags']['suffix'] = ': <br>' . $flagInfo;
+                    $post['flags']['suffix'] = $flagInfo;
                 }
             }
         }
-//        var_dump('<br> ??? post_meta_flags() /$post[flags]: ', $post['flags']['suffix']);
 
         parent::post_meta_flags($post, $class);
     }
