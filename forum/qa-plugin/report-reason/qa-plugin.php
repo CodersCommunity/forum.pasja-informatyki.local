@@ -64,8 +64,8 @@ function q2apro_flag_reasonid_to_readable($reasonId)
         'Nieprawidłowy temat/kategoria/otagowanie',
         'Niepełna lub niezrozumiała treść',
         'Kod nie jest umieszczony w odpowiednim bloczku',
-        'Duplikat pytania (podaj link)',
-        'Inny - własny powód'
+        'Duplikat pytania',
+        'Inny (własny)'
     ];
 
 //    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);

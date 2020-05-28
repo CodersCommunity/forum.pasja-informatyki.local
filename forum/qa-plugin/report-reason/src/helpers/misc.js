@@ -1,3 +1,5 @@
+const noticeLength = FLAG_REASONS_MAP.NOTICE_LENGTH || 256;
+
 export const swapElement = (referenceNode, html) => {
   const tmpParent = document.createElement('div');
   tmpParent.innerHTML = html;
@@ -12,13 +14,14 @@ export const swapElement = (referenceNode, html) => {
 export const elementsHTMLMap = new Map([
   [
     'textarea',
-    `<textarea id="customReportReason" rows="3" cols="47" name="reportReason" class="report-reason-popup__custom-report-reason" data-requirable="true"></textarea>`,
+    `<textarea id="customReportReason" maxlength="${noticeLength}" cols="47" name="reportReason" class="report-reason-popup__custom-report-reason" data-requirable="true"></textarea>`,
   ],
   [
     'getListItem',
     ({ reasonKey, reasonValue, index, isLast, textAreaDOM }) => {
       return `
-            <li>
+            <!-- TODO: handle checking inputs while tabbing -->
+            <li tabindex="1">
                 <label for="${reasonKey}">
                     <input id="${reasonKey}" 
                             type="radio" 
