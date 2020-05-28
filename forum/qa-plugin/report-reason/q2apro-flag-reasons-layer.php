@@ -101,7 +101,8 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function post_meta_flags($post, $class)
     {
-        if (isset($post['raw']['postid'], $post['form'])) {
+        if (in_array($class, ['qa-a-item', 'qa-c-item', 'qa-q-view'])
+            || ($class === 'qa-q-item' && isset($post['form']))) {
             $postId = $postId = $post['raw']['opostid'] ?? $post['raw']['postid'];
             $flagInfo = q2apro_count_postflags_output($postId);
 
