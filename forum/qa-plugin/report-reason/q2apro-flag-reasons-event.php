@@ -13,8 +13,6 @@ class q2apro_flagreasons_event
         $flagEvents = ['q_unflag', 'a_unflag', 'c_unflag'];
 
         if (in_array($event, $flagEvents, true)) {
-//            echo('??? processUnflagEvent() ??? /$userId: ' . $userId . ' /$postId: ' . $postId);
-
             qa_db_query_sub('
                 DELETE FROM `^flagreasons`
                 WHERE userid = #
@@ -28,8 +26,6 @@ class q2apro_flagreasons_event
         $flagEvents = ['q_clearflags', 'a_clearflags', 'c_clearflags'];
 
         if (in_array($event, $flagEvents, true)) {
-//            echo('??? processClearflagEvent() ???');
-
             qa_db_query_sub('
                 DELETE FROM `^flagreasons`
                 WHERE postid = #
