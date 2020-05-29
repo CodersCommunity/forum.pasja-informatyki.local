@@ -2,21 +2,9 @@ const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
 const TIMEOUT = 5000;
 
 const URL = '/report-flag';
-const CONTENT_TYPE = {
-  FLAG: 'application/json',
-  UN_FLAG: 'application/x-www-form-urlencoded',
-};
+const CONTENT_TYPE = 'application/json';
 
-const AJAX_PURPOSE = Object.freeze({
-  FLAG: 'FLAG',
-  UN_FLAG: 'UN_FLAG',
-});
-
-function prepareBody(data, purpose) {
-  return purpose === AJAX_PURPOSE.FLAG ? JSON.stringify(data) : data;
-}
-
-const sendAjax = (data, purpose) => {
+const sendAjax = (data) => {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(AJAX_TIMEOUT_REASON);
@@ -25,9 +13,9 @@ const sendAjax = (data, purpose) => {
     fetch(URL, {
       method: 'POST',
       headers: {
-        // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Content-Type': CONTENT_TYPE,
       },
-      body: JSON.stringify(data), // prepareBody(data, purpose)
+      body: JSON.stringify(data),
     }).then(async (value) => {
       clearTimeout(timeoutId);
 
@@ -48,4 +36,4 @@ const sendAjax = (data, purpose) => {
   });
 };
 
-export { sendAjax, AJAX_PURPOSE };
+export default sendAjax;

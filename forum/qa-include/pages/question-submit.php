@@ -97,11 +97,8 @@
             }
         }
 
-//        var_dump('qa_clicked("q_dounflag"): ', qa_clicked('q_dounflag'), ' /$question["unflaggable"]: ', $question['unflaggable'], " /qa_page_q_click_check_form_code(,): ", qa_page_q_click_check_form_code($question, $error));
         if (qa_clicked('q_dounflag') && $question['unflaggable'] && qa_page_q_click_check_form_code($question, $error)) {
             require_once QA_INCLUDE_DIR.'app/votes.php';
-
-//            var_dump('$question: ', $question, ' /$userid: ', $userid, ' /$handle: ', $handle, ' /$cookieid: ', $cookieid);
 
             qa_flag_clear($question, $userid, $handle, $cookieid);
             return true;

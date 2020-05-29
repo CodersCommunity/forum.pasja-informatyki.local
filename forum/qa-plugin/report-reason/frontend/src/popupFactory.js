@@ -28,7 +28,7 @@ const reportReasonPopupDOMWrapper = (function () {
   return popupWrapper;
 })();
 
-export const reportReasonPopupDOMReferences = {
+const reportReasonPopupDOMReferences = {
   reportReasonPopup: reportReasonPopupDOMWrapper.querySelector(
     '#reportReasonPopup'
   ),
@@ -47,4 +47,4 @@ export const reportReasonPopupDOMReferences = {
   ),
 };
 
-export default reportReasonPopupDOMWrapper;
+export { reportReasonPopupDOMReferences, reportReasonPopupDOMWrapper };
