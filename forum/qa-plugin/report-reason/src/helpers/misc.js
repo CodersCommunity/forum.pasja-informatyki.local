@@ -1,4 +1,4 @@
-const noticeLength = FLAG_REASONS_MAP.NOTICE_LENGTH || 256;
+const { NOTICE_LENGTH, POPUP_LABELS } = FLAG_REASONS_METADATA;
 
 export const swapElement = (referenceNode, html) => {
   const tmpParent = document.createElement('div');
@@ -14,7 +14,13 @@ export const swapElement = (referenceNode, html) => {
 export const elementsHTMLMap = new Map([
   [
     'textarea',
-    `<textarea id="customReportReason" maxlength="${noticeLength}" cols="47" name="reportReason" class="report-reason-popup__custom-report-reason" data-requirable="true"></textarea>`,
+    `<textarea id="customReportReason"
+        class="report-reason-popup__custom-report-reason"
+        name="reportReason"
+        data-requirable="true"
+        maxlength="${NOTICE_LENGTH}"
+        rows="3"
+        cols="47"></textarea>`,
   ],
   [
     'getListItem',
@@ -40,20 +46,21 @@ export const elementsHTMLMap = new Map([
     (listItemsDOM) => {
       return `
             <div id="reportReasonPopup" class="report-reason-popup">
-                <p>Zaznacz powód zgłoszenia lub podaj własny:</p>
+                <p>${POPUP_LABELS.HEADER}</p>
                 
                 <form method="post" class="report-reason-popup__form">
                     <ul id="reportReasonList" class="report-reason-popup__list">${listItemsDOM}</ul>
                 
-                    <p id="reportReasonValidationError" class="report-reason-popup__validation-error">Nie zaznaczono powodu zgłoszenia!</p>
+                    <p id="reportReasonValidationError" class="report-reason-popup__validation-error">${POPUP_LABELS.NO_REASON_CHECKED}</p>
                     
-                    <input id="cancelReportReason" type="button" value="Anuluj" class="report-reason-popup__button report-reason-popup__button--cancel">
-                    <button id="sendReportReason" type="submit" class="report-reason-popup__button report-reason-popup__button--save">Wyślij</button>
+                    <!-- TODO: why its input not button? -->
+                    <input id="cancelReportReason" type="button" value="${POPUP_LABELS.CANCEL}" class="report-reason-popup__button report-reason-popup__button--cancel">
+                    <button id="sendReportReason" type="submit" class="report-reason-popup__button report-reason-popup__button--save">${POPUP_LABELS.SEND}</button>
                 </form>
             </div>
             <div id="reportReasonSuccessInfo" class="report-reason-popup__success-info">
-                Zgłoszenie zostało wysłane.
-                <button id="closeReportReasonSentInfo" class="report-reason-popup__button report-reason-popup__button--close" type="button">Zamknij</button>
+                ${POPUP_LABELS.REPORT_SENT}
+                <button id="closeReportReasonSentInfo" class="report-reason-popup__button report-reason-popup__button--close" type="button">${POPUP_LABELS.CLOSE}</button>
             </div>`;
     },
   ],

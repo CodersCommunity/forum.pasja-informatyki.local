@@ -50,29 +50,6 @@ qa_register_plugin_module(
     'event', 'q2apro-flag-reasons-event.php', 'q2apro_flagreasons_event', 'q2apro flag reasons Event'
 );
 
-// TODO: secure path from case when folder structure/name will change
-//$flagReasonsMapFilePath = dirname(dirname(__FILE__)).'/' . 'report-reason/q2apro-flag-reasons-lang-default.php';
-//var_dump('$flagReasonsMapFilePath: ', $flagReasonsMapFilePath);
-//$flagReasonsMap = require $flagReasonsMapFilePath;
-
-function q2apro_flag_reasonid_to_readable($reasonId)
-{
-    // TODO: make a consistent place to put flag reason translations
-    $translationArray = [
-        'SPAM',
-        'Wypowiedź jest obraźliwa',
-        'Nieprawidłowy temat/kategoria/otagowanie',
-        'Niepełna lub niezrozumiała treść',
-        'Kod nie jest umieszczony w odpowiednim bloczku',
-        'Duplikat pytania',
-        'Inny (własny)'
-    ];
-
-//    var_dump('$reasonId:', $reasonId, ' /$translationArray[$reasonId]:', $translationArray[$reasonId]);
-    return $translationArray[$reasonId];
-//    return qa_lang('q2apro_flagreasons_lang/' . $translationArray[$reasonId]);
-}
-
 function q2apro_get_postflags($postId)
 {
     $arr = qa_db_read_all_assoc(
@@ -85,7 +62,6 @@ function q2apro_get_postflags($postId)
         )
     );
 
-//    var_dump('<br>??? q2apro_get_postflags(',$postId,') /$arr:', $arr);
     return $arr;
 }
 
@@ -99,6 +75,7 @@ function q2apro_count_postflags_output($postId)
 
     $flagOutput = [];
     $flagOutput[] = '<ul class="qa-item-flag-reason-list">';
+    $reasonList = qa_lang('q2apro_flagreasons_lang/REASON_LIST');
 
     foreach ($flags as $flag) {
         $handle = qa_userid_to_handle($flag['userid']);
@@ -111,7 +88,7 @@ function q2apro_count_postflags_output($postId)
 
         $flagOutput[] =
             '<li><strong class="qa-item-flag-reason-item">' .
-            q2apro_flag_reasonid_to_readable($flag['reasonid']) .
+            $reasonList[$flag['reasonid']] .
             $notice .
             '</strong>, przez: <a href="' . qa_path('user') . '/' .
             $handle . '">' . $handle . '</a>'

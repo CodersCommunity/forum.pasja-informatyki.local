@@ -51,9 +51,10 @@
 .report-reason-popup__custom-report-reason {
     display: none;
     width: 360px;
-    height: 60px;
+    min-height: 60px;
     margin-left: 15px;
     margin-bottom: 0;
+    resize: vertical;
 }
 
 .report-reason-popup__custom-report-reason--show {

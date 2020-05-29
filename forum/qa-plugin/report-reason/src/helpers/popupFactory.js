@@ -1,7 +1,7 @@
 import { elementsHTMLMap } from './misc';
 
 const reportReasonPopupDOMWrapper = (function () {
-  const listItemsDOM = Object.entries(FLAG_REASONS_MAP).reduce(
+  const listItemsDOM = Object.entries(FLAG_REASONS_METADATA.REASON_LIST).reduce(
     (listItems, [reasonKey, reasonValue], index, flagReasonsCollection) => {
       // const reasonItemId = `reportReasonItem${index}`;
       const isLast = index === flagReasonsCollection.length - 1;
