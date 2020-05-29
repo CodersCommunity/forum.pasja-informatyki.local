@@ -1049,7 +1049,7 @@
 */
 	{
 		if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
-//        var_dump('qa_clicked() /$_POST: ', $_POST, ' /$name: ', $name);
+
 		return isset($_POST[$name]) || isset($_POST[$name.'_x']) || (qa_post_text('qa_click')==$name);
 	}
 
