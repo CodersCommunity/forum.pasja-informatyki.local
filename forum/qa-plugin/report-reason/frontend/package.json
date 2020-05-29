@@ -2,12 +2,12 @@
   "name": "report-reason-plugin",
   "version": "1.0.0",
   "description": "Plugin purpose is to make descriptive reason of flagged post. Thus it will be more understandable for Administration to consider if certain post violates regulations.",
-  "main": "./src/index.js",
+  "main": "index.js",
   "scripts": {
-    "prettier": "prettier --write ./src/",
-    "dev": "webpack --mode=development --watch --devtool source-map ./src/index.js -o dist/script.js",
+    "prettier": "node_modules/.bin/prettier --write index.js src/",
+    "dev": "node_modules/.bin/webpack --mode=development --watch --devtool source-map index.js -o dist/script.js",
     "prebuild": "npm run prettier",
-    "build": "webpack --mode=production ./src/index.js -o dist/script.js"
+    "build": "node_modules/.bin/webpack --mode=production index.js -o dist/script.js"
   },
   "keywords": [],
   "author": "JSHolic",

@@ -81,15 +81,45 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/helpers/ajaxService.js":
-/*!************************************!*\
-  !*** ./src/helpers/ajaxService.js ***!
-  \************************************/
+/***/ "./index.js":
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_popupController__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/popupController */ "./src/popupController.js");
+// TODO: load it lazily
+
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function initReportReasonPlugin() {
+    Object(_src_popupController__WEBPACK_IMPORTED_MODULE_0__["default"])();
+
+    const eventDelegationRoot = document.querySelector('.qa-main');
+    eventDelegationRoot.addEventListener(
+      'click',
+      _src_popupController__WEBPACK_IMPORTED_MODULE_0__["default"].handler,
+      true /* use capture phase to fire handler before Q2A listeners on (un)flag buttons will */
+    );
+  }
+);
+
+
+/***/ }),
+
+/***/ "./src/ajaxService.js":
+/*!****************************!*\
+  !*** ./src/ajaxService.js ***!
+  \****************************/
 /*! exports provided: sendAjax, AJAX_PURPOSE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -152,10 +182,10 @@ const sendAjax = (data, purpose) => {
 
 /***/ }),
 
-/***/ "./src/helpers/misc.js":
-/*!*****************************!*\
-  !*** ./src/helpers/misc.js ***!
-  \*****************************/
+/***/ "./src/misc.js":
+/*!*********************!*\
+  !*** ./src/misc.js ***!
+  \*********************/
 /*! exports provided: swapElement, elementsHTMLMap */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -234,18 +264,18 @@ const elementsHTMLMap = new Map([
 
 /***/ }),
 
-/***/ "./src/helpers/popupController.js":
-/*!****************************************!*\
-  !*** ./src/helpers/popupController.js ***!
-  \****************************************/
+/***/ "./src/popupController.js":
+/*!********************************!*\
+  !*** ./src/popupController.js ***!
+  \********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ajaxService */ "./src/helpers/ajaxService.js");
-/* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./popupFactory */ "./src/helpers/popupFactory.js");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc */ "./src/helpers/misc.js");
+/* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ajaxService */ "./src/ajaxService.js");
+/* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./popupFactory */ "./src/popupFactory.js");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
 
 
 
@@ -615,17 +645,17 @@ function getUnflagButtonHTML({ postType, questionId, postId, parentId }) {
 
 /***/ }),
 
-/***/ "./src/helpers/popupFactory.js":
-/*!*************************************!*\
-  !*** ./src/helpers/popupFactory.js ***!
-  \*************************************/
+/***/ "./src/popupFactory.js":
+/*!*****************************!*\
+  !*** ./src/popupFactory.js ***!
+  \*****************************/
 /*! exports provided: reportReasonPopupDOMReferences, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMReferences", function() { return reportReasonPopupDOMReferences; });
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./misc */ "./src/helpers/misc.js");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
 
 
 const reportReasonPopupDOMWrapper = (function () {
@@ -676,36 +706,6 @@ const reportReasonPopupDOMReferences = {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (reportReasonPopupDOMWrapper);
-
-
-/***/ }),
-
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _helpers_popupController__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/popupController */ "./src/helpers/popupController.js");
-// TODO: load it lazily
-
-
-document.addEventListener(
-  'DOMContentLoaded',
-  function initReportReasonPlugin() {
-    Object(_helpers_popupController__WEBPACK_IMPORTED_MODULE_0__["default"])();
-
-    const eventDelegationRoot = document.querySelector('.qa-main');
-    eventDelegationRoot.addEventListener(
-      'click',
-      _helpers_popupController__WEBPACK_IMPORTED_MODULE_0__["default"].handler,
-      true /* use capture phase to fire handler before Q2A listeners on (un)flag buttons will */
-    );
-  }
-);
 
 
 /***/ })

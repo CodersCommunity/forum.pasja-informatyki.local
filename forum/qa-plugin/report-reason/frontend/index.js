@@ -1,5 +1,5 @@
 // TODO: load it lazily
-import bootstrapReportReasonPopup from './helpers/popupController';
+import bootstrapReportReasonPopup from './src/popupController';
 
 document.addEventListener(
   'DOMContentLoaded',
