@@ -2,7 +2,9 @@
 
 class q2apro_flagreasons_admin
 {
-    public function init_queries($tablesLc) 
+    const NOTICE_LENGTH = 255;
+
+    public function init_queries($tablesLc)
     {
         $tableName = qa_db_add_table_prefix('flagreasons');
         $result    = null;
@@ -15,23 +17,23 @@ class q2apro_flagreasons_admin
                   `userid` int(10) UNSIGNED NOT NULL,
                   `postid` int(10) UNSIGNED NOT NULL,
                   `reasonid` int(10) UNSIGNED NOT NULL,
-                  `notice` varchar(255) NULL,
+                  `notice` varchar(self::NOTICE_LENGTH) NULL,
                   PRIMARY KEY (userid, postid)
-                ) 
+                )
                 ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ';
         }
         return $result;
     }
 
-    public function option_default($option) 
+    public function option_default($option)
     {
         return 'q2apro_flagreasons_enabled' === $option ? 1 : null;
     }
-    
+
     public function allow_template($template)
     {
         return ('admin' !== $template);
-    }       
+    }
 }
 

@@ -10,14 +10,17 @@ class qa_html_theme_layer extends qa_html_theme_base
         $this->isLogged = qa_is_logged_in();
 
         if ($this->isLogged && 'question' === $this->template) {
-            // TODO: secure path from case when folder structure/name will change
-            $flagReasonsMapFilePath = QA_PLUGIN_DIR . '/report-reason/q2apro-flag-reasons-lang-default.php';
-            $flagReasonsMap = json_encode(require $flagReasonsMapFilePath);
-//            var_dump('$flagReasonsMap:', $flagReasonsMap);
+            require_once QA_PLUGIN_DIR . 'report-reason/q2apro-flag-reasons-admin.php';
+
+            $flagReasonNoticeLength = ['NOTICE_LENGTH' => q2apro_flagreasons_admin::NOTICE_LENGTH];
+            $reportFlagList = ['REASON_LIST' => qa_lang('q2apro_flagreasons_lang/REASON_LIST')];
+            $reportPopupLabels = ['POPUP_LABELS' => qa_lang('q2apro_flagreasons_lang/POPUP_LABELS')];
+
+            $flagReasonsMetadata = json_encode(array_merge($flagReasonNoticeLength, $reportFlagList, $reportPopupLabels));
 
             $this->output('
                 <script>
-                    const FLAG_REASONS_MAP = Object.freeze(' . $flagReasonsMap . ');
+                    const FLAG_REASONS_METADATA = Object.freeze(' . $flagReasonsMetadata . ');
                 </script>
                 <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . '/dist/script.js"></script>
                 <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'style.css">
