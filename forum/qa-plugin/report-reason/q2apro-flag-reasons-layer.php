@@ -20,11 +20,11 @@ class qa_html_theme_layer extends qa_html_theme_base
 
             $this->output(
             '
-                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . '/frontend/style.css">
+                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/style.css">
                 <script>
                     const FLAG_REASONS_METADATA = Object.freeze(' . $flagReasonsMetadata . ');
                 </script>
-                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . '/frontend/dist/script.js"></script>
+                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/dist/script.js"></script>
             '
             );
         }
