@@ -120,32 +120,18 @@ document.addEventListener(
 /*!****************************!*\
   !*** ./src/ajaxService.js ***!
   \****************************/
-/*! exports provided: sendAjax, AJAX_PURPOSE */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendAjax", function() { return sendAjax; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AJAX_PURPOSE", function() { return AJAX_PURPOSE; });
 const AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
 const TIMEOUT = 5000;
 
 const URL = '/report-flag';
-const CONTENT_TYPE = {
-  FLAG: 'application/json',
-  UN_FLAG: 'application/x-www-form-urlencoded',
-};
+const CONTENT_TYPE = 'application/json';
 
-const AJAX_PURPOSE = Object.freeze({
-  FLAG: 'FLAG',
-  UN_FLAG: 'UN_FLAG',
-});
-
-function prepareBody(data, purpose) {
-  return purpose === AJAX_PURPOSE.FLAG ? JSON.stringify(data) : data;
-}
-
-const sendAjax = (data, purpose) => {
+const sendAjax = (data) => {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(AJAX_TIMEOUT_REASON);
@@ -154,9 +140,9 @@ const sendAjax = (data, purpose) => {
     fetch(URL, {
       method: 'POST',
       headers: {
-        // 'Content-Type': CONTENT_TYPE[purpose] // 'application/json' // 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Content-Type': CONTENT_TYPE,
       },
-      body: JSON.stringify(data), // prepareBody(data, purpose)
+      body: JSON.stringify(data),
     }).then(async (value) => {
       clearTimeout(timeoutId);
 
@@ -177,7 +163,7 @@ const sendAjax = (data, purpose) => {
   });
 };
 
-
+/* harmony default export */ __webpack_exports__["default"] = (sendAjax);
 
 
 /***/ }),
@@ -350,13 +336,13 @@ let flagButtonDOM = null;
 
 const showReportReasonPopup = (originalFormActionAttribute) => {
   reportReasonPopupForm.action = originalFormActionAttribute;
-  _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].classList.add('report-reason-wrapper--show');
+  _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].classList.add('report-reason-wrapper--show');
 };
 const hideReportReasonPopup = () => {
   reportReasonSuccessInfo.classList.remove(
     'report-reason-popup__success-info--show'
   );
-  _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].classList.remove('report-reason-wrapper--show');
+  _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].classList.remove('report-reason-wrapper--show');
   customReportReason.classList.remove(
     'report-reason-popup__custom-report-reason--show'
   );
@@ -395,7 +381,7 @@ function handleFlagClick(target) {
 }
 
 function initOffClickHandler() {
-  _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].addEventListener('click', (event) => {
+  _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].addEventListener('click', (event) => {
     const checkDOMElementsId = (DOMElement) =>
       DOMElement.id === 'reportReasonPopup' ||
       DOMElement.id === 'reportReasonSuccessInfo';
@@ -408,7 +394,7 @@ function initOffClickHandler() {
 }
 
 function initReasonList() {
-  const reasonList = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].querySelector(
+  const reasonList = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].querySelector(
     '#reportReasonList'
   );
   reasonList.addEventListener('change', ({ target }) => {
@@ -430,17 +416,17 @@ function initReasonList() {
 }
 
 function initButtons() {
-  const cancelButton = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].querySelector(
+  const cancelButton = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].querySelector(
     '#cancelReportReason'
   );
   cancelButton.addEventListener('click', hideReportReasonPopup);
 
-  const sendButton = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].querySelector(
+  const sendButton = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].querySelector(
     '#sendReportReason'
   );
   sendButton.addEventListener('click', submitForm);
 
-  const closeReportReasonSentInfo = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"].querySelector(
+  const closeReportReasonSentInfo = _popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"].querySelector(
     '#closeReportReasonSentInfo'
   );
   closeReportReasonSentInfo.addEventListener('click', hideReportReasonPopup);
@@ -448,7 +434,7 @@ function initButtons() {
 
 function initPopupContainer() {
   const popupContainer = document.querySelector('.qa-body-wrapper');
-  popupContainer.appendChild(_popupFactory__WEBPACK_IMPORTED_MODULE_1__["default"]);
+  popupContainer.appendChild(_popupFactory__WEBPACK_IMPORTED_MODULE_1__["reportReasonPopupDOMWrapper"]);
 }
 
 function submitForm(event) {
@@ -465,7 +451,7 @@ function submitForm(event) {
   toggleSendWaitingState(sendButton, true);
 
   const formData = prepareFormData();
-  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["sendAjax"])(formData, _ajaxService__WEBPACK_IMPORTED_MODULE_0__["AJAX_PURPOSE"].FLAG).then(
+  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_0__["default"])(formData).then(
     (response) => {
       console.warn('response:', response);
       onAjaxSuccess(response, formData, sendButton);
@@ -649,12 +635,13 @@ function getUnflagButtonHTML({ postType, questionId, postId, parentId }) {
 /*!*****************************!*\
   !*** ./src/popupFactory.js ***!
   \*****************************/
-/*! exports provided: reportReasonPopupDOMReferences, default */
+/*! exports provided: reportReasonPopupDOMReferences, reportReasonPopupDOMWrapper */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMReferences", function() { return reportReasonPopupDOMReferences; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMWrapper", function() { return reportReasonPopupDOMWrapper; });
 /* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
 
 
@@ -705,7 +692,7 @@ const reportReasonPopupDOMReferences = {
   ),
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (reportReasonPopupDOMWrapper);
+
 
 
 /***/ })
