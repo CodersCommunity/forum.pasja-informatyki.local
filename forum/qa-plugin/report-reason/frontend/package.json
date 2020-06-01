@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "prettier": "node_modules/.bin/prettier --write index.js src/",
-    "dev": "node_modules/.bin/webpack --mode=development --watch --devtool source-map index.js -o dist/script.js",
+    "dev": "node_modules/.bin/webpack --env.development",
     "prebuild": "npm run prettier",
-    "build": "node_modules/.bin/webpack --mode=production index.js -o dist/script.js"
+    "build": "node_modules/.bin/webpack --env.production"
   },
   "keywords": [],
   "author": "JSHolic",
   "license": "MIT",
   "devDependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "prettier": "^2.0.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
