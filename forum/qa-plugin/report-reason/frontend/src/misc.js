@@ -1,31 +1,31 @@
 const { NOTICE_LENGTH, POPUP_LABELS } = FLAG_REASONS_METADATA;
 
 export const swapElement = (referenceNode, html) => {
-  const tmpParent = document.createElement('div');
-  tmpParent.innerHTML = html;
+	const tmpParent = document.createElement('div');
+	tmpParent.innerHTML = html;
 
-  const newElement = tmpParent.removeChild(tmpParent.firstElementChild);
-  referenceNode.parentNode.insertBefore(newElement, referenceNode);
-  referenceNode.remove();
+	const newElement = tmpParent.removeChild(tmpParent.firstElementChild);
+	referenceNode.parentNode.insertBefore(newElement, referenceNode);
+	referenceNode.remove();
 
-  // return newElement;
+	// return newElement;
 };
 
 export const elementsHTMLMap = new Map([
-  [
-    'textarea',
-    `<textarea id="customReportReason"
+	[
+		'textarea',
+		`<textarea id="customReportReason"
         class="report-reason-popup__custom-report-reason"
         name="reportReason"
         data-requirable="true"
         maxlength="${NOTICE_LENGTH}"
         rows="3"
         cols="47"></textarea>`,
-  ],
-  [
-    'getListItem',
-    ({ reasonKey, reasonValue, index, isLast, textAreaDOM }) => {
-      return `
+	],
+	[
+		'getListItem',
+		({ reasonKey, reasonValue, index, isLast, textAreaDOM }) => {
+			return `
             <!-- TODO: handle checking inputs while tabbing -->
             <li tabindex="1">
                 <label for="${reasonKey}">
@@ -39,12 +39,12 @@ export const elementsHTMLMap = new Map([
                 ${isLast ? textAreaDOM : ''}
             </li>
         `;
-    },
-  ],
-  [
-    'getPopupWrapper',
-    (listItemsDOM) => {
-      return `
+		},
+	],
+	[
+		'getPopupWrapper',
+		(listItemsDOM) => {
+			return `
             <div id="reportReasonPopup" class="report-reason-popup">
                 <p>${POPUP_LABELS.HEADER}</p>
                 
@@ -62,6 +62,6 @@ export const elementsHTMLMap = new Map([
                 ${POPUP_LABELS.REPORT_SENT}
                 <button id="closeReportReasonSentInfo" class="report-reason-popup__button report-reason-popup__button--close" type="button">${POPUP_LABELS.CLOSE}</button>
             </div>`;
-    },
-  ],
+		},
+	],
 ]);
