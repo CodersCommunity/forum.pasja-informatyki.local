@@ -9,7 +9,14 @@ module.exports = ({development}) => {
             filename: 'script.js',
             publicPath: '../qa-plugin/report-reason/frontend/dist/'
         },
-        devtool: 'source-map',
+        module: {
+            rules: [
+                {
+                    test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader',
+                }
+            ]
+        },
+        devtool: development ? 'source-map' : 'none',
         watch: !!development
     };
 }
