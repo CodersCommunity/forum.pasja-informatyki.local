@@ -352,7 +352,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ajaxService */ "./src/ajaxService.js");
 /* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./popupFactory */ "./src/popupFactory.js");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
+/* harmony import */ var _unFlagButton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./unFlagButton */ "./src/unFlagButton.js");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
 
 
 
@@ -363,8 +364,9 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-console.warn('reportReasonPopupDOMWrapper: ', _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"]);
 
+
+console.warn('reportReasonPopupDOMWrapper: ', _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"]);
 var reportReasonPopup = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonPopup,
     reportReasonPopupForm = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonPopupForm,
     customReportReason = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].customReportReason,
@@ -542,7 +544,7 @@ function submitForm(event) {
 function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
   updateCurrentPostFlags(response.currentFlags, formData);
-  Object(_misc__WEBPACK_IMPORTED_MODULE_5__["swapElement"])(flagButtonDOM, getUnflagButtonHTML({
+  Object(_misc__WEBPACK_IMPORTED_MODULE_6__["swapElement"])(flagButtonDOM, Object(_unFlagButton__WEBPACK_IMPORTED_MODULE_5__["default"])({
     postType: formData.postType,
     questionId: formData.questionId,
     postId: formData.postId,
@@ -632,37 +634,7 @@ function getPostParentId() {
     return null;
   }
 
-  var parentElementPostId = parentElement.id.slice(1, parentElement.id.indexOf('_'));
-  return parentElementPostId;
-}
-
-function getUnflagButtonHTML(_ref5) {
-  var postType = _ref5.postType,
-      questionId = _ref5.questionId,
-      postId = _ref5.postId,
-      parentId = _ref5.parentId;
-
-  switch (postType) {
-    case 'q':
-      {
-        return "\n        <input name=\"q_dounflag\" \n          onclick=\"qa_show_waiting_after(this, false);\" \n          value=\"wycofaj zg\u0142oszenie\" \n          title=\"Wycofaj zg\u0142oszenie tej tre\u015Bci\" \n          type=\"submit\" \n          class=\"qa-form-light-button qa-form-light-button-unflag\">\n      ";
-      }
-
-    case 'a':
-      {
-        return "\n        <input name=\"a".concat(postId, "_dounflag\" \n            onclick=\"return qa_answer_click(").concat(postId, ", ").concat(questionId, ", this);\" \n            value=\"wycofaj zg\u0142oszenie\" \n            title=\"Wycofaj zg\u0142oszenie tej tre\u015Bci\" \n            type=\"submit\" \n            class=\"qa-form-light-button qa-form-light-button-unflag\">\n      ");
-      }
-
-    case 'c':
-      {
-        return "\n        <input name=\"c".concat(postId, "_dounflag\" \n            onclick=\"return qa_comment_click(").concat(postId, ", ").concat(questionId, ", ").concat(parentId, ", this);\" \n            value=\"wycofaj zg\u0142oszenie\" \n            title=\"Wycofaj zg\u0142oszenie tej tre\u015Bci\" \n            type=\"submit\" \n            class=\"qa-form-light-button qa-form-light-button-unflag\">\n      ");
-      }
-
-    default:
-      {
-        console.error('Unrecognized postType!', postType, ' /questionId: ', questionId, ' /postId: ', postId);
-      }
-  }
+  return parentElement.id.slice(1, parentElement.id.indexOf('_'));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (bootstrapReportReasonPopup);
@@ -718,6 +690,61 @@ var reportReasonPopupDOMReferences = {
   reportReasonValidationError: reportReasonPopupDOMWrapper.querySelector('#reportReasonValidationError')
 };
 
+
+/***/ }),
+
+/***/ "./src/unFlagButton.js":
+/*!*****************************!*\
+  !*** ./src/unFlagButton.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function getUnFlagButtonHTML(_ref) {
+  var postType = _ref.postType,
+      questionId = _ref.questionId,
+      postId = _ref.postId,
+      parentId = _ref.parentId;
+  var namePrefix = postType + postId;
+  var onclick = '';
+  var nameSuffix = '_dounflag';
+  var value = 'wycofaj zgłoszenie';
+  var title = 'Wycofaj zgłoszenie tej treści';
+  var type = 'submit';
+  var clazz = 'qa-form-light-button qa-form-light-button-unflag';
+
+  switch (postType) {
+    case 'q':
+      {
+        onclick = 'qa_show_waiting_after(this, false)';
+        namePrefix = postType;
+        break;
+      }
+
+    case 'a':
+      {
+        onclick = "return qa_answer_click(".concat(postId, ", ").concat(questionId, ", this);");
+        break;
+      }
+
+    case 'c':
+      {
+        onclick = "return qa_comment_click(".concat(postId, ", ").concat(questionId, ", ").concat(parentId, ", this);");
+        break;
+      }
+
+    default:
+      {
+        throw new Error("Unrecognized postType: ".concat(postType, " for questionId: ").concat(questionId, " and postId: ").concat(postId));
+      }
+  }
+
+  return "\n\t\t<input name=\"".concat(namePrefix).concat(nameSuffix, "\" \n\t\t\tonclick=\"").concat(onclick, "\"\n\t\t\tvalue=\"").concat(value, "\"\n\t\t\ttitle=\"").concat(title, "\"\n\t\t\ttype=\"").concat(type, "\" \n\t\t\tclass=\"").concat(clazz, "\">\n\t");
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (getUnFlagButtonHTML);
 
 /***/ })
 

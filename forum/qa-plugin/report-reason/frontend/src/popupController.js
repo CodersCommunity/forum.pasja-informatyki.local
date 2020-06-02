@@ -1,7 +1,9 @@
 import sendAjax from './ajaxService';
 import { reportReasonPopupDOMWrapper, reportReasonPopupDOMReferences } from './popupFactory';
-console.warn('reportReasonPopupDOMWrapper: ', reportReasonPopupDOMWrapper);
+import getUnFlagButtonHTML from './unFlagButton';
 import { swapElement } from './misc';
+
+console.warn('reportReasonPopupDOMWrapper: ', reportReasonPopupDOMWrapper);
 
 const {
 	reportReasonPopup,
@@ -181,7 +183,7 @@ function onAjaxSuccess(response, formData, sendButton) {
 	updateCurrentPostFlags(response.currentFlags, formData);
 	swapElement(
 		flagButtonDOM,
-		getUnflagButtonHTML({
+		getUnFlagButtonHTML({
 			postType: formData.postType,
 			questionId: formData.questionId,
 			postId: formData.postId,
@@ -271,46 +273,7 @@ function getPostParentId() {
 		return null;
 	}
 
-	const parentElementPostId = parentElement.id.slice(1, parentElement.id.indexOf('_'));
-	return parentElementPostId;
-}
-
-function getUnflagButtonHTML({ postType, questionId, postId, parentId }) {
-	switch (postType) {
-		case 'q': {
-			return `
-        <input name="q_dounflag" 
-          onclick="qa_show_waiting_after(this, false);" 
-          value="wycofaj zgłoszenie" 
-          title="Wycofaj zgłoszenie tej treści" 
-          type="submit" 
-          class="qa-form-light-button qa-form-light-button-unflag">
-      `;
-		}
-		case 'a': {
-			return `
-        <input name="a${postId}_dounflag" 
-            onclick="return qa_answer_click(${postId}, ${questionId}, this);" 
-            value="wycofaj zgłoszenie" 
-            title="Wycofaj zgłoszenie tej treści" 
-            type="submit" 
-            class="qa-form-light-button qa-form-light-button-unflag">
-      `;
-		}
-		case 'c': {
-			return `
-        <input name="c${postId}_dounflag" 
-            onclick="return qa_comment_click(${postId}, ${questionId}, ${parentId}, this);" 
-            value="wycofaj zgłoszenie" 
-            title="Wycofaj zgłoszenie tej treści" 
-            type="submit" 
-            class="qa-form-light-button qa-form-light-button-unflag">
-      `;
-		}
-		default: {
-			console.error('Unrecognized postType!', postType, ' /questionId: ', questionId, ' /postId: ', postId);
-		}
-	}
+	return parentElement.id.slice(1, parentElement.id.indexOf('_'));
 }
 
 export default bootstrapReportReasonPopup;
