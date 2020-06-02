@@ -322,15 +322,15 @@ var swapElement = function swapElement(referenceNode, html) {
   referenceNode.parentNode.insertBefore(newElement, referenceNode);
   referenceNode.remove(); // return newElement;
 };
-var elementsHTMLMap = new Map([['textarea', "<textarea id=\"customReportReason\"\n        class=\"report-reason-popup__custom-report-reason\"\n        name=\"reportReason\"\n        data-requirable=\"true\"\n        maxlength=\"".concat(NOTICE_LENGTH, "\"\n        rows=\"3\"\n        cols=\"47\"></textarea>")], ['getListItem', function (_ref) {
+var elementsHTMLMap = new Map([['textarea', "<textarea id=\"customReportReason\"\n\t\t\tclass=\"report-reason-popup__custom-report-reason\"\n\t\t\tname=\"reportReason\"\n\t\t\tdata-requirable=\"true\"\n\t\t\tmaxlength=\"".concat(NOTICE_LENGTH, "\"\n\t\t\trows=\"3\"\n\t\t\tcols=\"47\"></textarea>")], ['getListItem', function (_ref) {
   var reasonKey = _ref.reasonKey,
       reasonValue = _ref.reasonValue,
       index = _ref.index,
       isLast = _ref.isLast,
       textAreaDOM = _ref.textAreaDOM;
-  return "\n            <!-- TODO: handle checking inputs while tabbing -->\n            <li tabindex=\"1\">\n                <label for=\"".concat(reasonKey, "\">\n                    <input id=\"").concat(reasonKey, "\" \n                            type=\"radio\" \n                            value=\"").concat(index, "\" \n                            name=\"reportReason\" \n                            data-requirable=\"true\">\n                    ").concat(reasonValue, "\n                </label>\n                ").concat(isLast ? textAreaDOM : '', "\n            </li>\n        ");
+  return "\n\t\t\t\t<!-- TODO: handle checking inputs while tabbing -->\n\t\t\t\t<li tabindex=\"1\">\n\t\t\t\t\t<label for=\"".concat(reasonKey, "\">\n\t\t\t\t\t\t<input id=\"").concat(reasonKey, "\" \n\t\t\t\t\t\t\t\ttype=\"radio\" \n\t\t\t\t\t\t\t\tvalue=\"").concat(index, "\" \n\t\t\t\t\t\t\t\tname=\"reportReason\" \n\t\t\t\t\t\t\t\tdata-requirable=\"true\">\n\t\t\t\t\t\t").concat(reasonValue, "\n\t\t\t\t\t</label>\n\t\t\t\t\t").concat(isLast ? textAreaDOM : '', "\n\t\t\t\t</li>\n\t\t\t");
 }], ['getPopupWrapper', function (listItemsDOM) {
-  return "\n            <div id=\"reportReasonPopup\" class=\"report-reason-popup\">\n                <p>".concat(POPUP_LABELS.HEADER, "</p>\n                \n                <form method=\"post\" class=\"report-reason-popup__form\">\n                    <ul id=\"reportReasonList\" class=\"report-reason-popup__list\">").concat(listItemsDOM, "</ul>\n                \n                    <p id=\"reportReasonValidationError\" class=\"report-reason-popup__validation-error\">").concat(POPUP_LABELS.NO_REASON_CHECKED, "</p>\n                    \n                    <!-- TODO: why its input not button? -->\n                    <input id=\"cancelReportReason\" type=\"button\" value=\"").concat(POPUP_LABELS.CANCEL, "\" class=\"report-reason-popup__button report-reason-popup__button--cancel\">\n                    <button id=\"sendReportReason\" type=\"submit\" class=\"report-reason-popup__button report-reason-popup__button--save\">").concat(POPUP_LABELS.SEND, "</button>\n                </form>\n            </div>\n            <div id=\"reportReasonSuccessInfo\" class=\"report-reason-popup__success-info\">\n                ").concat(POPUP_LABELS.REPORT_SENT, "\n                <button id=\"closeReportReasonSentInfo\" class=\"report-reason-popup__button report-reason-popup__button--close\" type=\"button\">").concat(POPUP_LABELS.CLOSE, "</button>\n            </div>");
+  return "\n\t\t\t\t<div id=\"reportReasonPopup\" class=\"report-reason-popup\">\n\t\t\t\t\t<p>".concat(POPUP_LABELS.HEADER, "</p>\n\t\t\t\t\t\n\t\t\t\t\t<form method=\"post\" class=\"report-reason-popup__form\">\n\t\t\t\t\t\t<ul id=\"reportReasonList\" class=\"report-reason-popup__list\">").concat(listItemsDOM, "</ul>\n\t\t\t\t\t\n\t\t\t\t\t\t<p id=\"reportReasonValidationError\" class=\"report-reason-popup__validation-error\">").concat(POPUP_LABELS.NO_REASON_CHECKED, "</p>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<!-- TODO: why its input not button? -->\n\t\t\t\t\t\t<input id=\"cancelReportReason\" type=\"button\" value=\"").concat(POPUP_LABELS.CANCEL, "\" class=\"report-reason-popup__button report-reason-popup__button--cancel\">\n\t\t\t\t\t\t<button id=\"sendReportReason\" type=\"submit\" class=\"report-reason-popup__button report-reason-popup__button--save\">").concat(POPUP_LABELS.SEND, "</button>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"reportReasonSuccessInfo\" class=\"report-reason-popup__success-info\">\n\t\t\t\t\t").concat(POPUP_LABELS.REPORT_SENT, "\n\t\t\t\t\t<button id=\"closeReportReasonSentInfo\" class=\"report-reason-popup__button report-reason-popup__button--close\" type=\"button\">").concat(POPUP_LABELS.CLOSE, "</button>\n\t\t\t\t</div>");
 }]]);
 
 /***/ }),
@@ -352,7 +352,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ajaxService */ "./src/ajaxService.js");
 /* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./popupFactory */ "./src/popupFactory.js");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
+/* harmony import */ var _unFlagButton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./unFlagButton */ "./src/unFlagButton.js");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
 
 
 
@@ -363,8 +364,9 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-console.warn('reportReasonPopupDOMWrapper: ', _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"]);
 
+
+console.warn('reportReasonPopupDOMWrapper: ', _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"]);
 var reportReasonPopup = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonPopup,
     reportReasonPopupForm = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonPopupForm,
     customReportReason = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].customReportReason,
@@ -542,7 +544,7 @@ function submitForm(event) {
 function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
   updateCurrentPostFlags(response.currentFlags, formData);
-  Object(_misc__WEBPACK_IMPORTED_MODULE_5__["swapElement"])(flagButtonDOM, getUnflagButtonHTML({
+  Object(_misc__WEBPACK_IMPORTED_MODULE_6__["swapElement"])(flagButtonDOM, Object(_unFlagButton__WEBPACK_IMPORTED_MODULE_5__["default"])({
     postType: formData.postType,
     questionId: formData.questionId,
     postId: formData.postId,
@@ -632,37 +634,7 @@ function getPostParentId() {
     return null;
   }
 
-  var parentElementPostId = parentElement.id.slice(1, parentElement.id.indexOf('_'));
-  return parentElementPostId;
-}
-
-function getUnflagButtonHTML(_ref5) {
-  var postType = _ref5.postType,
-      questionId = _ref5.questionId,
-      postId = _ref5.postId,
-      parentId = _ref5.parentId;
-
-  switch (postType) {
-    case 'q':
-      {
-        return "\n        <input name=\"q_dounflag\" \n          onclick=\"qa_show_waiting_after(this, false);\" \n          value=\"wycofaj zg\u0142oszenie\" \n          title=\"Wycofaj zg\u0142oszenie tej tre\u015Bci\" \n          type=\"submit\" \n          class=\"qa-form-light-button qa-form-light-button-unflag\">\n      ";
-      }
-
-    case 'a':
-      {
-        return "\n        <input name=\"a".concat(postId, "_dounflag\" \n            onclick=\"return qa_answer_click(").concat(postId, ", ").concat(questionId, ", this);\" \n            value=\"wycofaj zg\u0142oszenie\" \n            title=\"Wycofaj zg\u0142oszenie tej tre\u015Bci\" \n            type=\"submit\" \n            class=\"qa-form-light-button qa-form-light-button-unflag\">\n      ");
-      }
-
-    case 'c':
-      {
-        return "\n        <input name=\"c".concat(postId, "_dounflag\" \n            onclick=\"return qa_comment_click(").concat(postId, ", ").concat(questionId, ", ").concat(parentId, ", this);\" \n            value=\"wycofaj zg\u0142oszenie\" \n            title=\"Wycofaj zg\u0142oszenie tej tre\u015Bci\" \n            type=\"submit\" \n            class=\"qa-form-light-button qa-form-light-button-unflag\">\n      ");
-      }
-
-    default:
-      {
-        console.error('Unrecognized postType!', postType, ' /questionId: ', questionId, ' /postId: ', postId);
-      }
-  }
+  return parentElement.id.slice(1, parentElement.id.indexOf('_'));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (bootstrapReportReasonPopup);
@@ -692,7 +664,6 @@ var reportReasonPopupDOMWrapper = function () {
         reasonKey = _ref2[0],
         reasonValue = _ref2[1];
 
-    // const reasonItemId = `reportReasonItem${index}`;
     var isLast = index === flagReasonsCollection.length - 1;
     var textAreaDOM = isLast && _misc__WEBPACK_IMPORTED_MODULE_1__["elementsHTMLMap"].get('textarea');
     return listItems + _misc__WEBPACK_IMPORTED_MODULE_1__["elementsHTMLMap"].get('getListItem')({
@@ -718,6 +689,61 @@ var reportReasonPopupDOMReferences = {
   reportReasonValidationError: reportReasonPopupDOMWrapper.querySelector('#reportReasonValidationError')
 };
 
+
+/***/ }),
+
+/***/ "./src/unFlagButton.js":
+/*!*****************************!*\
+  !*** ./src/unFlagButton.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function getUnFlagButtonHTML(_ref) {
+  var postType = _ref.postType,
+      questionId = _ref.questionId,
+      postId = _ref.postId,
+      parentId = _ref.parentId;
+  var namePrefix = postType + postId;
+  var onclick = '';
+  var nameSuffix = '_dounflag';
+  var value = 'wycofaj zgłoszenie';
+  var title = 'Wycofaj zgłoszenie tej treści';
+  var type = 'submit';
+  var clazz = 'qa-form-light-button qa-form-light-button-unflag';
+
+  switch (postType) {
+    case 'q':
+      {
+        onclick = 'qa_show_waiting_after(this, false)';
+        namePrefix = postType;
+        break;
+      }
+
+    case 'a':
+      {
+        onclick = "return qa_answer_click(".concat(postId, ", ").concat(questionId, ", this);");
+        break;
+      }
+
+    case 'c':
+      {
+        onclick = "return qa_comment_click(".concat(postId, ", ").concat(questionId, ", ").concat(parentId, ", this);");
+        break;
+      }
+
+    default:
+      {
+        throw new Error("Unrecognized postType: ".concat(postType, " for questionId: ").concat(questionId, " and postId: ").concat(postId));
+      }
+  }
+
+  return "\n\t\t<input name=\"".concat(namePrefix).concat(nameSuffix, "\" \n\t\t\tonclick=\"").concat(onclick, "\"\n\t\t\tvalue=\"").concat(value, "\"\n\t\t\ttitle=\"").concat(title, "\"\n\t\t\ttype=\"").concat(type, "\" \n\t\t\tclass=\"").concat(clazz, "\">\n\t");
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (getUnFlagButtonHTML);
 
 /***/ })
 
