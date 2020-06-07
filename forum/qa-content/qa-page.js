@@ -214,7 +214,20 @@ function qa_ajax_error()
     'use strict';
 
     // check if browser supports 'select()' and 'copy' commands
-    var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
+    var isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
+
+    Object.defineProperty(window, 'reloadBlocksOfCode', {
+        configurable: false,
+        writable: false,
+        value: (commentsToHighlight) => {
+            if (SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
+                commentsToHighlight.querySelectorAll('pre').forEach(codeBlock => SyntaxHighlighter.highlight(null, codeBlock));
+                handleCodeCollapsing(false, isClipboardSupported);
+            } else {
+                console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
+            }
+        }
+    });
 
     /*
      * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
