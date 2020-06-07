@@ -225,9 +225,12 @@ class q2apro_flag_reasons_page
 
         if ($postFlagsCount) {
             $userHasPrivilege = qa_get_logged_in_level() >= QA_USER_LEVEL_EXPERT && qa_user_level_for_post(qa_post_get_full($postId));
-            $flagReasonsInfo = $userHasPrivilege ? ('<br>' .  '<span class="qa-' . $postType . '-item-flags-pad">' . $currentFlags) : '';
+            $relativeClassNamePart = $postType === 'q' ? '-view' : '-item';
+            $flagReasonsInfo = $userHasPrivilege ?
+                ('<br>' .  '<span class="qa-' . $postType . $relativeClassNamePart . '-flags-pad">' . $currentFlags) :
+                '';
 
-            return '<span class="qa-' . $postType . '-item-flags">' .
+            return '<span class="qa-' . $postType . $relativeClassNamePart . '-flags">' .
                     qa_html_theme_layer::prepareFlagSuffix($postFlagsCount) . $flagReasonsInfo .
                     '</span></span>';
         }

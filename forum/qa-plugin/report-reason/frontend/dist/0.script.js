@@ -53,6 +53,50 @@ module.exports = _arrayWithoutHoles;
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/helpers/classCallCheck.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/classCallCheck.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+module.exports = _classCallCheck;
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/createClass.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/createClass.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+module.exports = _createClass;
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/defineProperty.js":
 /*!***************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/defineProperty.js ***!
@@ -230,321 +274,145 @@ module.exports = _unsupportedIterableToArray;
 
 /***/ }),
 
-/***/ "./src/ajaxService.js":
-/*!****************************!*\
-  !*** ./src/ajaxService.js ***!
-  \****************************/
+/***/ "./src/bootstrap.js":
+/*!**************************!*\
+  !*** ./src/bootstrap.js ***!
+  \**************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ "./node_modules/@babel/runtime/helpers/asyncToGenerator.js");
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);
-
-
-var AJAX_TIMEOUT_REASON = 'AJAX_TIMEOUT';
-var TIMEOUT = 5000;
-var URL = '/report-flag';
-var CONTENT_TYPE = 'application/json';
-
-var sendAjax = function sendAjax(data) {
-  return new Promise(function (resolve, reject) {
-    var timeoutId = setTimeout(function () {
-      reject(AJAX_TIMEOUT_REASON);
-    }, TIMEOUT);
-    fetch(URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': CONTENT_TYPE
-      },
-      body: JSON.stringify(data)
-    }).then( /*#__PURE__*/function () {
-      var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(value) {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                clearTimeout(timeoutId); // let text = null;
-                // if (purpose === AJAX_PURPOSE.UN_FLAG) {
-                //   try {
-                //     text = await value.text();
-                //   } catch ( e ) {
-                //     console.error( 'value.text not worked... /e: ', e );
-                //   }
-                // }
-
-                console.warn('fetch response: ', value
-                /*, ' /?:', text*/
-                ); // const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
-
-                resolve(value.json());
-
-              case 3:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }));
-
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    }());
-  });
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (sendAjax);
-
-/***/ }),
-
-/***/ "./src/misc.js":
-/*!*********************!*\
-  !*** ./src/misc.js ***!
-  \*********************/
-/*! exports provided: swapElement, elementsHTMLMap */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "swapElement", function() { return swapElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elementsHTMLMap", function() { return elementsHTMLMap; });
-var _FLAG_REASONS_METADAT = FLAG_REASONS_METADATA,
-    NOTICE_LENGTH = _FLAG_REASONS_METADAT.NOTICE_LENGTH,
-    POPUP_LABELS = _FLAG_REASONS_METADAT.POPUP_LABELS;
-var swapElement = function swapElement(referenceNode, html) {
-  var tmpParent = document.createElement('div');
-  tmpParent.innerHTML = html;
-  var newElement = tmpParent.removeChild(tmpParent.firstElementChild);
-  referenceNode.parentNode.insertBefore(newElement, referenceNode);
-  referenceNode.remove(); // return newElement;
-};
-var elementsHTMLMap = new Map([['textarea', "<textarea id=\"customReportReason\"\n\t\t\tclass=\"report-reason-popup__custom-report-reason\"\n\t\t\tname=\"reportReason\"\n\t\t\tdata-requirable=\"true\"\n\t\t\tmaxlength=\"".concat(NOTICE_LENGTH, "\"\n\t\t\trows=\"3\"\n\t\t\tcols=\"47\"></textarea>")], ['getListItem', function (_ref) {
-  var reasonKey = _ref.reasonKey,
-      reasonValue = _ref.reasonValue,
-      index = _ref.index,
-      isLast = _ref.isLast,
-      textAreaDOM = _ref.textAreaDOM;
-  return "\n\t\t\t\t<!-- TODO: handle checking inputs while tabbing -->\n\t\t\t\t<li tabindex=\"1\">\n\t\t\t\t\t<label for=\"".concat(reasonKey, "\">\n\t\t\t\t\t\t<input id=\"").concat(reasonKey, "\" \n\t\t\t\t\t\t\t\ttype=\"radio\" \n\t\t\t\t\t\t\t\tvalue=\"").concat(index, "\" \n\t\t\t\t\t\t\t\tname=\"reportReason\" \n\t\t\t\t\t\t\t\tdata-requirable=\"true\">\n\t\t\t\t\t\t").concat(reasonValue, "\n\t\t\t\t\t</label>\n\t\t\t\t\t").concat(isLast ? textAreaDOM : '', "\n\t\t\t\t</li>\n\t\t\t");
-}], ['getPopupWrapper', function (listItemsDOM) {
-  return "\n\t\t\t\t<div id=\"reportReasonPopup\" class=\"report-reason-popup\">\n\t\t\t\t\t<p>".concat(POPUP_LABELS.HEADER, "</p>\n\t\t\t\t\t\n\t\t\t\t\t<form method=\"post\" class=\"report-reason-popup__form\">\n\t\t\t\t\t\t<ul id=\"reportReasonList\" class=\"report-reason-popup__list\">").concat(listItemsDOM, "</ul>\n\t\t\t\t\t\n\t\t\t\t\t\t<p id=\"reportReasonValidationError\" class=\"report-reason-popup__validation-error\">").concat(POPUP_LABELS.NO_REASON_CHECKED, "</p>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<!-- TODO: why its input not button? -->\n\t\t\t\t\t\t<input id=\"cancelReportReason\" type=\"button\" value=\"").concat(POPUP_LABELS.CANCEL, "\" class=\"report-reason-popup__button report-reason-popup__button--cancel\">\n\t\t\t\t\t\t<button id=\"sendReportReason\" type=\"submit\" class=\"report-reason-popup__button report-reason-popup__button--save\">").concat(POPUP_LABELS.SEND, "</button>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"reportReasonSuccessInfo\" class=\"report-reason-popup__success-info\">\n\t\t\t\t\t").concat(POPUP_LABELS.REPORT_SENT, "\n\t\t\t\t\t<button id=\"closeReportReasonSentInfo\" class=\"report-reason-popup__button report-reason-popup__button--close\" type=\"button\">").concat(POPUP_LABELS.CLOSE, "</button>\n\t\t\t\t</div>");
-}]]);
-
-/***/ }),
-
-/***/ "./src/popupController.js":
-/*!********************************!*\
-  !*** ./src/popupController.js ***!
-  \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ "./node_modules/@babel/runtime/helpers/toConsumableArray.js");
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _ajaxService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ajaxService */ "./src/ajaxService.js");
-/* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./popupFactory */ "./src/popupFactory.js");
-/* harmony import */ var _unFlagButton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./unFlagButton */ "./src/unFlagButton.js");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
+/* harmony import */ var _popupFactory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./popupFactory */ "./src/popupFactory.js");
+/* harmony import */ var _flagController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flagController */ "./src/flagController.js");
+/* harmony import */ var _formController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./formController */ "./src/formController.js");
 
 
 
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-
-
-
-
-console.warn('reportReasonPopupDOMWrapper: ', _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"]);
-var reportReasonPopup = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonPopup,
-    reportReasonPopupForm = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonPopupForm,
-    customReportReason = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].customReportReason,
-    reportReasonSuccessInfo = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonSuccessInfo,
-    requirableFormElements = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].requirableFormElements,
-    reportReasonValidationError = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMReferences"].reportReasonValidationError;
-var questionViewMeta = document.querySelector('.qa-q-view-meta');
-var BTN_NAME_SUFFIXES_REGEX = /do(clear|un)?flag[s]?/;
-var FLAG_BTN_NAME_SUFFIX = 'doflag'; // const doCommentInputNameSuffix = '_docomment';
-
-var reportFlagMap = {
-  regex: {
-    question: /q_doflag/,
-    answer: /^a(\d+)_doflag/,
-    comment: /^c(\d+)_doflag/,
-    doComment: /^a(\d+)_docomment/
-  },
-  getPostIdFromInputName: function getPostIdFromInputName(postType, inputName) {
-    // TODO: check if it works (changed exec to match)...
-    var _inputName$match = inputName.match(this.regex[postType]),
-        _inputName$match2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_inputName$match, 2),
-        postId = _inputName$match2[1];
-
-    return postId;
-  },
-  recognizeInputKindByName: function recognizeInputKindByName(inputName) {
-    var _Object$entries$find = Object.entries(this.regex).find(function (_ref) {
-      var _ref2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_ref, 2),
-          regexKey = _ref2[0],
-          regexValue = _ref2[1];
-
-      return regexValue.test(inputName);
-    }),
-        _Object$entries$find2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_Object$entries$find, 1),
-        mappedInputNameRegexKey = _Object$entries$find2[0];
-
-    return mappedInputNameRegexKey;
-  },
-  collectForumPostMetaData: function collectForumPostMetaData() {
-    var postType = this.recognizeInputKindByName(flagButtonDOM.name);
-    var postRootSource = flagButtonDOM.form.getAttribute('action');
-    var postMetaData = {
-      questionId: postRootSource.split('/')[1],
-      postType: postType.slice(0, 1)
-    };
-    postMetaData.postId = this.getPostIdFromInputName(postType, flagButtonDOM.name) || postMetaData.questionId; // if (postType === 'answer') {
-    //   postMetaData.answerId = this.getPostIdFromInputName(
-    //     'answer',
-    //     flagButtonDOM.name
-    //   );
-    // } else if (postType === 'comment') {
-    // const doCommentInputDOM = flagButtonDOM.parentElement.querySelector(
-    //   `[name*="${doCommentInputNameSuffix}"]`
-    // );
-    // postMetaData.answerId = this.getPostIdFromInputName(
-    //   'doComment',
-    //   doCommentInputDOM.name
-    // );
-    //   postMetaData.commentId = this.getPostIdFromInputName(
-    //     'comment',
-    //     flagButtonDOM.name
-    //   );
-    // }
-
-    return postMetaData;
-  }
-};
-var bootstrapUsed = false;
-var flagButtonDOM = null;
-
-var showReportReasonPopup = function showReportReasonPopup(originalFormActionAttribute) {
-  reportReasonPopupForm.action = originalFormActionAttribute;
-  _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].classList.add('report-reason-wrapper--show');
-};
-
-var hideReportReasonPopup = function hideReportReasonPopup() {
-  reportReasonSuccessInfo.classList.remove('report-reason-popup__success-info--show');
-  _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].classList.remove('report-reason-wrapper--show');
-  customReportReason.classList.remove('report-reason-popup__custom-report-reason--show');
-  reportReasonPopup.classList.remove('report-reason-popup--hide');
-  reportReasonValidationError.classList.remove('report-reason-popup__validation-error--show');
-  reportReasonPopupForm.reset();
-};
 
 var bootstrapReportReasonPopup = function bootstrapReportReasonPopup() {
-  if (bootstrapUsed) {
-    throw 'bootstrapReportReasonPopup should be called only once!';
-  }
+  var _init = Object(_popupFactory__WEBPACK_IMPORTED_MODULE_0__["default"])(),
+      reportReasonPopupDOMReferences = _init.reportReasonPopupDOMReferences,
+      showReportReasonPopup = _init.showReportReasonPopup;
 
-  initOffClickHandler();
-  initReasonList();
-  initButtons();
-  initPopupContainer();
-  bootstrapUsed = true;
+  var flagController = new _flagController__WEBPACK_IMPORTED_MODULE_1__["default"](reportReasonPopupDOMReferences.reportReasonPopupForm, showReportReasonPopup);
+  return flagController.onClick.bind(flagController);
 };
 
-bootstrapReportReasonPopup.handler = reportReasonFlagButtonHandler;
+/* harmony default export */ __webpack_exports__["default"] = (bootstrapReportReasonPopup);
 
-function reportReasonFlagButtonHandler(event) {
-  if (event.target.name && event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
-    event.preventDefault();
-    event.stopPropagation();
-    handleFlagClick(event.target);
-  }
-}
+/***/ }),
 
-function handleFlagClick(target) {
-  flagButtonDOM = target;
-  showReportReasonPopup(target.form.action);
-}
+/***/ "./src/flagController.js":
+/*!*******************************!*\
+  !*** ./src/flagController.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function initOffClickHandler() {
-  _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].addEventListener('click', function (event) {
-    var checkDOMElementsId = function checkDOMElementsId(DOMElement) {
-      return DOMElement.id === 'reportReasonPopup' || DOMElement.id === 'reportReasonSuccessInfo';
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _unFlagButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./unFlagButton */ "./src/unFlagButton.js");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
+
+
+
+
+
+var FLAG_BTN_NAME_SUFFIX = 'doflag';
+
+var FlagController = /*#__PURE__*/function () {
+  function FlagController(reportReasonPopupForm, showReportReasonPopup) {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, FlagController);
+
+    this.reportReasonPopupForm = reportReasonPopupForm;
+    this.showReportReasonPopup = showReportReasonPopup;
+    this.flagButtonDOM = null;
+    this.regex = {
+      question: /q_doflag/,
+      answer: /^a(\d+)_doflag/,
+      comment: /^c(\d+)_doflag/,
+      doComment: /^a(\d+)_docomment/
     };
-
-    var clickedOutsidePopup = !event.composedPath().some(checkDOMElementsId);
-
-    if (clickedOutsidePopup) {
-      hideReportReasonPopup();
-    }
-  });
-}
-
-function initReasonList() {
-  var reasonList = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].querySelector('#reportReasonList');
-  reasonList.addEventListener('change', function (_ref3) {
-    var target = _ref3.target;
-    reportReasonValidationError.classList.remove('report-reason-popup__validation-error--show');
-
-    if (reasonList.children[reasonList.children.length - 1].contains(target)) {
-      customReportReason.classList.add('report-reason-popup__custom-report-reason--show');
-      setTimeout(customReportReason.focus.bind(customReportReason));
-    } else {
-      customReportReason.classList.remove('report-reason-popup__custom-report-reason--show');
-    }
-  });
-}
-
-function initButtons() {
-  var cancelButton = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].querySelector('#cancelReportReason');
-  cancelButton.addEventListener('click', hideReportReasonPopup);
-  var sendButton = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].querySelector('#sendReportReason');
-  sendButton.addEventListener('click', submitForm);
-  var closeReportReasonSentInfo = _popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"].querySelector('#closeReportReasonSentInfo');
-  closeReportReasonSentInfo.addEventListener('click', hideReportReasonPopup);
-}
-
-function initPopupContainer() {
-  var popupContainer = document.querySelector('.qa-body-wrapper');
-  popupContainer.appendChild(_popupFactory__WEBPACK_IMPORTED_MODULE_4__["reportReasonPopupDOMWrapper"]);
-}
-
-function submitForm(event) {
-  event.preventDefault();
-  var sendButton = event.target;
-  sendButton.blur();
-  var isFormValid = validateForm(sendButton);
-
-  if (!isFormValid) {
-    return;
   }
 
-  toggleSendWaitingState(sendButton, true);
-  var formData = prepareFormData();
-  Object(_ajaxService__WEBPACK_IMPORTED_MODULE_3__["default"])(formData).then(function (response) {
-    console.warn('response:', response);
-    onAjaxSuccess(response, formData, sendButton);
-  }, function (ajaxError) {
-    return onAjaxError(sendButton, ajaxError);
-  });
-}
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(FlagController, [{
+    key: "onClick",
+    value: function onClick(event) {
+      if (event.target.name && event.target.name.endsWith(FLAG_BTN_NAME_SUFFIX)) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.flagButtonDOM = event.target;
+        this.reportReasonPopupForm = event.target.form.action;
+        this.showReportReasonPopup();
+      }
+    }
+  }, {
+    key: "getPostIdFromInputName",
+    value: function getPostIdFromInputName(postType, inputName) {
+      // TODO: check if it works (changed exec to match)...
+      var _inputName$match = inputName.match(this.regex[postType]),
+          _inputName$match2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_inputName$match, 2),
+          postId = _inputName$match2[1];
+
+      return postId;
+    }
+  }, {
+    key: "recognizeInputKindByName",
+    value: function recognizeInputKindByName(inputName) {
+      var _Object$entries$find = Object.entries(this.regex).find(function (_ref) {
+        var _ref2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_ref, 2),
+            regexKey = _ref2[0],
+            regexValue = _ref2[1];
+
+        return regexValue.test(inputName);
+      }),
+          _Object$entries$find2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_Object$entries$find, 1),
+          mappedInputNameRegexKey = _Object$entries$find2[0];
+
+      return mappedInputNameRegexKey;
+    }
+  }, {
+    key: "collectForumPostMetaData",
+    value: function collectForumPostMetaData() {
+      var postType = this.recognizeInputKindByName(this.flagButtonDOM.name);
+      var postRootSource = this.flagButtonDOM.form.getAttribute('action');
+      var postMetaData = {
+        questionId: postRootSource.split('/')[1],
+        postType: postType.slice(0, 1)
+      };
+      postMetaData.postId = this.getPostIdFromInputName(postType, this.flagButtonDOM.name) || postMetaData.questionId;
+      return postMetaData;
+    }
+  }]);
+
+  return FlagController;
+}();
+
+var reportReasonPopupDOMWrapper = null;
+var reportReasonPopupDOMReferences = null; // console.warn('reportReasonPopupDOMWrapper: ', reportReasonPopupDOMWrapper);
+// const {
+// 	// reportReasonPopup,
+// 	// reportReasonPopupForm,
+// 	reportReasonSuccessInfo,
+// 	reportReasonValidationError,
+// } = reportReasonPopupDOMReferences;
+
+var questionViewMeta = document.querySelector('.qa-q-view-meta');
+var BTN_NAME_SUFFIXES_REGEX = /do(clear|un)?flag[s]?/; // const doCommentInputNameSuffix = '_docomment';
+
+var reportFlagMap = {};
 
 function onAjaxSuccess(response, formData, sendButton) {
   toggleSendWaitingState(sendButton, false);
-  updateCurrentPostFlags(response.currentFlags, formData);
-  Object(_misc__WEBPACK_IMPORTED_MODULE_6__["swapElement"])(flagButtonDOM, Object(_unFlagButton__WEBPACK_IMPORTED_MODULE_5__["default"])({
+  Object(_misc__WEBPACK_IMPORTED_MODULE_4__["updateCurrentPostFlags"])(response.currentFlags, formData);
+  Object(_misc__WEBPACK_IMPORTED_MODULE_4__["swapElement"])(flagButtonDOM, Object(_unFlagButton__WEBPACK_IMPORTED_MODULE_3__["default"])({
     postType: formData.postType,
     questionId: formData.questionId,
     postId: formData.postId,
@@ -559,41 +427,12 @@ function onAjaxError(sendButton, ajaxError) {
   console.warn('ajaxError:', ajaxError);
 }
 
-function validateForm(sendButton) {
-  var isAnyFormElementUsed = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default()(requirableFormElements).some(function (element) {
-    var isCheckedRadioInput = element.type === 'radio' && element.value !== 'custom' && element.checked;
-    var isFilledTextArea = element.tagName.toLowerCase() === 'textarea' && element.value;
-    return isCheckedRadioInput || isFilledTextArea;
-  });
-
-  if (!isAnyFormElementUsed) {
-    notifyAboutValidationError(sendButton);
-  }
-
-  return isAnyFormElementUsed;
-}
-
 function notifyAboutValidationError(sendButton) {
   reportReasonValidationError.classList.add('report-reason-popup__validation-error--show');
   sendButton.classList.add('report-reason-popup__button--save--validation-blink');
   setTimeout(function () {
     sendButton.classList.remove('report-reason-popup__button--save--validation-blink');
   }, 1000);
-}
-
-function prepareFormData() {
-  var reportMetaData = reportFlagMap.collectForumPostMetaData();
-
-  var _FormData$getAll = new FormData(reportReasonPopupForm).getAll('reportReason'),
-      _FormData$getAll2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_FormData$getAll, 2),
-      reasonId = _FormData$getAll2[0],
-      notice = _FormData$getAll2[1];
-
-  return _objectSpread(_objectSpread({}, reportMetaData), {}, {
-    reasonId: reasonId,
-    notice: notice,
-    reportType: 'addFlag'
-  });
 }
 
 function toggleSendWaitingState(buttonReference, isWaiting) {
@@ -606,9 +445,161 @@ function toggleSendWaitingState(buttonReference, isWaiting) {
   }
 }
 
-function updateCurrentPostFlags(currentFlagsHTML, _ref4) {
-  var postType = _ref4.postType,
-      postId = _ref4.postId;
+function showSuccessPopup() {
+  reportReasonPopup.classList.add('report-reason-popup--hide');
+  reportReasonSuccessInfo.classList.add('report-reason-popup', 'report-reason-popup__success-info--show');
+}
+
+function getPostParentId(flagButtonDOM) {
+  var parentElement = flagButtonDOM.closest('[id*="_list"]');
+
+  if (!parentElement) {
+    return null;
+  }
+
+  return parentElement.id.slice(1, parentElement.id.indexOf('_'));
+} // export { handleFlagClick };
+
+
+/* harmony default export */ __webpack_exports__["default"] = (FlagController);
+
+/***/ }),
+
+/***/ "./src/formController.js":
+/*!*******************************!*\
+  !*** ./src/formController.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ "./node_modules/@babel/runtime/helpers/toConsumableArray.js");
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+// import sendAjax from "./ajaxService";
+// import { reportReasonPopupDOMReferences } from './popupFactory';
+var FormController = /*#__PURE__*/function () {
+  function FormController(reportReasonPopupForm) {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default()(this, FormController);
+
+    this.reportReasonPopupForm = reportReasonPopupForm;
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default()(FormController, [{
+    key: "validateForm",
+    value: function validateForm(reportReasonPopupDOMReferences, sendButton) {
+      var isAnyFormElementUsed = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2___default()(reportReasonPopupDOMReferences.requirableFormElements).some(function (element) {
+        var isCheckedRadioInput = element.type === 'radio' && element.value !== 'custom' && element.checked;
+        var isFilledTextArea = element.tagName.toLowerCase() === 'textarea' && element.value;
+        return isCheckedRadioInput || isFilledTextArea;
+      });
+
+      if (!isAnyFormElementUsed) {
+        notifyAboutValidationError(sendButton);
+      }
+
+      return isAnyFormElementUsed;
+    }
+  }, {
+    key: "prepareFormData",
+    value: function prepareFormData(collectedForumPostMetaData) {
+      var _FormData$getAll = new FormData(this.reportReasonPopupForm).getAll('reportReason'),
+          _FormData$getAll2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_FormData$getAll, 2),
+          reasonId = _FormData$getAll2[0],
+          notice = _FormData$getAll2[1];
+
+      return _objectSpread(_objectSpread({}, collectedForumPostMetaData), {}, {
+        reasonId: reasonId,
+        notice: notice,
+        reportType: 'addFlag'
+      });
+    }
+  }, {
+    key: "submitForm",
+    value: function submitForm(event, collectedForumPostMetaData) {
+      event.preventDefault();
+      var sendButton = event.target;
+      sendButton.blur();
+      var isFormValid = this.validateForm(sendButton);
+
+      if (!isFormValid) {
+        return;
+      }
+
+      toggleSendWaitingState(sendButton, true);
+      var formData = this.prepareFormData(collectedForumPostMetaData);
+      sendAjax(formData).then(function (response) {
+        console.warn('response:', response);
+        onAjaxSuccess(response, formData, sendButton);
+      }, function (ajaxError) {
+        return onAjaxError(sendButton, ajaxError);
+      });
+    }
+  }]);
+
+  return FormController;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (FormController);
+
+/***/ }),
+
+/***/ "./src/misc.js":
+/*!*********************!*\
+  !*** ./src/misc.js ***!
+  \*********************/
+/*! exports provided: swapElement, elementsHTMLMap, updateCurrentPostFlags */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "swapElement", function() { return swapElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elementsHTMLMap", function() { return elementsHTMLMap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateCurrentPostFlags", function() { return updateCurrentPostFlags; });
+var _FLAG_REASONS_METADAT = FLAG_REASONS_METADATA,
+    NOTICE_LENGTH = _FLAG_REASONS_METADAT.NOTICE_LENGTH,
+    POPUP_LABELS = _FLAG_REASONS_METADAT.POPUP_LABELS;
+
+var swapElement = function swapElement(referenceNode, html) {
+  var tmpParent = document.createElement('div');
+  tmpParent.innerHTML = html;
+  var newElement = tmpParent.removeChild(tmpParent.firstElementChild);
+  referenceNode.parentNode.insertBefore(newElement, referenceNode);
+  referenceNode.remove(); // return newElement;
+};
+
+var elementsHTMLMap = new Map([['textarea', "<textarea id=\"customReportReason\"\n\t\t\tclass=\"report-reason-popup__custom-report-reason\"\n\t\t\tname=\"reportReason\"\n\t\t\tdata-requirable=\"true\"\n\t\t\tmaxlength=\"".concat(NOTICE_LENGTH, "\"\n\t\t\trows=\"3\"\n\t\t\tcols=\"47\"></textarea>")], ['getListItem', function (_ref) {
+  var reasonKey = _ref.reasonKey,
+      reasonValue = _ref.reasonValue,
+      index = _ref.index,
+      isLast = _ref.isLast,
+      textAreaDOM = _ref.textAreaDOM;
+  return "\n\t\t\t\t<!-- TODO: handle checking inputs while tabbing -->\n\t\t\t\t<li tabindex=\"1\">\n\t\t\t\t\t<label for=\"".concat(reasonKey, "\">\n\t\t\t\t\t\t<input id=\"").concat(reasonKey, "\" \n\t\t\t\t\t\t\t\ttype=\"radio\" \n\t\t\t\t\t\t\t\tvalue=\"").concat(index, "\" \n\t\t\t\t\t\t\t\tname=\"reportReason\" \n\t\t\t\t\t\t\t\tdata-requirable=\"true\">\n\t\t\t\t\t\t").concat(reasonValue, "\n\t\t\t\t\t</label>\n\t\t\t\t\t").concat(isLast ? textAreaDOM : '', "\n\t\t\t\t</li>\n\t\t\t");
+}], ['getPopupWrapper', function (listItemsDOM) {
+  return "\n\t\t\t\t<div id=\"reportReasonPopup\" class=\"report-reason-popup\">\n\t\t\t\t\t<p>".concat(POPUP_LABELS.HEADER, "</p>\n\t\t\t\t\t\n\t\t\t\t\t<form method=\"post\" class=\"report-reason-popup__form\">\n\t\t\t\t\t\t<ul id=\"reportReasonList\" class=\"report-reason-popup__list\">").concat(listItemsDOM, "</ul>\n\t\t\t\t\t\n\t\t\t\t\t\t<p id=\"reportReasonValidationError\" class=\"report-reason-popup__validation-error\">").concat(POPUP_LABELS.NO_REASON_CHECKED, "</p>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<!-- TODO: why its input not button? -->\n\t\t\t\t\t\t<input id=\"cancelReportReason\" type=\"button\" value=\"").concat(POPUP_LABELS.CANCEL, "\" class=\"report-reason-popup__button report-reason-popup__button--cancel\">\n\t\t\t\t\t\t<button id=\"sendReportReason\" type=\"submit\" class=\"report-reason-popup__button report-reason-popup__button--save\">").concat(POPUP_LABELS.SEND, "</button>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"reportReasonSuccessInfo\" class=\"report-reason-popup__success-info\">\n\t\t\t\t\t").concat(POPUP_LABELS.REPORT_SENT, "\n\t\t\t\t\t<button id=\"closeReportReasonSentInfo\" class=\"report-reason-popup__button report-reason-popup__button--close\" type=\"button\">").concat(POPUP_LABELS.CLOSE, "</button>\n\t\t\t\t</div>");
+}]]);
+
+function updateCurrentPostFlags(currentFlagsHTML, _ref2) {
+  var postType = _ref2.postType,
+      postId = _ref2.postId;
   var flagsMetadataWrapper = postType === 'q' ? questionViewMeta : document.querySelector("#".concat(postType).concat(postId, " .qa-").concat(postType, "-item-meta"));
   var targetElementSelector = ".qa-".concat(postType, "-item-flags");
   var targetElement = flagsMetadataWrapper.querySelector(targetElementSelector);
@@ -622,22 +613,7 @@ function updateCurrentPostFlags(currentFlagsHTML, _ref4) {
   }
 }
 
-function showSuccessPopup() {
-  reportReasonPopup.classList.add('report-reason-popup--hide');
-  reportReasonSuccessInfo.classList.add('report-reason-popup', 'report-reason-popup__success-info--show');
-}
 
-function getPostParentId() {
-  var parentElement = flagButtonDOM.closest('[id*="_list"]');
-
-  if (!parentElement) {
-    return null;
-  }
-
-  return parentElement.id.slice(1, parentElement.id.indexOf('_'));
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (bootstrapReportReasonPopup);
 
 /***/ }),
 
@@ -645,50 +621,182 @@ function getPostParentId() {
 /*!*****************************!*\
   !*** ./src/popupFactory.js ***!
   \*****************************/
-/*! exports provided: reportReasonPopupDOMReferences, reportReasonPopupDOMWrapper */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMReferences", function() { return reportReasonPopupDOMReferences; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reportReasonPopupDOMWrapper", function() { return reportReasonPopupDOMWrapper; });
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./misc */ "./src/misc.js");
+/* harmony import */ var _formController__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./formController */ "./src/formController.js");
+/* harmony import */ var _flagController__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./flagController */ "./src/flagController.js");
 
 
 
-var reportReasonPopupDOMWrapper = function () {
-  var listItemsDOM = Object.entries(FLAG_REASONS_METADATA.REASON_LIST).reduce(function (listItems, _ref, index, flagReasonsCollection) {
-    var _ref2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_ref, 2),
-        reasonKey = _ref2[0],
-        reasonValue = _ref2[1];
 
-    var isLast = index === flagReasonsCollection.length - 1;
-    var textAreaDOM = isLast && _misc__WEBPACK_IMPORTED_MODULE_1__["elementsHTMLMap"].get('textarea');
-    return listItems + _misc__WEBPACK_IMPORTED_MODULE_1__["elementsHTMLMap"].get('getListItem')({
-      reasonKey: reasonKey,
-      reasonValue: reasonValue,
-      index: index,
-      isLast: isLast,
-      textAreaDOM: textAreaDOM
-    });
-  }, '');
-  var popupWrapper = document.createElement('div');
-  popupWrapper.classList.add('report-reason-wrapper');
-  popupWrapper.innerHTML = _misc__WEBPACK_IMPORTED_MODULE_1__["elementsHTMLMap"].get('getPopupWrapper')(listItemsDOM);
-  return popupWrapper;
+ // import submitForm from "./formController";
+
+
+
+var PopupFactory = /*#__PURE__*/function () {
+  function PopupFactory(submitForm) {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, PopupFactory);
+
+    this.reportReasonPopupDOMWrapper = null;
+    this.reportReasonPopupDOMReferences = null;
+    this.submitForm = submitForm;
+    this.initReportReasonPopupDOMWrapper();
+    this.initOffClickHandler();
+    this.initReasonList();
+    this.initButtons();
+    this.initPopupContainer();
+    this.initPopupDOMReferences();
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(PopupFactory, [{
+    key: "initOffClickHandler",
+    value: function initOffClickHandler() {
+      var _this = this;
+
+      this.reportReasonPopupDOMWrapper.addEventListener('click', function (event) {
+        var checkDOMElementsId = function checkDOMElementsId(DOMElement) {
+          return DOMElement.id === 'reportReasonPopup' || DOMElement.id === 'reportReasonSuccessInfo';
+        };
+
+        var clickedOutsidePopup = !event.composedPath().some(checkDOMElementsId);
+
+        if (clickedOutsidePopup) {
+          _this.hideReportReasonPopup();
+        }
+      });
+    }
+  }, {
+    key: "initReasonList",
+    value: function initReasonList() {
+      var _this2 = this;
+
+      var reasonList = this.reportReasonPopupDOMWrapper.querySelector('#reportReasonList');
+      reasonList.addEventListener('change', function (_ref) {
+        var target = _ref.target;
+
+        _this2.reportReasonPopupDOMReferences.reportReasonValidationError.classList.remove('report-reason-popup__validation-error--show');
+
+        if (reasonList.children[reasonList.children.length - 1].contains(target)) {
+          _this2.reportReasonPopupDOMReferences.customReportReason.classList.add('report-reason-popup__custom-report-reason--show');
+
+          setTimeout(_this2.reportReasonPopupDOMReferences.customReportReason.focus.bind(_this2.reportReasonPopupDOMReferences.customReportReason));
+        } else {
+          _this2.reportReasonPopupDOMReferences.customReportReason.classList.remove('report-reason-popup__custom-report-reason--show');
+        }
+      });
+    }
+  }, {
+    key: "initButtons",
+    value: function initButtons() {
+      var _this3 = this;
+
+      var cancelButton = this.reportReasonPopupDOMWrapper.querySelector('#cancelReportReason');
+      cancelButton.addEventListener('click', this.hideReportReasonPopup);
+      var sendButton = this.reportReasonPopupDOMWrapper.querySelector('#sendReportReason');
+      sendButton.addEventListener('click', function (event) {
+        _this3.submitForm(event, _this3.collectForumPostMetaData());
+      });
+      var closeReportReasonSentInfo = this.reportReasonPopupDOMWrapper.querySelector('#closeReportReasonSentInfo');
+      closeReportReasonSentInfo.addEventListener('click', this.hideReportReasonPopup);
+    }
+  }, {
+    key: "initPopupContainer",
+    value: function initPopupContainer() {
+      var popupContainer = document.querySelector('.qa-body-wrapper');
+      popupContainer.appendChild(this.reportReasonPopupDOMWrapper);
+    }
+  }, {
+    key: "initReportReasonPopupDOMWrapper",
+    value: function initReportReasonPopupDOMWrapper() {
+      var listItemsDOM = Object.entries(FLAG_REASONS_METADATA.REASON_LIST).reduce(function (listItems, _ref2, index, flagReasonsCollection) {
+        var _ref3 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_ref2, 2),
+            reasonKey = _ref3[0],
+            reasonValue = _ref3[1];
+
+        var isLast = index === flagReasonsCollection.length - 1;
+        var textAreaDOM = isLast && _misc__WEBPACK_IMPORTED_MODULE_3__["elementsHTMLMap"].get('textarea');
+        return listItems + _misc__WEBPACK_IMPORTED_MODULE_3__["elementsHTMLMap"].get('getListItem')({
+          reasonKey: reasonKey,
+          reasonValue: reasonValue,
+          index: index,
+          isLast: isLast,
+          textAreaDOM: textAreaDOM
+        });
+      }, '');
+      var popupWrapper = document.createElement('div');
+      popupWrapper.classList.add('report-reason-wrapper');
+      popupWrapper.innerHTML = _misc__WEBPACK_IMPORTED_MODULE_3__["elementsHTMLMap"].get('getPopupWrapper')(listItemsDOM);
+      this.reportReasonPopupDOMWrapper = popupWrapper;
+    }
+  }, {
+    key: "initPopupDOMReferences",
+    value: function initPopupDOMReferences() {
+      this.reportReasonPopupDOMReferences = {
+        reportReasonPopup: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonPopup'),
+        reportReasonPopupForm: this.reportReasonPopupDOMWrapper.querySelector('form'),
+        customReportReason: this.reportReasonPopupDOMWrapper.querySelector('#customReportReason'),
+        reportReasonSuccessInfo: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonSuccessInfo'),
+        requirableFormElements: this.reportReasonPopupDOMWrapper.querySelectorAll('[data-requirable="true"]'),
+        reportReasonValidationError: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonValidationError')
+      };
+    }
+  }, {
+    key: "showReportReasonPopup",
+    value: function showReportReasonPopup() {
+      this.reportReasonPopupDOMWrapper.classList.add('report-reason-wrapper--show');
+    }
+  }, {
+    key: "hideReportReasonPopup",
+    value: function hideReportReasonPopup() {
+      this.reportReasonPopupDOMReferences.reportReasonSuccessInfo.classList.remove('report-reason-popup__success-info--show');
+      this.reportReasonPopupDOMWrapper.classList.remove('report-reason-wrapper--show');
+      this.reportReasonPopupDOMReferences.customReportReason.classList.remove('report-reason-popup__custom-report-reason--show');
+      this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('report-reason-popup--hide');
+      this.reportReasonPopupDOMReferences.reportReasonValidationError.classList.remove('report-reason-popup__validation-error--show');
+      this.reportReasonPopupDOMReferences.reportReasonPopupForm.reset();
+    } // getReportReasonPopupDOMWrapper() {
+    // 	return this.reportReasonPopupDOMWrapper;
+    // }
+
+  }, {
+    key: "getReportReasonPopupDOMReferences",
+    value: function getReportReasonPopupDOMReferences() {
+      return this.reportReasonPopupDOMReferences;
+    }
+  }]);
+
+  return PopupFactory;
 }();
 
-var reportReasonPopupDOMReferences = {
-  reportReasonPopup: reportReasonPopupDOMWrapper.querySelector('#reportReasonPopup'),
-  reportReasonPopupForm: reportReasonPopupDOMWrapper.querySelector('form'),
-  customReportReason: reportReasonPopupDOMWrapper.querySelector('#customReportReason'),
-  reportReasonSuccessInfo: reportReasonPopupDOMWrapper.querySelector('#reportReasonSuccessInfo'),
-  requirableFormElements: reportReasonPopupDOMWrapper.querySelectorAll('[data-requirable="true"]'),
-  reportReasonValidationError: reportReasonPopupDOMWrapper.querySelector('#reportReasonValidationError')
-};
+function init() {
+  var reportReasonPopup = new PopupFactory();
+  var reportReasonPopupDOMReferences = reportReasonPopup.getReportReasonPopupDOMReferences();
+  /*const formController = */
 
+  new _formController__WEBPACK_IMPORTED_MODULE_4__["default"](reportReasonPopupDOMReferences.reportReasonPopupForm); // const reportReasonPopupDOMWrapper = reportReasonPopup.getReportReasonPopupDOMWrapper();
+
+  console.warn('reportReasonPopupDOMReferences: ', reportReasonPopupDOMReferences
+  /*, ' /reportReasonPopupDOMWrapper: ', reportReasonPopupDOMWrapper*/
+  );
+  return {
+    /*reportReasonPopupDOMWrapper,*/
+    reportReasonPopupDOMReferences: reportReasonPopupDOMReferences,
+    showReportReasonPopup: reportReasonPopup.showReportReasonPopup.bind(reportReasonPopup)
+  };
+} // export { reportReasonPopupDOMReferences, reportReasonPopupDOMWrapper };
+
+
+/* harmony default export */ __webpack_exports__["default"] = (init); // export default bootstrapReportReasonPopup;
 
 /***/ }),
 

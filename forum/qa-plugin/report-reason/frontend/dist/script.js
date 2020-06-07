@@ -218,25 +218,26 @@ __webpack_require__.r(__webpack_exports__);
 
 document.addEventListener('DOMContentLoaded', /*#__PURE__*/function () {
   var _initReportReasonPlugin = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-    var _yield$import, bootstrapReportReasonPopup, eventDelegationRoot;
+    var _yield$import, bootstrapReportReasonPopup, onClick, eventDelegationRoot;
 
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./src/popupController */ "./src/popupController.js"));
+            return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./src/bootstrap */ "./src/bootstrap.js"));
 
           case 2:
             _yield$import = _context.sent;
             bootstrapReportReasonPopup = _yield$import["default"];
-            bootstrapReportReasonPopup();
+            onClick = bootstrapReportReasonPopup();
+            console.warn('onClick: ', onClick);
             eventDelegationRoot = document.querySelector('.qa-main');
-            eventDelegationRoot.addEventListener('click', bootstrapReportReasonPopup.handler, true
+            eventDelegationRoot.addEventListener('click', onClick, true
             /* use capture phase to fire handler before Q2A listeners on flag buttons will */
             );
 
-          case 7:
+          case 8:
           case "end":
             return _context.stop();
         }
