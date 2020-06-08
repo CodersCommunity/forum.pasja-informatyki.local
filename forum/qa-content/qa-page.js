@@ -490,7 +490,7 @@ function qa_ajax_error()
 
         // languages got from Forum site DOM
         const languages = {};
-        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = code);
+        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
 
         let codeBlocks = [];
 
