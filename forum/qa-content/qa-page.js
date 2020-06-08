@@ -489,34 +489,8 @@ function qa_ajax_error()
         const numberOfLines = 30;
 
         // languages got from Forum site DOM
-        const languages = {
-            'as3' : 'actionscript',
-            'applescript' : 'applescript',
-            'bash' : 'bash-shell',
-            'cf' : 'coldfusion',
-            'csharp' : 'C#',
-            'cpp' : 'C/C++',
-            'css' : 'CSS',
-            'delphi' : 'delphi',
-            'diff' : 'diff',
-            'erl' : 'erlang',
-            'groovy' : 'groovy',
-            'jscript' : 'JavaScript',
-            'java' : 'Java',
-            'javafx' : 'Java-FX',
-            'perl' : 'perl',
-            'php' : 'PHP',
-            'plain' : 'plain-text',
-            'ps' : 'powershell',
-            'python' : 'Python',
-            'ruby' : 'Ruby',
-            'scss' : 'SASS',
-            'scala' : 'scala',
-            'sql' : 'SQL',
-            'tap' : 'tap',
-            'vb' : 'VB',
-            'xml' : 'XML-xHTML'
-        };
+        const languages = {};
+        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[name] = code);
 
         let codeBlocks = [];
 
@@ -582,11 +556,10 @@ function qa_ajax_error()
             copyCodeBtn.textContent = 'Kopiuj';
             copyCodeBtn.classList.add('content-copy-btn');
 
-            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter')) {
-                copyCodeBtn.addEventListener( 'click', copyToClipboard );
-            } else {
-                copyCodeBtn.classList.add( 'content-copy-btn-disabled' );
-            }
+            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter'))
+                copyCodeBtn.addEventListener('click', copyToClipboard);
+            else
+                copyCodeBtn.classList.add('content-copy-btn-disabled');
 
             blockBar.appendChild(copyCodeBtn);
 
