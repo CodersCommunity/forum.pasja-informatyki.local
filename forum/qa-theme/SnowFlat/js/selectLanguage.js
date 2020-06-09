@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             return object.category == selectedSecondOption.textContent;
                         });
 
-                        CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : SyntaxHighlighter.defaults['code-language'].value;
+                        CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : SyntaxHighlighter.defaults['code-language'].alias;
                     } else {
-                        CKEDITOR.config.syntaxhighlight_lang = SyntaxHighlighter.defaults['code-language'].value;
+                        CKEDITOR.config.syntaxhighlight_lang = SyntaxHighlighter.defaults['code-language'].alias;
                     }
                 };
             } else if (location.href.includes('edit')) {
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
                     }
 
-                    CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : SyntaxHighlighter.defaults['code-language'].value;
+                    CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : SyntaxHighlighter.defaults['code-language'].alias;
                 };
 
             } else {
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         return object.category == category.textContent;
                     });
 
-                    CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : SyntaxHighlighter.defaults['code-language'].value;
+                    CKEDITOR.config.syntaxhighlight_lang = findCategory ? findCategory.language : SyntaxHighlighter.defaults['code-language'].alias;
                 };
             }
 
