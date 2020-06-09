@@ -548,7 +548,9 @@ function qa_ajax_error()
             }
 
             // based on each code-block CSS class - find out what language is used inside it
-            languageName.textContent = languages[codeBlock.classList[1]] || languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
+            const languageExplicitName = languages[codeBlock.classList[1]];
+            const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
+            languageName.textContent = languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
 
             blockBar.appendChild(languageName);
 
@@ -556,10 +558,11 @@ function qa_ajax_error()
             copyCodeBtn.textContent = 'Kopiuj';
             copyCodeBtn.classList.add('content-copy-btn');
 
-            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter'))
+            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter')) {
                 copyCodeBtn.addEventListener('click', copyToClipboard);
-            else
+            } else {
                 copyCodeBtn.classList.add('content-copy-btn-disabled');
+            }
 
             blockBar.appendChild(copyCodeBtn);
 
