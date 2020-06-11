@@ -81,35 +81,22 @@
                 name,
                 aliases: ctor.aliases
             }));
-        const preElemsWithUnknownLang = getPreElemsWithNotAvailableBrush();
-
-        const notFetchedBrushScripts = fetchNeededLangs(preElemsWithUnknownLang.notLoadedLangElems);
-        console.warn('preElemsWithUnknownLang.unknownLangElems: ', preElemsWithUnknownLang.unknownLangElems, ' /preElemsWithUnknownLang.notLoadedLangElems: ', preElemsWithUnknownLang.notLoadedLangElems);
-        fixUnavailableLangCodes([...preElemsWithUnknownLang.unknownLangElems, ...notFetchedBrushScripts]);
+        fixUnavailableLangCodes(getPreElemsWithNotAvailableBrush());
 
         function getPreElemsWithNotAvailableBrush() {
             const checkedUnknownLangNames = [];
-            const checkedNotLoadedLangNames = [];
-
             const unknownLangElems = [];
-            const notLoadedLangElems = [];
 
             scanPreElements();
 
-            return {
-                'notLoadedLangElems': notLoadedLangElems,
-                'unknownLangElems': unknownLangElems
-            };
+            return unknownLangElems;
 
             function scanPreElements() {
                 for (let i = 0; i < preElements.length; i++) {
                     const pre = preElements[i];
                     const preClassName = pre.className;
 
-                    if (checkedNotLoadedLangNames.includes(preClassName)) {
-                        notLoadedLangElems.push(SyntaxHighlighter.defaults['code-language'].ctorName);
-                        continue;
-                    } else if (checkedUnknownLangNames.includes(preClassName)) {
+                    if (checkedUnknownLangNames.includes(preClassName)) {
                         unknownLangElems.push(pre);
                         continue;
                     }
@@ -121,21 +108,12 @@
             function matchPreElemsWithBrushes(pre, preClassName) {
                 let isBrashKnown = false;
 
-                for (let j = 0; j < loadedBrushes.length; j++) {
-                    const { name, aliases } = loadedBrushes[j];
+                for (let i = 0; i < loadedBrushes.length; i++) {
+                    const { name, aliases } = loadedBrushes[i];
+                    const brushRegExp = new RegExp(`brush\:(${ aliases.join('|') });`);
 
-                    if (getBrushRegExp(aliases.join('|')).test(preClassName)) {
+                    if (brushRegExp.test(preClassName)) {
                         isBrashKnown = true;
-                    } else {
-                        continue;
-                    }
-
-                    const foundAlias = aliases.find(alias => SyntaxHighlighter.languages.codes.includes(alias));
-
-                    if (foundAlias) {
-                        checkedNotLoadedLangNames.push(preClassName);
-                        notLoadedLangElems.push(name);
-
                         break;
                     }
                 }
@@ -144,39 +122,6 @@
                     checkedUnknownLangNames.push(preClassName);
                     unknownLangElems.push(pre);
                 }
-            }
-
-            function getBrushRegExp(langName) {
-                return new RegExp(`brush\:(${ langName });`);
-            }
-        }
-
-        function fetchNeededLangs(neededBrushes) {
-            const brushScripts = document.querySelectorAll('[src*="shBrush"]');
-            const lastBrushScript = brushScripts[brushScripts.length - 1];
-            const brushSrcPrefix = lastBrushScript.getAttribute('src')
-                .split('/')
-                .slice(0, -1)
-                .join('/');
-
-            const notFetchedBrushScripts = [];
-            neededBrushes.forEach(loadBrushScript);
-
-            return notFetchedBrushScripts;
-
-            function loadBrushScript(ctorName) {
-                const brushScript = document.createElement('script');
-                brushScript.async = false;
-                brushScript.addEventListener('error', onBrushLoadError, { once: true });
-                brushScript.type = 'text/javascript';
-                brushScript.src = `${ brushSrcPrefix }/shBrush${ ctorName }.js`;
-
-                lastBrushScript.parentNode.insertBefore(brushScript, lastBrushScript);
-            }
-
-            function onBrushLoadError() {
-                console.error(`Failed to load brush script from URL: ${ this.src }. Code blocks related to this brush will fallback to default code language "${ SyntaxHighlighter.defaults['code-language'].fullName }".`);
-                notFetchedBrushScripts.push(this.src);
             }
         }
 
