@@ -219,7 +219,7 @@ function qa_ajax_error()
         configurable: false,
         writable: false,
         value: (commentsToHighlight) => {
-            if (SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
+            if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
                 const codeBlocks = [...commentsToHighlight.querySelectorAll('pre')];
                 const processedCodeBlocks = codeBlocks.map(codeBlock => {
                     /*
