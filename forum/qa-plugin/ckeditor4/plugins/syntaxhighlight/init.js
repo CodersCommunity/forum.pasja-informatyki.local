@@ -20,37 +20,23 @@
 
         function prepareAvailableLanguages() {
             const languagesEntries = Object.freeze([
-                // ['ActionScript3','as3'],
-                // ['AppleScript','applescript'],
                 ['Bash (Shell)', 'bash'],
-                //
-                ['ColdFusion', 'cf'],
-                //
                 ['C#', 'csharp'],
                 ['C/C++', 'cpp'],
                 ['CSS', 'css'],
                 ['Delphi', 'delphi'],
-                // ['Diff','diff'],
-                // ['Erlang','erl'],
-                // ['Groovy','groovy'],
                 ['Javascript', 'jscript'],
                 ['Java', 'java'],
-                // ['Java FX','javafx'],
                 ['Perl', 'perl'],
                 ['PHP', 'php'],
                 ['Plain (Text)', 'plain'],
                 ['PowerShell', 'ps'],
                 ['Python', 'python'],
                 ['Ruby', 'ruby'],
-                //
-                ['Sass', 'scss'],
-                //
-                // ['Scala','scala'],
                 ['SQL', 'sql'],
-                // ['TAP','tap'],
                 ['VB', 'vb'],
                 ['XML/XHTML', 'xml']
-            ]); //erl, scala, diff, tap, cf, applescript, javafx, scss, as3, groovy
+            ]);
 
             Object.defineProperty(SyntaxHighlighter, 'languages', {
                 configurable: false,
@@ -126,11 +112,7 @@
         }
 
         function fixUnavailableLangCodes(unknownLangElems) {
-            console.warn('[0]unknownLangElems : ', unknownLangElems);
-
             unknownLangElems.forEach(replaceUnknownLangWithDefault);
-
-            console.warn('[1]unknownLangElems : ', unknownLangElems);
 
             function replaceUnknownLangWithDefault(pre) {
                 const oldToken = pre.classList.item(0);
