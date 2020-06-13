@@ -90,7 +90,12 @@
 
 		//	Send back the HTML
 
-			$themeclass->c_list_items($c_list['cs']);
+            $from_id = (int) qa_post_text('last_comment_id') + 1;
+            $index = array_search($from_id, array_keys($c_list['cs']));
+            if ($index !== false) {
+                $c_list['cs'] = array_slice($c_list['cs'], $index, null, true);
+            }
+            $themeclass->c_list_items($c_list['cs']);
 
 			return;
 		}
