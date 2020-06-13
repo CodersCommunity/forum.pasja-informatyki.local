@@ -527,7 +527,7 @@ function qa_ajax_error()
                 const langDataHasAnyValue = Object.values(langData).some(Boolean);
                 if (langDataHasAnyValue) {
                     const snippetsInsertionTarget = blockOfCodeParents[0].parentNode.parentNode;
-                    const snippetsList = [createCodepenSnippet(langData), createJsfiddleSnippet(langData)];
+                    const snippetsList = [createCodepenSnippet(langData), createJSFiddleSnippet(langData)];
 
                     addSnippets(snippetsList, snippetsInsertionTarget, postContent);
                 }
@@ -578,75 +578,30 @@ function qa_ajax_error()
     /*
      * Code based on JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
      */
-    function createJsfiddleSnippet(jsfiddleData) {
-        var jsfiddleSnippetForm = document.createElement('form');
+    function createJSFiddleSnippet(jsfiddleData) {
+        const jsfiddleSnippetForm = document.createElement('form');
         jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
         jsfiddleSnippetForm.method = 'POST';
         jsfiddleSnippetForm.target = '_blank';
         jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
 
-        var htmlTxt = document.createElement('textarea');
+        const htmlTxt = document.createElement('textarea');
         htmlTxt.name = 'html';
         htmlTxt.value = jsfiddleData.html || '';
 
-        var cssTxt = document.createElement('textarea');
+        const cssTxt = document.createElement('textarea');
         cssTxt.name = 'css';
         cssTxt.value = jsfiddleData.css || '';
 
-        var jsTxt = document.createElement('textarea');
+        const jsTxt = document.createElement('textarea');
         jsTxt.name = 'js';
         jsTxt.value = jsfiddleData.js || '';
 
-        var selectHTML = document.createElement('select');
-        selectHTML.name = 'panel_html';
-        var selectCSS = document.createElement('select');
-        selectCSS.name = 'panel_css';
-        var selectJS = document.createElement('select');
-        selectJS.name = 'panel_js';
-
-        var htmlVersion = document.createElement('option');
-        htmlVersion.value = 0;
-        htmlVersion.textContent = 'HTML';
-        htmlVersion.setAttribute('selected', 'selected');
-
-        var cssCleanVersion = document.createElement('option');
-        cssCleanVersion.value = 0;
-        cssCleanVersion.textContent = 'CSS';
-        cssCleanVersion.setAttribute('selected', 'selected');
-        var cssPreProcessorVersion = document.createElement('option');
-        cssPreProcessorVersion.value = 1;
-        cssPreProcessorVersion.textContent = 'SCSS';
-
-        var jsCleanVersion = document.createElement('option');
-        jsCleanVersion.value = 0;
-        jsCleanVersion.textContent = 'JavaScript';
-        jsCleanVersion.setAttribute('selected', 'selected');
-        var jsCoffeeVersion = document.createElement('option');
-        jsCoffeeVersion.value = 1;
-        jsCoffeeVersion.textContent = 'CoffeeScript';
-        var jsOldVersion = document.createElement('option');
-        jsOldVersion.value = 2;
-        jsOldVersion.textContent = 'JavaScript 1.7';
-
-        var submitSnippet = document.createElement('input');
+        const submitSnippet = document.createElement('input');
         submitSnippet.type = 'submit';
         submitSnippet.value = 'JSFIDDLE';
 
-        selectHTML.appendChild(htmlVersion);
-        selectCSS.appendChild(cssCleanVersion);
-        selectCSS.appendChild(cssPreProcessorVersion);
-        selectJS.appendChild(jsCleanVersion);
-        selectJS.appendChild(jsCoffeeVersion);
-        selectJS.appendChild(jsOldVersion);
-
-        jsfiddleSnippetForm.appendChild(selectHTML);
-        jsfiddleSnippetForm.appendChild(selectCSS);
-        jsfiddleSnippetForm.appendChild(selectJS);
-        jsfiddleSnippetForm.appendChild(submitSnippet);
-
-        jsfiddleSnippetForm.appendChild(htmlTxt);
-        jsfiddleSnippetForm.appendChild(cssTxt);
-        jsfiddleSnippetForm.appendChild(jsTxt);
+        jsfiddleSnippetForm.append(htmlTxt, cssTxt, jsTxt, submitSnippet);
 
         return jsfiddleSnippetForm;
     }
