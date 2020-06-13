@@ -120,43 +120,56 @@ function qa_submit_answer(questionid, elem)
 	return false;
 }
 
-function qa_submit_comment(questionid, parentid, elem)
-{
-	var params=qa_form_params('c_form_'+parentid);
+function qa_submit_comment(questionid, parentid, elem) {
+	const params = qa_form_params(`c_form_${ parentid }`);
+	params.c_questionid = questionid;
+	params.c_parentid = parentid;
 
-	params.c_questionid=questionid;
-	params.c_parentid=parentid;
+	const lastListComment = document
+		.querySelector(`#c${ params.c_parentid }_list .qa-c-list-item:last-of-type`);
+	const lastListCommentId = lastListComment && lastListComment.id.slice(1);
 
-	qa_ajax_post('comment', params,
-		function (lines) {
+	params.last_comment_id = lastListCommentId;
 
-			if (lines[0]=='1') {
-				var l=document.getElementById('c'+parentid+'_list');
-				l.innerHTML=lines.slice(2).join("\n");
-				l.style.display='';
+	qa_ajax_post('comment', params, onSuccess);
+	qa_show_waiting_after(elem, false);
 
-				var a=document.getElementById('c'+parentid);
-				a.qa_disabled=true;
+	function onSuccess(lines) {
+		if (lines[0] == '1') {
+			const commentsList = document.getElementById(`c${ parentid }_list`);
+			const newComments = lines.slice(2).join('\n');
 
-				var c=document.getElementById(lines[1]); // id of comment
-				if (c) {
-					c.style.display='none';
-					qa_reveal(c, 'comment');
+			if (lastListCommentId) {
+				const newCommentsTempParent = document.createElement('div');
+				newCommentsTempParent.innerHTML = newComments;
+
+				const newestComment = newCommentsTempParent.querySelector('.qa-c-list-item.comment:last-of-type');
+				if (newestComment) {
+					newestComment.style.display = 'none';
 				}
 
-				qa_conceal(a, 'form');
-
-			} else if (lines[0]=='0') {
-				document.forms['c_form_'+parentid].submit();
-
+				commentsList.append(...newCommentsTempParent.children);
 			} else {
-				qa_ajax_error();
+				commentsList.innerHTML = newComments;
 			}
 
-		}
-	);
+			commentsList.style.display = '';
 
-	qa_show_waiting_after(elem, false);
+			const commentForm = document.getElementById(`c${ parentid }`);
+			commentForm.qa_disabled = true;
+			qa_conceal(commentForm, 'form');
+
+			const addedComment = document.getElementById(lines[1]); // id of comment
+			if (addedComment) {
+				addedComment.style.display = 'none';
+				qa_reveal(addedComment, 'comment');
+			}
+		} else if (lines[0] == '0') {
+			document.forms['c_form_' + parentid].submit();
+		} else {
+			qa_ajax_error();
+		}
+	}
 
 	return false;
 }
