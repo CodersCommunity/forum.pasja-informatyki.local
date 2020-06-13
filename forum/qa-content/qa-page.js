@@ -527,7 +527,9 @@ function qa_ajax_error()
                 const langDataHasAnyValue = Object.values(langData).some(Boolean);
                 if (langDataHasAnyValue) {
                     const snippetsInsertionTarget = blockOfCodeParents[0].parentNode.parentNode;
-                    addSnippets(langData, snippetsInsertionTarget);
+                    const snippetsList = [createCodepenSnippet(langData), createJsfiddleSnippet(langData)];
+
+                    addSnippets(snippetsList, snippetsInsertionTarget, postContent);
                 }
             }
         }
@@ -651,19 +653,16 @@ function qa_ajax_error()
     }
 
     // add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
-    function addSnippets(data, parent) {
-        var codepenSnippet = createCodepenSnippet(data);
-        var jsfiddleSnippet = createJsfiddleSnippet(data);
-
-        var snippetsParent = document.createElement('div');
+    function addSnippets(snippetsList, snippetsInsertionTarget, postContent) {
+        const snippetsParent = document.createElement('div');
         snippetsParent.classList.add('snippets-parent');
-        snippetsParent.appendChild(codepenSnippet);
-        snippetsParent.appendChild(jsfiddleSnippet);
+        snippetsParent.append(...snippetsList);
 
-        parent.appendChild(snippetsParent);
-        if (parent.classList.contains('qa-c-item-content')) {
+        snippetsInsertionTarget.appendChild(snippetsParent);
+
+        if (snippetsInsertionTarget.classList.contains('qa-c-item-content')) {
             snippetsParent.classList.add('inside-comment');
-            snippetsParent.parentNode.querySelector('.entry-content').classList.add('below-snippets');
+            postContent.classList.add('comment-snippets');
         }
     }
 })();
