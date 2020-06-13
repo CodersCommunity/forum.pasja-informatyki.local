@@ -217,190 +217,6 @@ function qa_ajax_error()
     var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
 
     /*
-     * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
-     */
-     function viewHtmlCssJs()
-     {
-        /*
-         * Adapted code from Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
-         */
-        function createCodepenSnippet(codepenData)
-        {
-            var codeAsJSON = JSON.stringify(codepenData)
-                // Quotes will screw up the JSON
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&apos;');
-
-            var codepenSnippetForm = document.createElement('form');
-            codepenSnippetForm.action = 'https://codepen.io/pen/define';
-            codepenSnippetForm.method = 'POST';
-            codepenSnippetForm.target= '_blank';
-            codepenSnippetForm.classList.add('codepen-snippet');
-
-            var dataCarrierInput = document.createElement('input');
-            dataCarrierInput.type = 'hidden';
-            dataCarrierInput.name = 'data';
-            dataCarrierInput.value = codeAsJSON;
-
-                        var submitSnippet = document.createElement('input');
-                        submitSnippet.type = 'submit';
-                        submitSnippet.value = 'CODEPEN';
-
-            codepenSnippetForm.appendChild(dataCarrierInput);
-            codepenSnippetForm.appendChild(submitSnippet);
-
-            return codepenSnippetForm;
-        }
-
-        /*
-         * Adapted code from JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
-         */
-        function createJsfiddleSnippet(jsfiddleData)
-        {
-            var jsfiddleSnippetForm = document.createElement('form');
-            jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
-            jsfiddleSnippetForm.method = 'POST';
-            jsfiddleSnippetForm.target = '_blank';
-            jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
-
-            var htmlTxt = document.createElement('textarea');
-            htmlTxt.name = 'html';
-            htmlTxt.value = jsfiddleData.html || '';
-
-            var cssTxt = document.createElement('textarea');
-            cssTxt.name = 'css';
-            cssTxt.value = jsfiddleData.css || '';
-
-            var jsTxt = document.createElement('textarea');
-            jsTxt.name = 'js';
-            jsTxt.value = jsfiddleData.js || '';
-
-                        var selectHTML = document.createElement('select');
-                        selectHTML.name = 'panel_html';
-            var selectCSS = document.createElement('select');
-                        selectCSS.name = 'panel_css';
-                        var selectJS = document.createElement('select');
-                        selectJS.name = 'panel_js';
-
-                        var htmlVersion = document.createElement('option');
-                        htmlVersion.value = 0;
-                        htmlVersion.textContent = 'HTML';
-                        htmlVersion.setAttribute('selected', 'selected');
-
-                        var cssCleanVersion = document.createElement('option');
-                        cssCleanVersion.value = 0;
-                        cssCleanVersion.textContent = 'CSS';
-                        cssCleanVersion.setAttribute('selected', 'selected');
-                        var cssPreProcessorVersion = document.createElement('option');
-                        cssPreProcessorVersion.value = 1;
-                        cssPreProcessorVersion.textContent = 'SCSS';
-
-                        var jsCleanVersion = document.createElement('option');
-                        jsCleanVersion.value = 0;
-                        jsCleanVersion.textContent = 'JavaScript';
-                        jsCleanVersion.setAttribute('selected', 'selected');
-                        var jsCoffeeVersion = document.createElement('option');
-                        jsCoffeeVersion.value = 1;
-                        jsCoffeeVersion.textContent = 'CoffeeScript';
-                        var jsOldVersion = document.createElement('option');
-                        jsOldVersion.value = 2;
-                        jsOldVersion.textContent = 'JavaScript 1.7';
-
-            var submitSnippet = document.createElement('input');
-            submitSnippet.type = 'submit';
-            submitSnippet.value = 'JSFIDDLE';
-
-                        selectHTML.appendChild(htmlVersion);
-                        selectCSS.appendChild(cssCleanVersion);
-                        selectCSS.appendChild(cssPreProcessorVersion);
-                        selectJS.appendChild(jsCleanVersion);
-                        selectJS.appendChild(jsCoffeeVersion);
-                        selectJS.appendChild(jsOldVersion);
-
-                        jsfiddleSnippetForm.appendChild(selectHTML);
-                        jsfiddleSnippetForm.appendChild(selectCSS);
-                        jsfiddleSnippetForm.appendChild(selectJS);
-            jsfiddleSnippetForm.appendChild(submitSnippet);
-
-            jsfiddleSnippetForm.appendChild(htmlTxt);
-            jsfiddleSnippetForm.appendChild(cssTxt);
-            jsfiddleSnippetForm.appendChild(jsTxt);
-
-            return jsfiddleSnippetForm;
-        }
-
-        // add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
-        function addSnippets(data, parent)
-        {
-            var codepenSnippet = createCodepenSnippet(data);
-            var jsfiddleSnippet = createJsfiddleSnippet(data);
-
-            var snippetsParent = document.createElement('div');
-            snippetsParent.classList.add('snippets-parent');
-            snippetsParent.appendChild(codepenSnippet);
-            snippetsParent.appendChild(jsfiddleSnippet);
-
-            parent.appendChild(snippetsParent);
-            if ( parent.classList.contains( 'qa-c-item-content' ) )
-            {
-                snippetsParent.classList.add( 'inside-comment' );
-                snippetsParent.parentNode.querySelector('.entry-content').classList.add('below-snippets');
-            }
-        }
-
-        var posts = Array.from(document.querySelectorAll('.entry-content'));
-
-        posts.forEach(function(post)
-        {
-           var blockOfCodeParents = post.querySelectorAll('.syntaxhighlighter-parent');
-           var canAddSnippets = true;
-
-           if (blockOfCodeParents.length)
-           {
-                 var blocksInPost = {};
-                 var data = {};
-                 var htmlCode = '';
-                 var cssCode = '';
-                 var jsCode = '';
-                 var parent = Array.from(blockOfCodeParents)[0].parentNode.parentNode;
-
-                 Array.from(blockOfCodeParents).forEach(function(block)
-                 {
-                    var code = '';
-
-                    Array.from(block.querySelectorAll('.code .line')).forEach(function(line)
-                    {
-                        code += line.textContent + '\r\n';
-                    });
-
-                    blocksInPost[block.firstElementChild.nextSibling.classList[1]] = code;
-                 });
-
-                 Object.keys(blocksInPost).forEach(function(language)
-                 {
-                    switch (language)
-                    {
-                        case 'css' : cssCode += blocksInPost.css;
-                                    data.css = cssCode;
-                                    break;
-                        case 'xml' : htmlCode += blocksInPost.xml;
-                                    data.html = htmlCode;
-                                    break;
-                        case 'jscript' : jsCode += blocksInPost.jscript;
-                                        data.js = jsCode;
-                                    break;
-                        default : canAddSnippets = false;
-                                    break;
-                    }
-                 });
-
-                 if (canAddSnippets)
-                     addSnippets(data, parent);
-           }
-        });
-     }
-
-    /*
      *    Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
      */
     function copyToClipboard(ev)
@@ -650,13 +466,11 @@ function qa_ajax_error()
 
 
     // when Forum (sub)page DOM with it's CSSes and synchronously loaded scripts (excluding CKEDITOR, which needs separate Event Handling) are ready
-    window.addEventListener('load', function()
-    {
+    window.addEventListener('load', function() {
         const questionId = parseInt(location.pathname.split('/')[1]);
         const newQuestion = location.pathname.includes('ask');
 
-        if (questionId)
-        {
+        if (questionId) {
             /*
 			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
 			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
@@ -664,12 +478,8 @@ function qa_ajax_error()
             handleCodeCollapsing(false, isClipboardSupported);
         }
 
-        if (questionId || newQuestion)
-        {
-            viewHtmlCssJs();
-
-            CKEDITOR.on("instanceReady", function(event)
-            {
+        if (questionId || newQuestion) {
+            CKEDITOR.on("instanceReady", function(event) {
                 const currentInstanceName = event.editor.name;
                 const contentTextarea = document.getElementsByName(currentInstanceName)[0];
                 const postForm = contentTextarea.closest('form');
@@ -679,6 +489,192 @@ function qa_ajax_error()
         }
     });
 }(document));
+
+/*
+ * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
+ */
+;(() => {
+    const questionId = parseInt(location.pathname.split('/')[1]);
+    const newQuestion = location.pathname.includes('ask');
+
+    if (questionId || newQuestion) {
+        window.addEventListener('load', viewHtmlCssJs);
+    }
+
+    function viewHtmlCssJs() {
+        const posts = document.querySelectorAll('.entry-content');
+        posts.forEach(function(post) {
+            var blockOfCodeParents = post.querySelectorAll('.syntaxhighlighter-parent');
+            var canAddSnippets = true;
+
+            if (blockOfCodeParents.length) {
+                var blocksInPost = {};
+                var data = {};
+                var htmlCode = '';
+                var cssCode = '';
+                var jsCode = '';
+                var parent = Array.from(blockOfCodeParents)[0].parentNode.parentNode;
+
+                Array.from(blockOfCodeParents).forEach(function(block) {
+                    var code = '';
+
+                    Array.from(block.querySelectorAll('.code .line')).forEach(function(line) {
+                        code += line.textContent + '\r\n';
+                    });
+
+                    blocksInPost[block.firstElementChild.nextSibling.classList[1]] = code;
+                });
+
+                Object.keys(blocksInPost).forEach(function(language) {
+                    switch (language) {
+                        case 'css' :
+                            cssCode += blocksInPost.css;
+                            data.css = cssCode;
+                            break;
+                        case 'xml' :
+                            htmlCode += blocksInPost.xml;
+                            data.html = htmlCode;
+                            break;
+                        case 'jscript' :
+                            jsCode += blocksInPost.jscript;
+                            data.js = jsCode;
+                            break;
+                        default :
+                            canAddSnippets = false;
+                            break;
+                    }
+                });
+
+                if (canAddSnippets) {
+                    addSnippets(data, parent);
+                }
+            }
+        });
+    }
+
+    /*
+     * Adapted code from Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
+     */
+    function createCodepenSnippet(codepenData) {
+        var codeAsJSON = JSON.stringify(codepenData)
+            // Quotes will screw up the JSON
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+
+        var codepenSnippetForm = document.createElement('form');
+        codepenSnippetForm.action = 'https://codepen.io/pen/define';
+        codepenSnippetForm.method = 'POST';
+        codepenSnippetForm.target = '_blank';
+        codepenSnippetForm.classList.add('codepen-snippet');
+
+        var dataCarrierInput = document.createElement('input');
+        dataCarrierInput.type = 'hidden';
+        dataCarrierInput.name = 'data';
+        dataCarrierInput.value = codeAsJSON;
+
+        var submitSnippet = document.createElement('input');
+        submitSnippet.type = 'submit';
+        submitSnippet.value = 'CODEPEN';
+
+        codepenSnippetForm.appendChild(dataCarrierInput);
+        codepenSnippetForm.appendChild(submitSnippet);
+
+        return codepenSnippetForm;
+    }
+
+    /*
+     * Adapted code from JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
+     */
+    function createJsfiddleSnippet(jsfiddleData) {
+        var jsfiddleSnippetForm = document.createElement('form');
+        jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
+        jsfiddleSnippetForm.method = 'POST';
+        jsfiddleSnippetForm.target = '_blank';
+        jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
+
+        var htmlTxt = document.createElement('textarea');
+        htmlTxt.name = 'html';
+        htmlTxt.value = jsfiddleData.html || '';
+
+        var cssTxt = document.createElement('textarea');
+        cssTxt.name = 'css';
+        cssTxt.value = jsfiddleData.css || '';
+
+        var jsTxt = document.createElement('textarea');
+        jsTxt.name = 'js';
+        jsTxt.value = jsfiddleData.js || '';
+
+        var selectHTML = document.createElement('select');
+        selectHTML.name = 'panel_html';
+        var selectCSS = document.createElement('select');
+        selectCSS.name = 'panel_css';
+        var selectJS = document.createElement('select');
+        selectJS.name = 'panel_js';
+
+        var htmlVersion = document.createElement('option');
+        htmlVersion.value = 0;
+        htmlVersion.textContent = 'HTML';
+        htmlVersion.setAttribute('selected', 'selected');
+
+        var cssCleanVersion = document.createElement('option');
+        cssCleanVersion.value = 0;
+        cssCleanVersion.textContent = 'CSS';
+        cssCleanVersion.setAttribute('selected', 'selected');
+        var cssPreProcessorVersion = document.createElement('option');
+        cssPreProcessorVersion.value = 1;
+        cssPreProcessorVersion.textContent = 'SCSS';
+
+        var jsCleanVersion = document.createElement('option');
+        jsCleanVersion.value = 0;
+        jsCleanVersion.textContent = 'JavaScript';
+        jsCleanVersion.setAttribute('selected', 'selected');
+        var jsCoffeeVersion = document.createElement('option');
+        jsCoffeeVersion.value = 1;
+        jsCoffeeVersion.textContent = 'CoffeeScript';
+        var jsOldVersion = document.createElement('option');
+        jsOldVersion.value = 2;
+        jsOldVersion.textContent = 'JavaScript 1.7';
+
+        var submitSnippet = document.createElement('input');
+        submitSnippet.type = 'submit';
+        submitSnippet.value = 'JSFIDDLE';
+
+        selectHTML.appendChild(htmlVersion);
+        selectCSS.appendChild(cssCleanVersion);
+        selectCSS.appendChild(cssPreProcessorVersion);
+        selectJS.appendChild(jsCleanVersion);
+        selectJS.appendChild(jsCoffeeVersion);
+        selectJS.appendChild(jsOldVersion);
+
+        jsfiddleSnippetForm.appendChild(selectHTML);
+        jsfiddleSnippetForm.appendChild(selectCSS);
+        jsfiddleSnippetForm.appendChild(selectJS);
+        jsfiddleSnippetForm.appendChild(submitSnippet);
+
+        jsfiddleSnippetForm.appendChild(htmlTxt);
+        jsfiddleSnippetForm.appendChild(cssTxt);
+        jsfiddleSnippetForm.appendChild(jsTxt);
+
+        return jsfiddleSnippetForm;
+    }
+
+    // add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
+    function addSnippets(data, parent) {
+        var codepenSnippet = createCodepenSnippet(data);
+        var jsfiddleSnippet = createJsfiddleSnippet(data);
+
+        var snippetsParent = document.createElement('div');
+        snippetsParent.classList.add('snippets-parent');
+        snippetsParent.appendChild(codepenSnippet);
+        snippetsParent.appendChild(jsfiddleSnippet);
+
+        parent.appendChild(snippetsParent);
+        if (parent.classList.contains('qa-c-item-content')) {
+            snippetsParent.classList.add('inside-comment');
+            snippetsParent.parentNode.querySelector('.entry-content').classList.add('below-snippets');
+        }
+    }
+})();
 
 /**
  * Feature: Make the topic's author nick style different from other users
