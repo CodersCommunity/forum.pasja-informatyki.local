@@ -547,37 +547,36 @@ function qa_ajax_error()
     }
 
     /*
-     * Adapted code from Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
+     * Code based on Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
      */
-    function createCodepenSnippet(codepenData) {
-        var codeAsJSON = JSON.stringify(codepenData)
+    function createCodepenSnippet(codeData) {
+        const codeAsJSON = JSON.stringify(codeData)
             // Quotes will screw up the JSON
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&apos;');
 
-        var codepenSnippetForm = document.createElement('form');
+        const codepenSnippetForm = document.createElement('form');
         codepenSnippetForm.action = 'https://codepen.io/pen/define';
         codepenSnippetForm.method = 'POST';
         codepenSnippetForm.target = '_blank';
         codepenSnippetForm.classList.add('codepen-snippet');
 
-        var dataCarrierInput = document.createElement('input');
+        const dataCarrierInput = document.createElement('input');
         dataCarrierInput.type = 'hidden';
         dataCarrierInput.name = 'data';
         dataCarrierInput.value = codeAsJSON;
 
-        var submitSnippet = document.createElement('input');
+        const submitSnippet = document.createElement('input');
         submitSnippet.type = 'submit';
         submitSnippet.value = 'CODEPEN';
 
-        codepenSnippetForm.appendChild(dataCarrierInput);
-        codepenSnippetForm.appendChild(submitSnippet);
+        codepenSnippetForm.append(dataCarrierInput, submitSnippet);
 
         return codepenSnippetForm;
     }
 
     /*
-     * Adapted code from JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
+     * Code based on JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
      */
     function createJsfiddleSnippet(jsfiddleData) {
         var jsfiddleSnippetForm = document.createElement('form');
@@ -652,7 +651,6 @@ function qa_ajax_error()
         return jsfiddleSnippetForm;
     }
 
-    // add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
     function addSnippets(snippetsList, snippetsInsertionTarget, postContent) {
         const snippetsParent = document.createElement('div');
         snippetsParent.classList.add('snippets-parent');
