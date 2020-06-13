@@ -498,58 +498,50 @@ function qa_ajax_error()
     const newQuestion = location.pathname.includes('ask');
 
     if (questionId || newQuestion) {
-        window.addEventListener('load', viewHtmlCssJs);
+        window.addEventListener('load', initSnippetsCreation);
     }
 
-    function viewHtmlCssJs() {
-        const posts = document.querySelectorAll('.entry-content');
-        posts.forEach(function(post) {
-            var blockOfCodeParents = post.querySelectorAll('.syntaxhighlighter-parent');
-            var canAddSnippets = true;
+    function initSnippetsCreation() {
+        const SNIPPET_LANG_MAP = Object.freeze({
+            xml: 'html',
+            css: 'css',
+            jscript: 'js'
+        });
+        const NEW_LINE = '\r\n';
+
+        const postsContent = document.querySelectorAll('.entry-content');
+        postsContent.forEach(processCodeBlocksInPosts);
+
+        function processCodeBlocksInPosts(postContent) {
+            const blockOfCodeParents = postContent.querySelectorAll('.syntaxhighlighter-parent');
 
             if (blockOfCodeParents.length) {
-                var blocksInPost = {};
-                var data = {};
-                var htmlCode = '';
-                var cssCode = '';
-                var jsCode = '';
-                var parent = Array.from(blockOfCodeParents)[0].parentNode.parentNode;
+                const langData = {
+                    html: '',
+                    css: '',
+                    js: ''
+                };
 
-                Array.from(blockOfCodeParents).forEach(function(block) {
-                    var code = '';
+                blockOfCodeParents.forEach(block => processBlockOfCode(block, langData));
 
-                    Array.from(block.querySelectorAll('.code .line')).forEach(function(line) {
-                        code += line.textContent + '\r\n';
-                    });
-
-                    blocksInPost[block.firstElementChild.nextSibling.classList[1]] = code;
-                });
-
-                Object.keys(blocksInPost).forEach(function(language) {
-                    switch (language) {
-                        case 'css' :
-                            cssCode += blocksInPost.css;
-                            data.css = cssCode;
-                            break;
-                        case 'xml' :
-                            htmlCode += blocksInPost.xml;
-                            data.html = htmlCode;
-                            break;
-                        case 'jscript' :
-                            jsCode += blocksInPost.jscript;
-                            data.js = jsCode;
-                            break;
-                        default :
-                            canAddSnippets = false;
-                            break;
-                    }
-                });
-
-                if (canAddSnippets) {
-                    addSnippets(data, parent);
+                const langDataHasAnyValue = Object.values(langData).some(Boolean);
+                if (langDataHasAnyValue) {
+                    const snippetsInsertionTarget = blockOfCodeParents[0].parentNode.parentNode;
+                    addSnippets(langData, snippetsInsertionTarget);
                 }
             }
-        });
+        }
+
+        function processBlockOfCode(block, langData) {
+            const codeContent = [...block.querySelectorAll('.code .line')]
+                .reduce((codeLines, codeLine) => codeLines + codeLine.textContent + NEW_LINE, '');
+            const codeLang = block.querySelector('.syntaxhighlighter').classList.item(1);
+            const mappedSnippetLang = SNIPPET_LANG_MAP[codeLang];
+
+            if (mappedSnippetLang) {
+                langData[mappedSnippetLang] = codeContent;
+            }
+        }
     }
 
     /*
