@@ -148,6 +148,9 @@ function qa_submit_comment(questionid, parentid, elem) {
 					newestComment.style.display = 'none';
 				}
 
+				newCommentsTempParent
+					.querySelectorAll('[class*="brush:"]')
+					.forEach(newComment => SyntaxHighlighter.highlight({}, newComment));
 				commentsList.append(...newCommentsTempParent.children);
 			} else {
 				commentsList.innerHTML = newComments;
