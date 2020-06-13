@@ -228,8 +228,8 @@ function qa_ajax_error()
         {
             var codeAsJSON = JSON.stringify(codepenData)
                 // Quotes will screw up the JSON
-                .replace(/"/g, "&​quot;") // careful copy and pasting, I had to use a zero-width space here to get markdown to post this.
-                .replace(/'/g, "&apos;");
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
 
             var codepenSnippetForm = document.createElement('form');
             codepenSnippetForm.action = 'https://codepen.io/pen/define';
