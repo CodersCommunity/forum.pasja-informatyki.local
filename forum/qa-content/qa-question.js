@@ -238,11 +238,15 @@ function qa_show_comments(questionid, parentid, elem)
 	qa_ajax_post('show_cs', params,
 		function (lines) {
 			if (lines[0]=='1') {
-				var l=document.getElementById('c'+parentid+'_list');
-				l.innerHTML=lines.slice(1).join("\n");
-				l.style.display='none';
-				qa_reveal(l, 'comments');
+				var commentsList=document.getElementById('c'+parentid+'_list');
+				commentsList.innerHTML=lines.slice(1).join("\n");
 
+				if (typeof window.reloadBlocksOfCode === 'function') {
+					window.reloadBlocksOfCode(commentsList);
+				}
+
+				commentsList.style.display='none';
+				qa_reveal(commentsList, 'comments');
 			} else {
 				qa_ajax_error();
 			}

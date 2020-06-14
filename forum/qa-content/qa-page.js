@@ -213,8 +213,31 @@ function qa_ajax_error()
 {
     'use strict';
 
-    // check if browser supports 'select()' and 'copy' commands
-    var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
+    const isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
+
+    Object.defineProperty(window, 'reloadBlocksOfCode', {
+        configurable: false,
+        writable: false,
+        value: (commentsToHighlight) => {
+            if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
+                const codeBlocks = [...commentsToHighlight.querySelectorAll('pre')];
+                const processedCodeBlocks = codeBlocks.map(codeBlock => {
+                    /*
+                     * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
+                     * Temporary caching is needed to retrieve processed element within parent context afterwards.
+                     */
+                    const origCodeBlockParent = codeBlock.parentNode;
+                    SyntaxHighlighter.highlight(null, codeBlock);
+                    const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
+
+                    return processedCodeBlock;
+                });
+                handleCodeCollapsing(false, isClipboardSupported, processedCodeBlocks);
+            } else {
+                console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
+            }
+        }
+    });
 
     /*
      * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
@@ -461,19 +484,12 @@ function qa_ajax_error()
      * Feature: Collapsable blocks of code
      * Date: 05.07.2016r.
      */
-    function handleCodeCollapsing(insidePreview, addCopyBtn)
-    {
-        /*
-         * !!!! IMPORTANT VARIABLE !!!!
-         *
-         * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
-         *
-         * !!!! IMPORTANT VARIABLE !!!!
-         */
-        var numberOfLines = 30;
+    function handleCodeCollapsing(insidePreview, addCopyBtn, chosenCodeBlocks) {
+        // Set number of lines when block of code should be able to collapse (so it's considered as being too long)
+        const numberOfLines = 30;
 
         // languages got from Forum site DOM
-        var languages = {
+        const languages = {
             'as3' : 'actionscript',
             'applescript' : 'applescript',
             'bash' : 'bash-shell',
@@ -502,62 +518,63 @@ function qa_ajax_error()
             'xml' : 'XML-xHTML'
         };
 
-        var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent .syntaxhighlighter')) : Array.from(document.querySelectorAll('.syntaxhighlighter'));
+        let codeBlocks = [];
 
-        // when 'blocks' are still unavailable - it probably is happening on /ask page (with preview modal displayed). Then check for <pre> tags
-        if (!blocks.length)
-            blocks = Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+        if (!chosenCodeBlocks) {
+            const blocksSelector = insidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
+            codeBlocks = document.querySelectorAll(blocksSelector);
 
-        blocks.forEach(function(block)
-        {
-            var blockBar = document.createElement('div');
-            var blockButton = document.createElement('button');
-            var languageName = document.createElement('div');
-            var copyCodeBtn = document.createElement('button');
+            // when 'codeBlocks' are still unavailable - it probably is happening on /ask page (with preview modal displayed). Then check for <pre> tags
+            if (!codeBlocks.length) {
+                codeBlocks = document.querySelectorAll('pre[class*="brush:"]');
+            }
+        } else {
+            codeBlocks = chosenCodeBlocks;
+        }
+
+        codeBlocks.forEach(processBlock);
+
+        function processBlock(codeBlock) {
+            const blockBar = document.createElement('div');
+            const blockButton = document.createElement('button');
+            const languageName = document.createElement('div');
+            const copyCodeBtn = document.createElement('button');
 
             blockBar.classList.add('syntaxhighlighter-block-bar');
-
             languageName.classList.add('syntaxhighlighter-language');
 
-            /*
-             * Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
-             */
-            var isLongCodeAtReply = block.querySelectorAll('.line').length >= numberOfLines;
-            var isLongCodeAtAsk = (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines);
+            // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
+            const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= numberOfLines;
+            const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= numberOfLines);
 
-            if (isLongCodeAtReply || isLongCodeAtAsk)
-            {
+            if (isLongCodeAtReply || isLongCodeAtAsk) {
                 blockButton.classList.add('syntaxhighlighter-button');
                 blockButton.textContent = '-- Rozwiń --';
 
-                block.classList.add('collapsed-block');
+                codeBlock.classList.add('collapsed-block');
 
-                blockButton.addEventListener('click', function(ev)
-                {
-                    // prevent... dummy (refresh page) default action of button
+                blockButton.addEventListener('click', onBlockButtonClick);
+                blockBar.appendChild(blockButton);
+
+                function onBlockButtonClick(ev) {
                     ev.preventDefault();
 
                     /*
                     * when block-code is collapsed or not - write info on button and add/remove CSS class
                     * to notify user the state of code-block
                     */
-                    if (block.classList.contains('collapsed-block'))
-                    {
-                        block.classList.remove('collapsed-block');
+                    if (codeBlock.classList.contains('collapsed-block')) {
+                        codeBlock.classList.remove('collapsed-block');
                         blockButton.textContent = '-- Zwiń --';
-                    }
-                    else
-                    {
-                        block.classList.add('collapsed-block');
+                    } else {
+                        codeBlock.classList.add('collapsed-block');
                         blockButton.textContent = '-- Rozwiń --';
                     }
-                });
-
-                blockBar.appendChild(blockButton);
+                }
             }
 
             // based on each code-block CSS class - find out what language is used inside it
-            languageName.textContent = languages[block.classList[1]] || languages[block.classList[0].slice(block.classList[0].indexOf(':') + 1, -1)];
+            languageName.textContent = languages[codeBlock.classList[1]] || languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
 
             blockBar.appendChild(languageName);
 
@@ -565,17 +582,17 @@ function qa_ajax_error()
             copyCodeBtn.textContent = 'Kopiuj';
             copyCodeBtn.classList.add('content-copy-btn');
 
-            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter'))
-                copyCodeBtn.addEventListener('click', copyToClipboard);
-            else
-                copyCodeBtn.classList.add('content-copy-btn-disabled');
+            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter')) {
+                copyCodeBtn.addEventListener( 'click', copyToClipboard );
+            } else {
+                copyCodeBtn.classList.add( 'content-copy-btn-disabled' );
+            }
 
             blockBar.appendChild(copyCodeBtn);
 
-            block.parentNode.classList.add('syntaxhighlighter-parent');
-            block.parentNode.insertBefore(blockBar, block);
-
-        });
+            codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
+            codeBlock.parentNode.insertBefore(blockBar, codeBlock);
+        }
     }
 
     /*
