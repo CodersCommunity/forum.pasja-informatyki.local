@@ -24,7 +24,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                 <script>
                     const FLAG_REASONS_METADATA = Object.freeze(' . $flagReasonsMetadata . ');
                 </script>
-                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/dist/script.js"></script>
+                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/dist/script.js" defer></script>
             '
             );
         }
