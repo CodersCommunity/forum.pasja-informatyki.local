@@ -6,6 +6,7 @@ const CONTENT_TYPE = 'application/json';
 
 const sendAjax = (data) => {
 	return new Promise((resolve, reject) => {
+		// TODO: handle timeout in better way - probably use AbortSignal API with some polyfill
 		const timeoutId = setTimeout(() => {
 			reject(AJAX_TIMEOUT_REASON);
 		}, TIMEOUT);
@@ -16,21 +17,10 @@ const sendAjax = (data) => {
 				'Content-Type': CONTENT_TYPE,
 			},
 			body: JSON.stringify(data),
-		}).then(async (value) => {
+		}).then((value) => {
+			console.warn('fetch response: ', value);
+
 			clearTimeout(timeoutId);
-
-			// let text = null;
-			// if (purpose === AJAX_PURPOSE.UN_FLAG) {
-			//   try {
-			//     text = await value.text();
-			//   } catch ( e ) {
-			//     console.error( 'value.text not worked... /e: ', e );
-			//   }
-			// }
-
-			console.warn('fetch response: ', value /*, ' /?:', text*/);
-
-			// const resolveValue = purpose === AJAX_PURPOSE.FLAG ? value.json() : 'ok';
 			resolve(value.json());
 		});
 	});

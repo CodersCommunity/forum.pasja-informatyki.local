@@ -17,7 +17,6 @@ class FlagController {
 			event.stopPropagation();
 
 			this.flagButtonDOM = event.target;
-			// this.reportReasonPopupForm = event.target.form.action;
 			showReportReasonPopup();
 		}
 	}
@@ -47,18 +46,45 @@ class FlagController {
 		return postMetaData;
 	}
 
-	toggleSendWaitingState(buttonReference, isWaiting) {
-		if (isWaiting) {
-			buttonReference.disabled = true;
-			window.qa_show_waiting_after(buttonReference, true);
-		} else {
-			window.qa_hide_waiting(buttonReference);
-			buttonReference.disabled = false;
-		}
-	}
-
 	getFlagButtonDOM() {
 		return this.flagButtonDOM;
+	}
+
+	getPostParentId(postType, flagButtonDOM) {
+		if (postType !== 'c') {
+			return null;
+		}
+
+		const parentElement = flagButtonDOM.closest('[id*="_list"]');
+
+		return parentElement ?
+			parentElement.id.match(/\d+/)[0] :
+			null;
+	}
+
+	swapFlagBtn(referenceBtn, btnHTML) {
+		const tmpParent = document.createElement('div');
+		tmpParent.innerHTML = btnHTML;
+
+		const newBtn = tmpParent.removeChild(tmpParent.firstElementChild);
+		referenceBtn.parentNode.replaceChild(newBtn, referenceBtn);
+	}
+
+	updateCurrentPostFlags(currentFlagsHTML, { postType, postId }) {
+		const relativeClassNamePart = postType === 'q' ? 'view' : 'item';
+		const classNamePart = `#${postType}${postId} .qa-${postType}-${relativeClassNamePart}-`;
+		const postFlagsWrapper = document.querySelector(`${classNamePart}flags`);
+
+		if (postFlagsWrapper) {
+			postFlagsWrapper.outerHTML = currentFlagsHTML;
+		} else {
+			const targetElementSelector = `.qa-${postType}-item-flags`;
+			const responseAsDOM = new DOMParser()
+				.parseFromString(currentFlagsHTML, 'text/html')
+				.querySelector(targetElementSelector);
+			const postMetaWrapper = document.querySelector(`${classNamePart}meta`);
+			postMetaWrapper.appendChild(responseAsDOM);
+		}
 	}
 }
 

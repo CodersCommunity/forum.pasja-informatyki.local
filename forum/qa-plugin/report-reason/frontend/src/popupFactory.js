@@ -1,17 +1,14 @@
-import {
-	swapFlagBtn,
-	updateCurrentPostFlags,
-	getPostParentId
-} from './misc';
 import getUnFlagButtonHTML from "./unFlagButton";
 
 const { POPUP_LABELS } = FLAG_REASONS_METADATA;
 
 class PopupFactory {
-	constructor({ toggleSendWaitingState, getFlagButtonDOM, getFormDOM }) {
-		this.toggleSendWaitingState = toggleSendWaitingState;
+	constructor({ getFlagButtonDOM, getFormDOM, getPostParentId, swapFlagBtn, updateCurrentPostFlags }) {
 		this.getFlagButtonDOM = getFlagButtonDOM;
 		this.getFormDOM = getFormDOM;
+		this.getPostParentId = getPostParentId;
+		this.swapFlagBtn = swapFlagBtn;
+		this.updateCurrentPostFlags = updateCurrentPostFlags;
 		this.reportReasonPopupDOMWrapper = null;
 		this.reportReasonPopupDOMReferences = null;
 
@@ -20,7 +17,6 @@ class PopupFactory {
 		this.initPopupDOMReferences();
 		this.initReasonList();
 		this.initOffClickHandler();
-		// this.initButtons(submitForm, collectForumPostMetaData);
 	}
 
 	initOffClickHandler() {
@@ -132,28 +128,28 @@ class PopupFactory {
 		this.getFormDOM().reset();
 	}
 
-	onAjaxSuccess({ response, formData, sendButton }) {
+	onAjaxSuccess({ response, formData, boundToggleSendWaitingState }) {
 		console.warn('response:', response);
 
-		this.toggleSendWaitingState(sendButton, false);
-		updateCurrentPostFlags(response.currentFlags, formData);
+		boundToggleSendWaitingState(false);
+		this.updateCurrentPostFlags(response.currentFlags, formData);
 
 		const flagButtonDOM = this.getFlagButtonDOM();
 
-		swapFlagBtn(
+		this.swapFlagBtn(
 			flagButtonDOM,
 			getUnFlagButtonHTML({
 				postType: formData.postType,
 				questionId: formData.questionId,
 				postId: formData.postId,
-				parentId: getPostParentId(formData.postType, flagButtonDOM),
+				parentId: this.getPostParentId(formData.postType, flagButtonDOM),
 			})
 		);
 		this.showSuccessPopup();
 	}
 
-	onAjaxError({ ajaxError, sendButton }) {
-		this.toggleSendWaitingState(sendButton, false);
+	onAjaxError({ ajaxError, boundToggleSendWaitingState }) {
+		boundToggleSendWaitingState(false);
 		// TODO: add proper error handling
 		console.warn('ajaxError:', ajaxError);
 	}

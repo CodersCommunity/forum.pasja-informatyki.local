@@ -3,9 +3,7 @@ import sendAjax from "./ajaxService";
 const { NOTICE_LENGTH, POPUP_LABELS } = FLAG_REASONS_METADATA;
 
 class FormController {
-	constructor(toggleSendWaitingState) {
-		this.toggleSendWaitingState = toggleSendWaitingState;
-
+	constructor() {
 		this.buildForm();
 	}
 
@@ -111,13 +109,14 @@ class FormController {
 			return Promise.reject('Form is invalid!');
 		}
 
-		this.toggleSendWaitingState(sendButton, true);
+		const boundToggleSendWaitingState = this.toggleSendWaitingState.bind(this, sendButton);
+		boundToggleSendWaitingState(true);
 
 		const formData = this.prepareFormData(collectedForumPostMetaData);
 
 		return sendAjax(formData).then(
-			(response) => ({response, formData, sendButton}),
-			(ajaxError) => ({ajaxError, sendButton})
+			(response) => ({response, formData, boundToggleSendWaitingState}),
+			(ajaxError) => ({ajaxError, boundToggleSendWaitingState})
 		);
 	}
 
@@ -127,6 +126,16 @@ class FormController {
 		setTimeout(() => {
 			sendButton.classList.remove('report-reason-popup__button--save--validation-blink');
 		}, 1000);
+	}
+
+	toggleSendWaitingState(buttonReference, isWaiting) {
+		if (isWaiting) {
+			buttonReference.disabled = true;
+			window.qa_show_waiting_after(buttonReference, true);
+		} else {
+			window.qa_hide_waiting(buttonReference);
+			buttonReference.disabled = false;
+		}
 	}
 }
 
