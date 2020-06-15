@@ -1,11 +1,11 @@
 import FlagController from './flagController';
 import FormController from './formController';
-import PopupFactory from "./popupFactory";
+import PopupController from "./popupController";
 
 const bootstrapReportReasonPopup = () => {
 	const flagController = new FlagController();
 	const formController = new FormController();
-	const reportReasonPopup = new PopupFactory({
+	const reportReasonPopup = new PopupController({
 		getFlagButtonDOM: flagController.getFlagButtonDOM.bind(flagController),
 		getFormDOM: formController.getFormDOM.bind(formController),
 		getPostParentId: flagController.getPostParentId.bind(flagController),

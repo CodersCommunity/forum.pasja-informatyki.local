@@ -2,7 +2,7 @@ import getUnFlagButtonHTML from "./unFlagButton";
 
 const { POPUP_LABELS } = FLAG_REASONS_METADATA;
 
-class PopupFactory {
+class PopupController {
 	constructor({ getFlagButtonDOM, getFormDOM, getPostParentId, swapFlagBtn, updateCurrentPostFlags }) {
 		this.getFlagButtonDOM = getFlagButtonDOM;
 		this.getFormDOM = getFormDOM;
@@ -160,4 +160,4 @@ class PopupFactory {
 	}
 }
 
-export default PopupFactory;
+export default PopupController;
