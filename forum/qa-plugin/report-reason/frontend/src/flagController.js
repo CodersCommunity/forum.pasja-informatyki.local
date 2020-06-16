@@ -69,20 +69,38 @@ class FlagController {
 		referenceBtn.parentNode.replaceChild(newBtn, referenceBtn);
 	}
 
-	updateCurrentPostFlags(currentFlagsHTML, { postType, postId }) {
-		const relativeClassNamePart = postType === 'q' ? 'view' : 'item';
-		const classNamePart = `#${postType}${postId} .qa-${postType}-${relativeClassNamePart}-`;
-		const postFlagsWrapper = document.querySelector(`${classNamePart}flags`);
+	updateCurrentPostFlags(newFlagsHTML, postMetadata) {
+		const {
+			flags, flagsAlreadyExist, flagsParent
+		} = this.prepareFlagsUpdate(newFlagsHTML, postMetadata);
 
-		if (postFlagsWrapper) {
-			postFlagsWrapper.outerHTML = currentFlagsHTML;
+		if (!flags) {
+			console.error('Report reason response does not have new flags: ', newFlagsHTML);
+			return false;
+		}
+
+		if (flagsAlreadyExist) {
+			flagsParent.parentNode.replaceChild(flags, flagsParent);
 		} else {
-			const targetElementSelector = `.qa-${postType}-item-flags`;
-			const responseAsDOM = new DOMParser()
-				.parseFromString(currentFlagsHTML, 'text/html')
-				.querySelector(targetElementSelector);
-			const postMetaWrapper = document.querySelector(`${classNamePart}meta`);
-			postMetaWrapper.appendChild(responseAsDOM);
+			flagsParent.appendChild(flags);
+		}
+
+		return true;
+	}
+
+	prepareFlagsUpdate(flagsHTML, { postType, postId }) {
+		const relativeClassNamePart = postType === 'q' ? 'view' : 'item';
+		const classNamePartSuffix = `.qa-${postType}-${relativeClassNamePart}-`;
+		const classNamePart = `#${postType}${postId} ${classNamePartSuffix}`;
+		const postFlagsWrapper = document.querySelector(`${classNamePart}flags`);
+		const flagsDOM = new DOMParser()
+			.parseFromString(flagsHTML, 'text/html')
+			.querySelector(`${classNamePartSuffix}flags`);
+
+		return {
+			flags: flagsDOM,
+			flagsAlreadyExist: !!postFlagsWrapper,
+			flagsParent: postFlagsWrapper || document.querySelector(`${classNamePart}meta`)
 		}
 	}
 }

@@ -4,7 +4,7 @@ const TIMEOUT = 5000;
 const URL = '/report-flag';
 const CONTENT_TYPE = 'application/json';
 
-const sendAjax = (data) => {
+function sendAjax(data) {
 	return new Promise((resolve, reject) => {
 		// TODO: handle timeout in better way - probably use AbortSignal API with some polyfill
 		const timeoutId = setTimeout(() => {
@@ -17,13 +17,20 @@ const sendAjax = (data) => {
 				'Content-Type': CONTENT_TYPE,
 			},
 			body: JSON.stringify(data),
-		}).then((value) => {
-			console.warn('fetch response: ', value);
-
+		})
+		.then((response) => {
 			clearTimeout(timeoutId);
-			resolve(value.json());
-		});
+
+			if (!response.ok) {
+				reject(response.text());
+			}
+
+			return response
+				.json()
+				.then(resolve);
+		})
+		.catch(reject);
 	});
-};
+}
 
 export default sendAjax;

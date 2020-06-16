@@ -1,19 +1,24 @@
 <?php
 
-class q2apro_flag_reasons_page
-{
+class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
 
     private $directory;
     private $urlToRoot;
 
-    public function load_module($directory, $urlToRoot)
-    {
+    protected $CUSTOM_REPORT_REASON_ID = 0;
+    protected $_reportReasonRequestJSON = null;
+
+    public function __construct() {
+        $REASON_LIST_KEYS = array_keys(qa_lang('q2apro_flagreasons_lang/REASON_LIST'));
+        $this->CUSTOM_REPORT_REASON_ID = end($REASON_LIST_KEYS);
+    }
+
+    public function load_module($directory, $urlToRoot) {
         $this->directory = $directory;
         $this->urlToRoot = $urlToRoot;
     }
 
-    public function suggest_requests()
-    {
+    public function suggest_requests() {
         return [
             [
                 'title'   => 'Report flag', // title of page
@@ -23,23 +28,24 @@ class q2apro_flag_reasons_page
         ];
     }
 
-    public function match_request($request)
-    {
+    public function match_request($request) {
         return 'report-flag' === $request;
     }
 
-    public function process_request()
-    {
-        $requestJSONData = file_get_contents('php://input');
-        $this->validateJSON($requestJSONData);
-        $flagData = $this->getFlagData($requestJSONData);
+    public function process_request() {
+        $this->_reportReasonRequestJSON = file_get_contents('php://input');
+
+        if (!qa_is_logged_in()) {
+            $this->handleReportErrorAndExit('USER_LOGGED_OUT');
+        }
+
+        $flagData = $this->parseFlagData();
 
         $questionId = (int) $flagData['questionId'];
         $postId     = (int) $flagData['postId'];
         $postType   = $flagData['postType'];
         $reasonId   = (int) $flagData['reasonId'];
 
-        $parentId = empty($flagData['parentid']) ? null : (int) $flagData['parentid']; // only C
         $notice = empty($flagData['notice']) ? null : trim($flagData['notice']);
         $userId = qa_get_logged_in_userid();
 
@@ -50,8 +56,8 @@ class q2apro_flag_reasons_page
         $processingFlagReasonError = $this->processFlag($postType, $userId, $postId, $questionId, $reasonId, $notice);
 
         $reply = $processingFlagReasonError ?
-            ['processingFlagReasonError' => $processingFlagReasonError] :
-            ['currentFlags' => $this->wrapOutput(q2apro_count_postflags_output($postId), $postType, $postId)];
+            $this->wrapFlagReasonError($processingFlagReasonError) :
+            ['newFlags' => $this->wrapOutput(q2apro_count_postflags_output($postId), $postType, $postId)];
 
         echo json_encode($reply);
     }
@@ -73,7 +79,7 @@ class q2apro_flag_reasons_page
                 break;
             }
             default: {
-                $processingFlagReasonError = 'Incorrect $postType:' . $postType;
+                $processingFlagReasonError = 'UNRECOGNIZED_POST_TYPE:' . $postType;
             }
         }
 
@@ -81,24 +87,20 @@ class q2apro_flag_reasons_page
     }
 
     private function processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice) {
-        $questionData = qa_db_select_with_pending(
+        list($question, $childPosts, $aChildPosts, $closePost, $duplicatePosts) = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $questionId),
             qa_db_full_child_posts_selectspec($userId, $questionId),
             qa_db_full_a_child_posts_selectspec($userId, $questionId),
             qa_db_post_parent_q_selectspec($questionId),
             false
         );
-        list(
-            $question, $childPosts, $aChildPosts,
-            $closePost, $duplicatePosts
-        ) = $questionData;
 
         $questionFlagError = qa_flag_error_html($question, $userId, $questionId);
         if ($questionFlagError) {
             return $questionFlagError;
         }
 
-        $answers         = qa_page_q_load_as($question, $childPosts);
+        $answers = qa_page_q_load_as($question, $childPosts);
         $commentsFollows = qa_page_q_load_c_follows($question, $childPosts, $aChildPosts, $duplicatePosts);
 
         if (qa_flag_set_tohide($question, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
@@ -107,24 +109,26 @@ class q2apro_flag_reasons_page
             ); // hiding not really by this user so pass nulls
         }
 
-        if($reasonId >= 0 && $reasonId <= 6) {
+//        var_dump('<br>$reasonId <= $this->CUSTOM_REPORT_REASON_ID: ', $reasonId <= $this->CUSTOM_REPORT_REASON_ID, ' /$this->CUSTOM_REPORT_REASON_ID: ', $this->CUSTOM_REPORT_REASON_ID);
+        if($reasonId >= 0 && $reasonId <= $this->CUSTOM_REPORT_REASON_ID) {
             qa_db_query_sub(
             '
                 INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`)
                 VALUES (#, #, #, $)
             ', $userId, $postId, $reasonId, $notice
             );
-        }
+        } else {
+             $this->handleReportErrorAndExit('INVALID_REASON_ID');
+         }
     }
 
     private function processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice) {
-        $answerData = qa_db_select_with_pending(
+        list($answer, $question, $qChildPosts, $aChildPosts) = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $postId),
             qa_db_full_post_selectspec($userId, $questionId),
             qa_db_full_child_posts_selectspec($userId, $questionId),
             qa_db_full_child_posts_selectspec($userId, $postId)
         );
-        list($answer, $question, $qChildPosts, $aChildPosts) = $answerData;
 
         // TODO: might not be needed
         // $commentsFollows = qa_page_q_load_c_follows($question, $qChildPosts, $aChildPosts);
@@ -147,6 +151,8 @@ class q2apro_flag_reasons_page
                     VALUES (#, #, #, $)
                 ', $userId, $answer['postid'], $reasonId, $notice
             );
+        } else {
+            $this->handleReportErrorAndExit('EMPTY_ANSWER_PARAM');
         }
     }
 
@@ -170,54 +176,17 @@ class q2apro_flag_reasons_page
         );
     }
 
-    private function validateJSON($requestJSONData) {
-        if (strlen($requestJSONData) > 0) {
-            json_decode($requestJSONData);
+    private function parseFlagData() {
+        $flagData = json_decode($this->_reportReasonRequestJSON, true);
 
-            if (json_last_error() != JSON_ERROR_NONE) {
-                echo json_encode(['processingFlagReasonError' => 'Request is not valid JSON!']);
-                exit();
-            }
-        } else {
-            echo json_encode(['processingFlagReasonError' => 'Request is empty!']);
+        if (!$this->isValidJSON() || !$this->isDataSet($flagData) || !$this->isValidData($flagData)) {
             exit();
         }
-    }
-
-    private function getFlagData($requestJSONData) {
-        $this->exitIfInvalidEssentials($requestJSONData);
-
-        $flagData = str_replace('&quot;', '"', json_decode($requestJSONData, true)); // see stackoverflow.com/questions/3110487/
 
         return $flagData;
     }
 
-    private function exitIfInvalidEssentials($flagData) {
-        if (!qa_is_logged_in()) {
-            echo json_encode(['processingFlagReasonError' => 'Player is logged out!']);
-            exit();
-        }
-
-        function hasRequiredProps($obj) {
-            $optionalKey = 'notice';
-
-            foreach ($obj as $key => $value) {
-                if ($key !== $optionalKey && empty($value)) {
-                    echo json_encode(['processingFlagReasonError' => 'missing data']);
-                    exit();
-                }
-            }
-
-            return true;
-        }
-
-        if (empty($flagData) || !hasRequiredProps($flagData)) {
-            echo json_encode(['processingFlagReasonError' => 'Ajax data is empty or not have required data!']);
-            exit();
-        }
-    }
-
-    private function wrapOutput($currentFlags, $postType, $postId) {
+    private function wrapOutput($newFlags, $postType, $postId) {
         require QA_INCLUDE_DIR . 'qa-theme-base.php';
         require QA_PLUGIN_DIR . 'report-reason/q2apro-flag-reasons-layer.php';
 
@@ -227,7 +196,7 @@ class q2apro_flag_reasons_page
             $userHasPrivilege = qa_get_logged_in_level() >= QA_USER_LEVEL_EXPERT && qa_user_level_for_post(qa_post_get_full($postId));
             $relativeClassNamePart = $postType === 'q' ? '-view' : '-item';
             $flagReasonsInfo = $userHasPrivilege ?
-                ('<br>' .  '<span class="qa-' . $postType . $relativeClassNamePart . '-flags-pad">' . $currentFlags) :
+                ('<br>' .  '<span class="qa-' . $postType . $relativeClassNamePart . '-flags-pad">' . $newFlags) :
                 '';
 
             return '<span class="qa-' . $postType . $relativeClassNamePart . '-flags">' .

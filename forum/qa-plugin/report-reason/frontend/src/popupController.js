@@ -1,68 +1,41 @@
 import getUnFlagButtonHTML from "./unFlagButton";
 
-const { POPUP_LABELS } = FLAG_REASONS_METADATA;
+const { POPUP_LABELS, ERROR_CODES } = FLAG_REASONS_METADATA;
 
 class PopupController {
-	constructor({ getFlagButtonDOM, getFormDOM, getPostParentId, swapFlagBtn, updateCurrentPostFlags }) {
+	constructor({
+		getFlagButtonDOM, formInvalidityListenerAPI, getFormDOM,
+		getPostParentId, swapFlagBtn, updateCurrentPostFlags,
+		getReportReasonValidationErrorDOM, resetCustomReportReasonCharCounter
+	}) {
 		this.getFlagButtonDOM = getFlagButtonDOM;
+		this.formInvalidityListenerAPI = formInvalidityListenerAPI;
 		this.getFormDOM = getFormDOM;
 		this.getPostParentId = getPostParentId;
 		this.swapFlagBtn = swapFlagBtn;
 		this.updateCurrentPostFlags = updateCurrentPostFlags;
+		this.getReportReasonValidationErrorDOM = getReportReasonValidationErrorDOM;
+		this.resetCustomReportReasonCharCounter = resetCustomReportReasonCharCounter;
 		this.reportReasonPopupDOMWrapper = null;
 		this.reportReasonPopupDOMReferences = null;
 
 		this.initReportReasonPopupDOMWrapper();
 		this.initPopupContainer();
 		this.initPopupDOMReferences();
-		this.initReasonList();
 		this.initOffClickHandler();
+		this.initSuccessPopupCloseBtn();
 	}
 
 	initOffClickHandler() {
 		this.reportReasonPopupDOMWrapper.addEventListener('click', (event) => {
 			const checkDOMElementsId = (DOMElement) =>
-				DOMElement.id === 'reportReasonPopup' || DOMElement.id === 'reportReasonSuccessInfo';
+				DOMElement.id === 'reportReasonPopup' || DOMElement.id === 'reportReasonRequestFeedback';
 			const clickedOutsidePopup = !event.composedPath().some(checkDOMElementsId);
 
 			if (clickedOutsidePopup) {
 				this.hideReportReasonPopup();
 			}
 		});
-	}
-
-	initReasonList() {
-		const { reasonList } = this.reportReasonPopupDOMReferences;
-		reasonList.addEventListener('change', ({ target }) => {
-			this.reportReasonPopupDOMReferences.reportReasonValidationError.classList.remove(
-				'report-reason-popup__validation-error--show'
-			);
-
-			if (reasonList.children[reasonList.children.length - 1].contains(target)) {
-				this.reportReasonPopupDOMReferences.customReportReason.classList.add(
-					'report-reason-popup__custom-report-reason--show'
-				);
-				setTimeout(
-					this.reportReasonPopupDOMReferences.customReportReason.focus.bind(
-						this.reportReasonPopupDOMReferences.customReportReason
-					)
-				);
-			} else {
-				this.reportReasonPopupDOMReferences.customReportReason.classList.remove(
-					'report-reason-popup__custom-report-reason--show'
-				);
-			}
-		});
-	}
-
-	initButtons(submitForm, collectForumPostMetaData) {
-		this.reportReasonPopupDOMReferences.cancelButton.addEventListener('click', this.hideReportReasonPopup.bind(this));
-		this.reportReasonPopupDOMReferences.sendButton.addEventListener('click', (event) => {
-			submitForm(event, collectForumPostMetaData())
-				.then(this.onAjaxSuccess.bind(this), this.onAjaxError.bind(this))
-				.catch(error => console.error('Error???: ', error));
-		});
-		this.reportReasonPopupDOMReferences.closeReportReasonSentInfo.addEventListener('click', this.hideReportReasonPopup.bind(this));
 	}
 
 	initPopupContainer() {
@@ -85,80 +58,80 @@ class PopupController {
 		this.reportReasonPopupDOMReferences = {
 			reportReasonPopup: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonPopup'),
 			customReportReason: this.reportReasonPopupDOMWrapper.querySelector('#customReportReason'),
-			reportReasonSuccessInfo: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonSuccessInfo'),
-			reportReasonValidationError: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonValidationError'),
-			reasonList: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonList'),
-			cancelButton: this.reportReasonPopupDOMWrapper.querySelector('#cancelReportReason'),
-			sendButton: this.reportReasonPopupDOMWrapper.querySelector('#sendReportReason'),
-			closeReportReasonSentInfo: this.reportReasonPopupDOMWrapper.querySelector('#closeReportReasonSentInfo'),
+			reportReasonRequestFeedback: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonRequestFeedback'),
+			reportReasonRequestInfo: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonRequestInfo'),
+			closeReportReasonRequestFeedback: this.reportReasonPopupDOMWrapper.querySelector('#closeReportReasonRequestFeedback'),
 		};
 	}
 
 	getPopupWrapperHTML() {
 		return `
 			<div id="reportReasonPopup" class="report-reason-popup">
-				<p>${POPUP_LABELS.HEADER}</p>
-				
 				<form id="replaceableForm"></form>
 			</div>
-			<div id="reportReasonSuccessInfo" class="report-reason-popup__success-info">
-				${POPUP_LABELS.REPORT_SENT}
-				<button id="closeReportReasonSentInfo"
+			
+			<div id="reportReasonRequestFeedback" class="report-reason-popup__request-feedback">
+				<div id="reportReasonRequestInfo" class="report-reason-popup__request-feedback-info"></div>
+				<button id="closeReportReasonRequestFeedback"
 					class="report-reason-popup__button report-reason-popup__button--close"
 					type="button">${POPUP_LABELS.CLOSE}</button>
-			</div>`;
+			</div>
+		`;
 	}
 
 	showReportReasonPopup() {
-		this.reportReasonPopupDOMWrapper.classList.add('report-reason-wrapper--show');
-		this.getFormDOM().elements[0].focus();
+		this.formInvalidityListenerAPI.attach();
+		this.reportReasonPopupDOMWrapper.classList.add('display-block');
+		this.getFormDOM().elements.reportReason[0].focus();
 	}
 
 	hideReportReasonPopup() {
-		this.reportReasonPopupDOMReferences.reportReasonSuccessInfo.classList.remove(
-			'report-reason-popup__success-info--show'
-		);
-		this.reportReasonPopupDOMWrapper.classList.remove('report-reason-wrapper--show');
-		this.reportReasonPopupDOMReferences.customReportReason.classList.remove(
-			'report-reason-popup__custom-report-reason--show'
-		);
-		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('report-reason-popup--hide');
-		this.reportReasonPopupDOMReferences.reportReasonValidationError.classList.remove(
-			'report-reason-popup__validation-error--show'
-		);
-		this.getFormDOM().reset();
+		this.formInvalidityListenerAPI.detach();
+		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.remove('display-block');
+		this.reportReasonPopupDOMWrapper.classList.remove('display-block');
+		this.reportReasonPopupDOMReferences.customReportReason.parentNode.classList.add('display-none');
+		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('display-none');
+		this.getReportReasonValidationErrorDOM().classList.remove('display-block');
+
+		const formDOM = this.getFormDOM();
+		formDOM.reset();
+		formDOM.elements.customReportReason.required = false;
+		formDOM.elements.sendReportReason.disabled = false;
+
+		this.resetCustomReportReasonCharCounter();
+		this.getReportReasonValidationErrorDOM().innerHTML = ERROR_CODES.GENERIC_ERROR;
 	}
 
-	onAjaxSuccess({ response, formData, boundToggleSendWaitingState }) {
-		console.warn('response:', response);
-
-		boundToggleSendWaitingState(false);
-		this.updateCurrentPostFlags(response.currentFlags, formData);
-
+	onAjaxSuccess({ newFlags, formData }) {
 		const flagButtonDOM = this.getFlagButtonDOM();
+		const feedbackContent =
+			this.updateCurrentPostFlags(newFlags, formData) ? POPUP_LABELS.REPORT_SENT : ERROR_CODES.GENERIC_ERROR;
 
-		this.swapFlagBtn(
-			flagButtonDOM,
-			getUnFlagButtonHTML({
-				postType: formData.postType,
-				questionId: formData.questionId,
-				postId: formData.postId,
-				parentId: this.getPostParentId(formData.postType, flagButtonDOM),
-			})
-		);
-		this.showSuccessPopup();
+		if (feedbackContent === POPUP_LABELS.REPORT_SENT) {
+			this.swapFlagBtn(
+				flagButtonDOM,
+				getUnFlagButtonHTML({
+					postType: formData.postType,
+					questionId: formData.questionId,
+					postId: formData.postId,
+					parentId: this.getPostParentId(formData.postType, flagButtonDOM),
+				})
+			);
+		}
+
+		this.showFeedbackPopup(feedbackContent);
 	}
 
-	onAjaxError({ ajaxError, boundToggleSendWaitingState }) {
-		boundToggleSendWaitingState(false);
-		// TODO: add proper error handling
-		console.warn('ajaxError:', ajaxError);
+	showFeedbackPopup(feedbackContent) {
+		this.reportReasonPopupDOMReferences.reportReasonRequestInfo.innerHTML = feedbackContent;
+		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.add('display-none');
+		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add('report-reason-popup', 'display-block');
+		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback.focus();
 	}
 
-	showSuccessPopup() {
-		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.add('report-reason-popup--hide');
-		this.reportReasonPopupDOMReferences.reportReasonSuccessInfo.classList.add('report-reason-popup', 'report-reason-popup__success-info--show');
-		this.reportReasonPopupDOMReferences.closeReportReasonSentInfo.focus();
+	initSuccessPopupCloseBtn() {
+		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback
+			.addEventListener('click', this.hideReportReasonPopup.bind(this));
 	}
 }
 

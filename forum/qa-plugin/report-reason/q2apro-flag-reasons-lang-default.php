@@ -11,10 +11,26 @@ return [
     ],
     'POPUP_LABELS' => [
         'HEADER' => 'Zaznacz powód zgłoszenia lub podaj własny:',
-        'NO_REASON_CHECKED' => 'Nie zaznaczono powodu zgłoszenia!',
+        'CHAR_COUNTER_INFO' => 'pozostało znaków: ',
         'SEND' => 'Wyślij',
         'CANCEL' => 'Anuluj',
         'REPORT_SENT' => 'Zgłoszenie zostało wysłane.',
         'CLOSE' => 'Zamknij',
+    ],
+    'ERROR_CODES' => [
+        'GENERIC_ERROR' => 'Wystąpił nieoczekiwany błąd...<br>Prosimy, powiadom o tym <a href="/zasluzeni-pasjonaci-hall-of-fame">Administrację</a>.',
+        'NO_REASON_CHECKED' => 'Nie zaznaczono powodu zgłoszenia.',
+        'CUSTOM_REASON_EMPTY' => 'Nie podano własnego powodu zgłoszenia.',
+        'UNRECOGNIZED_POST_TYPE' => 'Nierozpoznany typ postu: ',
+        'USER_LOGGED_OUT' => 'Użytkownik nie jest zalogowany.',
+        'REQUEST_IS_NOT_VALID_JSON' => 'Zgłoszenie nie zawiera danych w formacie JSON.',
+        'EMPTY_REQUEST' => 'Zgłoszenie jest puste.',
+        'UNMATCHED_REQUEST_PROP' => 'Zgłoszenie zawiera nieprawidłowe dane.',
+        'INCORRECT_REQUEST_PROP_TYPE' => 'Zgłoszenie zawiera dane o nieprawidłowym typie.',
+        'INCORRECT_REPORT_TYPE' => 'Zgłoszenie jest nieprawidłowego typu.',
+        'REQUEST_NOT_CONTAIN_ALL_PROPS' => 'Zgłoszenie nie zawiera pełnych danych.',
+        'INVALID_REASON_ID' => 'Zgłoszenie zawiera nieprawidłowy identyfikator powodu.',
+        'EMPTY_ANSWER_PARAM' => 'Nie znaleziono odpowiedzi, do której odnosi się zgłoszenie.',
+        'INAPPROPRIATE_CUSTOM_REASON_USAGE' => 'Nieprawidłowe użycie własnego zgłoszenia.'
     ]
 ];

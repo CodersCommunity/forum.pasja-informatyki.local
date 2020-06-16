@@ -32,6 +32,11 @@ if (!defined('QA_VERSION')) {
 // language file
 qa_register_plugin_phrases('q2apro-flag-reasons-lang-default.php', 'q2apro_flagreasons_lang');
 
+// page validation
+qa_register_plugin_module(
+    'page', 'q2apro-flag-reasons-validation.php', 'q2apro_flag_reasons_validation', 'q2apro flag reasons Page Validation'
+);
+
 // page
 qa_register_plugin_module(
     'page', 'q2apro-flag-reasons-page.php', 'q2apro_flag_reasons_page', 'q2apro flag reasons Page'

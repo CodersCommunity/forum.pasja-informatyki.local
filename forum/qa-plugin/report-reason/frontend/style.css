@@ -9,10 +9,6 @@
     background: rgba(180, 180, 180, 0.8);
 }
 
-.report-reason-wrapper--show {
-    display: block;
-}
-
 .report-reason-popup {
     position: fixed;
     top: calc(50vh - (390px /2));
@@ -26,17 +22,24 @@
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5);
 }
 
-.report-reason-popup--hide {
-    display: none;
-}
-
 .report-reason-popup__form {
     margin-bottom: 0;
 }
 
+.report-reason-popup__form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.report-reason-popup__form legend {
+    margin-bottom: 10px;
+    padding: 0;
+}
+
 .report-reason-popup__list {
     list-style: none;
-    margin: 0;
+    margin: 0 0 15px;
     padding: 0;
 }
 
@@ -48,8 +51,18 @@
     margin-bottom: 10px;
 }
 
+.report-reason-popup__list li:last-of-type {
+    position: relative;
+}
+
+.report-reason-popup__custom-report-reason-char-counter-wrapper {
+    position: absolute;
+    right: 15px;
+    top: 2px;
+    font-style: italic;
+}
+
 .report-reason-popup__custom-report-reason {
-    display: none;
     width: 360px;
     min-height: 60px;
     margin-left: 15px;
@@ -57,21 +70,27 @@
     resize: vertical;
 }
 
-.report-reason-popup__custom-report-reason--show {
-    display: block;
-}
-
 .report-reason-popup__validation-error {
-    visibility: hidden;
+    display: none;
     color: #e74c3c;
     font-weight: bold;
-    height: 20px;
-    margin: 0 0 5px;
+    width: 375px;
+    min-height: 24px;
+    margin: -10px auto 10px;
     text-align: center;
+    border: 2px solid transparent;
 }
 
-.report-reason-popup__validation-error--show {
-    visibility: visible;
+.report-reason-popup__validation-error--blink {
+    animation: 1.75s blinkBorder ease-in-out;
+}
+
+@keyframes blinkBorder {
+    from {}
+
+    to {
+        border-color: red;
+    }
 }
 
 .report-reason-popup__button {
@@ -94,25 +113,14 @@
 }
 
 .report-reason-popup__button--save[disabled] {
-    background: #2c3e50;
+    background: darkgreen;
+    color: darkgrey;
     cursor: not-allowed;
 }
 
 .report-reason-popup__button--save[disabled] .qa-waiting {
     margin: 0 -20px 0 10px;
     border-radius: 10px;
-}
-
-.report-reason-popup__button--save--validation-blink {
-    animation: 0.75s blinkText ease-in-out;
-}
-
-@keyframes blinkText {
-    from {}
-
-    to {
-        color: red;
-    }
 }
 
 .report-reason-popup__button--cancel {
@@ -130,11 +138,19 @@
     background: #27ae60;
 }
 
-.report-reason-popup__success-info {
+.report-reason-popup__request-feedback {
     display: none;
     left: calc(50vw - (300px/2));
 }
 
-.report-reason-popup__success-info--show {
+.report-reason-popup__request-feedback-info {
+    text-align: center;
+}
+
+.display-block {
     display: block;
+}
+
+.display-none {
+    display: none;
 }
