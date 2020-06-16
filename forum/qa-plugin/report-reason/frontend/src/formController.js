@@ -41,13 +41,12 @@ class FormController {
 
 	getListItemsHTML({ reasonKey, reasonValue, index, isLast, textAreaDOM }) {
 		return `
-			<!-- TODO: handle checking inputs while tabbing -->
-			<li tabindex="1">
+			<li>
 				<label for="${reasonKey}">
 					<input id="${reasonKey}" 
 							type="radio" 
 							value="${index}" 
-							name="reportReason" 
+							name="reportReason"
 							data-requirable="true">
 					${reasonValue}
 				</label>

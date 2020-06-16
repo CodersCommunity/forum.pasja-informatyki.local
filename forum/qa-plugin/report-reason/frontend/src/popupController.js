@@ -111,6 +111,7 @@ class PopupController {
 
 	showReportReasonPopup() {
 		this.reportReasonPopupDOMWrapper.classList.add('report-reason-wrapper--show');
+		this.getFormDOM().elements[0].focus();
 	}
 
 	hideReportReasonPopup() {
@@ -157,6 +158,7 @@ class PopupController {
 	showSuccessPopup() {
 		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.add('report-reason-popup--hide');
 		this.reportReasonPopupDOMReferences.reportReasonSuccessInfo.classList.add('report-reason-popup', 'report-reason-popup__success-info--show');
+		this.reportReasonPopupDOMReferences.closeReportReasonSentInfo.focus();
 	}
 }
 
