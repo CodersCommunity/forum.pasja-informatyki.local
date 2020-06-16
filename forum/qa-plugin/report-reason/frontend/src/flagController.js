@@ -22,7 +22,6 @@ class FlagController {
 	}
 
 	getPostIdFromInputName(postType, inputName) {
-		// TODO: check if it works (changed exec to match)...
 		const [, postId] = inputName.match(this.regex[postType]);
 		return postId;
 	}

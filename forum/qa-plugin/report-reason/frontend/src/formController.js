@@ -60,9 +60,12 @@ class FormController {
 
 			<p id="reportReasonValidationError" class="report-reason-popup__validation-error">${POPUP_LABELS.NO_REASON_CHECKED}</p>
 
-			<!-- TODO: why its input not button? -->
-			<input id="cancelReportReason" type="button" value="${POPUP_LABELS.CANCEL}" class="report-reason-popup__button report-reason-popup__button--cancel">
-			<button id="sendReportReason" type="submit" class="report-reason-popup__button report-reason-popup__button--save">${POPUP_LABELS.SEND}</button>`;
+			<button id="cancelReportReason"
+				type="button"
+				class="report-reason-popup__button report-reason-popup__button--cancel">${POPUP_LABELS.CANCEL}</button>
+			<button id="sendReportReason"
+				type="submit"
+				class="report-reason-popup__button report-reason-popup__button--save">${POPUP_LABELS.SEND}</button>`;
 	}
 
 	getFormDOM() {
