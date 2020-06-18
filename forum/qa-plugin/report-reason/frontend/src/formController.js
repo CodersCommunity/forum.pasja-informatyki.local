@@ -191,6 +191,7 @@ class FormController {
 		reportResult
 			.then((response) => {
 				if (response.newFlags) {
+					this.sendButton.disabled = false;
 					onAjaxSuccess(response);
 				} else {
 					return Promise.reject(response);
@@ -204,7 +205,6 @@ class FormController {
 				}
 			})
 			.finally(() => {
-				this.sendButton.disabled = false;
 				this.toggleSendWaitingState(this.sendButton, false);
 			});
 	}
