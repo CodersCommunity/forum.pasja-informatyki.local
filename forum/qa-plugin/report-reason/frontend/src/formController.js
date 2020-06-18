@@ -1,4 +1,4 @@
-import sendAjax from "./ajaxService";
+import sendAjax from './ajaxService';
 
 const { NOTICE_LENGTH, POPUP_LABELS, ERROR_CODES } = FLAG_REASONS_METADATA;
 
@@ -55,7 +55,7 @@ class FormController {
 		this.reportReasonValidationErrorDOM = this.formDOM.querySelector('#reportReasonValidationError');
 	}
 
-	initTextArea(){
+	initTextArea() {
 		this.customReportReasonCharCounter = this.formDOM.querySelector('#customReportReasonCharCounter');
 		this.formDOM.elements.customReportReason.addEventListener('input', ({ target }) => {
 			this.formDOM.elements.sendReportReason.disabled = false;
@@ -74,7 +74,7 @@ class FormController {
 			},
 			detach: () => {
 				this.formDOM.removeEventListener('invalid', this.formInvalidityListenerAPI._handler, true);
-			}
+			},
 		};
 	}
 
@@ -117,7 +117,7 @@ class FormController {
 		return `
 			<fieldset>
 				<legend>${POPUP_LABELS.HEADER}</legend>
-				<ul id="reportReasonList" class="report-reason-popup__list">${ listItemsDOM }</ul>
+				<ul id="reportReasonList" class="report-reason-popup__list">${listItemsDOM}</ul>
 	
 				<span id="reportReasonValidationError" class="report-reason-popup__validation-error">${ERROR_CODES.GENERIC_ERROR}</span>
 	
@@ -142,7 +142,9 @@ class FormController {
 		this.formDOM.elements.cancelReportReason.addEventListener('click', hideReportReasonPopup);
 		this.formDOM.elements.sendReportReason.addEventListener('click', (event) => {
 			this.handleReportResult(
-				this.submitForm(event, collectForumPostMetaData()), onAjaxSuccess, showFeedbackPopup
+				this.submitForm(event, collectForumPostMetaData()),
+				onAjaxSuccess,
+				showFeedbackPopup
 			);
 		});
 	}
@@ -159,15 +161,13 @@ class FormController {
 	}
 
 	normalizeIntegerProps(props) {
-		return Object
-			.entries(props)
-			.reduce((normalizedProps, [key, value]) => {
-				if (this.requestIntegerKeys.includes(key)) {
-					normalizedProps[key] = parseInt(value);
-				}
+		return Object.entries(props).reduce((normalizedProps, [key, value]) => {
+			if (this.requestIntegerKeys.includes(key)) {
+				normalizedProps[key] = parseInt(value);
+			}
 
-				return normalizedProps;
-			}, props);
+			return normalizedProps;
+		}, props);
 	}
 
 	submitForm(event, collectedForumPostMetaData) {
@@ -184,20 +184,19 @@ class FormController {
 		const formData = this.prepareFormData(collectedForumPostMetaData);
 		this.toggleSendWaitingState(this.sendButton, true);
 
-		return sendAjax(this.normalizeIntegerProps(formData))
-			.then(response => ({ ...response, formData }))
+		return sendAjax(this.normalizeIntegerProps(formData)).then((response) => ({ ...response, formData }));
 	}
 
 	handleReportResult(reportResult, onAjaxSuccess, showFeedbackPopup) {
 		reportResult
-			.then(response => {
+			.then((response) => {
 				if (response.newFlags) {
-					onAjaxSuccess(response)
+					onAjaxSuccess(response);
 				} else {
 					return Promise.reject(response);
 				}
 			})
-			.catch(reason => {
+			.catch((reason) => {
 				if (reason.formValidationErrorCode) {
 					this.handleReportReasonError(reason);
 				} else {
@@ -228,8 +227,7 @@ class FormController {
 			return '';
 		}
 
-		return this.formDOM.elements.customReportReason.validity.valid ?
-				'NO_REASON_CHECKED' : 'CUSTOM_REASON_EMPTY';
+		return this.formDOM.elements.customReportReason.validity.valid ? 'NO_REASON_CHECKED' : 'CUSTOM_REASON_EMPTY';
 	}
 
 	getErrorContent(errorCode) {
@@ -238,7 +236,7 @@ class FormController {
 		}
 
 		if (errorCode.includes(':')) {
-			const [ errorCodeName, errorCodeValue ] = errorCode.split(':');
+			const [errorCodeName, errorCodeValue] = errorCode.split(':');
 
 			if (!ERROR_CODES[errorCodeName]) {
 				return ERROR_CODES.GENERIC_ERROR;
@@ -252,7 +250,10 @@ class FormController {
 
 	onFormSubmissionError(errorContent) {
 		this.reportReasonValidationErrorDOM.innerHTML = errorContent;
-		this.reportReasonValidationErrorDOM.classList.add('display-block', 'report-reason-popup__validation-error--blink');
+		this.reportReasonValidationErrorDOM.classList.add(
+			'display-block',
+			'report-reason-popup__validation-error--blink'
+		);
 
 		setTimeout(() => {
 			this.reportReasonValidationErrorDOM.classList.remove('report-reason-popup__validation-error--blink');

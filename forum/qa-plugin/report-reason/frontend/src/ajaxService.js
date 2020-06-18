@@ -18,18 +18,16 @@ function sendAjax(data) {
 			},
 			body: JSON.stringify(data),
 		})
-		.then((response) => {
-			clearTimeout(timeoutId);
+			.then((response) => {
+				clearTimeout(timeoutId);
 
-			if (!response.ok) {
-				reject(response.text());
-			}
+				if (!response.ok) {
+					reject(response.text());
+				}
 
-			return response
-				.json()
-				.then(resolve);
-		})
-		.catch(reject);
+				return response.json().then(resolve);
+			})
+			.catch(reject);
 	});
 }
 

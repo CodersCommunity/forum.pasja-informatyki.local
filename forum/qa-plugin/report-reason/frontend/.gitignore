@@ -1,2 +1,2 @@
 node_modules/
-dist/script.js.map
+dist/*.js.map

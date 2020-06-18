@@ -1,12 +1,17 @@
-import getUnFlagButtonHTML from "./unFlagButton";
+import getUnFlagButtonHTML from './unFlagButton';
 
 const { POPUP_LABELS, ERROR_CODES } = FLAG_REASONS_METADATA;
 
 class PopupController {
 	constructor({
-		getFlagButtonDOM, formInvalidityListenerAPI, getFormDOM,
-		getPostParentId, swapFlagBtn, updateCurrentPostFlags,
-		getReportReasonValidationErrorDOM, resetCustomReportReasonCharCounter
+		getFlagButtonDOM,
+		formInvalidityListenerAPI,
+		getFormDOM,
+		getPostParentId,
+		swapFlagBtn,
+		updateCurrentPostFlags,
+		getReportReasonValidationErrorDOM,
+		resetCustomReportReasonCharCounter,
 	}) {
 		this.getFlagButtonDOM = getFlagButtonDOM;
 		this.formInvalidityListenerAPI = formInvalidityListenerAPI;
@@ -48,7 +53,7 @@ class PopupController {
 		popupWrapper.classList.add('report-reason-wrapper');
 		popupWrapper.innerHTML = this.getPopupWrapperHTML();
 
-		const tempForm = popupWrapper.querySelector('#replaceableForm')
+		const tempForm = popupWrapper.querySelector('#replaceableForm');
 		tempForm.parentNode.replaceChild(this.getFormDOM(), tempForm);
 
 		this.reportReasonPopupDOMWrapper = popupWrapper;
@@ -60,7 +65,9 @@ class PopupController {
 			customReportReason: this.reportReasonPopupDOMWrapper.querySelector('#customReportReason'),
 			reportReasonRequestFeedback: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonRequestFeedback'),
 			reportReasonRequestInfo: this.reportReasonPopupDOMWrapper.querySelector('#reportReasonRequestInfo'),
-			closeReportReasonRequestFeedback: this.reportReasonPopupDOMWrapper.querySelector('#closeReportReasonRequestFeedback'),
+			closeReportReasonRequestFeedback: this.reportReasonPopupDOMWrapper.querySelector(
+				'#closeReportReasonRequestFeedback'
+			),
 		};
 	}
 
@@ -104,8 +111,9 @@ class PopupController {
 
 	onAjaxSuccess({ newFlags, formData }) {
 		const flagButtonDOM = this.getFlagButtonDOM();
-		const feedbackContent =
-			this.updateCurrentPostFlags(newFlags, formData) ? POPUP_LABELS.REPORT_SENT : ERROR_CODES.GENERIC_ERROR;
+		const feedbackContent = this.updateCurrentPostFlags(newFlags, formData)
+			? POPUP_LABELS.REPORT_SENT
+			: ERROR_CODES.GENERIC_ERROR;
 
 		if (feedbackContent === POPUP_LABELS.REPORT_SENT) {
 			this.swapFlagBtn(
@@ -125,13 +133,18 @@ class PopupController {
 	showFeedbackPopup(feedbackContent) {
 		this.reportReasonPopupDOMReferences.reportReasonRequestInfo.innerHTML = feedbackContent;
 		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.add('display-none');
-		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add('report-reason-popup', 'display-block');
+		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add(
+			'report-reason-popup',
+			'display-block'
+		);
 		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback.focus();
 	}
 
 	initSuccessPopupCloseBtn() {
-		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback
-			.addEventListener('click', this.hideReportReasonPopup.bind(this));
+		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback.addEventListener(
+			'click',
+			this.hideReportReasonPopup.bind(this)
+		);
 	}
 }
 

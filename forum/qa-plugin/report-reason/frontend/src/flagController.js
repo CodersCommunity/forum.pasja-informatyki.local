@@ -56,9 +56,7 @@ class FlagController {
 
 		const parentElement = flagButtonDOM.closest('[id*="_list"]');
 
-		return parentElement ?
-			parentElement.id.match(/\d+/)[0] :
-			null;
+		return parentElement ? parentElement.id.match(/\d+/)[0] : null;
 	}
 
 	swapFlagBtn(referenceBtn, btnHTML) {
@@ -70,9 +68,7 @@ class FlagController {
 	}
 
 	updateCurrentPostFlags(newFlagsHTML, postMetadata) {
-		const {
-			flags, flagsAlreadyExist, flagsParent
-		} = this.prepareFlagsUpdate(newFlagsHTML, postMetadata);
+		const { flags, flagsAlreadyExist, flagsParent } = this.prepareFlagsUpdate(newFlagsHTML, postMetadata);
 
 		if (!flags) {
 			console.error('Report reason response does not have new flags: ', newFlagsHTML);
@@ -100,8 +96,8 @@ class FlagController {
 		return {
 			flags: flagsDOM,
 			flagsAlreadyExist: !!postFlagsWrapper,
-			flagsParent: postFlagsWrapper || document.querySelector(`${classNamePart}meta`)
-		}
+			flagsParent: postFlagsWrapper || document.querySelector(`${classNamePart}meta`),
+		};
 	}
 }
 
