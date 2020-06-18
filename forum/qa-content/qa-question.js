@@ -106,8 +106,44 @@ function qa_submit_answer(questionid, elem)
 					}
 				});
 			} else if (lines[0]=='0') {
-				document.forms['a_form'].submit();
+				if (lines[1] === 'ALREADY_CLOSED') {
+					console.warn('lines: ', lines, ' /elem: ', elem);
+					qa_hide_waiting(elem);
 
+					const saveButton = elem;
+					saveButton.value = 'Zamień tą odpowiedź na komentarz do pytania';
+
+					const [, namePrefix] = [...saveButton.form.elements]
+						.find(e => e.name.includes('_'))
+						.name.split('_');
+
+					// a97_dotoc: 1
+					const doToc = document.createElement('input');
+					doToc.type = 'checkbox';
+					doToc.style.display = 'none';
+					doToc.name = `${namePrefix}_dotoc`;
+					doToc.id = doToc.name;
+					doToc.value = '1';
+
+					const commentOnSel = document.createElement('select');
+					commentOnSel.name = `${namePrefix}_dotoc`;
+					commentOnSel.style.display = 'none';
+
+					const questionId = location.pathname.split('/').find(Number);
+					// a97_commenton: 5
+					const commentOnOpt = document.createElement('option');
+					commentOnOpt.value = questionId;
+					commentOnOpt.style.display = 'none';
+
+					commentOnSel.appendChild(commentOnOpt);
+					saveButton.form.appendChild(commentOnSel);
+
+					const currentOnClick = saveButton.getAttribute('onclick').split(';');
+					const newOnClick = `qa_show_waiting_after(this, false); ${ currentOnClick.shift() };`;
+					saveButton.setAttribute('onclick', newOnClick);
+				} else {
+					document.forms['a_form'].submit();
+				}
 			} else {
 				qa_ajax_error();
 			}
