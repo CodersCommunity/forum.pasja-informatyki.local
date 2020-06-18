@@ -174,13 +174,10 @@ class FormController {
 		event.preventDefault();
 
 		this.sendButton = event.target;
-		this.sendButton.blur();
 		this.sendButton.disabled = true;
 
-		if (!this.formDOM.reportValidity()) {
-			const formValidationErrorCode =
-				this.formDOM.elements.customReportReason.validity.valid ? 'NO_REASON_CHECKED' : 'CUSTOM_REASON_EMPTY';
-
+		const formValidationErrorCode = this.validateForm();
+		if (formValidationErrorCode) {
 			return Promise.reject({ formValidationErrorCode });
 		}
 
@@ -224,6 +221,15 @@ class FormController {
 		}
 
 		console.error('Report reason rejected: ', reason, ' /errorContent: ', errorContent);
+	}
+
+	validateForm() {
+		if (this.formDOM.reportValidity()) {
+			return '';
+		}
+
+		return this.formDOM.elements.customReportReason.validity.valid ?
+				'NO_REASON_CHECKED' : 'CUSTOM_REASON_EMPTY';
 	}
 
 	getErrorContent(errorCode) {
