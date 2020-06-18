@@ -95,7 +95,7 @@
 	}
 
 
-	echo "QA_AJAX_RESPONSE\n0\n"; // fall back to non-Ajax submission if there were any problems
+	echo "QA_AJAX_RESPONSE\n0\nALREADY_CLOSED"; // fall back to non-Ajax submission if there were any problems
 
 
 /*
