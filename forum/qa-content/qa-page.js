@@ -897,11 +897,10 @@ function qa_ajax_error()
     function initInteractiveFeatures() {
         class CollapsibleCodeBlocks {
             isCodeCollapsible(codeBlock) {
-                // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
                 const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
-                const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
+                const isLongCodeAtQuestion = (codeBlock.innerHTML.includes('\n') && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
 
-                return isLongCodeAtReply || isLongCodeAtAsk;
+                return isLongCodeAtReply || isLongCodeAtQuestion;
             }
 
             getCodeBlockCollapsingBtn(codeBlock) {
@@ -935,8 +934,9 @@ function qa_ajax_error()
 
         class LanguageLabel {
             getLanguageName(codeBlock) {
-                const languageExplicitName = languages[codeBlock.classList[1]];
-                const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
+                const [zerothClassName, firstClassName] = codeBlock.classList;
+                const languageExplicitName = languages[firstClassName];
+                const languageImplicitName = languages[zerothClassName.slice(zerothClassName.indexOf(':') + 1, -1)];
 
                 return languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
             }
