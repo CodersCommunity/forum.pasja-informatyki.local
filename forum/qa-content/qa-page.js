@@ -216,9 +216,12 @@ function qa_ajax_error()
     Object.defineProperty(window, 'reloadBlocksOfCode', {
         configurable: false,
         writable: false,
-        value: (commentsToHighlight) => {
+        value: (postsToHighlight, ignoreAddingInteractiveBar) => {
             if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
-                const codeBlocks = [...commentsToHighlight.querySelectorAll('pre')];
+                const codeBlocks = [...postsToHighlight.querySelectorAll('pre')];
+
+                window.scanUnprocessedCodeBlocks(null, postsToHighlight);
+
                 const processedCodeBlocks = codeBlocks.map(codeBlock => {
                     /*
                      * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
@@ -230,7 +233,10 @@ function qa_ajax_error()
 
                     return processedCodeBlock;
                 });
-                window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
+
+                if (!ignoreAddingInteractiveBar) {
+                    window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
+                }
             } else {
                 console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
             }
@@ -429,16 +435,7 @@ function qa_ajax_error()
         const modalParent = document.querySelector('.qa-main-wrapper');
         modalParent.appendChild(modal);
 
-        if (window.hasOwnProperty('SyntaxHighlighter'))
-        {
-            // TODO: call reloadBlocksOfCode before
-            SyntaxHighlighter.highlight();
-        }
-
-        /*
-         * prepare blocks of code inside Preview to be collapsed/expanded
-         * "true" parameter lets to display collapsing blocks inside Preview Modal
-         */
+        window.reloadBlocksOfCode(modalContent, true);
         window.addInteractiveBarToCodeBlocks(true);
     }
 

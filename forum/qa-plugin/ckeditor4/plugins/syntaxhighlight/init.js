@@ -2,6 +2,7 @@
     'use strict';
 
     prepareCodeLanguages();
+    exposeScanUnprocessedCodeBlocks();
     document.addEventListener('DOMContentLoaded', scanUnprocessedCodeBlocks);
     SyntaxHighlighter.all();
 
@@ -59,8 +60,8 @@
         }
     }
 
-    function scanUnprocessedCodeBlocks() {
-        const preElements = [...document.querySelectorAll('pre[class*="brush:"]')];
+    function scanUnprocessedCodeBlocks(event, root = document) {
+        const preElements = [...root.querySelectorAll('pre[class*="brush:"]')];
         const loadedBrushes = Object
             .entries(SyntaxHighlighter.brushes)
             .map(([name, ctor]) => ({
@@ -121,5 +122,13 @@
                 pre.classList.replace(oldToken, newToken);
             }
         }
+    }
+
+    function exposeScanUnprocessedCodeBlocks() {
+        Object.defineProperty(window, 'scanUnprocessedCodeBlocks', {
+            configurable: false,
+            writable: false,
+            value: scanUnprocessedCodeBlocks
+        });
     }
 })();
