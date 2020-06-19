@@ -213,8 +213,6 @@ function qa_ajax_error()
 {
     'use strict';
 
-    const isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
-
     Object.defineProperty(window, 'reloadBlocksOfCode', {
         configurable: false,
         writable: false,
@@ -232,7 +230,7 @@ function qa_ajax_error()
 
                     return processedCodeBlock;
                 });
-                handleCodeCollapsing(false, isClipboardSupported, processedCodeBlocks);
+                window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
             } else {
                 console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
             }
@@ -440,7 +438,7 @@ function qa_ajax_error()
          * prepare blocks of code inside Preview to be collapsed/expanded
          * "true" parameter lets to display collapsing blocks inside Preview Modal
          */
-        handleCodeCollapsing(true, isClipboardSupported);
+        window.addInteractiveBarToCodeBlocks(true);
     }
 
     function createPostPreviewButton(postForm, ckeInstanceName) {
@@ -474,7 +472,7 @@ function qa_ajax_error()
 			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
 			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
 			 */
-            handleCodeCollapsing(false, isClipboardSupported);
+            window.addInteractiveBarToCodeBlocks(false);
         }
 
         if (questionId || newQuestion) {
@@ -845,3 +843,169 @@ function qa_ajax_error()
         }
     } );
 } () );
+
+// Feature: interactive code block bar
+;(() => {
+    'use strict';
+
+    const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 30;
+    const languages = {};
+
+    document.addEventListener('DOMContentLoaded', prepareLanguages);
+    Object.defineProperty(window, 'addInteractiveBarToCodeBlocks', {
+        configurable: false,
+        writable: false,
+        value: addInteractiveBarToCodeBlocks
+    });
+
+    function prepareLanguages() {
+        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
+    }
+
+    function addInteractiveBarToCodeBlocks(isInsidePreview, chosenCodeBlocks) {
+        getCodeBlocks(isInsidePreview, chosenCodeBlocks).forEach(decorateCodeBlock);
+
+        function decorateCodeBlock(codeBlock) {
+            const codeBlockBar = document.createElement('div');
+            codeBlockBar.classList.add('syntaxhighlighter-block-bar');
+            codeBlockBar.append(...getCodeBlockBarFeatureItems(codeBlock));
+
+            codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
+            codeBlock.parentNode.insertBefore(codeBlockBar, codeBlock);
+        }
+    }
+
+    function isCodeCollapsible(codeBlock) {
+        // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
+        const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
+        const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
+
+        return isLongCodeAtReply || isLongCodeAtAsk;
+    }
+
+    function getCodeBlocks(isInsidePreview, chosenCodeBlocks){
+        if (chosenCodeBlocks) {
+            return chosenCodeBlocks;
+        }
+
+        const highlightedCodeBlocksSelector = isInsidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
+        const highlightedCodeBlocks = document.querySelectorAll(highlightedCodeBlocksSelector);
+
+        if (highlightedCodeBlocks.length) {
+            return highlightedCodeBlocks;
+        }
+
+        const rawCodeBlocks = document.querySelectorAll('pre[class*="brush:"]');
+        return rawCodeBlocks;
+    }
+
+    function getCodeBlockCollapsingBtn(codeBlock) {
+        const codeBlockButton = document.createElement('button');
+        codeBlockButton.classList.add('syntaxhighlighter-button');
+        codeBlockButton.textContent = getCodeBlockCollapseBtnTxt(true);
+        codeBlockButton.type = 'button';
+        codeBlockButton.addEventListener('click', () => toggleBlockButtonCollapseState(codeBlock, codeBlockButton));
+
+        codeBlock.classList.add('collapsed-block');
+
+        return codeBlockButton;
+    }
+
+    function toggleBlockButtonCollapseState(codeBlock, codeBlockButton) {
+        const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+
+        codeBlockButton.textContent = getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
+        codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
+    }
+
+    function getCodeBlockCollapseBtnTxt(isCollapsed) {
+        const text = isCollapsed ? 'Rozwiń' : 'Zwiń';
+        return `-- ${ text } --`;
+    }
+
+    function getLanguageLabel(codeBlock) {
+        const languageExplicitName = languages[codeBlock.classList[1]];
+        const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
+
+        const languageName = document.createElement('div');
+        languageName.textContent = languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
+        languageName.classList.add('syntaxhighlighter-language');
+
+        return languageName;
+    }
+
+    function getCopyToClipboardBtn(ev)
+    {
+        // TODO: also check for Clipboard API
+        const isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
+
+        const copyCodeBtn = document.createElement('button');
+        copyCodeBtn.textContent = 'Kopiuj';
+        copyCodeBtn.classList.add('content-copy-btn');
+        copyCodeBtn.type = 'button';
+
+        if (isClipboardSupported/* && window.SyntaxHighlighter*/) {
+            copyCodeBtn.addEventListener('click', copyToClipboard);
+        } else {
+            copyCodeBtn.classList.add('content-copy-btn-disabled');
+        }
+
+        return copyCodeBtn;
+
+        function copyToClipboard({ target }) {
+            // prevent page refresh (or something weird) as default button action
+            // ev.preventDefault();
+            // if ( !ev.defaultPrevented ) { return false; }
+
+            var code = [];
+            var blockOfCodeBar = target.parentNode.parentNode;
+
+            // get block of code content - practically all lines of code inside
+            Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
+            {
+                code.push(lineOfCode.textContent);
+            });
+
+            /*
+             * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
+             * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
+             * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
+             * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
+             * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
+             */
+            var textArea = document.createElement("textarea");
+            textArea.classList.add('content-copy');
+
+            code.forEach(function(singleLineOfCode)
+            {
+                textArea.value += singleLineOfCode + '\r\n';
+            });
+
+            document.body.appendChild(textArea);
+
+            // if anything on the page is selected (a.k.a highlighted) - clear the selection
+            if (window.getSelection().rangeCount)
+                window.getSelection().removeAllRanges();
+
+            /*
+             * Below code will select given DOM elements
+             * and create Range Object, so that text content can be selected (a.k.a highlighted)
+             * Modified script from source: http://stackoverflow.com/a/1173319/4983840
+             */
+            var range = document.createRange();
+            range.selectNode( textArea );
+            window.getSelection().addRange(range);
+
+            // copy content that is select inside Document - so that is only textarea
+            document.execCommand('copy');
+
+            // remove <textarea> from DOM
+            document.body.removeChild(textArea);
+        }
+    }
+
+    function getCodeBlockBarFeatureItems(codeBlock) {
+        const codeCollapsibilityFeatureItem = isCodeCollapsible(codeBlock) && getCodeBlockCollapsingBtn(codeBlock);
+        return [getLanguageLabel(codeBlock), codeCollapsibilityFeatureItem, getCopyToClipboardBtn()].filter(Boolean);
+    }
+})();

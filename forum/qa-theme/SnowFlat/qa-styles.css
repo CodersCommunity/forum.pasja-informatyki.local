@@ -4805,7 +4805,7 @@ pre[class*="brush:"]::after
 {
 	background: lightgray;
 	color: gray;
-	cursor: auto;
+	cursor: not-allowed;
 }
 
 .content-copy-btn-disabled:hover::before
