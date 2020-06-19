@@ -4769,21 +4769,12 @@ pre[class*="brush:"]::after
 }
 
 
-/*
- *	Source: http://stackoverflow.com/a/30810322/4983840
- */
 .content-copy
 {
 	position: fixed;
-	top: 0;
+	bottom: 0;
 	left: 0;
-	width: 2em;
-	height: 2em;
-	padding: 0;
-	border: none;
-	outline: none;
-	box-shadow: none;
-	background: transparent;
+	z-index: -1;
 }
 
 .content-copy-btn
@@ -4801,14 +4792,18 @@ pre[class*="brush:"]::after
 	outline: none;
 }
 
-.content-copy-btn-disabled
+.content-copy-btn[disabled]
 {
 	background: lightgray;
 	color: gray;
+}
+
+.content-copy-btn[disabled]
+{
 	cursor: not-allowed;
 }
 
-.content-copy-btn-disabled:hover::before
+.content-copy-btn[disabled]:hover::before
 {
 	content: "Kopiowanie niedostępne";
 	position: absolute;
@@ -4824,7 +4819,7 @@ pre[class*="brush:"]::after
 	border-radius: 5px;
 }
 
-.content-copy-btn-disabled:hover::after
+.content-copy-btn[disabled]:hover::after
 {
 	content: "";
 	width: 0;

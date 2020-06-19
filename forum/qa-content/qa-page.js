@@ -431,6 +431,7 @@ function qa_ajax_error()
 
         if (window.hasOwnProperty('SyntaxHighlighter'))
         {
+            // TODO: call reloadBlocksOfCode before
             SyntaxHighlighter.highlight();
         }
 
@@ -953,61 +954,37 @@ function qa_ajax_error()
             constructor() {
                 // TODO: also check for Clipboard API
                 this.isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
+                this.NEW_LINE = '\r\n';
             }
 
             copyToClipboard({ target }) {
-                // prevent page refresh (or something weird) as default button action
-                // ev.preventDefault();
-                // if ( !ev.defaultPrevented ) { return false; }
+                const blockOfCodeBar = target.parentNode.parentNode;
+                const linesOfCode = [...blockOfCodeBar.querySelector('.code .container').children];
+                const code = linesOfCode.map((lineOfCode) => lineOfCode.textContent);
 
-                var code = [];
-                var blockOfCodeBar = target.parentNode.parentNode;
-
-                // get block of code content - practically all lines of code inside
-                Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
-                {
-                    code.push(lineOfCode.textContent);
-                });
-
-                /*
-                 * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
-                 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
-                 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
-                 * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
-                 * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
-                 */
-                var textArea = document.createElement("textarea");
+                const textArea = document.createElement("textarea");
                 textArea.classList.add('content-copy');
+                textArea.value = code.reduce((concatenatedCode, singleLineOfCode) => {
+                    return concatenatedCode + singleLineOfCode + this.NEW_LINE;
+                }, '');
 
-                code.forEach(function(singleLineOfCode)
-                {
-                    textArea.value += singleLineOfCode + '\r\n';
-                });
+                const selection = window.getSelection();
+                if (selection.rangeCount) {
+                    selection.removeAllRanges();
+                }
 
                 document.body.appendChild(textArea);
 
-                // if anything on the page is selected (a.k.a highlighted) - clear the selection
-                if (window.getSelection().rangeCount)
-                    window.getSelection().removeAllRanges();
+                const range = document.createRange();
+                range.selectNode(textArea);
+                selection.addRange(range);
 
-                /*
-                 * Below code will select given DOM elements
-                 * and create Range Object, so that text content can be selected (a.k.a highlighted)
-                 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
-                 */
-                var range = document.createRange();
-                range.selectNode( textArea );
-                window.getSelection().addRange(range);
-
-                // copy content that is select inside Document - so that is only textarea
                 document.execCommand('copy');
-
-                // remove <textarea> from DOM
                 document.body.removeChild(textArea);
             }
 
             addClickListener(copyCodeBtn) {
-                copyCodeBtn.addEventListener('click', this.copyToClipboard);
+                copyCodeBtn.addEventListener('click', this.copyToClipboard.bind(this));
             }
 
             getCopyToClipboardBtn() {
@@ -1016,10 +993,10 @@ function qa_ajax_error()
                 copyCodeBtn.classList.add('content-copy-btn');
                 copyCodeBtn.type = 'button';
 
-                if (this.isClipboardSupported/* && window.SyntaxHighlighter*/) {
+                if (this.isClipboardSupported) {
                     this.addClickListener(copyCodeBtn);
                 } else {
-                    copyCodeBtn.classList.add('content-copy-btn-disabled');
+                    copyCodeBtn.disabled = true;
                 }
 
                 return copyCodeBtn;
