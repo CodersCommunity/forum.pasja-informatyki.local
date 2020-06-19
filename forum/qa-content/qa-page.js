@@ -952,21 +952,61 @@ function qa_ajax_error()
 
         class CodeCopy {
             constructor() {
-                // TODO: also check for Clipboard API
-                this.isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
                 this.NEW_LINE = '\r\n';
+                this.initCopyingMethod();
             }
 
-            copyToClipboard({ target }) {
+            initCopyingMethod() {
+                this.isCopyByQueryCommand =
+                    !!window.getSelection && document.queryCommandSupported('copy');
+                this.isCopyByClipboardAPI = window.navigator.clipboard && window.navigator.clipboard.writeText;
+
+                if (this.isCopyByClipboardAPI) {
+                    this.isCopyingSupported = true;
+                    this.copyToClipboard = this.copyByClipboardAPI;
+                } else if (this.isCopyByQueryCommand) {
+                    this.isCopyingSupported = true;
+                    this.copyToClipboard = this.copyByQueryCommand;
+                } else {
+                    this.isCopyingSupported = false;
+                    this.copyToClipboard = () => {console.error('Copy to clipboard is not available!')}
+                }
+            }
+
+            getContentToCopy(target) {
                 const blockOfCodeBar = target.parentNode.parentNode;
                 const linesOfCode = [...blockOfCodeBar.querySelector('.code .container').children];
-                const code = linesOfCode.map((lineOfCode) => lineOfCode.textContent);
+                const contentToCopy = linesOfCode
+                    .map((lineOfCode) => lineOfCode.textContent)
+                    .reduce((concatenatedCode, singleLineOfCode) => {
+                        return concatenatedCode + singleLineOfCode + this.NEW_LINE;
+                    }, '');
 
+                return contentToCopy;
+            }
+
+            copyByClipboardAPI({ target }) {
+                window.navigator.clipboard
+                    .writeText(this.getContentToCopy(target))
+                    .catch((e) => { console.warn(e);this.tryFallbackToOlderCopyMethod(target) });
+            }
+
+            tryFallbackToOlderCopyMethod(target) {
+                if (this.isCopyByQueryCommand) {
+                    this.copyByQueryCommand(target);
+                } else {
+                    target.classList.add('content-copy-error');
+
+                    setTimeout(() => {
+                        target.classList.remove('content-copy-error');
+                    }, 3000);
+                }
+            }
+
+            copyByQueryCommand({ target }) {
                 const textArea = document.createElement("textarea");
                 textArea.classList.add('content-copy');
-                textArea.value = code.reduce((concatenatedCode, singleLineOfCode) => {
-                    return concatenatedCode + singleLineOfCode + this.NEW_LINE;
-                }, '');
+                textArea.value = this.getContentToCopy(target);
 
                 const selection = window.getSelection();
                 if (selection.rangeCount) {
@@ -993,7 +1033,7 @@ function qa_ajax_error()
                 copyCodeBtn.classList.add('content-copy-btn');
                 copyCodeBtn.type = 'button';
 
-                if (this.isClipboardSupported) {
+                if (this.isCopyingSupported) {
                     this.addClickListener(copyCodeBtn);
                 } else {
                     copyCodeBtn.disabled = true;

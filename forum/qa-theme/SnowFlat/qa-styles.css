@@ -4803,6 +4803,11 @@ pre[class*="brush:"]::after
 	cursor: not-allowed;
 }
 
+.content-copy-error::before
+{
+
+}
+
 .content-copy-btn[disabled]:hover::before
 {
 	content: "Kopiowanie niedostępne";
