@@ -988,24 +988,24 @@ function qa_ajax_error()
             copyByClipboardAPI({ target }) {
                 window.navigator.clipboard
                     .writeText(this.getContentToCopy(target))
-                    .catch((e) => { console.warn(e);this.tryFallbackToOlderCopyMethod(target) });
+                    .catch(() => this.tryFallbackToOlderCopyMethod(target));
             }
 
             tryFallbackToOlderCopyMethod(target) {
                 if (this.isCopyByQueryCommand) {
-                    this.copyByQueryCommand(target);
+                    this.copyByQueryCommand({ target });
                 } else {
-                    target.classList.add('content-copy-error');
+                    target.classList.add('content-copy-tooltip', 'content-copy-error');
 
                     setTimeout(() => {
-                        target.classList.remove('content-copy-error');
+                        target.classList.remove('content-copy-tooltip', 'content-copy-error');
                     }, 3000);
                 }
             }
 
             copyByQueryCommand({ target }) {
                 const textArea = document.createElement("textarea");
-                textArea.classList.add('content-copy');
+                textArea.classList.add('content-copy-placeholder');
                 textArea.value = this.getContentToCopy(target);
 
                 const selection = window.getSelection();
@@ -1036,6 +1036,7 @@ function qa_ajax_error()
                 if (this.isCopyingSupported) {
                     this.addClickListener(copyCodeBtn);
                 } else {
+                    copyCodeBtn.classList.add('content-copy-tooltip');
                     copyCodeBtn.disabled = true;
                 }
 

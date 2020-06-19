@@ -4769,7 +4769,7 @@ pre[class*="brush:"]::after
 }
 
 
-.content-copy
+.content-copy-placeholder
 {
 	position: fixed;
 	bottom: 0;
@@ -4798,19 +4798,13 @@ pre[class*="brush:"]::after
 	color: gray;
 }
 
-.content-copy-btn[disabled]
+.content-copy-btn[disabled]:hover
 {
 	cursor: not-allowed;
 }
 
-.content-copy-error::before
+.content-copy-tooltip::before
 {
-
-}
-
-.content-copy-btn[disabled]:hover::before
-{
-	content: "Kopiowanie niedostępne";
 	position: absolute;
 	background: black;
 	color: white;
@@ -4824,7 +4818,18 @@ pre[class*="brush:"]::after
 	border-radius: 5px;
 }
 
-.content-copy-btn[disabled]:hover::after
+.content-copy-tooltip.content-copy-error::before
+{
+	content: 'Błąd kopiowania!';
+}
+
+.content-copy-btn[disabled].content-copy-tooltip:hover::before
+{
+	content: "Kopiowanie niedostępne";
+}
+
+.content-copy-btn[disabled]:hover::after,
+.content-copy-error::after
 {
 	content: "";
 	width: 0;
