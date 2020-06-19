@@ -313,7 +313,7 @@ function set_category_description(idprefix)
 		var alertDiv = document.createElement('div');
 		alertDiv.id = 'spoj-alert';
 		alertDiv.innerHTML = 'Twoje pytanie dotyczy zadania z serwisu SPOJ?<br>Nie psuj zabawy innym - nie umieszczaj całego kodu i zapoznaj się z <a href="http://forum.pasja-informatyki.pl/90416/spoj-zasady-umieszczania-postow?show=90416#q90416" target="_blank">tym tematem</a>.';
-		alertDiv.classList.add('spoj-alert');
+		alertDiv.classList.add('post-submission-alert');
 
 		function detectSpoj(place, ev)
 		{

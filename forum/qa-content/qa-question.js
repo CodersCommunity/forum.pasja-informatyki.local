@@ -106,41 +106,8 @@ function qa_submit_answer(questionid, elem)
 					}
 				});
 			} else if (lines[0]=='0') {
-				if (lines[1] === 'ALREADY_CLOSED') {
-					console.warn('lines: ', lines, ' /elem: ', elem);
-					qa_hide_waiting(elem);
-
-					const saveButton = elem;
-					saveButton.value = 'Zamień tą odpowiedź na komentarz do pytania';
-
-					const [, namePrefix] = [...saveButton.form.elements]
-						.find(e => e.name.includes('_'))
-						.name.split('_');
-
-					// a97_dotoc: 1
-					const doToc = document.createElement('input');
-					doToc.type = 'checkbox';
-					doToc.style.display = 'none';
-					doToc.name = `${namePrefix}_dotoc`;
-					doToc.id = doToc.name;
-					doToc.value = '1';
-
-					const commentOnSel = document.createElement('select');
-					commentOnSel.name = `${namePrefix}_dotoc`;
-					commentOnSel.style.display = 'none';
-
-					const questionId = location.pathname.split('/').find(Number);
-					// a97_commenton: 5
-					const commentOnOpt = document.createElement('option');
-					commentOnOpt.value = questionId;
-					commentOnOpt.style.display = 'none';
-
-					commentOnSel.appendChild(commentOnOpt);
-					saveButton.form.appendChild(commentOnSel);
-
-					const currentOnClick = saveButton.getAttribute('onclick').split(';');
-					const newOnClick = `qa_show_waiting_after(this, false); ${ currentOnClick.shift() };`;
-					saveButton.setAttribute('onclick', newOnClick);
+				if (lines[1] === 'ALREADY_CLOSED' /* TODO: handle case for already hidden question */) {
+					window.handleRefusedAnswer(elem);
 				} else {
 					document.forms['a_form'].submit();
 				}
@@ -346,6 +313,22 @@ function qa_form_params(formname)
 }
 
 function qa_scroll_page_to(scroll)
+
 {
 	$('html,body').animate({scrollTop: scroll}, 400);
+}
+
+function handleRefusedAnswer(submitButton) {
+	qa_hide_waiting(submitButton);
+	submitButton.disabled = true;
+
+	const answerSubmissionError = document.createElement('div');
+	answerSubmissionError.innerHTML =
+		'Nie można dodać odpowiedzi, ponieważ pytanie zostało zamknięte.<br>Jeśli chcesz, to dodaj swój post w formie komentarza.';
+	answerSubmissionError.classList.add('post-submission-alert');
+
+	const emailNotificationOption = submitButton.form.elements.a_notify.parentNode.parentNode;
+	emailNotificationOption.remove();
+
+	submitButton.parentNode.insertBefore(answerSubmissionError, submitButton);
 }
