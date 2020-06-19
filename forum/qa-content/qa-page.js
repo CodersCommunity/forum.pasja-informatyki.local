@@ -858,6 +858,8 @@ function qa_ajax_error()
         value: addInteractiveBarToCodeBlocks
     });
 
+    const getCodeBlockBarFeatureItems = initInteractiveFeatures();
+
     function prepareLanguages() {
         SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
     }
@@ -891,141 +893,149 @@ function qa_ajax_error()
         }
     }
 
-    class CollapsibleCodeBlocksFeature {
-        isCodeCollapsible(codeBlock) {
-            // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
-            const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
-            const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
+    function initInteractiveFeatures() {
+        class CollapsibleCodeBlocks {
+            isCodeCollapsible(codeBlock) {
+                // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
+                const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
+                const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
 
-            return isLongCodeAtReply || isLongCodeAtAsk;
-        }
-
-        getCodeBlockCollapsingBtn(codeBlock) {
-            const codeBlockButton = document.createElement('button');
-            codeBlockButton.classList.add('syntaxhighlighter-button');
-            codeBlockButton.textContent = this.getCodeBlockCollapseBtnTxt(true);
-            codeBlockButton.type = 'button';
-            codeBlockButton.addEventListener('click', () => this.toggleBlockButtonCollapseState(codeBlock, codeBlockButton));
-
-            codeBlock.classList.add('collapsed-block');
-
-            return codeBlockButton;
-        }
-
-        getCodeBlockCollapseBtnTxt(isCollapsed) {
-            const text = isCollapsed ? 'Rozwiń' : 'Zwiń';
-            return `-- ${ text } --`;
-        }
-
-        toggleBlockButtonCollapseState(codeBlock, codeBlockButton) {
-            const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
-
-            codeBlockButton.textContent = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
-            codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
-        }
-    }
-    const collapsibleCodeBlocksFeature = new CollapsibleCodeBlocksFeature();
-
-    class LanguageLabel {
-        getLanguageName(codeBlock) {
-            const languageExplicitName = languages[codeBlock.classList[1]];
-            const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
-
-            return languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
-        }
-
-        getLanguageLabel(codeBlock) {
-            const languageNameLabel = document.createElement('div');
-            languageNameLabel.textContent = this.getLanguageName(codeBlock);
-            languageNameLabel.classList.add('syntaxhighlighter-language');
-
-            return languageNameLabel;
-        }
-    }
-    const languageLabel = new LanguageLabel();
-
-    class CodeCopyFeature {
-        constructor() {
-
-        }
-
-        copyToClipboard({ target }) {
-            // prevent page refresh (or something weird) as default button action
-            // ev.preventDefault();
-            // if ( !ev.defaultPrevented ) { return false; }
-
-            var code = [];
-            var blockOfCodeBar = target.parentNode.parentNode;
-
-            // get block of code content - practically all lines of code inside
-            Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
-            {
-                code.push(lineOfCode.textContent);
-            });
-
-            /*
-             * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
-             * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
-             * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
-             * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
-             * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
-             */
-            var textArea = document.createElement("textarea");
-            textArea.classList.add('content-copy');
-
-            code.forEach(function(singleLineOfCode)
-            {
-                textArea.value += singleLineOfCode + '\r\n';
-            });
-
-            document.body.appendChild(textArea);
-
-            // if anything on the page is selected (a.k.a highlighted) - clear the selection
-            if (window.getSelection().rangeCount)
-                window.getSelection().removeAllRanges();
-
-            /*
-             * Below code will select given DOM elements
-             * and create Range Object, so that text content can be selected (a.k.a highlighted)
-             * Modified script from source: http://stackoverflow.com/a/1173319/4983840
-             */
-            var range = document.createRange();
-            range.selectNode( textArea );
-            window.getSelection().addRange(range);
-
-            // copy content that is select inside Document - so that is only textarea
-            document.execCommand('copy');
-
-            // remove <textarea> from DOM
-            document.body.removeChild(textArea);
-        }
-
-        addListener(copyCodeBtn) {
-            copyCodeBtn.addEventListener('click', this.copyToClipboard);
-        }
-
-        getCopyToClipboardBtn() {
-            // TODO: also check for Clipboard API
-            const isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
-
-            const copyCodeBtn = document.createElement('button');
-            copyCodeBtn.textContent = 'Kopiuj';
-            copyCodeBtn.classList.add('content-copy-btn');
-            copyCodeBtn.type = 'button';
-
-            if (isClipboardSupported/* && window.SyntaxHighlighter*/) {
-                this.addListener(copyCodeBtn);
-            } else {
-                copyCodeBtn.classList.add('content-copy-btn-disabled');
+                return isLongCodeAtReply || isLongCodeAtAsk;
             }
 
-            return copyCodeBtn;
-        }
-    }
-    const codeCopyFeature = new CodeCopyFeature();
+            getCodeBlockCollapsingBtn(codeBlock) {
+                if (!this.isCodeCollapsible(codeBlock)) {
+                    return;
+                }
 
-    function getCodeBlockBarFeatureItems(codeBlock) {
-        const codeCollapsibilityFeatureItem = collapsibleCodeBlocksFeature.isCodeCollapsible(codeBlock) && collapsibleCodeBlocksFeature.getCodeBlockCollapsingBtn(codeBlock);
-        return [languageLabel.getLanguageLabel(codeBlock), codeCollapsibilityFeatureItem, codeCopyFeature.getCopyToClipboardBtn()].filter(Boolean);
+                const codeBlockButton = document.createElement('button');
+                codeBlockButton.classList.add('syntaxhighlighter-button');
+                codeBlockButton.textContent = this.getCodeBlockCollapseBtnTxt(true);
+                codeBlockButton.type = 'button';
+                codeBlockButton.addEventListener('click', () => this.toggleBlockButtonCollapseState(codeBlock, codeBlockButton));
+
+                codeBlock.classList.add('collapsed-block');
+
+                return codeBlockButton;
+            }
+
+            getCodeBlockCollapseBtnTxt(isCollapsed) {
+                const text = isCollapsed ? 'Rozwiń' : 'Zwiń';
+                return `-- ${ text } --`;
+            }
+
+            toggleBlockButtonCollapseState(codeBlock, codeBlockButton) {
+                const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+
+                codeBlockButton.textContent = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
+                codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
+            }
+        }
+
+        class LanguageLabel {
+            getLanguageName(codeBlock) {
+                const languageExplicitName = languages[codeBlock.classList[1]];
+                const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
+
+                return languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
+            }
+
+            getLanguageLabel(codeBlock) {
+                const languageNameLabel = document.createElement('div');
+                languageNameLabel.textContent = this.getLanguageName(codeBlock);
+                languageNameLabel.classList.add('syntaxhighlighter-language');
+
+                return languageNameLabel;
+            }
+        }
+
+        class CodeCopy {
+            constructor() {
+                // TODO: also check for Clipboard API
+                this.isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
+            }
+
+            copyToClipboard({ target }) {
+                // prevent page refresh (or something weird) as default button action
+                // ev.preventDefault();
+                // if ( !ev.defaultPrevented ) { return false; }
+
+                var code = [];
+                var blockOfCodeBar = target.parentNode.parentNode;
+
+                // get block of code content - practically all lines of code inside
+                Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
+                {
+                    code.push(lineOfCode.textContent);
+                });
+
+                /*
+                 * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
+                 * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
+                 * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
+                 * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
+                 * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
+                 */
+                var textArea = document.createElement("textarea");
+                textArea.classList.add('content-copy');
+
+                code.forEach(function(singleLineOfCode)
+                {
+                    textArea.value += singleLineOfCode + '\r\n';
+                });
+
+                document.body.appendChild(textArea);
+
+                // if anything on the page is selected (a.k.a highlighted) - clear the selection
+                if (window.getSelection().rangeCount)
+                    window.getSelection().removeAllRanges();
+
+                /*
+                 * Below code will select given DOM elements
+                 * and create Range Object, so that text content can be selected (a.k.a highlighted)
+                 * Modified script from source: http://stackoverflow.com/a/1173319/4983840
+                 */
+                var range = document.createRange();
+                range.selectNode( textArea );
+                window.getSelection().addRange(range);
+
+                // copy content that is select inside Document - so that is only textarea
+                document.execCommand('copy');
+
+                // remove <textarea> from DOM
+                document.body.removeChild(textArea);
+            }
+
+            addClickListener(copyCodeBtn) {
+                copyCodeBtn.addEventListener('click', this.copyToClipboard);
+            }
+
+            getCopyToClipboardBtn() {
+                const copyCodeBtn = document.createElement('button');
+                copyCodeBtn.textContent = 'Kopiuj';
+                copyCodeBtn.classList.add('content-copy-btn');
+                copyCodeBtn.type = 'button';
+
+                if (this.isClipboardSupported/* && window.SyntaxHighlighter*/) {
+                    this.addClickListener(copyCodeBtn);
+                } else {
+                    copyCodeBtn.classList.add('content-copy-btn-disabled');
+                }
+
+                return copyCodeBtn;
+            }
+        }
+
+        const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
+        const languageLabel = new LanguageLabel();
+        const codeCopy = new CodeCopy();
+
+        return function getCodeBlockBarFeatureItems(codeBlock) {
+            return [
+                languageLabel.getLanguageLabel(codeBlock),
+                collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
+                codeCopy.getCopyToClipboardBtn()
+            ].filter(Boolean);
+        }
     }
 })();
