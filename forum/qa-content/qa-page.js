@@ -969,7 +969,9 @@ function qa_ajax_error()
                     this.copyToClipboard = this.copyByQueryCommand;
                 } else {
                     this.isCopyingSupported = false;
-                    this.copyToClipboard = () => {console.error('Copy to clipboard is not available!')}
+                    this.copyToClipboard = function() {
+                        console.error('Copy to clipboard is not available!');
+                    }
                 }
             }
 
@@ -977,8 +979,7 @@ function qa_ajax_error()
                 const blockOfCodeBar = target.parentNode.parentNode;
                 const linesOfCode = [...blockOfCodeBar.querySelector('.code .container').children];
                 const contentToCopy = linesOfCode
-                    .map((lineOfCode) => lineOfCode.textContent)
-                    .reduce((concatenatedCode, singleLineOfCode) => {
+                    .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
                         return concatenatedCode + singleLineOfCode + this.NEW_LINE;
                     }, '');
 
