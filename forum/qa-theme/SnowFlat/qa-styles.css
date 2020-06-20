@@ -4895,8 +4895,7 @@ form div.qa-q-view-content
 	height: 19px;
 }
 
-.entry-content.below-snippets
-{
+.entry-content.comment-snippets {
 	padding-top: 10px;
 }
 
