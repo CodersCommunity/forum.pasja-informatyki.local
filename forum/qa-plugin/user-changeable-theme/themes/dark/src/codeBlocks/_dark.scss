@@ -112,15 +112,8 @@
   color: #ffaa3e !important;
 }
 
-.syntaxhighlighter-button, .content-copy-btn {
+.syntaxhighlighter-collapsible-button, .content-copy-btn {
 	background: #3a404b;
 	color: $color;
 	border: none;
-	border-radius: 0;
-	margin-top: 3px;
-}
-
-.content-copy-btn {
-	margin-top: 2px;
-	font-size: 12px;
 }

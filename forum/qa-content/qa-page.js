@@ -893,6 +893,11 @@ function qa_ajax_error()
 
     function initInteractiveFeatures() {
         class CollapsibleCodeBlocks {
+            constructor() {
+                this.expandSign = '<span class="collapsible-btn-sign">&downarrow;</span>';
+                this.collapseSign = '<span class="collapsible-btn-sign">&uparrow;</span>';
+            }
+
             isCodeCollapsible(codeBlock) {
                 const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
                 const isLongCodeAtQuestion = (codeBlock.innerHTML.includes('\n') && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
@@ -905,26 +910,27 @@ function qa_ajax_error()
                     return;
                 }
 
-                const codeBlockButton = document.createElement('button');
-                codeBlockButton.classList.add('syntaxhighlighter-button');
-                codeBlockButton.textContent = this.getCodeBlockCollapseBtnTxt(true);
-                codeBlockButton.type = 'button';
-                codeBlockButton.addEventListener('click', () => this.toggleBlockButtonCollapseState(codeBlock, codeBlockButton));
+                const codeBlockCollapsibleBtn = document.createElement('button');
+                codeBlockCollapsibleBtn.classList.add('syntaxhighlighter-collapsible-button');
+                codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(true);
+                codeBlockCollapsibleBtn.type = 'button';
+                codeBlockCollapsibleBtn.addEventListener('click', () => this.toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn));
 
                 codeBlock.classList.add('collapsed-block');
 
-                return codeBlockButton;
+                return codeBlockCollapsibleBtn;
             }
 
             getCodeBlockCollapseBtnTxt(isCollapsed) {
-                const text = isCollapsed ? 'Rozwiń' : 'Zwiń';
-                return `-- ${ text } --`;
+                return isCollapsed ?
+                    `${ this.expandSign }Rozwiń${ this.expandSign }` :
+                    `${ this.collapseSign }Zwiń${ this.collapseSign }`;
             }
 
-            toggleBlockButtonCollapseState(codeBlock, codeBlockButton) {
+            toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn) {
                 const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
 
-                codeBlockButton.textContent = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
+                codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
                 codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
             }
         }

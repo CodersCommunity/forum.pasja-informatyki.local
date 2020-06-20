@@ -26,7 +26,7 @@
                 ['C/C++', 'cpp'],
                 ['CSS', 'css'],
                 ['Delphi', 'delphi'],
-                ['Javascript', 'jscript'],
+                ['JavaScript', 'jscript'],
                 ['Java', 'java'],
                 ['Perl', 'perl'],
                 ['PHP', 'php'],
