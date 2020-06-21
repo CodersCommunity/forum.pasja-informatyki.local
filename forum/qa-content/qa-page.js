@@ -898,6 +898,11 @@ function qa_ajax_error()
                 this.expandedState = 'expanded-state';
             }
 
+            prepareCollapsibleAnimationValue(codeBlock) {
+                const codeBlockRawHeight = codeBlock.querySelector('table').clientHeight;
+                codeBlock.style.setProperty('--code-block-raw-height', `${ codeBlockRawHeight }px`);
+            }
+
             isCodeCollapsible(codeBlock) {
                 const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
                 const isLongCodeAtQuestion = (codeBlock.innerHTML.includes('\n') && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
@@ -917,6 +922,8 @@ function qa_ajax_error()
                 codeBlockCollapsibleBtn.addEventListener('click', () => this.toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn));
 
                 codeBlock.classList.add('collapsed-block');
+
+                this.prepareCollapsibleAnimationValue(codeBlock);
 
                 return codeBlockCollapsibleBtn;
             }

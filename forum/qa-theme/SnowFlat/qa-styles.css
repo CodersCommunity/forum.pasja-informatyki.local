@@ -4595,6 +4595,13 @@ pre[class*="brush:"]
 	overflow: scroll;
 }
 
+.syntaxhighlighter
+{
+	max-height: var(--code-block-raw-height); /* provided by inline style from JavaScript */
+	--syntaxhighlighter-collapsible-transition: max-height 0.2s ease-in-out;
+	transition: var(--syntaxhighlighter-collapsible-transition);
+}
+
 .syntaxhighlighter-parent,
 .syntaxhighlighter
 {
@@ -4603,16 +4610,17 @@ pre[class*="brush:"]
 .syntaxhighlighter.collapsed-block,
 pre[class*="brush:"].collapsed-block
 {
-  	height: 110px;
+  	max-height: 110px;
+	transition: var(--syntaxhighlighter-collapsible-transition);
 	overflow: hidden;
- }
+}
 
+.post-preview.syntaxhighlighter-parent pre[class*="brush:"]
+{
+	margin: 1px 0;
+	width: 100%;
+}
 
- .post-preview.syntaxhighlighter-parent pre[class*="brush:"]
- {
-	 margin: 1px 0;
-	 width: 100%;
- }
 pre[class*="brush:"]::before
 {
 	content: attr(data-state);
