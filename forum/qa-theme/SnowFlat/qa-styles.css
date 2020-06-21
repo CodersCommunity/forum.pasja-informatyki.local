@@ -1975,12 +1975,14 @@ input[type="submit"], button {
 	background: #27ae60 none;
 }
 
-.qa-form-tall-button-answer[disabled] {
-	background: #117964;
+.qa-form-tall-button-answer[disabled],
+.qa-form-tall-button-comment[disabled] {
+	background: #0a5d5e;
 	color: darkgrey;
 }
 
-.qa-form-tall-button-answer[disabled]:hover {
+.qa-form-tall-button-answer[disabled]:hover,
+.qa-form-tall-button-comment[disabled]:hover {
 	cursor: not-allowed;
 	background: #0a5d5e;
 }
@@ -4578,7 +4580,7 @@ a.sidebarnav:hover {
 {
 	border: 2px solid red;
 	color: red;
-	padding: 5px 0;
+	padding: 15px 0;
 	margin: 5px 0;
 	text-align: center;
 	font-weight: bold;

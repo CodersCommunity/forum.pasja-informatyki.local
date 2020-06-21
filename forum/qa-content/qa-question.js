@@ -106,8 +106,14 @@ function qa_submit_answer(questionid, elem)
 					}
 				});
 			} else if (lines[0]=='0') {
-				if (lines[1] === 'ALREADY_CLOSED' /* TODO: handle case for already hidden question */) {
-					window.handleRefusedAnswer(elem);
+				const [, answerRefuseReason ] = lines;
+
+				if (answerRefuseReason === 'ALREADY_CLOSED' || answerRefuseReason === 'UNAVAILABLE') {
+					window.handleRefusedPost({
+						postType: 'answer',
+						postRefuseReason: answerRefuseReason,
+						submitButton: elem
+					});
 				} else {
 					document.forms['a_form'].submit();
 				}
@@ -142,7 +148,19 @@ function qa_submit_comment(questionid, parentid, elem) {
 					}
 				});
 		} else if (lines[0] == '0') {
-			document.forms['c_form_' + parentid].submit();
+			const [, commentRefuseReason] = lines;
+
+			if (commentRefuseReason === 'UNAVAILABLE') {
+				window.handleRefusedPost({
+					postType: 'comment',
+					postRefuseReason: commentRefuseReason,
+					parentId: parentid,
+					parentPostIsQuestion: questionid === parentid,
+					submitButton: elem
+				});
+			} else {
+				document.forms['c_form_' + parentid].submit();
+			}
 		} else {
 			qa_ajax_error();
 		}
@@ -318,17 +336,44 @@ function qa_scroll_page_to(scroll)
 	$('html,body').animate({scrollTop: scroll}, 400);
 }
 
-function handleRefusedAnswer(submitButton) {
-	qa_hide_waiting(submitButton);
+function handleRefusedPost({ submitButton, postRefuseReason, postType, parentId, parentPostIsQuestion }) {
 	submitButton.disabled = true;
 
-	const answerSubmissionError = document.createElement('div');
-	answerSubmissionError.innerHTML =
-		'Nie można dodać odpowiedzi, ponieważ pytanie zostało zamknięte.<br>Jeśli chcesz, to dodaj swój post w formie komentarza.';
-	answerSubmissionError.classList.add('post-submission-alert');
+	hideEmailNotificationOption();
+	showSubmissionError();
+	qa_hide_waiting(submitButton);
 
-	const emailNotificationOption = submitButton.form.elements.a_notify.parentNode.parentNode;
-	emailNotificationOption.remove();
+	function showSubmissionError() {
+		const postSubmissionError = document.createElement('div');
+		postSubmissionError.innerHTML = getSubmissionErrorContent();
+		postSubmissionError.classList.add('post-submission-alert');
 
-	submitButton.parentNode.insertBefore(answerSubmissionError, submitButton);
+		submitButton.parentNode.insertBefore(postSubmissionError, submitButton);
+	}
+
+	function hideEmailNotificationOption() {
+		const formNotifyElementName = parentId ? `c${ parentId }_notify` : 'a_notify';
+		const emailNotificationOption = submitButton.form.elements[formNotifyElementName].parentNode.parentNode;
+		emailNotificationOption.remove();
+	}
+
+	function getSubmissionErrorContent() {
+		const postErrorDescription = postType === 'comment' ?
+			'Nie można dodać komentarza.' :
+			'Nie można dodać odpowiedzi.';
+		const submissionErrorContent = {
+			ALREADY_CLOSED: 'Nie można dodać odpowiedzi, ponieważ pytanie zostało zamknięte.<br>Jeśli chcesz, to dodaj swój post w formie komentarza.',
+			UNAVAILABLE: `${ postErrorDescription } ${ getPostRelationDescription() }`
+		};
+
+		return submissionErrorContent[postRefuseReason];
+	}
+
+	function getPostRelationDescription() {
+		if (postType === 'comment') {
+			return parentPostIsQuestion ? 'Pytanie nie jest już dostępne.' : 'Odpowiedź nie jest już dostępna.';
+		} else {
+			return 'Temat nie jest już dostępny.';
+		}
+	}
 }
