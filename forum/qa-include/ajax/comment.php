@@ -24,6 +24,16 @@
 	require_once QA_INCLUDE_DIR.'app/limits.php';
 	require_once QA_INCLUDE_DIR.'db/selects.php';
 
+	function find_next_comment_id($last_id, $all_ids)
+    {
+        foreach ($all_ids as $id) {
+            if ($id > $last_id) {
+                return $id;
+            }
+        }
+
+        return end($all_ids);
+    }
 
 //	Load relevant information about this question and the comment parent
 
@@ -90,8 +100,9 @@
 
 		//	Send back the HTML
 
-            $from_id = (int) qa_post_text('last_comment_id') + 1;
-            $index = array_search($from_id, array_keys($c_list['cs']));
+            $ids = array_keys($c_list['cs']);
+            $from_id = find_next_comment_id((int) qa_post_text('last_comment_id'), $ids);
+            $index = array_search($from_id, $ids);
             if ($index !== false) {
                 $c_list['cs'] = array_slice($c_list['cs'], $index, null, true);
             }
