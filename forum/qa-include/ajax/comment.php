@@ -100,4 +100,4 @@ if (isset($question['basetype'], $parent['basetype'])
     }
 }
 
-echo "QA_AJAX_RESPONSE\n0\n"; // fall back to non-Ajax submission if there were any problems
+	echo "QA_AJAX_RESPONSE\n0\nUNAVAILABLE"; // fall back to non-Ajax submission if there were any problems
