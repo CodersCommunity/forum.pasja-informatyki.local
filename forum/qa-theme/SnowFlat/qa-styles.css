@@ -4679,6 +4679,7 @@ pre[class*="brush:"]::after
 	margin-left: 8px;
 	padding: 2px 15px;
 	border-radius: 40px 0;
+	height: auto;
 }
 
 .syntaxhighlighter-collapsible-button
