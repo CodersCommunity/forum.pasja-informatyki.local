@@ -894,8 +894,8 @@ function qa_ajax_error()
     function initInteractiveFeatures() {
         class CollapsibleCodeBlocks {
             constructor() {
-                this.expandSign = '<span class="collapsible-btn-sign">&downarrow;</span>';
-                this.collapseSign = '<span class="collapsible-btn-sign">&uparrow;</span>';
+                this.collapsedState = 'collapsed-state';
+                this.expandedState = 'expanded-state';
             }
 
             isCodeCollapsible(codeBlock) {
@@ -911,7 +911,7 @@ function qa_ajax_error()
                 }
 
                 const codeBlockCollapsibleBtn = document.createElement('button');
-                codeBlockCollapsibleBtn.classList.add('syntaxhighlighter-collapsible-button');
+                codeBlockCollapsibleBtn.classList.add('syntaxhighlighter-collapsible-button', this.collapsedState);
                 codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(true);
                 codeBlockCollapsibleBtn.type = 'button';
                 codeBlockCollapsibleBtn.addEventListener('click', () => this.toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn));
@@ -922,9 +922,7 @@ function qa_ajax_error()
             }
 
             getCodeBlockCollapseBtnTxt(isCollapsed) {
-                return isCollapsed ?
-                    `${ this.expandSign }Rozwiń${ this.expandSign }` :
-                    `${ this.collapseSign }Zwiń${ this.collapseSign }`;
+                return isCollapsed ? 'Rozwiń' : 'Zwiń' ;
             }
 
             toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn) {
@@ -932,6 +930,12 @@ function qa_ajax_error()
 
                 codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
                 codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
+
+                if (isCodeBlockCollapsed) {
+                    codeBlockCollapsibleBtn.classList.replace(this.collapsedState, this.expandedState);
+                } else {
+                    codeBlockCollapsibleBtn.classList.replace(this.expandedState, this.collapsedState);
+                }
             }
         }
 

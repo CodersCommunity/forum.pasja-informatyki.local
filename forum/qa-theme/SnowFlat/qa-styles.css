@@ -4641,13 +4641,12 @@ pre[class*="brush:"]::after
 
 .syntaxhighlighter-block-bar
 {
-	width: 100%;
-	height: 28px;
-
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 
+	width: 100%;
+	height: 30px;
 	border-radius: 50px 50px 1px 1px;
 
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
@@ -4664,7 +4663,6 @@ pre[class*="brush:"]::after
 	font-size: 12px;
 	font-weight: bold;
 	color: white;
-
 	height: 22px;
 }
 
@@ -4677,19 +4675,77 @@ pre[class*="brush:"]::after
 
 .syntaxhighlighter-collapsible-button
 {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-
-	border: 1px solid white;
-	border-radius: 5px;
+	position: relative;
+	width: 75px;
+	border: none;
 	outline: none;
-
 	margin: 0 auto;
+	background: transparent;
+}
 
-	width: 85px;
+.syntaxhighlighter-collapsible-button:hover
+{
+	color: #2c3e50;
+}
 
-	background: #3498db;
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after,
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	content:'';
+	display: block;
+	position: absolute;
+	width: 23px;
+	height: 1px;
+	background: white;
+
+	--vertical-alignment-value: -0.5px;
+	--horizontal-alignment-value: 14.5px;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::before
+{
+	left: var(--horizontal-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::after,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	right: var(--horizontal-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after
+{
+	top: var(--vertical-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	bottom: var(--vertical-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	transform: rotate(-10deg);
+}
+
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after
+{
+	transform: rotate(10deg);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state:hover::before,
+.syntaxhighlighter-collapsible-button.expanded-state:hover::after,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::after
+{
+	background: #2c3e50;
 }
 
 .collapsible-btn-sign
@@ -4702,13 +4758,15 @@ pre[class*="brush:"]::after
 {
 	position: relative;
 	background: #2c3e50;
-
 	margin-right: 8px;
 	padding: 2px 15px;
-
 	border: none;
 	border-radius: 0px 40px;
 	outline: none;
+}
+
+.content-copy-btn:hover {
+	background: #476481;
 }
 
 .content-copy-btn[disabled]

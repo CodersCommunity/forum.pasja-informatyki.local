@@ -113,7 +113,29 @@
 }
 
 .syntaxhighlighter-collapsible-button, .content-copy-btn {
-	background: #3a404b;
-	color: $color;
-	border: none;
+  background: #3a404b;
+  color: $color;
+}
+
+.syntaxhighlighter-collapsible-button {
+  background: transparent;
+}
+
+.syntaxhighlighter-collapsible-button:hover {
+  color: $blue;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after,
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after {
+  background: white;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state:hover::before,
+.syntaxhighlighter-collapsible-button.expanded-state:hover::after,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::after,
+.content-copy-btn:hover {
+  background: $blue;
 }
