@@ -732,6 +732,10 @@ function qa_ajax_error()
             codeBlockBar.classList.add('syntaxhighlighter-block-bar', 'block-bar-transparency');
             codeBlockBar.append(...getCodeBlockBarFeatureItems(codeBlock));
 
+            if (codeBlockBar.querySelector('.syntaxhighlighter-collapsible-button')) {
+                codeBlockBar.classList.add('is-collapsible');
+            }
+
             codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
             codeBlock.parentNode.insertBefore(codeBlockBar, codeBlock);
 

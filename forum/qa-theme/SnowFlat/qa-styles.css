@@ -4660,7 +4660,6 @@ pre[class*="brush:"]::after
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	flex-wrap: wrap;
 	min-height: 30px;
 	opacity: 1;
 	transition: opacity 0.2s;
@@ -4680,7 +4679,6 @@ pre[class*="brush:"]::after
 	font-size: 12px;
 	font-weight: bold;
 	color: white;
-	height: 22px;
 }
 
 .syntaxhighlighter-language
@@ -4694,6 +4692,7 @@ pre[class*="brush:"]::after
 {
 	position: relative;
 	width: 75px;
+	height: 20px;
 	border: none;
 	outline: none;
 	background: transparent;
@@ -4772,6 +4771,7 @@ pre[class*="brush:"]::after
 
 .content-copy-btn
 {
+	height: 22px;
 	margin-right: 8px;
 	padding: 2px 15px;
 	border: none;
@@ -4840,6 +4840,40 @@ pre[class*="brush:"]::after
 	bottom: 0;
 	left: 0;
 	z-index: -1;
+}
+
+@media (max-width: 320px) {
+	.syntaxhighlighter-parent {
+		position: relative;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible.syntaxhighlighter-block-bar {
+		flex-direction: column;
+		height: 50px;
+		justify-content: space-evenly;
+		align-items: flex-start;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-language {
+		margin-left: 0;
+		align-self: center;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-collapsible-button {
+		margin-bottom: 3px
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
+		position: absolute;
+		top: 23px;
+		right: 0;
+		border-radius: 0 5px 0 0;
+		background: transparent;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn:hover {
+		background: #476481;
+	}
 }
 
 /* End of Interactive Code Block Bar */

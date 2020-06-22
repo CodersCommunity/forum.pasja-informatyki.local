@@ -127,12 +127,13 @@
 <style>
 	.comment-votable-container {
 		width:100% !important;
+		table-layout: fixed;
 	}
 	.comment-vote-container {
 		padding-right: 4px;
 		text-align: center;
 		vertical-align:top;
-		width:12px;
+		width:18px;
 		color: orange;
 	}
 	.comment-vote-item {
