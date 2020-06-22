@@ -73,12 +73,9 @@ function qa_toggle_element(elem)
 function qa_submit_answer(questionid, elem)
 {
 	var params=qa_form_params('a_form');
-
 	params.a_questionid=questionid;
 
-	qa_ajax_post('answer', params,
-		function(lines) {
-
+	qa_ajax_post('answer', params, function(lines) {
 			if (lines[0]=='1') {
 				if (lines[1]<1) {
 					var b=document.getElementById('q_doanswer');
@@ -86,32 +83,34 @@ function qa_submit_answer(questionid, elem)
 						b.style.display='none';
 				}
 
-				var t=document.getElementById('a_list_title');
-				qa_set_inner_html(t, 'a_list_title', lines[2]);
-				qa_reveal(t, 'a_list_title');
+				const answerListTitle = document.getElementById('a_list_title');
+				qa_set_inner_html(answerListTitle, 'a_list_title', lines[2]);
+				qa_reveal(answerListTitle, 'a_list_title');
 
-				var e=document.createElement('div');
-				e.innerHTML=lines.slice(3).join("\n");
+				const answerWrapper = document.createElement('div');
+				answerWrapper.innerHTML = lines.slice(3).join("\n");
 
-				var c=e.firstChild;
-				c.style.display='none';
+				const answerItem = answerWrapper.firstChild;
+				answerItem.style.display='none';
 
-				var l=document.getElementById('a_list');
-				l.insertBefore(c, l.firstChild);
+				const answerList = document.getElementById('a_list');
+				answerList.insertBefore(answerItem, answerList.firstChild);
 
-				var a=document.getElementById('anew');
-				a.qa_disabled=true;
+				const answerFormParent = document.getElementById('anew');
+				answerFormParent.qa_disabled=true;
 
-				qa_reveal(c, 'answer');
-				qa_conceal(a, 'form');
-
+				qa_conceal(answerFormParent, 'form');
+				qa_reveal(answerItem, 'answer', () => {
+					if (typeof window.reloadBlocksOfCode === 'function') {
+						window.reloadBlocksOfCode(answerItem);
+					}
+				});
 			} else if (lines[0]=='0') {
 				document.forms['a_form'].submit();
 
 			} else {
 				qa_ajax_error();
 			}
-
 		}
 	);
 
@@ -188,8 +187,8 @@ function qa_submit_comment(questionid, parentid, elem) {
 		if (addedComment) {
 			addedComment.style.display = 'none';
 
-			return new Promise((onAnimationCompleted) => {
-				qa_reveal(addedComment, 'comment', onAnimationCompleted);
+			return new Promise((onCommentShown) => {
+				qa_reveal(addedComment, 'comment', onCommentShown);
 			});
 		}
 	}
