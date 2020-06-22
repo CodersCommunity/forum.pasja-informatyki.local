@@ -310,7 +310,7 @@ function qa_ajax_error()
 
         let codeBlocks = [];
 
-        if (!chosenCodeBlocks) {
+        if (!chosenCodeBlocks || !chosenCodeBlocks.length) {
             const blocksSelector = insidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
             codeBlocks = document.querySelectorAll(blocksSelector);
 

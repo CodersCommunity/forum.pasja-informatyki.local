@@ -131,9 +131,14 @@ function qa_submit_comment(questionid, parentid, elem) {
 
 	function onSuccess(lines) {
 		if (lines[0] == '1') {
-			updateCommentsList(lines);
+			const updatedCommentsList = updateCommentsList(lines);
 			updateFormState();
-			revealNewComment(lines[1]);
+			revealNewComment(lines[1])
+				.then(() => {
+					if (typeof window.reloadBlocksOfCode === 'function') {
+						window.reloadBlocksOfCode(updatedCommentsList);
+					}
+				});
 		} else if (lines[0] == '0') {
 			document.forms['c_form_' + parentid].submit();
 		} else {
@@ -162,15 +167,14 @@ function qa_submit_comment(questionid, parentid, elem) {
 				newestComment.style.display = 'none';
 			}
 
-			newCommentsTempParent
-				.querySelectorAll('[class*="brush:"]')
-				.forEach(newComment => SyntaxHighlighter.highlight({}, newComment));
 			commentsList.append(...newCommentsTempParent.children);
 		} else {
 			commentsList.innerHTML = newComments;
 		}
 
 		commentsList.style.display = '';
+
+		return commentsList;
 	}
 
 	function updateFormState() {
@@ -183,7 +187,10 @@ function qa_submit_comment(questionid, parentid, elem) {
 		const addedComment = document.getElementById(commentId);
 		if (addedComment) {
 			addedComment.style.display = 'none';
-			qa_reveal(addedComment, 'comment');
+
+			return new Promise((onAnimationCompleted) => {
+				qa_reveal(addedComment, 'comment', onAnimationCompleted);
+			});
 		}
 	}
 
