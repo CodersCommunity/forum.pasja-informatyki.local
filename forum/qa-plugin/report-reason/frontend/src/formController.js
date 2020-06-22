@@ -231,6 +231,10 @@ class FormController {
 	}
 
 	getErrorContent(errorCode) {
+		if (errorCode.includes(' ')) {
+			return errorCode;
+		}
+
 		if (!errorCode || errorCode instanceof Error) {
 			return ERROR_CODES.GENERIC_ERROR;
 		}
