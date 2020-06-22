@@ -124,53 +124,66 @@ function qa_submit_comment(questionid, parentid, elem) {
 	const params = qa_form_params(`c_form_${ parentid }`);
 	params.c_questionid = questionid;
 	params.c_parentid = parentid;
-
-	const lastListComment = document
-		.querySelector(`#c${ params.c_parentid }_list .qa-c-list-item:last-of-type`);
-	const lastListCommentId = lastListComment && lastListComment.id.slice(1);
-
-	params.last_comment_id = lastListCommentId;
+	params.last_comment_id = getLastCommentId();
 
 	qa_ajax_post('comment', params, onSuccess);
 	qa_show_waiting_after(elem, false);
 
 	function onSuccess(lines) {
 		if (lines[0] == '1') {
-			const commentsList = document.getElementById(`c${ parentid }_list`);
-			const newComments = lines.slice(2).join('\n');
-
-			if (lastListCommentId) {
-				const newCommentsTempParent = document.createElement('div');
-				newCommentsTempParent.innerHTML = newComments;
-
-				const newestComment = newCommentsTempParent.querySelector('.qa-c-list-item.comment:last-of-type');
-				if (newestComment) {
-					newestComment.style.display = 'none';
-				}
-
-				newCommentsTempParent
-					.querySelectorAll('[class*="brush:"]')
-					.forEach(newComment => SyntaxHighlighter.highlight({}, newComment));
-				commentsList.append(...newCommentsTempParent.children);
-			} else {
-				commentsList.innerHTML = newComments;
-			}
-
-			commentsList.style.display = '';
-
-			const commentForm = document.getElementById(`c${ parentid }`);
-			commentForm.qa_disabled = true;
-			qa_conceal(commentForm, 'form');
-
-			const addedComment = document.getElementById(lines[1]); // id of comment
-			if (addedComment) {
-				addedComment.style.display = 'none';
-				qa_reveal(addedComment, 'comment');
-			}
+			updateCommentsList(lines);
+			updateFormState();
+			revealNewComment(lines[1]);
 		} else if (lines[0] == '0') {
 			document.forms['c_form_' + parentid].submit();
 		} else {
 			qa_ajax_error();
+		}
+	}
+
+	function getLastCommentId() {
+		const lastCommentFromList = document
+			.querySelector(`#c${ params.c_parentid }_list .qa-c-list-item:last-of-type`);
+		const lastCommentId = lastCommentFromList && lastCommentFromList.id.slice(1);
+
+		return lastCommentId;
+	}
+
+	function updateCommentsList(lines) {
+		const commentsList = document.getElementById(`c${ parentid }_list`);
+		const newComments = lines.slice(2).join('\n');
+
+		if (params.last_comment_id) {
+			const newCommentsTempParent = document.createElement('div');
+			newCommentsTempParent.innerHTML = newComments;
+
+			const newestComment = newCommentsTempParent.querySelector('.qa-c-list-item.comment:last-of-type');
+			if (newestComment) {
+				newestComment.style.display = 'none';
+			}
+
+			newCommentsTempParent
+				.querySelectorAll('[class*="brush:"]')
+				.forEach(newComment => SyntaxHighlighter.highlight({}, newComment));
+			commentsList.append(...newCommentsTempParent.children);
+		} else {
+			commentsList.innerHTML = newComments;
+		}
+
+		commentsList.style.display = '';
+	}
+
+	function updateFormState() {
+		const commentForm = document.getElementById(`c${ parentid }`);
+		commentForm.qa_disabled = true;
+		qa_conceal(commentForm, 'form');
+	}
+
+	function revealNewComment(commentId) {
+		const addedComment = document.getElementById(commentId);
+		if (addedComment) {
+			addedComment.style.display = 'none';
+			qa_reveal(addedComment, 'comment');
 		}
 	}
 
