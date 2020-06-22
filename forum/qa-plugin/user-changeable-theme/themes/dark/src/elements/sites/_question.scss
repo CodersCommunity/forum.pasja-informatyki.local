@@ -26,6 +26,9 @@
 	color: darken($grey, 10%);
 	a { color: lighten($grey, 20%) }
 }
+.qa-item-flag-reason-author {
+	color: darken($grey, 10%);
+}
 .qa-c-item-buttons, .qa-a-item-buttons {
 	border-color: $border-light;
 }

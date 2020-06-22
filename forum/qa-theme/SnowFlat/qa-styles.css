@@ -2574,8 +2574,18 @@ input[type="submit"], button {
 	margin-top: 5px;
 }
 
+.qa-item-reason-list-entry {
+	word-break: break-all;
+	max-width: 75%;
+}
+
 .qa-item-flag-reason-item {
 	letter-spacing: 0.25px;
+}
+
+.qa-item-flag-reason-author {
+	display: inline-block;
+	color: #34495e;
 }
 
 .qa-item-flag-reason-item--custom {
