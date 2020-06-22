@@ -729,11 +729,13 @@ function qa_ajax_error()
 
         function decorateCodeBlock(codeBlock) {
             const codeBlockBar = document.createElement('div');
-            codeBlockBar.classList.add('syntaxhighlighter-block-bar');
+            codeBlockBar.classList.add('syntaxhighlighter-block-bar', 'block-bar-transparency');
             codeBlockBar.append(...getCodeBlockBarFeatureItems(codeBlock));
 
             codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
             codeBlock.parentNode.insertBefore(codeBlockBar, codeBlock);
+
+            requestAnimationFrame(() => codeBlockBar.classList.remove('block-bar-transparency'));
         }
     }
 

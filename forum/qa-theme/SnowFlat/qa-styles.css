@@ -4602,11 +4602,14 @@ pre[class*="brush:"]
 	transition: var(--syntaxhighlighter-collapsible-transition);
 }
 
-.syntaxhighlighter-parent,
-.syntaxhighlighter
+.syntaxhighlighter-parent .syntaxhighlighter .toolbar
 {
-	position: relative;
+	/* Used !important to override default SH styles */
+	right: 0 !important;
+	left: 3px !important;
+	top: 3px !important;
 }
+
 .syntaxhighlighter.collapsed-block,
 pre[class*="brush:"].collapsed-block
 {
@@ -4647,14 +4650,20 @@ pre[class*="brush:"]::after
 
 /* Start of Interactive Code Block Bar */
 
+.syntaxhighlighter-block-bar.block-bar-transparency
+{
+	opacity: 0;
+}
+
 .syntaxhighlighter-block-bar
 {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-
-	width: 100%;
-	height: 30px;
+	flex-wrap: wrap;
+	min-height: 30px;
+	opacity: 1;
+	transition: opacity 0.2s;
 	border-radius: 50px 50px 1px 1px;
 
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
@@ -4676,8 +4685,7 @@ pre[class*="brush:"]::after
 
 .syntaxhighlighter-language
 {
-	margin-left: 8px;
-	padding: 2px 15px;
+	margin-left: 25px;
 	border-radius: 40px 0;
 	height: auto;
 }
@@ -4688,7 +4696,6 @@ pre[class*="brush:"]::after
 	width: 75px;
 	border: none;
 	outline: none;
-	margin: 0 auto;
 	background: transparent;
 }
 
@@ -4765,13 +4772,12 @@ pre[class*="brush:"]::after
 
 .content-copy-btn
 {
-	position: relative;
-	background: #2c3e50;
 	margin-right: 8px;
 	padding: 2px 15px;
 	border: none;
 	border-radius: 0px 40px;
 	outline: none;
+	background: #2c3e50;
 }
 
 .content-copy-btn:hover {
