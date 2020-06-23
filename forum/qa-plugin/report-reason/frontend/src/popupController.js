@@ -50,7 +50,7 @@ class PopupController {
 
 	initReportReasonPopupDOMWrapper() {
 		const popupWrapper = document.createElement('div');
-		popupWrapper.classList.add('report-reason-wrapper');
+		popupWrapper.classList.add('report-reason-wrapper', 'display-none');
 		popupWrapper.innerHTML = this.getPopupWrapperHTML();
 
 		const tempForm = popupWrapper.querySelector('#replaceableForm');
@@ -77,7 +77,7 @@ class PopupController {
 				<form id="replaceableForm"></form>
 			</div>
 			
-			<div id="reportReasonRequestFeedback" class="report-reason-popup__request-feedback">
+			<div id="reportReasonRequestFeedback" class="report-reason-popup report-reason-popup__request-feedback display-none">
 				<div id="reportReasonRequestInfo" class="report-reason-popup__request-feedback-info"></div>
 				<button id="closeReportReasonRequestFeedback"
 					class="report-reason-popup__button report-reason-popup__button--close"
@@ -88,16 +88,18 @@ class PopupController {
 
 	showReportReasonPopup() {
 		this.formInvalidityListenerAPI.attach();
-		this.reportReasonPopupDOMWrapper.classList.add('display-block');
+		this.reportReasonPopupDOMWrapper.classList.remove('display-none');
+		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('display-none');
 		this.getFormDOM().elements.reportReason[0].focus();
 	}
 
 	hideReportReasonPopup() {
 		this.formInvalidityListenerAPI.detach();
-		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.remove('display-block');
-		this.reportReasonPopupDOMWrapper.classList.remove('display-block');
+
+		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add('display-none');
+		this.reportReasonPopupDOMWrapper.classList.add('display-none');
 		this.reportReasonPopupDOMReferences.customReportReason.parentNode.classList.add('display-none');
-		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('display-none');
+
 		this.getReportReasonValidationErrorDOM().classList.remove('display-block');
 
 		const formDOM = this.getFormDOM();
@@ -132,11 +134,10 @@ class PopupController {
 
 	showFeedbackPopup(feedbackContent) {
 		this.reportReasonPopupDOMReferences.reportReasonRequestInfo.innerHTML = feedbackContent;
+
 		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.add('display-none');
-		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add(
-			'report-reason-popup',
-			'display-block'
-		);
+		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.remove('display-none');
+
 		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback.focus();
 	}
 

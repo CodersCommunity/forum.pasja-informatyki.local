@@ -1,21 +1,21 @@
 .report-reason-wrapper {
-    display: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100vw;
     height: 100vh;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 10;
     background: rgba(180, 180, 180, 0.8);
 }
 
 .report-reason-popup {
-    position: fixed;
-    top: calc(50vh - (390px /2));
-    left: calc(50vw - (485px/2));
+    max-width: 85vw;
+    padding: 25px 40px;
     background: #2c3e50;
     color: white;
-    padding: 25px 40px;
     border-radius: 5px;
     -webkit-box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.5);
@@ -45,6 +45,13 @@
 
 .report-reason-popup__list label {
     display: block;
+    word-break: break-word;
+    margin-left: 20px;
+}
+
+.report-reason-popup__list input {
+    display: inline-block;
+    margin-left: -20px;
 }
 
 .report-reason-popup__list li:last-of-type input {
@@ -57,15 +64,15 @@
 
 .report-reason-popup__custom-report-reason-char-counter-wrapper {
     position: absolute;
-    right: 15px;
+    right: 5.5%;
     top: 2px;
     font-style: italic;
 }
 
 .report-reason-popup__custom-report-reason {
-    width: 360px;
+    width: 90%;
     min-height: 60px;
-    margin-left: 15px;
+    margin-left: 5%;
     margin-bottom: 0;
     resize: vertical;
 }
@@ -91,6 +98,11 @@
     to {
         border-color: red;
     }
+}
+
+.report-reason-popup-buttons {
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .report-reason-popup__button {
@@ -127,20 +139,10 @@
     background-color: #e74c3c;
 }
 
-.report-reason-popup__button--save,
-.report-reason-popup__button--cancel {
-    margin: 0 0 0 55px;
-}
-
 .report-reason-popup__button--close {
     display: block;
     margin: 20px auto 0;
     background: #27ae60;
-}
-
-.report-reason-popup__request-feedback {
-    display: none;
-    left: calc(50vw - (300px/2));
 }
 
 .report-reason-popup__request-feedback-info {
@@ -153,4 +155,49 @@
 
 .display-none {
     display: none;
+}
+
+@media (max-width: 400px) {
+    .report-reason-popup__custom-report-reason-wrapper {
+        margin-top: 20px;
+    }
+
+    .report-reason-popup__custom-report-reason-char-counter-wrapper {
+        top: 25px;
+    }
+}
+
+@media (max-width: 370px) {
+    .report-reason-popup-buttons {
+        flex-direction: column;
+        align-items: center;
+        height: 100px;
+    }
+
+    .report-reason-popup__list {
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 350px) {
+    .report-reason-popup__request-feedback {
+        padding: 7% 10%;
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 255px) {
+    .report-reason-popup__custom-report-reason-wrapper {
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 225px) {
+    .report-reason-popup__form legend {
+        margin-left: -20px;
+    }
+
+    .report-reason-popup__list label {
+        margin-left: 0;
+    }
 }

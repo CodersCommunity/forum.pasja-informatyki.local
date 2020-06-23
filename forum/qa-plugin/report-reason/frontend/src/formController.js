@@ -84,7 +84,7 @@ class FormController {
 
 	getTextAreaHTML() {
 		return `
-			<div id="customReportReasonWrapper" class="display-none">
+			<div id="customReportReasonWrapper" class="report-reason-popup__custom-report-reason-wrapper display-none">
 				<small class="report-reason-popup__custom-report-reason-char-counter-wrapper">
 					${POPUP_LABELS.CHAR_COUNTER_INFO}
 					<output id="customReportReasonCharCounter">${NOTICE_LENGTH}</output>
@@ -121,12 +121,14 @@ class FormController {
 	
 				<span id="reportReasonValidationError" class="report-reason-popup__validation-error">${ERROR_CODES.GENERIC_ERROR}</span>
 	
-				<button id="cancelReportReason"
-					type="button"
-					class="report-reason-popup__button report-reason-popup__button--cancel">${POPUP_LABELS.CANCEL}</button>
-				<button id="sendReportReason"
-					type="submit"
-					class="report-reason-popup__button report-reason-popup__button--save">${POPUP_LABELS.SEND}</button>
+				<div class="report-reason-popup-buttons">
+					<button id="cancelReportReason"
+						type="button"
+						class="report-reason-popup__button report-reason-popup__button--cancel">${POPUP_LABELS.CANCEL}</button>
+					<button id="sendReportReason"
+						type="submit"
+						class="report-reason-popup__button report-reason-popup__button--save">${POPUP_LABELS.SEND}</button>
+				</div>
 			</fieldset>`;
 	}
 
