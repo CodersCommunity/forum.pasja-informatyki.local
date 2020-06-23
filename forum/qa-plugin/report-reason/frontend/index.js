@@ -1,6 +1,7 @@
 // TODO: remove dynamic import feature from Babel/Webpack if [defer] approach on this <script>
-import bootstrapReportReasonPopup from './src/bootstrap';
+import { bootstrapReportReasonPopup, postFlagReasonWrapper } from './src/bootstrap';
 const onClick = bootstrapReportReasonPopup();
+postFlagReasonWrapper();
 
 const eventDelegationRoot = document.querySelector('.qa-main');
 eventDelegationRoot.addEventListener(

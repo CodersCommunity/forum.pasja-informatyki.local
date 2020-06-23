@@ -1,7 +1,8 @@
 const FLAG_BTN_NAME_SUFFIX = 'doflag';
 
 class FlagController {
-	constructor() {
+	constructor(postFlagReasonWrapper) {
+		this.postFlagReasonWrapper = postFlagReasonWrapper;
 		this.flagButtonDOM = null;
 		this.regex = {
 			question: /q_doflag/,
@@ -80,6 +81,8 @@ class FlagController {
 		} else {
 			flagsParent.appendChild(flags);
 		}
+
+		this.postFlagReasonWrapper(true);
 
 		return true;
 	}

@@ -3,7 +3,7 @@ import FormController from './formController';
 import PopupController from './popupController';
 
 const bootstrapReportReasonPopup = () => {
-	const flagController = new FlagController();
+	const flagController = new FlagController(postFlagReasonWrapper);
 	const formController = new FormController();
 	const popupController = new PopupController({
 		getFlagButtonDOM: flagController.getFlagButtonDOM.bind(flagController),
@@ -26,4 +26,30 @@ const bootstrapReportReasonPopup = () => {
 	return flagController.onClick.bind(flagController, popupController.showReportReasonPopup.bind(popupController));
 };
 
-export default bootstrapReportReasonPopup;
+const postFlagReasonWrapper = (() => {
+	const WRAPPED_REASON_CLAZZ = 'wrapped-reason';
+	const WRAP_FROM_LENGTH = 100;
+
+	return (runImmediately) => {
+		if (runImmediately) {
+			wrapper();
+		} else {
+			document.addEventListener('DOMContentLoaded', wrapper);
+		}
+	};
+
+	function wrapper() {
+		document.querySelectorAll('.qa-item-flag-reason-item--custom').forEach((item) => {
+			if (item.textContent.length > WRAP_FROM_LENGTH) {
+				item.classList.add(WRAPPED_REASON_CLAZZ);
+				item.addEventListener('click', unWrap, { once: true });
+			}
+		});
+	}
+
+	function unWrap({ target }) {
+		target.classList.remove(WRAPPED_REASON_CLAZZ);
+	}
+})();
+
+export { bootstrapReportReasonPopup, postFlagReasonWrapper };
