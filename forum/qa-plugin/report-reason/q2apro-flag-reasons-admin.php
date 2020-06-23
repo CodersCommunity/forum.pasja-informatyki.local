@@ -17,7 +17,7 @@ class q2apro_flagreasons_admin
                   `userid` int(10) UNSIGNED NOT NULL,
                   `postid` int(10) UNSIGNED NOT NULL,
                   `reasonid` int(10) UNSIGNED NOT NULL,
-                  `notice` varchar(`' . self::NOTICE_LENGTH . '`) NULL,
+                  `notice` varchar(' . self::NOTICE_LENGTH . ') NULL,
                   PRIMARY KEY (userid, postid)
                 )
                 ENGINE=InnoDB DEFAULT CHARSET=utf8;
