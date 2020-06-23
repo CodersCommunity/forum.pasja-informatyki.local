@@ -186,18 +186,63 @@
     }
 }
 
-@media (max-width: 255px) {
-    .report-reason-popup__custom-report-reason-wrapper {
-        margin-top: 40px;
+@media (max-width: 475px), (max-height: 440px) {
+    body.disable-scroll {
+        overflow: hidden;
     }
-}
 
-@media (max-width: 225px) {
+    .report-reason-popup {
+        padding: 5px;
+    }
+
+    .report-reason-popup__form fieldset {
+        position: relative;
+    }
+
     .report-reason-popup__form legend {
-        margin-left: -20px;
+        text-align: center;
+    }
+
+    .report-reason-popup__list {
+        max-height: 40vh;
+        overflow-y: auto;
+        font-size: 0.9em;
+        background-color: rgba(71, 100, 129, 0.5);
+        margin: 5px -5px;
+        padding: 0 5px;
+    }
+
+    .report-reason-popup__list li {
+        margin: 5px 0;
     }
 
     .report-reason-popup__list label {
-        margin-left: 0;
+        display: flex;
+        font-size: 0.9em;
+    }
+
+    .report-reason-popup__list input {
+        align-self: center;
+        margin-right: 5px;
+    }
+
+    .report-reason-popup__custom-report-reason-wrapper {
+        margin-top: 10px;
+    }
+
+    .report-reason-popup__custom-report-reason-char-counter-wrapper {
+        width: 75px;
+        top: 2px;
+        line-height: 15px;
+    }
+}
+
+@media (max-width: 250px) {
+    .report-reason-popup__custom-report-reason-wrapper {
+        margin-top: 30px;
+    }
+
+    .report-reason-popup__custom-report-reason-char-counter-wrapper {
+        top: 20px;
     }
 }

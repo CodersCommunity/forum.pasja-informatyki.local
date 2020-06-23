@@ -44,8 +44,7 @@ class PopupController {
 	}
 
 	initPopupContainer() {
-		const popupContainer = document.querySelector('.qa-body-wrapper');
-		popupContainer.appendChild(this.reportReasonPopupDOMWrapper);
+		document.body.appendChild(this.reportReasonPopupDOMWrapper);
 	}
 
 	initReportReasonPopupDOMWrapper() {
@@ -91,16 +90,17 @@ class PopupController {
 		this.reportReasonPopupDOMWrapper.classList.remove('display-none');
 		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('display-none');
 		this.getFormDOM().elements.reportReason[0].focus();
+		document.body.classList.add('disable-scroll');
 	}
 
 	hideReportReasonPopup() {
 		this.formInvalidityListenerAPI.detach();
 
-		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add('display-none');
 		this.reportReasonPopupDOMWrapper.classList.add('display-none');
+		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.add('display-none');
 		this.reportReasonPopupDOMReferences.customReportReason.parentNode.classList.add('display-none');
-
 		this.getReportReasonValidationErrorDOM().classList.remove('display-block');
+		document.body.classList.remove('disable-scroll');
 
 		const formDOM = this.getFormDOM();
 		formDOM.reset();
