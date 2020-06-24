@@ -177,14 +177,6 @@
     .report-reason-popup__list {
         margin-bottom: 5px;
     }
-
-    .qa-item-flag-reason-list {
-        padding-left: 30px;
-    }
-
-    .qa-item-reason-list-entry {
-        max-width: 85%;
-    }
 }
 
 @media (max-width: 350px) {

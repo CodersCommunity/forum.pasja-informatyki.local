@@ -2572,23 +2572,27 @@ input[type="submit"], button {
 .qa-item-flag-reason-list {
 	font-weight: normal;
 	margin-top: 5px;
+	color: black;
 }
 
 .qa-item-reason-list-entry {
+	margin-right: 40px;
 	word-break: break-all;
-	max-width: 75%;
+}
+
+.qa-item-flag-reason-prefix {
+	color: #34495e;
 }
 
 .qa-item-flag-reason-item {
-	display: inline-block;
-	max-width: 65%;
-	vertical-align: top;
 	letter-spacing: 0.25px;
+	color: red;
 }
 
 .qa-item-flag-reason-author,
 .qa-item-flag-reason-item--custom.wrapped-reason {
 	display: inline-block;
+	top: -1px;
 }
 
 .qa-item-flag-reason-author {
@@ -2633,6 +2637,22 @@ input[type="submit"], button {
 
 	to {
 		transform: translateX(5px);
+	}
+}
+
+@media (max-width: 1180px) {
+	.qa-item-reason-list-entry {
+		margin-right: 40px;
+	}
+}
+
+@media (max-width: 370px) {
+	.qa-item-flag-reason-list {
+		padding-left: 30px;
+	}
+
+	.qa-item-reason-list-entry {
+		max-width: 85%;
 	}
 }
 

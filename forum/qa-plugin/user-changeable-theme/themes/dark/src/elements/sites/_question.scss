@@ -101,6 +101,14 @@ blockquote {
 	}
 }
 
+.qa-item-flag-reason-list {
+	color: darken($grey, 10%);
+}
+
+.qa-item-flag-reason-prefix {
+	color: inherit;
+}
+
 div#qa-poll-div {
 	background-color: $bcg-dark;
 	border-color: $border;
