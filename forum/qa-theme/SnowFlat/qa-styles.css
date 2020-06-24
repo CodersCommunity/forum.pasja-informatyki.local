@@ -2580,14 +2580,18 @@ input[type="submit"], button {
 }
 
 .qa-item-flag-reason-item {
+	display: inline-block;
+	max-width: 65%;
+	vertical-align: top;
 	letter-spacing: 0.25px;
-	display: inline-flex;
-	flex-wrap: wrap;
 }
 
 .qa-item-flag-reason-author,
 .qa-item-flag-reason-item--custom.wrapped-reason {
 	display: inline-block;
+}
+
+.qa-item-flag-reason-author {
 	color: #34495e;
 }
 
@@ -2596,12 +2600,13 @@ input[type="submit"], button {
 }
 
 .qa-item-flag-reason-item--custom.wrapped-reason {
-	width: 150px;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
 	position: relative;
-	padding-right: 15px;
+	width: 125px;
+	vertical-align: middle;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-right: 18px;
 }
 
 .qa-item-flag-reason-item--custom.wrapped-reason::after {

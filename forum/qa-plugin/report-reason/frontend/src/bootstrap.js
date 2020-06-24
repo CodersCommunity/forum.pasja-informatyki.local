@@ -28,7 +28,7 @@ const bootstrapReportReasonPopup = () => {
 
 const postFlagReasonWrapper = (() => {
 	const WRAPPED_REASON_CLAZZ = 'wrapped-reason';
-	const WRAP_FROM_LENGTH = 100;
+	const WRAP_FROM_LENGTH = 50;
 
 	return (runImmediately) => {
 		if (runImmediately) {
