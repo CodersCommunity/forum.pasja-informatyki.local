@@ -69,7 +69,10 @@ class FlagController {
 	}
 
 	updateCurrentPostFlags(newFlagsHTML, postMetadata) {
-		const { flags, flagsAlreadyExist, flagsParent } = this.prepareFlagsUpdate(newFlagsHTML, postMetadata);
+		const { flags, flagsAlreadyExist, flagsParent, flagsAlternatePlace } = this.prepareFlagsUpdate(
+			newFlagsHTML,
+			postMetadata
+		);
 
 		if (!flags) {
 			console.error('Report reason response does not have new flags: ', newFlagsHTML);
@@ -79,7 +82,11 @@ class FlagController {
 		if (flagsAlreadyExist) {
 			flagsParent.parentNode.replaceChild(flags, flagsParent);
 		} else {
-			flagsParent.appendChild(flags);
+			if (flagsAlternatePlace) {
+				flagsParent.insertBefore(flags, flagsAlternatePlace.nextElementSibling);
+			} else {
+				flagsParent.appendChild(flags);
+			}
 		}
 
 		this.postFlagReasonWrapper(true);
@@ -91,15 +98,18 @@ class FlagController {
 		const relativeClassNamePart = postType === 'q' ? 'view' : 'item';
 		const classNamePartSuffix = `.qa-${postType}-${relativeClassNamePart}-`;
 		const classNamePart = `#${postType}${postId} ${classNamePartSuffix}`;
-		const postFlagsWrapper = document.querySelector(`${classNamePart}flags`);
 		const flagsDOM = new DOMParser()
 			.parseFromString(flagsHTML, 'text/html')
 			.querySelector(`${classNamePartSuffix}flags`);
+		const postFlagsWrapper = document.querySelector(`${classNamePart}flags`);
+		const flagsParent = postFlagsWrapper || document.querySelector(`${classNamePart}meta`);
+		const flagsAlternatePlace = flagsParent.querySelector('[class$="-who"]');
 
 		return {
 			flags: flagsDOM,
 			flagsAlreadyExist: !!postFlagsWrapper,
-			flagsParent: postFlagsWrapper || document.querySelector(`${classNamePart}meta`),
+			flagsParent,
+			flagsAlternatePlace,
 		};
 	}
 }
