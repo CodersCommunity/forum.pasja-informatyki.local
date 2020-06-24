@@ -10,7 +10,7 @@ class FormController {
 		this.initTextArea();
 		this.initFormInvalidityListenerAPI();
 
-		this.requestIntegerKeys = ['postId', 'questionId', 'reasonId'];
+		this.requestIntegerKeys = ['postId', 'questionId', 'relativeParentPostId', 'reasonId'];
 		this.sendButton = null;
 	}
 

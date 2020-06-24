@@ -1,6 +1,17 @@
 <?php
 
 class q2apro_flag_reasons_validation {
+    private $propsModel = [
+        'notice' => '',
+        'postId' => 0,
+        'postType' => '',
+        'questionId' => 0,
+        'relativeParentPostId' => 0,
+        'code' => '',
+        'reasonId' => 0,
+        'reportType' => 'addFlag'
+    ];
+
     protected function wrapFlagReasonError($errorCode) {
         return ['processingFlagReasonError' => $errorCode];
     }
@@ -36,15 +47,18 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
+    protected function isRequestSecureCodeValid($relativeParentPostId, $code) {
+        $postAction = 'buttons-' . $relativeParentPostId;
+
+        if (!qa_check_form_security_code($postAction, $code)) {
+            $this->handleReportError('INVALID_SECURITY_CODE');
+            return false;
+        }
+
+        return true;
+    }
+
     protected function isValidData($props) {
-        $propsModel = [
-            'notice' => '',
-            'postId' => 0,
-            'postType' => '',
-            'questionId' => 0,
-            'reasonId' => 0,
-            'reportType' => 'addFlag'
-        ];
         $propsKeys = array_keys($props);
         $matchedPropsKeysNum = 0;
         $noticeProp = 'notice';
@@ -52,22 +66,19 @@ class q2apro_flag_reasons_validation {
 
 //            var_dump('$props: ' ,  $props);
 
-        foreach ($propsModel as $key => $value) {
-            $propValue = @$props[$key];
-//                echo('$key: '. $key. ' /$propValue: '. $propValue. ' /$propsModel[$key]: '.$propsModel[$key]);
+        foreach ($this->propsModel as $key => $value) {
+            $propValue = $props[$key] ?? null;
+//                echo('$key: '. $key. ' /$propValue: '. $propValue. ' /$this->propsModel[$key]: '.$this->propsModel[$key]);
 
             /*
                 TODO:
-                    -   Should validate against request URL referrer property?
-                        To check if i.e questionId request property is contained by page URL.
                     -   Should validate if specified post (question, answer or comment) is already flagged by the User?
-                    -   Should validate post security 'code' contained by <input [hidden]> on page?
             */
             if (
                 !$this->isRequestPropMatched($key, $propsKeys) ||
                 !$this->isRequestPropSet($propValue, $key, $noticeProp, $props['reasonId']) ||
-                !$this->hasRequestPropCorrectType($propValue, $propsModel[$key]) ||
-                !$this->hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $propsModel[$key])
+                !$this->hasRequestPropCorrectType($propValue, $this->propsModel[$key]) ||
+                !$this->hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $this->propsModel[$key])
             ) {
                 return false;
             }

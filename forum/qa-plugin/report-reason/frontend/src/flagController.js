@@ -42,6 +42,9 @@ class FlagController {
 			postType: postType.slice(0, 1),
 		};
 		postMetaData.postId = this.getPostIdFromInputName(postType, this.flagButtonDOM.name) || postMetaData.questionId;
+		postMetaData.relativeParentPostId =
+			this.getPostParentId(postMetaData.postType, this.flagButtonDOM) || postMetaData.postId;
+		postMetaData.code = this.flagButtonDOM.form.elements.code.value;
 
 		return postMetaData;
 	}
@@ -55,7 +58,7 @@ class FlagController {
 			return null;
 		}
 
-		const parentElement = flagButtonDOM.closest('[id*="_list"]');
+		const parentElement = flagButtonDOM.closest('[id$="_list"]');
 
 		return parentElement ? parentElement.id.match(/\d+/)[0] : null;
 	}

@@ -179,7 +179,12 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     private function parseFlagData() {
         $flagData = json_decode($this->_reportReasonRequestJSON, true);
 
-        if (!$this->isValidJSON() || !$this->isDataSet($flagData) || !$this->isValidData($flagData)) {
+        if (
+                !$this->isValidJSON() ||
+                !$this->isRequestSecureCodeValid($flagData['relativeParentPostId'], $flagData['code']) ||
+                !$this->isDataSet($flagData) ||
+                !$this->isValidData($flagData)
+            ) {
             exit();
         }
 

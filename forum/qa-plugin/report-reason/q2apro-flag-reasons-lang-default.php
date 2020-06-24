@@ -25,6 +25,7 @@ return [
         'USER_LOGGED_OUT' => 'Użytkownik nie jest zalogowany.',
         'REQUEST_IS_NOT_VALID_JSON' => 'Zgłoszenie nie zawiera danych w formacie JSON.',
         'EMPTY_REQUEST' => 'Zgłoszenie jest puste.',
+        'INVALID_SECURITY_CODE' => 'Zgłoszenie zawiera nieprawidłowy kod zabezpieczający.',
         'UNMATCHED_REQUEST_PROP' => 'Zgłoszenie zawiera nieprawidłowe dane.',
         'INCORRECT_REQUEST_PROP_TYPE' => 'Zgłoszenie zawiera dane o nieprawidłowym typie.',
         'INCORRECT_REPORT_TYPE' => 'Zgłoszenie jest nieprawidłowego typu.',
