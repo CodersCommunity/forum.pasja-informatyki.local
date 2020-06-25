@@ -89,13 +89,7 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     }
 
     private function processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice) {
-        list($question, $childPosts, $aChildPosts, $closePost, $duplicatePosts) = qa_db_select_with_pending(
-            qa_db_full_post_selectspec($userId, $questionId),
-            qa_db_full_child_posts_selectspec($userId, $questionId),
-            qa_db_full_a_child_posts_selectspec($userId, $questionId),
-            qa_db_post_parent_q_selectspec($questionId),
-            false
-        );
+        $question = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $questionId));
 
         $questionFlagError = qa_flag_error_html($question, $userId, qa_request());
         if ($questionFlagError) {
@@ -103,9 +97,13 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
         }
 
         if (qa_flag_set_tohide($question, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
-//            qa_question_set_status(
-//                $question, QA_POST_STATUS_HIDDEN, null, null, null, $answers, $commentsFollows, $closePost
-//            ); // hiding not really by this user so pass nulls
+            list($childPosts, $aChildPosts, $closePost, $duplicatePosts) = qa_db_select_with_pending(
+                qa_db_full_child_posts_selectspec($userId, $questionId),
+                qa_db_full_a_child_posts_selectspec($userId, $questionId),
+                qa_db_post_parent_q_selectspec($questionId),
+                false
+            );
+
             $answers = qa_page_q_load_as($question, $childPosts);
             $commentsFollows = qa_page_q_load_c_follows($question, $childPosts, $aChildPosts, $duplicatePosts);
 
@@ -126,11 +124,9 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     }
 
     private function processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice) {
-        list($answer, $question, $qChildPosts, $aChildPosts) = qa_db_select_with_pending(
+        list($answer, $question) = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $postId),
-            qa_db_full_post_selectspec($userId, $questionId),
-            qa_db_full_child_posts_selectspec($userId, $questionId),
-            qa_db_full_child_posts_selectspec($userId, $postId)
+            qa_db_full_post_selectspec($userId, $questionId)
         );
 
         $answerFlagError = qa_flag_error_html($answer, $userId, qa_request());
@@ -139,10 +135,11 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
         }
 
         if (qa_flag_set_tohide($answer, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
+            list($qChildPosts, $aChildPosts) = qa_db_select_with_pending(
+                qa_db_full_child_posts_selectspec($userId, $questionId),
+                qa_db_full_child_posts_selectspec($userId, $postId)
+            );
             $commentsFollows = qa_page_q_load_c_follows($question, $qChildPosts, $aChildPosts);
-//            qa_answer_set_status(
-//                $answer, QA_POST_STATUS_HIDDEN, null, null, null, $question, null//$commentsFollows
-//            );
 
             qa_answer_set_hidden($answer, true, null, null, null, $question, $commentsFollows);
         }
@@ -160,19 +157,19 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     }
 
     private function processFlagToComment($parentId, $userId, $postId, $questionId, $reasonId, $notice) {
-//    var_dump('$parentId: ', $parentId);
-        list($question, $comment, $parent) = qa_db_select_with_pending(
-            qa_db_full_post_selectspec($userId, $questionId),
-            qa_db_full_post_selectspec($userId, $postId),
-            qa_db_full_post_selectspec($userId, $parentId)
-        );
+        $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $postId));
         $commentFlagError = qa_flag_error_html($comment, $userId, qa_request());
-//var_dump(' /$commentFlagError: ', $commentFlagError);
+
         if ($commentFlagError) {
             return $commentFlagError;
         }
 
         if (qa_flag_set_tohide($comment, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $comment)) {
+            list($question, $parent) = qa_db_select_with_pending(
+                qa_db_full_post_selectspec($userId, $questionId),
+                qa_db_full_post_selectspec($userId, $parentId)
+            );
+
             qa_comment_set_hidden($comment, true, null, null, null, $question, $parent);
         }
 
