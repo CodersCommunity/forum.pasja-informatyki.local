@@ -192,7 +192,7 @@ class FormController {
 	handleReportResult(reportResult, onAjaxSuccess, showFeedbackPopup) {
 		reportResult
 			.then((response) => {
-				if (response.newFlags) {
+				if (typeof response.newFlags === 'string' && response.newFlags.length) {
 					this.sendButton.disabled = false;
 					onAjaxSuccess(response);
 				} else {
@@ -233,7 +233,7 @@ class FormController {
 	}
 
 	getErrorContent(errorCode) {
-		if (!errorCode || errorCode instanceof Error) {
+		if (!errorCode || errorCode instanceof Error || 'newFlags' in errorCode) {
 			return ERROR_CODES.GENERIC_ERROR;
 		}
 
