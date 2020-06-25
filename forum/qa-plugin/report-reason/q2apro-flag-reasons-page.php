@@ -53,6 +53,7 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
         require_once QA_INCLUDE_DIR . 'app/votes.php';
         require_once QA_INCLUDE_DIR . 'app/posts.php';
         require_once QA_INCLUDE_DIR . 'pages/question-view.php';
+        require_once QA_INCLUDE_DIR . 'pages/question-submit.php';
 
         $processingFlagReasonError = $this->processFlag($postType, $parentId, $userId, $postId, $questionId, $reasonId, $notice);
 
@@ -89,7 +90,12 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     }
 
     private function processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice) {
-        $question = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $questionId));
+        list($question, $closePost) = qa_db_select_with_pending(
+            qa_db_full_post_selectspec($userId, $questionId),
+            qa_db_post_parent_q_selectspec($questionId)
+        );
+        $answers = qa_post_get_question_answers($questionId);
+        $commentsFollows = qa_page_q_load_c_follows($question, $childPosts, $aChildPosts, $duplicatePosts);
 
         $questionFlagError = qa_flag_error_html($question, $userId, qa_request());
         if ($questionFlagError) {
@@ -97,19 +103,21 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
         }
 
         if (qa_flag_set_tohide($question, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
-            list($childPosts, $aChildPosts, $closePost, $duplicatePosts) = qa_db_select_with_pending(
+            list($childPosts, $aChildPosts, $duplicatePosts) = qa_db_select_with_pending(
                 qa_db_full_child_posts_selectspec($userId, $questionId),
                 qa_db_full_a_child_posts_selectspec($userId, $questionId),
-                qa_db_post_parent_q_selectspec($questionId),
                 false
             );
 
-            $answers = qa_page_q_load_as($question, $childPosts);
-            $commentsFollows = qa_page_q_load_c_follows($question, $childPosts, $aChildPosts, $duplicatePosts);
-
+//            $answers = qa_page_q_load_as($question, $childPosts);
             qa_question_set_hidden($question, true, null, null, null, $answers, $commentsFollows, $closePost);
         }
 
+        $pageError = [];
+        // TODO: validate special cases
+        if (qa_page_q_single_click_q($question, $answers, $commentsFollows, $closepost, $pageError)) {
+            $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
+        }
 
         if ($question != null) {
             qa_db_query_sub(
@@ -120,28 +128,33 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
             );
         } else {
              $this->handleReportErrorAndExit('REPORTED_QUESTION_NOT_FOUND');
-         }
+        }
     }
 
     private function processFlagToAnswer($userId, $postId, $questionId, $reasonId, $notice) {
-        list($answer, $question) = qa_db_select_with_pending(
+        list($answer, $question, $qChildPosts, $aChildPosts) = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $postId),
-            qa_db_full_post_selectspec($userId, $questionId)
+            qa_db_full_post_selectspec($userId, $questionId),
+            qa_db_full_child_posts_selectspec($userId, $questionId),
+            qa_db_full_child_posts_selectspec($userId, $postId)
         );
-
+        $commentsFollows = qa_page_q_load_c_follows($question, $qChildPosts, $aChildPosts);
         $answerFlagError = qa_flag_error_html($answer, $userId, qa_request());
+
         if ($answerFlagError) {
             return $answerFlagError;
         }
 
         if (qa_flag_set_tohide($answer, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
-            list($qChildPosts, $aChildPosts) = qa_db_select_with_pending(
-                qa_db_full_child_posts_selectspec($userId, $questionId),
-                qa_db_full_child_posts_selectspec($userId, $postId)
-            );
-            $commentsFollows = qa_page_q_load_c_follows($question, $qChildPosts, $aChildPosts);
-
             qa_answer_set_hidden($answer, true, null, null, null, $question, $commentsFollows);
+        }
+
+        $answers = qa_post_get_question_answers($questionId);
+        $pageError = [];
+
+        // TODO: validate special cases
+        if (qa_page_q_single_click_a($answer, $question, $answers, $commentsFollows, true, $pageError)) {
+            $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
         }
 
         if ($answer != null) {
@@ -157,7 +170,11 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     }
 
     private function processFlagToComment($parentId, $userId, $postId, $questionId, $reasonId, $notice) {
-        $comment = qa_db_select_with_pending(qa_db_full_post_selectspec($userId, $postId));
+        list($question, $parent, $comment) = qa_db_select_with_pending(
+            qa_db_full_post_selectspec($userId, $questionId),
+            qa_db_full_post_selectspec($userId, $parentId),
+            qa_db_full_post_selectspec($userId, $postId)
+        );
         $commentFlagError = qa_flag_error_html($comment, $userId, qa_request());
 
         if ($commentFlagError) {
@@ -165,12 +182,14 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
         }
 
         if (qa_flag_set_tohide($comment, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $comment)) {
-            list($question, $parent) = qa_db_select_with_pending(
-                qa_db_full_post_selectspec($userId, $questionId),
-                qa_db_full_post_selectspec($userId, $parentId)
-            );
-
             qa_comment_set_hidden($comment, true, null, null, null, $question, $parent);
+        }
+
+        $pageError = [];
+
+        // TODO: validate special cases
+        if (qa_page_q_single_click_c($comment, $question, $parent, $pageError)) {
+            $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
         }
 
         if ($comment != null) {

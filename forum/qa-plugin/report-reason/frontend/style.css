@@ -139,10 +139,19 @@
     background-color: #e74c3c;
 }
 
-.report-reason-popup__button--close {
+.report-reason-popup__button--close,
+.report-reason-popup__button--reload {
     display: block;
     margin: 20px auto 0;
+}
+
+.report-reason-popup__button--close {
     background: #27ae60;
+}
+
+.report-reason-popup__button--reload {
+    /* TODO: use better blue color */
+    background: blue;
 }
 
 .report-reason-popup__request-feedback-info {

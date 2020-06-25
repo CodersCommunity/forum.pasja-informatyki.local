@@ -216,12 +216,16 @@ class FormController {
 		const errorContent = this.getErrorContent(errorCode);
 
 		if (typeof showFeedbackPopup === 'function') {
-			showFeedbackPopup(errorContent);
+			showFeedbackPopup(errorContent, this.shouldReloadPage(reason));
 		} else {
 			this.onFormSubmissionError(errorContent);
 		}
 
 		console.error('Report reason rejected: ', reason, ' /errorContent: ', errorContent);
+	}
+
+	shouldReloadPage(reason) {
+		return reason && reason.processingFlagReasonError === 'PAGE_NEEDS_RELOAD';
 	}
 
 	validateForm() {

@@ -24,7 +24,7 @@ class q2apro_flag_reasons_validation {
         error_log(json_encode($wrappedErrorCode));
     }
 
-    protected function outputErrorToResponseAndExit($errorCode) {
+    protected function handleReportErrorAndExit($errorCode) {
         $this->handleReportError(errorCode);
         exit();
     }

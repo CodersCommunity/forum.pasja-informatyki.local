@@ -67,6 +67,7 @@ class PopupController {
 			closeReportReasonRequestFeedback: this.reportReasonPopupDOMWrapper.querySelector(
 				'#closeReportReasonRequestFeedback'
 			),
+			reloadPage: this.reportReasonPopupDOMWrapper.querySelector('#reloadPage'),
 		};
 	}
 
@@ -81,6 +82,9 @@ class PopupController {
 				<button id="closeReportReasonRequestFeedback"
 					class="report-reason-popup__button report-reason-popup__button--close"
 					type="button">${POPUP_LABELS.CLOSE}</button>
+				<button id="reloadPage"
+					class="report-reason-popup__button report-reason-popup__button--reload display-none"
+					type="button">${POPUP_LABELS.RELOAD}</button>
 			</div>
 		`;
 	}
@@ -132,13 +136,20 @@ class PopupController {
 		this.showFeedbackPopup(feedbackContent);
 	}
 
-	showFeedbackPopup(feedbackContent) {
+	showFeedbackPopup(feedbackContent, reloadPageOnPopupClose) {
 		this.reportReasonPopupDOMReferences.reportReasonRequestInfo.innerHTML = feedbackContent;
 
+		this.toggleFeedbackButton(reloadPageOnPopupClose);
 		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.add('display-none');
 		this.reportReasonPopupDOMReferences.reportReasonRequestFeedback.classList.remove('display-none');
-
 		this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback.focus();
+	}
+
+	toggleFeedbackButton(reloadPageOnPopupClose) {
+		if (reloadPageOnPopupClose) {
+			this.reportReasonPopupDOMReferences.closeReportReasonRequestFeedback.classList.add('display-none');
+			this.reportReasonPopupDOMReferences.reloadPage.classList.remove('display-none');
+		}
 	}
 
 	initSuccessPopupCloseBtn() {
@@ -146,6 +157,7 @@ class PopupController {
 			'click',
 			this.hideReportReasonPopup.bind(this)
 		);
+		this.reportReasonPopupDOMReferences.reloadPage.addEventListener('click', () => window.location.reload(true));
 	}
 }
 
