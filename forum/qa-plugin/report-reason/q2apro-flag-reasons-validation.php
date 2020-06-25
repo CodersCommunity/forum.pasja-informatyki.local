@@ -3,12 +3,12 @@
 class q2apro_flag_reasons_validation {
     private $propsModel = [
         'notice' => '',
-        'postId' => 0,
+        'postId' => -1,
         'postType' => '',
-        'questionId' => 0,
-        'relativeParentPostId' => 0,
+        'questionId' => -1,
+        'relativeParentPostId' => -1,
         'code' => '',
-        'reasonId' => 0,
+        'reasonId' => -1,
         'reportType' => 'addFlag'
     ];
 
@@ -63,12 +63,10 @@ class q2apro_flag_reasons_validation {
         $matchedPropsKeysNum = 0;
         $noticeProp = 'notice';
         $reportTypeProp = 'reportType';
-
-//            var_dump('$props: ' ,  $props);
+        $reasonIdValue = $props['reasonId'] ?? $this->propsModel['reasonId'];
 
         foreach ($this->propsModel as $key => $value) {
             $propValue = $props[$key] ?? null;
-//                echo('$key: '. $key. ' /$propValue: '. $propValue. ' /$this->propsModel[$key]: '.$this->propsModel[$key]);
 
             /*
                 TODO:
@@ -76,7 +74,7 @@ class q2apro_flag_reasons_validation {
             */
             if (
                 !$this->isRequestPropMatched($key, $propsKeys) ||
-                !$this->isRequestPropSet($propValue, $key, $noticeProp, $props['reasonId']) ||
+                !$this->isRequestPropSet($propValue, $key, $noticeProp, $reasonIdValue) ||
                 !$this->hasRequestPropCorrectType($propValue, $this->propsModel[$key]) ||
                 !$this->hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $this->propsModel[$key])
             ) {
@@ -86,7 +84,7 @@ class q2apro_flag_reasons_validation {
             $matchedPropsKeysNum++;
         }
 
-        if (!$this->isRequestPropsCorrectSize($propsKeys, $matchedPropsKeysNum)) {
+        if (!$this->isCorrectReasonId($props['reasonId'], $props['notice']) || !$this->isRequestPropsCorrectSize($propsKeys, $matchedPropsKeysNum)) {
             return false;
         }
 
@@ -102,19 +100,15 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function isRequestPropSet($propValue, $key, $noticeProp, $reasonIdProp) {
-//        echo('<br>$propValue: '. $propValue. ' /$key: '. $key. ' /$noticeProp: '. $noticeProp. ' /$reasonIdProp: '. $reasonIdProp. ' /$this->CUSTOM_REPORT_REASON_ID: '. $this->CUSTOM_REPORT_REASON_ID);
+    protected function isRequestPropSet($propValue, $key, $noticeProp, $reasonIdValue) {
         if ($propValue === null || $propValue === '') {
             if ($key !== $noticeProp) {
                 $this->handleReportError('NO_REASON_CHECKED');
                 return false;
-            } else if ($reasonIdProp === $this->CUSTOM_REPORT_REASON_ID) {
+            } else if ($reasonIdValue === $this->CUSTOM_REPORT_REASON_ID) {
                 $this->handleReportError('CUSTOM_REASON_EMPTY');
                 return false;
             }
-        } else if ($key === $noticeProp && $reasonIdProp !== $this->CUSTOM_REPORT_REASON_ID) {
-            $this->handleReportError('INAPPROPRIATE_CUSTOM_REASON_USAGE');
-            return false;
         }
 
         return true;
@@ -132,6 +126,18 @@ class q2apro_flag_reasons_validation {
     protected function hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $propsModelValue) {
         if ($key === $reportTypeProp && $propValue !== $propsModelValue) {
             $this->handleReportError('INCORRECT_REPORT_TYPE');
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function isCorrectReasonId($reasonId, $noticeValue) {
+        if ($reasonId < 0 || $reasonId > $this->CUSTOM_REPORT_REASON_ID) {
+            $this->handleReportError('INVALID_REASON_ID');
+            return false;
+        } else if ($noticeValue && $reasonId !== $this->CUSTOM_REPORT_REASON_ID) {
+            $this->handleReportError('INAPPROPRIATE_CUSTOM_REASON_USAGE');
             return false;
         }
 

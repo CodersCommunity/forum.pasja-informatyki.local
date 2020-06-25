@@ -110,8 +110,8 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
             qa_question_set_hidden($question, true, null, null, null, $answers, $commentsFollows, $closePost);
         }
 
-//        var_dump('<br>$reasonId <= $this->CUSTOM_REPORT_REASON_ID: ', $reasonId <= $this->CUSTOM_REPORT_REASON_ID, ' /$this->CUSTOM_REPORT_REASON_ID: ', $this->CUSTOM_REPORT_REASON_ID);
-        if($reasonId >= 0 && $reasonId <= $this->CUSTOM_REPORT_REASON_ID) {
+
+        if ($question != null) {
             qa_db_query_sub(
             '
                 INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`)
@@ -119,7 +119,7 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
             ', $userId, $postId, $reasonId, $notice
             );
         } else {
-             $this->handleReportErrorAndExit('INVALID_REASON_ID');
+             $this->handleReportErrorAndExit('REPORTED_QUESTION_NOT_FOUND');
          }
     }
 
@@ -152,7 +152,7 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
                 ', $userId, $answer['postid'], $reasonId, $notice
             );
         } else {
-            $this->handleReportErrorAndExit('EMPTY_ANSWER_PARAM');
+            $this->handleReportErrorAndExit('REPORTED_ANSWER_NOT_FOUND');
         }
     }
 
@@ -173,12 +173,16 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
             qa_comment_set_hidden($comment, true, null, null, null, $question, $parent);
         }
 
-        qa_db_query_sub(
-            '
-            INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`)
-            VALUES (#, #, #, $)
-        ', $userId, $postId, $reasonId, $notice
-        );
+        if ($comment != null) {
+            qa_db_query_sub(
+                '
+                INSERT INTO `^flagreasons` (`userid`, `postid`, `reasonid`, `notice`)
+                VALUES (#, #, #, $)
+            ', $userId, $postId, $reasonId, $notice
+            );
+        } else {
+            $this->handleReportErrorAndExit('REPORTED_COMMENT_NOT_FOUND');
+        }
     }
 
     private function parseFlagData() {

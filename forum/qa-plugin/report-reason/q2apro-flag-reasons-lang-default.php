@@ -31,7 +31,9 @@ return [
         'INCORRECT_REPORT_TYPE' => 'Zgłoszenie jest nieprawidłowego typu.',
         'REQUEST_NOT_CONTAIN_ALL_PROPS' => 'Zgłoszenie nie zawiera pełnych danych.',
         'INVALID_REASON_ID' => 'Zgłoszenie zawiera nieprawidłowy identyfikator powodu.',
-        'EMPTY_ANSWER_PARAM' => 'Nie znaleziono odpowiedzi, do której odnosi się zgłoszenie.',
-        'INAPPROPRIATE_CUSTOM_REASON_USAGE' => 'Nieprawidłowe użycie własnego zgłoszenia.'
+        'INAPPROPRIATE_CUSTOM_REASON_USAGE' => 'Zgłoszenie z własnym powodem zawiera nieprawidłowy identyfikator.',
+        'REPORTED_QUESTION_NOT_FOUND' => 'Nie znaleziono pytania, do którego odnosi się zgłoszenie.',
+        'REPORTED_ANSWER_NOT_FOUND' => 'Nie znaleziono odpowiedzi, do której odnosi się zgłoszenie.',
+        'REPORTED_COMMENT_NOT_FOUND' => 'Nie znaleziono komentarza, do którego odnosi się zgłoszenie.'
     ]
 ];
