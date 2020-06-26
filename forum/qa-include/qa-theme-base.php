@@ -290,8 +290,19 @@ class qa_html_theme_base
 	public function head_script()
 	{
 		if (isset($this->content['script'])) {
-			foreach ($this->content['script'] as $scriptline)
+		    $heavyScripts = [/*'jquery-1.11.3.min.js',*/ 'ckeditor.js?1.7.3'/*, 'snow-core.js?1.7.3'*/];
+
+			foreach ($this->content['script'] as $scriptline) {
+//			    echo('<br> src: ' . str_replace('<', '&lt;', $scriptline));
+
+			    $isHeavyScript = array_reduce($heavyScripts, function($isFound, $scriptFileName) use ($scriptline) {
+                    return $isFound || strpos($scriptline, $scriptFileName);
+                }, false);
+			    $optionallyDeferred = $isHeavyScript ? 'defer': '';
+                $scriptline = str_replace('src="', $optionallyDeferred .' src="', $scriptline);
+
 				$this->output_raw($scriptline);
+            }
 		}
 	}
 
