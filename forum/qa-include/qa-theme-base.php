@@ -686,6 +686,8 @@ class qa_html_theme_base
 		$this->widgets('main', 'bottom');
 
 		$this->output('</div> <!-- END qa-main -->', '');
+
+		$this->output('<script type="text/javascript" src="/qa-plugin/ckeditor4/plugins/syntaxhighlight/init.js"></script>');
 	}
 
 	public function page_title_error()

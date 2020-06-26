@@ -311,13 +311,13 @@ function qa_ajax_error()
         const questionId = parseInt(location.pathname.split('/')[1]);
         const newQuestion = location.pathname.includes('ask');
 
-        if (questionId) {
-            /*
-			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
-			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
-			 */
-            window.addInteractiveBarToCodeBlocks(false);
-        }
+        // if (questionId) {
+        //     /*
+		// 	 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
+		// 	 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
+		// 	 */
+        //     window.addInteractiveBarToCodeBlocks(false);
+        // }
 
         if (questionId || newQuestion) {
             CKEDITOR.on("instanceReady", function(event) {

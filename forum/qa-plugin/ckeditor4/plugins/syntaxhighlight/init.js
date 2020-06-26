@@ -3,8 +3,24 @@
 
     prepareCodeLanguages();
     exposeScanUnprocessedCodeBlocks();
-    document.addEventListener('DOMContentLoaded', scanUnprocessedCodeBlocks);
-    SyntaxHighlighter.all();
+    // document.addEventListener('DOMContentLoaded', scanUnprocessedCodeBlocks);
+
+    if (window.location.pathname.search(/\d+/) === 1) {
+        const postsContainer = document.querySelector('.qa-main');
+        const rawCodeBlocks = scanUnprocessedCodeBlocks(null, postsContainer);
+        rawCodeBlocks.forEach((codeBlock) => {
+            const origCodeBlockParent = codeBlock.parentNode;
+            SyntaxHighlighter.highlight(null, codeBlock);
+            const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
+            /*
+             * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
+             * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
+             */
+            window.addInteractiveBarToCodeBlocks(false, [processedCodeBlock]);
+        });
+    }
+
+    // SyntaxHighlighter.all();
 
     // Extend SyntaxHighlighter with property object declaring supported programming languages used by CKEditor and SyntaxHighlighter itself
     function prepareCodeLanguages() {
@@ -69,6 +85,8 @@
                 aliases: ctor.aliases
             }));
         fixUnavailableLangCodes(getPreElemsWithNotAvailableBrush());
+
+        return preElements;
 
         function getPreElemsWithNotAvailableBrush() {
             const checkedUnknownLangNames = [];
