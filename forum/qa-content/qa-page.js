@@ -322,7 +322,13 @@ function qa_ajax_error()
             codeBlocks = chosenCodeBlocks;
         }
 
-        codeBlocks.forEach(processBlock);
+        codeBlocks.forEach((codeBlock) => {
+            const codeBlockPrevElemSibling = codeBlock.previousElementSibling;
+
+            if (!codeBlockPrevElemSibling || !codeBlockPrevElemSibling.classList.contains('syntaxhighlighter-block-bar')) {
+                processBlock(codeBlock);
+            }
+        });
 
         function processBlock(codeBlock) {
             const blockBar = document.createElement('div');
