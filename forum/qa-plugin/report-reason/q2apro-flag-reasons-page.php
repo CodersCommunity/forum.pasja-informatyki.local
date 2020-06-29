@@ -90,9 +90,12 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
     }
 
     private function processFlagToQuestion($userId, $postId, $questionId, $reasonId, $notice) {
-        list($question, $closePost) = qa_db_select_with_pending(
+        list($question, $closePost, $childPosts, $aChildPosts, $duplicatePosts) = qa_db_select_with_pending(
             qa_db_full_post_selectspec($userId, $questionId),
-            qa_db_post_parent_q_selectspec($questionId)
+            qa_db_post_parent_q_selectspec($questionId),
+            qa_db_full_child_posts_selectspec($userId, $questionId),
+            qa_db_full_a_child_posts_selectspec($userId, $questionId),
+            false
         );
         $answers = qa_post_get_question_answers($questionId);
         $commentsFollows = qa_page_q_load_c_follows($question, $childPosts, $aChildPosts, $duplicatePosts);
@@ -103,19 +106,13 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation {
         }
 
         if (qa_flag_set_tohide($question, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
-            list($childPosts, $aChildPosts, $duplicatePosts) = qa_db_select_with_pending(
-                qa_db_full_child_posts_selectspec($userId, $questionId),
-                qa_db_full_a_child_posts_selectspec($userId, $questionId),
-                false
-            );
-
 //            $answers = qa_page_q_load_as($question, $childPosts);
             qa_question_set_hidden($question, true, null, null, null, $answers, $commentsFollows, $closePost);
         }
 
         $pageError = [];
         // TODO: validate special cases
-        if (qa_page_q_single_click_q($question, $answers, $commentsFollows, $closepost, $pageError)) {
+        if (qa_page_q_single_click_q($question, $answers, $commentsFollows, $closePost, $pageError)) {
             $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
         }
 

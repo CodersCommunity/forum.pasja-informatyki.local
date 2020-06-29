@@ -1,7 +1,7 @@
 <?php
 return [
     'REASON_LIST' => [
-        'SPAM',
+        'SPAM lub reklama',
         'Wypowiedź jest obraźliwa',
         'Nieprawidłowy temat/kategoria/otagowanie',
         'Niepełna lub niezrozumiała treść',

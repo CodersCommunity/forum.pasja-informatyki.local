@@ -124,10 +124,22 @@
     background-color: #27ae60;
 }
 
+.report-reason-popup__button--cancel[disabled],
+.report-reason-popup__button--save[disabled] {
+    color: darkgrey;
+}
+
+.report-reason-popup__button--cancel[disabled]:hover,
+.report-reason-popup__button--save[disabled]:hover {
+    cursor: not-allowed;
+}
+
+.report-reason-popup__button--cancel[disabled] {
+    background: darkred;
+}
+
 .report-reason-popup__button--save[disabled] {
     background: darkgreen;
-    color: darkgrey;
-    cursor: not-allowed;
 }
 
 .report-reason-popup__button--save[disabled] .qa-waiting {

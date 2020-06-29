@@ -109,6 +109,7 @@ class PopupController {
 		const formDOM = this.getFormDOM();
 		formDOM.reset();
 		formDOM.elements.customReportReason.required = false;
+		formDOM.elements.cancelReportReason.disabled = false;
 		formDOM.elements.sendReportReason.disabled = false;
 
 		this.resetCustomReportReasonCharCounter();

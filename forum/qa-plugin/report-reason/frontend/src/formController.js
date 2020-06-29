@@ -1,4 +1,4 @@
-import sendAjax from './ajaxService';
+import sendReport from './ajaxService';
 
 const { NOTICE_LENGTH, POPUP_LABELS, ERROR_CODES } = FLAG_REASONS_METADATA;
 
@@ -11,7 +11,6 @@ class FormController {
 		this.initFormInvalidityListenerAPI();
 
 		this.requestIntegerKeys = ['postId', 'questionId', 'relativeParentPostId', 'reasonId'];
-		this.sendButton = null;
 	}
 
 	buildForm() {
@@ -43,7 +42,10 @@ class FormController {
 			const isLastReasonChosen = reportReasonList.children[reportReasonList.children.length - 1].contains(target);
 			this.formDOM.elements.customReportReason.parentNode.classList.toggle('display-none', !isLastReasonChosen);
 			this.formDOM.elements.customReportReason.required = isLastReasonChosen;
-			this.formDOM.elements.sendReportReason.disabled = false;
+			this.toggleFormDisability({
+				cancelReportReason: false,
+				sendReportReason: false,
+			});
 
 			if (isLastReasonChosen) {
 				this.formDOM.elements.customReportReason.focus();
@@ -58,7 +60,10 @@ class FormController {
 	initTextArea() {
 		this.customReportReasonCharCounter = this.formDOM.querySelector('#customReportReasonCharCounter');
 		this.formDOM.elements.customReportReason.addEventListener('input', ({ target }) => {
-			this.formDOM.elements.sendReportReason.disabled = false;
+			this.toggleFormDisability({
+				cancelReportReason: false,
+				sendReportReason: false,
+			});
 			this.reportReasonValidationErrorDOM.classList.remove('display-block');
 			this.customReportReasonCharCounter.textContent = NOTICE_LENGTH - target.value.length;
 		});
@@ -172,28 +177,46 @@ class FormController {
 		}, props);
 	}
 
+	enableForm() {
+		this.toggleFormDisability({
+			fieldset: false,
+			cancelReportReason: false,
+			sendReportReason: false,
+		});
+	}
+
+	toggleFormDisability(states = {}) {
+		this.formDOM.firstElementChild.disabled = !!states.fieldset;
+		this.formDOM.cancelReportReason.disabled = !!states.cancelReportReason;
+		this.formDOM.sendReportReason.disabled = !!states.sendReportReason;
+	}
+
 	submitForm(event, collectedForumPostMetaData) {
 		event.preventDefault();
 
-		this.sendButton = event.target;
-		this.sendButton.disabled = true;
-
+		const formElemsDisabilityState = { sendReportReason: true };
 		const formValidationErrorCode = this.validateForm();
+
 		if (formValidationErrorCode) {
+			this.toggleFormDisability(formElemsDisabilityState);
 			return Promise.reject({ formValidationErrorCode });
 		}
 
 		const formData = this.prepareFormData(collectedForumPostMetaData);
-		this.toggleSendWaitingState(this.sendButton, true);
+		this.toggleSendWaitingState(true);
 
-		return sendAjax(this.normalizeIntegerProps(formData)).then((response) => ({ ...response, formData }));
+		formElemsDisabilityState.cancelReportReason = true;
+		formElemsDisabilityState.fieldset = true;
+		this.toggleFormDisability(formElemsDisabilityState);
+
+		return sendReport(this.normalizeIntegerProps(formData)).then((response) => ({ ...response, formData }));
 	}
 
 	handleReportResult(reportResult, onAjaxSuccess, showFeedbackPopup) {
 		reportResult
 			.then((response) => {
 				if (typeof response.newFlags === 'string' && response.newFlags.length) {
-					this.sendButton.disabled = false;
+					this.enableForm();
 					onAjaxSuccess(response);
 				} else {
 					return Promise.reject(response);
@@ -203,11 +226,12 @@ class FormController {
 				if (reason.formValidationErrorCode) {
 					this.handleReportReasonError(reason);
 				} else {
+					this.enableForm();
 					this.handleReportReasonError(reason, showFeedbackPopup);
 				}
 			})
 			.finally(() => {
-				this.toggleSendWaitingState(this.sendButton, false);
+				this.toggleSendWaitingState(false);
 			});
 	}
 
@@ -237,7 +261,7 @@ class FormController {
 	}
 
 	getErrorContent(errorCode) {
-		if (!errorCode || errorCode instanceof Error || 'newFlags' in errorCode) {
+		if (!errorCode || errorCode instanceof Error || typeof errorCode.newFlags !== 'undefined') {
 			return ERROR_CODES.GENERIC_ERROR;
 		}
 
@@ -268,11 +292,13 @@ class FormController {
 		}, 1750);
 	}
 
-	toggleSendWaitingState(buttonReference, isWaiting) {
+	toggleSendWaitingState(isWaiting) {
+		const { sendReportReason } = this.formDOM;
+
 		if (isWaiting) {
-			window.qa_show_waiting_after(buttonReference, true);
+			window.qa_show_waiting_after(sendReportReason, true);
 		} else {
-			window.qa_hide_waiting(buttonReference);
+			window.qa_hide_waiting(sendReportReason);
 		}
 	}
 }
