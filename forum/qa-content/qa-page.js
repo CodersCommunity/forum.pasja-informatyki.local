@@ -917,8 +917,8 @@ function qa_ajax_error()
 
         return function getCodeBlockBarFeatureItems(codeBlock) {
             return [
-                languageLabel.getLanguageLabel(codeBlock),
                 collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
+                languageLabel.getLanguageLabel(codeBlock),
                 codeCopy.getCopyToClipboardBtn()
             ].filter(Boolean);
         }

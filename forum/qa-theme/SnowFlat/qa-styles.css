@@ -4683,9 +4683,12 @@ pre[class*="brush:"]::after
 
 .syntaxhighlighter-language
 {
-	margin-left: 25px;
-	border-radius: 40px 0;
 	height: auto;
+}
+
+.syntaxhighlighter-language:first-child
+{
+	margin-left: 20px;
 }
 
 .syntaxhighlighter-collapsible-button
@@ -4693,6 +4696,7 @@ pre[class*="brush:"]::after
 	position: relative;
 	width: 75px;
 	height: 20px;
+	margin-left: 5px;
 	border: none;
 	outline: none;
 	background: transparent;
@@ -4855,7 +4859,7 @@ pre[class*="brush:"]::after
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-language {
-		margin-left: 0;
+		order: -1;
 		align-self: center;
 	}
 
