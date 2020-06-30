@@ -4880,6 +4880,24 @@ pre[class*="brush:"]::after
 	}
 }
 
+@media (max-width: 290px) {
+	.syntaxhighlighter-block-bar:not(.is-collapsible) {
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-around;
+		height: 45px;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .syntaxhighlighter-language,
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
+		margin: 0;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
+		border-radius: 5px;
+	}
+}
+
 /* End of Interactive Code Block Bar */
 
 .modal-background
@@ -4978,44 +4996,66 @@ form div.qa-q-view-content
 
 .snippets-parent
 {
+	display: flex;
+	align-items: center;
 	position: absolute;
 	top: -20px;
 	right: 5px;
+	height: 23px;
+	font-size: 9px;
 }
 
-.codepen-snippet
+.snippets-parent:hover::before
 {
+	content: 'Przetestuj kod klikając w jeden z przycisków';
 	position: absolute;
+	bottom: 25px;
 	right: 0;
-	top: 0;
-	width: 0;
-	height: 0;
+	width: 225px;
+	padding: 1px;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	background: black;
+	font-size: 10.5px;
+	color: white;
+	text-align: center;
 }
 
-.codepen-snippet:hover
+.snippets-parent:hover::after {
+	content: '';
+	position: absolute;
+	bottom: 19px;
+	right: 41px;
+	border-top: 7px solid black;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+}
+
+@media (max-width: 320px)
 {
-	cursor: pointer;
+	.snippets-parent::before
+	{
+		max-width: 50vw;
+	}
+}
+
+.snippets-parent form
+{
+	display: inline-block;
+}
+
+.snippets-parent input[type="submit"]:not(:first-of-type) {
+	margin-right: 3px;
 }
 
 .codepen-snippet input[type="submit"]
 {
 	background: black;
-	right: 47px;
-}
-
-.jsfiddle-snippet
-{
-	width: 0;
-	height: 0;
-	position: absolute;
-	top: 0;
-	right: 0;
 }
 
 .jsfiddle-snippet input[type="submit"]
 {
 	background: #4679A4;
-	right: 0;
 }
 
 .jsfiddle-snippet select,
@@ -5034,9 +5074,7 @@ form div.qa-q-view-content
 	border-radius: 6px;
 	color: white;
 	margin: 0;
-	position: absolute;
-	top: 1px;
-	font-size: 8px;
+	font-size: inherit;
 	padding: 4px;
 	height: 19px;
 }

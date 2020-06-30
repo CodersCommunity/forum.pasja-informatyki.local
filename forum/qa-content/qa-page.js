@@ -409,7 +409,7 @@ function qa_ajax_error()
 
         const submitSnippet = document.createElement('input');
         submitSnippet.type = 'submit';
-        submitSnippet.value = 'CODEPEN';
+        submitSnippet.value = 'CodePen';
 
         codepenSnippetForm.append(dataCarrierInput, submitSnippet);
 
@@ -440,7 +440,7 @@ function qa_ajax_error()
 
         const submitSnippet = document.createElement('input');
         submitSnippet.type = 'submit';
-        submitSnippet.value = 'JSFIDDLE';
+        submitSnippet.value = 'JSFiddle';
 
         jsfiddleSnippetForm.append(htmlTxt, cssTxt, jsTxt, submitSnippet);
 
