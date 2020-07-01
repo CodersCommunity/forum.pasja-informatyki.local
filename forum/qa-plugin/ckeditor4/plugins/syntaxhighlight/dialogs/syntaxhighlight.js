@@ -2,11 +2,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 	var getDefaultOptions=function() {
 		var options=new Object();
 		var validLangs= SyntaxHighlighter.languages.codes;
-		options.hideGutter=String(editor.config.syntaxhighlight_hideGutter).toLowerCase()==='true';
-		options.hideControls=String(editor.config.syntaxhighlight_hideControls).toLowerCase()==='true';
-		options.collapse=String(editor.config.syntaxhighlight_collapse).toLowerCase()==='true';
 		options.codeTitle=editor.config.syntaxhighlight_codeTitle;
-		options.showColumns=String(editor.config.syntaxhighlight_showColumns).toLowerCase()==='true';
 		options.noWrap=String(editor.config.syntaxhighlight_noWrap).toLowerCase()==='true';
 		options.firstLine=editor.config.syntaxhighlight_firstLine;
 		options.highlightChecked=String(editor.config.syntaxhighlight_highlightChecked).toLowerCase()==='true';
@@ -45,15 +41,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 					else if(options.lang=='xhtml'||options.lang=='xslt'||options.lang=='html') options.lang='xml'
 				}
 			}
-			if(optionsString.indexOf('gutter')>-1) {
-				options.hideGutter=true
-			}
-			if(optionsString.indexOf('toolbar')>-1) {
-				options.hideControls=true
-			}
-			if(optionsString.indexOf('collapse')>-1) {
-				options.collapse=true
-			}
 			if(optionsString.indexOf('first-line')>-1) {
 				var match=/first-line:[ ]*([0-9]{1,4})/.exec(optionsString);
 				if(match!=null&&match.length>0&&match[1]>1) {
@@ -68,9 +55,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 						options.highlight=match_hl[1]
 					}
 				}
-			}
-			if(optionsString.indexOf('ruler')>-1) {
-				options.showColumns=true
 			}
 			if(optionsString.indexOf('wrap-lines')>-1) {
 				options.noWrap=true
@@ -87,18 +71,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 	};
 	var getStringForOptions=function(optionsObject) {
 		var result='brush:'+optionsObject.lang+';';
-		if(optionsObject.hideGutter) {
-			result+='gutter:false;'
-		}
-		if(optionsObject.hideControls) {
-			result+='toolbar:false;'
-		}
-		if(optionsObject.collapse) {
-			result+='collapse:true;'
-		}
-		if(optionsObject.showColumns) {
-			result+='ruler:true;'
-		}
+
 		if(optionsObject.noWrap) {
 			result+='wrap-lines:false;'
 		}
@@ -181,51 +154,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 						children : [
 							{
 								type : 'html',
-								html : '<strong>'+editor.lang.syntaxhighlight.hideGutter+'</strong>'
-							},
-							{
-								type : 'checkbox',
-								id : 'hide_gutter',
-								label : editor.lang.syntaxhighlight.hideGutterLbl,
-								setup : function(data) {
-									this.setValue(data.hideGutter)
-								},
-								commit : function(data) {
-									data.hideGutter=this.getValue()
-								}
-							},
-							{
-								type : 'html',
-								html : '<strong>'+editor.lang.syntaxhighlight.hideControls+'</strong>'
-							},
-							{
-								type : 'checkbox',
-								id : 'hide_controls',
-								label : editor.lang.syntaxhighlight.hideControlsLbl,
-								setup : function(data) {
-									this.setValue(data.hideControls)
-								},
-								commit : function(data) {
-									data.hideControls=this.getValue()
-								}
-							},
-							{
-								type : 'html',
-								html : '<strong>'+editor.lang.syntaxhighlight.collapse+'</strong>'
-							},
-							{
-								type : 'checkbox',
-								id : 'collapse',
-								label : editor.lang.syntaxhighlight.collapseLbl,
-								setup : function(data) {
-									this.setValue(data.collapse)
-								},
-								commit : function(data) {
-									data.collapse=this.getValue()
-								}
-							},
-							{
-								type : 'html',
 								html : '<strong>'+editor.lang.syntaxhighlight.codeTitleLbl+'</strong>'
 							},
 							{
@@ -245,62 +173,6 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 										commit : function(data) {
 											if(this.getValue()&&this.getValue()!='') {
 												data.codeTitle=this.getValue()
-											}
-										}
-									}
-								]
-							},
-							{
-								type : 'html',
-								html : '<strong>'+editor.lang.syntaxhighlight.showColumns+'</strong>'
-							},
-							{
-								type : 'checkbox',
-								id : 'show_columns',
-								label : editor.lang.syntaxhighlight.showColumnsLbl,
-								setup : function(data) {
-									this.setValue(data.showColumns)
-								},
-								commit : function(data) {
-									data.showColumns=this.getValue()
-								}
-							},
-							{
-								type : 'html',
-								html : '<strong>'+editor.lang.syntaxhighlight.lineWrap+'</strong>'
-							},
-							{
-								type : 'checkbox',
-								id : 'line_wrap',
-								label : editor.lang.syntaxhighlight.lineWrapLbl,
-								setup : function(data) {
-									this.setValue(data.noWrap)
-								},
-								commit : function(data) {
-									data.noWrap=this.getValue()
-								}
-							},
-							{
-								type : 'html',
-								html : '<strong>'+editor.lang.syntaxhighlight.lineCount+'</strong>'
-							},
-							{
-								type : 'hbox',
-								widths : ['5%','95%'],
-								children : [
-									{
-										type : 'text',
-										id : 'default_lc',
-										style : 'width:15%',
-										label : '',
-										setup : function(data) {
-											if(data.firstLine>1) {
-												this.setValue(data.firstLine)
-											}
-										},
-										commit : function(data) {
-											if(this.getValue()&&this.getValue()!='') {
-												data.firstLine=this.getValue()
 											}
 										}
 									}

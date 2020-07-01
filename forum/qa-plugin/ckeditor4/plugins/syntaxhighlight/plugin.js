@@ -34,28 +34,6 @@
 });
 
 /**
- * Whether the "Hide gutter & line numbers" checkbox is checked by default in the
- * Syntaxhighlight dialog.
- *
- *		config.syntaxhighlight_hideGutter = false;
- *
- * @cfg
- * @member CKEDITOR.config
- */
-CKEDITOR.config.syntaxhighlight_hideGutter = false;
-
-/**
- * Whether the "Hide code controls at the top of the code block" checkbox is checked by default in the
- * Syntaxhighlight dialog.
- *
- *		config.syntaxhighlight_hideControls = false;
- *
- * @cfg
- * @member CKEDITOR.config
- */
-CKEDITOR.config.syntaxhighlight_hideControls = false;
-
-/**
  * Whether the "Collapse the code block by default" checkbox is checked by default in the
  * Syntaxhighlight dialog.
  *
@@ -76,17 +54,6 @@ CKEDITOR.config.syntaxhighlight_collapse = false;
  * @member CKEDITOR.config
  */
 CKEDITOR.config.syntaxhighlight_codeTitle = '';
-
-/**
- * Whether the "Show row columns in the first line" checkbox is checked by default in the
- * Syntaxhighlight dialog.
- *
- *		config.syntaxhighlight_showColumns = false;
- *
- * @cfg
- * @member CKEDITOR.config
- */
-CKEDITOR.config.syntaxhighlight_showColumns = false;
 
 /**
  * Whether the "Switch off line wrapping" checkbox is checked by default in the

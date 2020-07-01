@@ -4610,6 +4610,13 @@ pre[class*="brush:"]
 	top: 3px !important;
 }
 
+.syntaxhighlighter-parent .syntaxhighlighter caption
+{
+	/* Used !important to override default SH styles */
+	text-align: center !important;
+	font-weight: bold !important;
+}
+
 .syntaxhighlighter.collapsed-block,
 pre[class*="brush:"].collapsed-block
 {
