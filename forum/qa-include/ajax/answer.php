@@ -57,8 +57,8 @@ if (isset($question['basetype']) && $question['type'] === 'Q'
     // If successful, page content will be updated via Ajax
     if (isset($answerid)) {
         $answer = qa_db_select_with_pending(qa_db_full_post_selectspec($userid, $answerid));
-        $question = $question + qa_page_q_post_rules($question, null, null, $childposts); // array union
-        $answer = $answer + qa_page_q_post_rules($answer, $question, $answers, null);
+        $question = array_merge($question, qa_page_q_post_rules($question, null, null, $childposts));
+        $answer = array_merge($answer, qa_page_q_post_rules($answer, $question, $answers, null));
         $usershtml = qa_userids_handles_html([$answer], true);
         $a_view = qa_page_q_answer_view($question, $answer, false, $usershtml, false);
 
