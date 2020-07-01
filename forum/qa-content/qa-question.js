@@ -73,12 +73,9 @@ function qa_toggle_element(elem)
 function qa_submit_answer(questionid, elem)
 {
 	var params=qa_form_params('a_form');
-
 	params.a_questionid=questionid;
 
-	qa_ajax_post('answer', params,
-		function(lines) {
-
+	qa_ajax_post('answer', params, function(lines) {
 			if (lines[0]=='1') {
 				if (lines[1]<1) {
 					var b=document.getElementById('q_doanswer');
@@ -86,32 +83,34 @@ function qa_submit_answer(questionid, elem)
 						b.style.display='none';
 				}
 
-				var t=document.getElementById('a_list_title');
-				qa_set_inner_html(t, 'a_list_title', lines[2]);
-				qa_reveal(t, 'a_list_title');
+				const answerListTitle = document.getElementById('a_list_title');
+				qa_set_inner_html(answerListTitle, 'a_list_title', lines[2]);
+				qa_reveal(answerListTitle, 'a_list_title');
 
-				var e=document.createElement('div');
-				e.innerHTML=lines.slice(3).join("\n");
+				const answerWrapper = document.createElement('div');
+				answerWrapper.innerHTML = lines.slice(3).join("\n");
 
-				var c=e.firstChild;
-				c.style.display='none';
+				const answerItem = answerWrapper.firstChild;
+				answerItem.style.display='none';
 
-				var l=document.getElementById('a_list');
-				l.insertBefore(c, l.firstChild);
+				const answerList = document.getElementById('a_list');
+				answerList.insertBefore(answerItem, answerList.firstChild);
 
-				var a=document.getElementById('anew');
-				a.qa_disabled=true;
+				const answerFormParent = document.getElementById('anew');
+				answerFormParent.qa_disabled=true;
 
-				qa_reveal(c, 'answer');
-				qa_conceal(a, 'form');
-
+				qa_conceal(answerFormParent, 'form');
+				qa_reveal(answerItem, 'answer', () => {
+					if (typeof window.reloadBlocksOfCode === 'function') {
+						window.reloadBlocksOfCode(answerItem);
+					}
+				});
 			} else if (lines[0]=='0') {
 				document.forms['a_form'].submit();
 
 			} else {
 				qa_ajax_error();
 			}
-
 		}
 	);
 
@@ -120,43 +119,79 @@ function qa_submit_answer(questionid, elem)
 	return false;
 }
 
-function qa_submit_comment(questionid, parentid, elem)
-{
-	var params=qa_form_params('c_form_'+parentid);
+function qa_submit_comment(questionid, parentid, elem) {
+	const params = qa_form_params(`c_form_${ parentid }`);
+	params.c_questionid = questionid;
+	params.c_parentid = parentid;
+	params.last_comment_id = getLastCommentId();
 
-	params.c_questionid=questionid;
-	params.c_parentid=parentid;
+	qa_ajax_post('comment', params, onSuccess);
+	qa_show_waiting_after(elem, false);
 
-	qa_ajax_post('comment', params,
-		function (lines) {
+	function onSuccess(lines) {
+		if (lines[0] == '1') {
+			const updatedCommentsList = updateCommentsList(lines);
+			updateFormState();
+			revealNewComment(lines[1])
+				.then(() => {
+					if (typeof window.reloadBlocksOfCode === 'function') {
+						window.reloadBlocksOfCode(updatedCommentsList);
+					}
+				});
+		} else if (lines[0] == '0') {
+			document.forms['c_form_' + parentid].submit();
+		} else {
+			qa_ajax_error();
+		}
+	}
 
-			if (lines[0]=='1') {
-				var l=document.getElementById('c'+parentid+'_list');
-				l.innerHTML=lines.slice(2).join("\n");
-				l.style.display='';
+	function getLastCommentId() {
+		const lastCommentFromList = document
+			.querySelector(`#c${ params.c_parentid }_list .qa-c-list-item:last-of-type`);
+		const lastCommentId = lastCommentFromList && lastCommentFromList.id.slice(1);
 
-				var a=document.getElementById('c'+parentid);
-				a.qa_disabled=true;
+		return lastCommentId;
+	}
 
-				var c=document.getElementById(lines[1]); // id of comment
-				if (c) {
-					c.style.display='none';
-					qa_reveal(c, 'comment');
-				}
+	function updateCommentsList(lines) {
+		const commentsList = document.getElementById(`c${ parentid }_list`);
+		const newComments = lines.slice(2).join('\n');
 
-				qa_conceal(a, 'form');
+		if (params.last_comment_id) {
+			const newCommentsTempParent = document.createElement('div');
+			newCommentsTempParent.innerHTML = newComments;
 
-			} else if (lines[0]=='0') {
-				document.forms['c_form_'+parentid].submit();
-
-			} else {
-				qa_ajax_error();
+			const newestComment = newCommentsTempParent.querySelector('.qa-c-list-item.comment:last-of-type');
+			if (newestComment) {
+				newestComment.style.display = 'none';
 			}
 
+			commentsList.append(...newCommentsTempParent.children);
+		} else {
+			commentsList.innerHTML = newComments;
 		}
-	);
 
-	qa_show_waiting_after(elem, false);
+		commentsList.style.display = '';
+
+		return commentsList;
+	}
+
+	function updateFormState() {
+		const commentForm = document.getElementById(`c${ parentid }`);
+		commentForm.qa_disabled = true;
+		qa_conceal(commentForm, 'form');
+	}
+
+	function revealNewComment(commentId) {
+		const addedComment = document.getElementById(commentId);
+		if (addedComment) {
+			addedComment.style.display = 'none';
+
+			return new Promise((onCommentShown) => {
+				qa_reveal(addedComment, 'comment', onCommentShown);
+			});
+		}
+	}
 
 	return false;
 }
