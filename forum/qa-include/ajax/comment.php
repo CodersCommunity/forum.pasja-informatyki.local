@@ -47,7 +47,7 @@ $userid = qa_get_logged_in_userid();
 
 // Check if the question and parent exist, and whether the user has permission to do this
 if (isset($question['basetype'], $parent['basetype'])
-    && $question['basetype'] === 'Q' && ($parent['basetype'] === 'Q' || @$parent['basetype'] === 'A')
+    && $question['type'] === 'Q' && ($parent['type'] === 'Q' || $parent['type'] === 'A')
     && !qa_user_post_permit_error('permit_post_c', $parent, QA_LIMIT_COMMENTS)
 ) {
     require_once QA_INCLUDE_DIR . 'app/captcha.php';
@@ -65,16 +65,16 @@ if (isset($question['basetype'], $parent['basetype'])
     // If successful, page content will be updated via Ajax
     if (isset($commentid)) {
         $children = qa_db_select_with_pending(qa_db_full_child_posts_selectspec($userid, $parentid));
-        $parent = $parent + qa_page_q_post_rules(
+        $parent = array_merge($parent, qa_page_q_post_rules(
             $parent,
             ($questionid == $parentid) ? null : $question,
             null,
             $children
-        );
+        ));
         // in theory we should retrieve the parent's siblings for the above, but they're not going to be relevant
 
         foreach ($children as $key => $child) {
-            $children[$key] = $child + qa_page_q_post_rules($child, $parent, $children, null);
+            $children[$key] = array_merge($child, qa_page_q_post_rules($child, $parent, $children, null));
         }
         $usershtml = qa_userids_handles_html($children, true);
         qa_sort_by($children, 'created');
@@ -100,4 +100,4 @@ if (isset($question['basetype'], $parent['basetype'])
     }
 }
 
-	echo "QA_AJAX_RESPONSE\n0\nUNAVAILABLE"; // fall back to non-Ajax submission if there were any problems
+echo "QA_AJAX_RESPONSE\n0\nUNAVAILABLE"; // fall back to non-Ajax submission if there were any problems
