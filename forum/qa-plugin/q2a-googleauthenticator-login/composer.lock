@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "ffe70c5dd85e6617331f0646a1302812",
@@ -12,16 +12,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobThree/TwoFactorAuth.git",
-                "reference": "a77e7d822343bb88112baef808839cfae7bc5abb"
+                "reference": "4da0739b3897d567194148718b1a007390864501"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobThree/TwoFactorAuth/zipball/a77e7d822343bb88112baef808839cfae7bc5abb",
-                "reference": "a77e7d822343bb88112baef808839cfae7bc5abb",
+                "url": "https://api.github.com/repos/RobThree/TwoFactorAuth/zipball/4da0739b3897d567194148718b1a007390864501",
+                "reference": "4da0739b3897d567194148718b1a007390864501",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.6.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "@stable"
@@ -55,7 +55,7 @@
                 "php",
                 "tfa"
             ],
-            "time": "2017-11-06T17:55:56+00:00"
+            "time": "2020-05-07T16:27:40+00:00"
         }
     ],
     "packages-dev": [],
@@ -67,5 +67,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
