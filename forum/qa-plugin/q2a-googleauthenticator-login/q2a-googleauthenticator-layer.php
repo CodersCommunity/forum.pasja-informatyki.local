@@ -90,12 +90,23 @@ class qa_html_theme_layer extends qa_html_theme_base
 
             if (isset($this->init)) {
                 $note = qa_lang_html('plugin_2fa/2fa_data_info');
-                $note = str_replace('{{ QR_CODE }}', '<br><center><img src="' . $this->init->getQRCode() . '"></center><br>', $note);
-                $note = str_replace('{{ SECRET }}', '<code>' . $secret . '</code>', $note);
-                $note = str_replace('{{ RECOVERY_CODE }}', '<code>' . $recoveryCode . '</code>', $note);
-                $note = str_replace('{{ ERROR_START }}', '<br><div class="qa-error">', $note);
-                $note = str_replace('{{ ERROR_END }}', '</div><br>', $note);
-
+                $note = str_replace(
+                    [
+                        '{{ QR_CODE }}',
+                        '{{ SECRET }}',
+                        '{{ RECOVERY_CODE }}',
+                        '{{ ERROR_START }}',
+                        '{{ ERROR_END }}'
+                    ],
+                    [
+                        '<br><div style="text-align: center;"><img src="' . $this->init->getQRCode() . '"></div><br>',
+                        '<code>' . $secret . '</code>',
+                        '<code>' . $recoveryCode . '</code>',
+                        '<br><div class="qa-error">',
+                        '</div><br>'
+                    ],
+                    $note
+                );
                 $result['fields'][] = [
                     'style' => 'tall',
                     'type' => 'static',
