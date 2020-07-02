@@ -1,5 +1,5 @@
-// TODO: remove dynamic import feature from Babel/Webpack if [defer] approach on this <script>
 import { bootstrapReportReasonPopup, postFlagReasonWrapper } from './src/bootstrap';
+
 const onClick = bootstrapReportReasonPopup();
 postFlagReasonWrapper();
 
