@@ -222,14 +222,14 @@ function qa_ajax_error()
 
                 window.scanUnprocessedCodeBlocks(null, postsToHighlight);
 
-                const processedCodeBlocks = codeBlocks.map(codeBlock => {
+                const processedCodeBlocks = codeBlocks.map((codeBlock) => {
                     /*
                      * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
                      * Temporary caching is needed to retrieve processed element within parent context afterwards.
                      */
                     const origCodeBlockParent = codeBlock.parentNode;
                     SyntaxHighlighter.highlight(null, codeBlock);
-                    const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
+                    const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
 
                     return processedCodeBlock;
                 });
