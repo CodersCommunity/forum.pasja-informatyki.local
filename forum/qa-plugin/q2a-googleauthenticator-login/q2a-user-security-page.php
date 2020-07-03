@@ -28,7 +28,7 @@ class user_security_page
         $qa_content['title'] = 'Ustawienia zabezpieczeń konta';
 
         // logged in user id
-        $loggedIn = qa_get_logged_in_userid();
+        $loggedIn = (int) qa_get_logged_in_userid();
 
         if (empty($loggedIn)) {
             $qa_content['error'] = qa_lang_html('block_pm/logged_in');
@@ -36,6 +36,16 @@ class user_security_page
             return $qa_content;
         }
 
+        $qa_content['navigation']['sub'] = qa_user_sub_navigation($this->getUsername($loggedIn), '', false);
+
         return $qa_content;
+    }
+
+    private function getUsername(int $userId)
+    {
+        return qa_db_read_one_value(qa_db_query_sub(
+            'SELECT handle FROM ^users WHERE userid=#',
+            $userId
+        ));
     }
 }

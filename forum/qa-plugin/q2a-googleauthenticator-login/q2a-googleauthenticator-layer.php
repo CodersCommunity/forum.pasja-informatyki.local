@@ -69,11 +69,11 @@ class qa_html_theme_layer extends qa_html_theme_base
             $note = str_replace(
                 ['{{ QR_CODE }}', '{{ SECRET }}', '{{ RECOVERY_CODE }}', '{{ ERROR_START }}', '{{ ERROR_END }}'],
                 [
-                    '<br><div style="text-align: center;"><img src="' . $this->init->getQRCode() . '"></div><br>',
-                    '<code>' . $secret . '</code>',
-                    '<code>' . $recoveryCode . '</code>',
-                    '<br><div class="qa-error">',
-                    '</div><br>'
+                    '<div style="text-align: center; margin-bottom: 1.5em"><img src="' . $this->init->getQRCode() . '"></div>',
+                    '<div style="text-align: center;"><code>' . chunk_split($secret, 4, ' ') . '</code></div>',
+                    '<div class="qa-warning" style="text-align: center;"><code>' . $recoveryCode . '</code></div><br>',
+                    '<div class="qa-error" style="margin-bottom: 1.5em">',
+                    '</div>'
                 ],
                 $note
             );

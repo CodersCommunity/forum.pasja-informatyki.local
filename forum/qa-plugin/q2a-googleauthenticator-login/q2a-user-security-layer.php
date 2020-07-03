@@ -15,9 +15,9 @@ class qa_html_theme_layer extends qa_html_theme_base
     private function prepareNavigation(string $class, ?int $isLoggedUser, array &$navigation): void
     {
         if ($class === 'nav-sub'
+            && isset($isLoggedUser)
             && true === (bool) qa_opt('googleauthenticator_login')
-            && (isset($isLoggedUser) || qa_request() === 'account/security')
-            && $this->isExcludedPage()
+            && !$this->isExcludedPage()
         ) {
             $navigation[] = [
                 'label' => '<b class="color: red">Ustawienia zabezpieczeń konta</b>',
@@ -29,7 +29,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     private function isExcludedPage(): bool
     {
-        return !in_array(explode('/', qa_request())[0], [
+        return in_array(explode('/', qa_request())[0], [
             'admin', 'messages', 'users', 'unanswered', 'updates'
         ]);
     }
