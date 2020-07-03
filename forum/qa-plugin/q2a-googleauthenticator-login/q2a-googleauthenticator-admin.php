@@ -60,7 +60,9 @@ class q2a_googleauthenticator_admin
             'ok' => $saved ? qa_lang('plugin_2fa/saved_plugin_settings') : null,
             'fields' => [[
                 'type' => 'checkbox',
-                'label' => qa_lang('plugin_2fa/disable_plugin'),
+                'label' => qa_opt('googleauthenticator_login') ?
+                    qa_lang('plugin_2fa/enabled_plugin') :
+                    qa_lang('plugin_2fa/disabled_plugin'),
                 'value' => qa_opt('googleauthenticator_login') ? true : false,
                 'tags' => 'NAME="googleauthenticator_enable_plugin"'
                 ]
