@@ -4666,7 +4666,6 @@ pre[class*="brush:"]::after
 {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	min-height: 30px;
 	opacity: 1;
 	transition: opacity 0.2s;
@@ -4677,6 +4676,22 @@ pre[class*="brush:"]::after
 	background: -webkit-linear-gradient(left,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to right,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
+}
+
+.syntaxhighlighter-block-bar-item
+{
+	width: 50%;
+}
+
+.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item
+{
+	width: 33.3%;
+}
+
+.syntaxhighlighter-block-bar-item:last-child
+{
+	display: inline-flex;
+	justify-content: flex-end;
 }
 
 .syntaxhighlighter-language,
@@ -4691,19 +4706,16 @@ pre[class*="brush:"]::after
 .syntaxhighlighter-language
 {
 	height: auto;
-}
-
-.syntaxhighlighter-language:first-child
-{
-	margin-left: 20px;
+	margin-left: 25px;
 }
 
 .syntaxhighlighter-collapsible-button
 {
 	position: relative;
-	width: 75px;
+	width: 55px;
 	height: 20px;
-	margin-left: 5px;
+	display: block;
+	margin: 0 auto;
 	border: none;
 	outline: none;
 	background: transparent;
@@ -4727,7 +4739,7 @@ pre[class*="brush:"]::after
 	background: white;
 
 	--vertical-alignment-value: -0.5px;
-	--horizontal-alignment-value: 14.5px;
+	--horizontal-alignment-value: 5px;
 }
 
 .syntaxhighlighter-collapsible-button.expanded-state::before,
@@ -4789,6 +4801,7 @@ pre[class*="brush:"]::after
 	border-radius: 0px 40px;
 	outline: none;
 	background: #2c3e50;
+	position: relative;
 }
 
 .content-copy-btn:hover {
@@ -4854,32 +4867,38 @@ pre[class*="brush:"]::after
 }
 
 @media (max-width: 320px) {
-	.syntaxhighlighter-parent {
-		position: relative;
+	.syntaxhighlighter-block-bar .syntaxhighlighter-language {
+		text-align: center;
 	}
 
-	.syntaxhighlighter-block-bar.is-collapsible.syntaxhighlighter-block-bar {
-		flex-direction: column;
+	.syntaxhighlighter-block-bar.is-collapsible {
 		height: 50px;
-		justify-content: space-evenly;
-		align-items: flex-start;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item:first-child {
+		flex-basis: 100%;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item {
+		flex-basis: 35%;
+		justify-content: center;
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-language {
-		order: -1;
-		align-self: center;
+		margin-left: 0;
 	}
 
-	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-collapsible-button {
-		margin-bottom: 3px
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-collapsible-button,
+	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
+		margin: 0 auto 3px;
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
-		position: absolute;
-		top: 23px;
-		right: 0;
-		border-radius: 0 5px 0 0;
-		background: transparent;
+		border-radius: 0 10px 0 10px;
+		padding-left: 6px;
+		padding-right: 6px;
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn:hover {
@@ -4892,16 +4911,23 @@ pre[class*="brush:"]::after
 		flex-direction: column;
 		align-items: center;
 		justify-content: space-around;
-		height: 45px;
+		height: 55px;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .syntaxhighlighter-block-bar-item {
+		justify-content: center;
 	}
 
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .syntaxhighlighter-language,
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
 		margin: 0;
+		line-height: 1;
 	}
 
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
 		border-radius: 5px;
+		padding-left: 6px;
+		padding-right: 6px;
 	}
 }
 

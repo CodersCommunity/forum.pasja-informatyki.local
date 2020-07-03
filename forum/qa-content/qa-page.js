@@ -917,10 +917,18 @@ function qa_ajax_error()
 
         return function getCodeBlockBarFeatureItems(codeBlock) {
             return [
-                collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
                 languageLabel.getLanguageLabel(codeBlock),
+                collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
                 codeCopy.getCopyToClipboardBtn()
-            ].filter(Boolean);
+            ].filter(Boolean).map(wrapCodeBlockBarFeatureItem);
+        }
+
+        function wrapCodeBlockBarFeatureItem(item) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('syntaxhighlighter-block-bar-item');
+            wrapper.appendChild(item);
+
+            return wrapper;
         }
     }
 })();
