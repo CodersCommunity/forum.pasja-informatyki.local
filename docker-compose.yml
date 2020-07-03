@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  www:
+    container_name: forum-www
+    build:
+      context: docker/www/
+      args:
+        - XDEBUG_REMOTE_ENABLE=0
+        - XDEBUG_REMOTE_CONNECT_BACK=0
+        - XDEBUG_REMOTE_HOST=host.docker.internal
+        - XDEBUG_REMOTE_PORT=9000
+        - XDEBUG_IDEKEY=PHPSTORM
+        - XDEBUG_AUTOSTART=1
+        - XDEBUG_REMOTE_LOG=
+    volumes:
+      - .:/var/www/html
+      - ./docker/apache2:/var/log/apache2
+    ports:
+      - 80:80
+    depends_on:
+      - mysql
+
+  mail:
+    image: mailhog/mailhog
+    container_name: forum-mail
+    ports:
+      - 8025:8025
+      - 1025:1025
+
+  mysql:
+    image: mysql:5.6
+    container_name: forum-mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./dump/forum.sql:/docker-entrypoint-initdb.d/forum.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=forum
+      - MYSQL_USER=test
+      - MYSQL_PASSWORD=test

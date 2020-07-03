@@ -3,3 +3,6 @@
 *.retry
 /vendor/
 /forum/vendor/
+/forum/qa-config.php
+/docker/apache2/**
+docker-compose.override.yml

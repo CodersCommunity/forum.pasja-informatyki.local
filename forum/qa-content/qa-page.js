@@ -213,192 +213,31 @@ function qa_ajax_error()
 {
     'use strict';
 
-    // check if browser supports 'select()' and 'copy' commands
-    var isClipboardSupported = (window.getSelection && document.queryCommandSupported('copy') && navigator.userAgent.indexOf('Firefox') < 0);
+    const isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
 
-    /*
-     * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
-     */
-     function viewHtmlCssJs()
-     {
-        /*
-         * Adapted code from Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
-         */
-        function createCodepenSnippet(codepenData)
-        {
-            var codeAsJSON = JSON.stringify(codepenData)
-                // Quotes will screw up the JSON
-                .replace(/"/g, "&​quot;") // careful copy and pasting, I had to use a zero-width space here to get markdown to post this.
-                .replace(/'/g, "&apos;");
+    Object.defineProperty(window, 'reloadBlocksOfCode', {
+        configurable: false,
+        writable: false,
+        value: (commentsToHighlight) => {
+            if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
+                const codeBlocks = [...commentsToHighlight.querySelectorAll('pre')];
+                const processedCodeBlocks = codeBlocks.map(codeBlock => {
+                    /*
+                     * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
+                     * Temporary caching is needed to retrieve processed element within parent context afterwards.
+                     */
+                    const origCodeBlockParent = codeBlock.parentNode;
+                    SyntaxHighlighter.highlight(null, codeBlock);
+                    const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
 
-            var codepenSnippetForm = document.createElement('form');
-            codepenSnippetForm.action = 'https://codepen.io/pen/define';
-            codepenSnippetForm.method = 'POST';
-            codepenSnippetForm.target= '_blank';
-            codepenSnippetForm.classList.add('codepen-snippet');
-
-            var dataCarrierInput = document.createElement('input');
-            dataCarrierInput.type = 'hidden';
-            dataCarrierInput.name = 'data';
-            dataCarrierInput.value = codeAsJSON;
-
-                        var submitSnippet = document.createElement('input');
-                        submitSnippet.type = 'submit';
-                        submitSnippet.value = 'CODEPEN';
-
-            codepenSnippetForm.appendChild(dataCarrierInput);
-            codepenSnippetForm.appendChild(submitSnippet);
-
-            return codepenSnippetForm;
-        }
-
-        /*
-         * Adapted code from JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
-         */
-        function createJsfiddleSnippet(jsfiddleData)
-        {
-            var jsfiddleSnippetForm = document.createElement('form');
-            jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
-            jsfiddleSnippetForm.method = 'POST';
-            jsfiddleSnippetForm.target = '_blank';
-            jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
-
-            var htmlTxt = document.createElement('textarea');
-            htmlTxt.name = 'html';
-            htmlTxt.value = jsfiddleData.html || '';
-
-            var cssTxt = document.createElement('textarea');
-            cssTxt.name = 'css';
-            cssTxt.value = jsfiddleData.css || '';
-
-            var jsTxt = document.createElement('textarea');
-            jsTxt.name = 'js';
-            jsTxt.value = jsfiddleData.js || '';
-
-                        var selectHTML = document.createElement('select');
-                        selectHTML.name = 'panel_html';
-            var selectCSS = document.createElement('select');
-                        selectCSS.name = 'panel_css';
-                        var selectJS = document.createElement('select');
-                        selectJS.name = 'panel_js';
-
-                        var htmlVersion = document.createElement('option');
-                        htmlVersion.value = 0;
-                        htmlVersion.textContent = 'HTML';
-                        htmlVersion.setAttribute('selected', 'selected');
-
-                        var cssCleanVersion = document.createElement('option');
-                        cssCleanVersion.value = 0;
-                        cssCleanVersion.textContent = 'CSS';
-                        cssCleanVersion.setAttribute('selected', 'selected');
-                        var cssPreProcessorVersion = document.createElement('option');
-                        cssPreProcessorVersion.value = 1;
-                        cssPreProcessorVersion.textContent = 'SCSS';
-
-                        var jsCleanVersion = document.createElement('option');
-                        jsCleanVersion.value = 0;
-                        jsCleanVersion.textContent = 'JavaScript';
-                        jsCleanVersion.setAttribute('selected', 'selected');
-                        var jsCoffeeVersion = document.createElement('option');
-                        jsCoffeeVersion.value = 1;
-                        jsCoffeeVersion.textContent = 'CoffeeScript';
-                        var jsOldVersion = document.createElement('option');
-                        jsOldVersion.value = 2;
-                        jsOldVersion.textContent = 'JavaScript 1.7';
-
-            var submitSnippet = document.createElement('input');
-            submitSnippet.type = 'submit';
-            submitSnippet.value = 'JSFIDDLE';
-
-                        selectHTML.appendChild(htmlVersion);
-                        selectCSS.appendChild(cssCleanVersion);
-                        selectCSS.appendChild(cssPreProcessorVersion);
-                        selectJS.appendChild(jsCleanVersion);
-                        selectJS.appendChild(jsCoffeeVersion);
-                        selectJS.appendChild(jsOldVersion);
-
-                        jsfiddleSnippetForm.appendChild(selectHTML);
-                        jsfiddleSnippetForm.appendChild(selectCSS);
-                        jsfiddleSnippetForm.appendChild(selectJS);
-            jsfiddleSnippetForm.appendChild(submitSnippet);
-
-            jsfiddleSnippetForm.appendChild(htmlTxt);
-            jsfiddleSnippetForm.appendChild(cssTxt);
-            jsfiddleSnippetForm.appendChild(jsTxt);
-
-            return jsfiddleSnippetForm;
-        }
-
-        // add Codepen and JSFiddle snippets buttons to each post/comment, which has HTML/CSS/JavaScript code inside blocks
-        function addSnippets(data, parent)
-        {
-            var codepenSnippet = createCodepenSnippet(data);
-            var jsfiddleSnippet = createJsfiddleSnippet(data);
-
-            var snippetsParent = document.createElement('div');
-            snippetsParent.classList.add('snippets-parent');
-            snippetsParent.appendChild(codepenSnippet);
-            snippetsParent.appendChild(jsfiddleSnippet);
-
-            parent.appendChild(snippetsParent);
-            if ( parent.classList.contains( 'qa-c-item-content' ) )
-            {
-                snippetsParent.classList.add( 'inside-comment' );
-                snippetsParent.parentNode.querySelector('.entry-content').classList.add('below-snippets');
+                    return processedCodeBlock;
+                });
+                handleCodeCollapsing(false, isClipboardSupported, processedCodeBlocks);
+            } else {
+                console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
             }
         }
-
-        var posts = Array.from(document.querySelectorAll('.entry-content'));
-
-        posts.forEach(function(post)
-        {
-           var blockOfCodeParents = post.querySelectorAll('.syntaxhighlighter-parent');
-           var canAddSnippets = true;
-
-           if (blockOfCodeParents.length)
-           {
-                 var blocksInPost = {};
-                 var data = {};
-                 var htmlCode = '';
-                 var cssCode = '';
-                 var jsCode = '';
-                 var parent = Array.from(blockOfCodeParents)[0].parentNode.parentNode;
-
-                 Array.from(blockOfCodeParents).forEach(function(block)
-                 {
-                    var code = '';
-
-                    Array.from(block.querySelectorAll('.code .line')).forEach(function(line)
-                    {
-                        code += line.textContent + '\r\n';
-                    });
-
-                    blocksInPost[block.firstElementChild.nextSibling.classList[1]] = code;
-                 });
-
-                 Object.keys(blocksInPost).forEach(function(language)
-                 {
-                    switch (language)
-                    {
-                        case 'css' : cssCode += blocksInPost.css;
-                                    data.css = cssCode;
-                                    break;
-                        case 'xml' : htmlCode += blocksInPost.xml;
-                                    data.html = htmlCode;
-                                    break;
-                        case 'jscript' : jsCode += blocksInPost.jscript;
-                                        data.js = jsCode;
-                                    break;
-                        default : canAddSnippets = false;
-                                    break;
-                    }
-                 });
-
-                 if (canAddSnippets)
-                     addSnippets(data, parent);
-           }
-        });
-     }
+    });
 
     /*
      *    Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
@@ -461,103 +300,79 @@ function qa_ajax_error()
      * Feature: Collapsable blocks of code
      * Date: 05.07.2016r.
      */
-    function handleCodeCollapsing(insidePreview, addCopyBtn)
-    {
-        /*
-         * !!!! IMPORTANT VARIABLE !!!!
-         *
-         * Set number of lines when block of code should be able to collapse (so it's considered as being too long)
-         *
-         * !!!! IMPORTANT VARIABLE !!!!
-         */
-        var numberOfLines = 30;
+    function handleCodeCollapsing(insidePreview, addCopyBtn, chosenCodeBlocks) {
+        // Set number of lines when block of code should be able to collapse (so it's considered as being too long)
+        const numberOfLines = 30;
 
         // languages got from Forum site DOM
-        var languages = {
-            'as3' : 'actionscript',
-            'applescript' : 'applescript',
-            'bash' : 'bash-shell',
-            'cf' : 'coldfusion',
-            'csharp' : 'C#',
-            'cpp' : 'C/C++',
-            'css' : 'CSS',
-            'delphi' : 'delphi',
-            'diff' : 'diff',
-            'erl' : 'erlang',
-            'groovy' : 'groovy',
-            'jscript' : 'JavaScript',
-            'java' : 'Java',
-            'javafx' : 'Java-FX',
-            'perl' : 'perl',
-            'php' : 'PHP',
-            'plain' : 'plain-text',
-            'ps' : 'powershell',
-            'python' : 'Python',
-            'ruby' : 'Ruby',
-            'scss' : 'SASS',
-            'scala' : 'scala',
-            'sql' : 'SQL',
-            'tap' : 'tap',
-            'vb' : 'VB',
-            'xml' : 'XML-xHTML'
-        };
+        const languages = {};
+        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
 
-        var blocks = insidePreview ? Array.from(document.querySelectorAll('.post-preview-parent .syntaxhighlighter')) : Array.from(document.querySelectorAll('.syntaxhighlighter'));
+        let codeBlocks = [];
 
-        // when 'blocks' are still unavailable - it probably is happening on /ask page (with preview modal displayed). Then check for <pre> tags
-        if (!blocks.length)
-            blocks = Array.from(document.querySelectorAll('pre[class*="brush:"]'));
+        if (!chosenCodeBlocks || !chosenCodeBlocks.length) {
+            const blocksSelector = insidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
+            codeBlocks = document.querySelectorAll(blocksSelector);
 
-        blocks.forEach(function(block)
-        {
-            var blockBar = document.createElement('div');
-            var blockButton = document.createElement('button');
-            var languageName = document.createElement('div');
-            var copyCodeBtn = document.createElement('button');
+            // when 'codeBlocks' are still unavailable - it probably is happening on /ask page (with preview modal displayed). Then check for <pre> tags
+            if (!codeBlocks.length) {
+                codeBlocks = document.querySelectorAll('pre[class*="brush:"]');
+            }
+        } else {
+            codeBlocks = chosenCodeBlocks;
+        }
+
+        codeBlocks.forEach((codeBlock) => {
+            const codeBlockPrevElemSibling = codeBlock.previousElementSibling;
+
+            if (!codeBlockPrevElemSibling || !codeBlockPrevElemSibling.classList.contains('syntaxhighlighter-block-bar')) {
+                processBlock(codeBlock);
+            }
+        });
+
+        function processBlock(codeBlock) {
+            const blockBar = document.createElement('div');
+            const blockButton = document.createElement('button');
+            const languageName = document.createElement('div');
+            const copyCodeBtn = document.createElement('button');
 
             blockBar.classList.add('syntaxhighlighter-block-bar');
-
             languageName.classList.add('syntaxhighlighter-language');
 
-            /*
-             * Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
-             */
-            var isLongCodeAtReply = block.querySelectorAll('.line').length >= numberOfLines;
-            var isLongCodeAtAsk = (block.innerHTML.indexOf('\n') > -1 && block.innerHTML.match(/\n/g).length + 1 >= numberOfLines);
+            // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
+            const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= numberOfLines;
+            const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= numberOfLines);
 
-            if (isLongCodeAtReply || isLongCodeAtAsk)
-            {
+            if (isLongCodeAtReply || isLongCodeAtAsk) {
                 blockButton.classList.add('syntaxhighlighter-button');
                 blockButton.textContent = '-- Rozwiń --';
 
-                block.classList.add('collapsed-block');
+                codeBlock.classList.add('collapsed-block');
 
-                blockButton.addEventListener('click', function(ev)
-                {
-                    // prevent... dummy (refresh page) default action of button
+                blockButton.addEventListener('click', onBlockButtonClick);
+                blockBar.appendChild(blockButton);
+
+                function onBlockButtonClick(ev) {
                     ev.preventDefault();
 
                     /*
                     * when block-code is collapsed or not - write info on button and add/remove CSS class
                     * to notify user the state of code-block
                     */
-                    if (block.classList.contains('collapsed-block'))
-                    {
-                        block.classList.remove('collapsed-block');
+                    if (codeBlock.classList.contains('collapsed-block')) {
+                        codeBlock.classList.remove('collapsed-block');
                         blockButton.textContent = '-- Zwiń --';
-                    }
-                    else
-                    {
-                        block.classList.add('collapsed-block');
+                    } else {
+                        codeBlock.classList.add('collapsed-block');
                         blockButton.textContent = '-- Rozwiń --';
                     }
-                });
-
-                blockBar.appendChild(blockButton);
+                }
             }
 
             // based on each code-block CSS class - find out what language is used inside it
-            languageName.textContent = languages[block.classList[1]] || languages[block.classList[0].slice(block.classList[0].indexOf(':') + 1, -1)];
+            const languageExplicitName = languages[codeBlock.classList[1]];
+            const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
+            languageName.textContent = languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
 
             blockBar.appendChild(languageName);
 
@@ -565,17 +380,17 @@ function qa_ajax_error()
             copyCodeBtn.textContent = 'Kopiuj';
             copyCodeBtn.classList.add('content-copy-btn');
 
-            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter'))
+            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter')) {
                 copyCodeBtn.addEventListener('click', copyToClipboard);
-            else
+            } else {
                 copyCodeBtn.classList.add('content-copy-btn-disabled');
+            }
 
             blockBar.appendChild(copyCodeBtn);
 
-            block.parentNode.classList.add('syntaxhighlighter-parent');
-            block.parentNode.insertBefore(blockBar, block);
-
-        });
+            codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
+            codeBlock.parentNode.insertBefore(blockBar, codeBlock);
+        }
     }
 
     /*
@@ -650,13 +465,11 @@ function qa_ajax_error()
 
 
     // when Forum (sub)page DOM with it's CSSes and synchronously loaded scripts (excluding CKEDITOR, which needs separate Event Handling) are ready
-    window.addEventListener('load', function()
-    {
+    window.addEventListener('load', function() {
         const questionId = parseInt(location.pathname.split('/')[1]);
         const newQuestion = location.pathname.includes('ask');
 
-        if (questionId)
-        {
+        if (questionId) {
             /*
 			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
 			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
@@ -664,12 +477,8 @@ function qa_ajax_error()
             handleCodeCollapsing(false, isClipboardSupported);
         }
 
-        if (questionId || newQuestion)
-        {
-            viewHtmlCssJs();
-
-            CKEDITOR.on("instanceReady", function(event)
-            {
+        if (questionId || newQuestion) {
+            CKEDITOR.on("instanceReady", function(event) {
                 const currentInstanceName = event.editor.name;
                 const contentTextarea = document.getElementsByName(currentInstanceName)[0];
                 const postForm = contentTextarea.closest('form');
@@ -679,6 +488,136 @@ function qa_ajax_error()
         }
     });
 }(document));
+
+/*
+ * Feature: preview HTML/CSS/JavaScript code from chosen post in codepen.io / jsfiddle.net
+ */
+;(() => {
+    const questionId = parseInt(location.pathname.split('/')[1]);
+    const newQuestion = location.pathname.includes('ask');
+
+    if (questionId || newQuestion) {
+        window.addEventListener('load', initSnippetsCreation);
+    }
+
+    function initSnippetsCreation() {
+        const SNIPPET_LANG_MAP = Object.freeze({
+            xml: 'html',
+            css: 'css',
+            jscript: 'js'
+        });
+        const NEW_LINE = '\r\n';
+
+        const postsContent = document.querySelectorAll('.entry-content');
+        postsContent.forEach(processCodeBlocksInPosts);
+
+        function processCodeBlocksInPosts(postContent) {
+            const blockOfCodeParents = postContent.querySelectorAll('.syntaxhighlighter-parent');
+
+            if (blockOfCodeParents.length) {
+                const langData = {
+                    html: '',
+                    css: '',
+                    js: ''
+                };
+
+                blockOfCodeParents.forEach(block => processBlockOfCode(block, langData));
+
+                const langDataHasAnyValue = Object.values(langData).some(Boolean);
+                if (langDataHasAnyValue) {
+                    const snippetsInsertionTarget = blockOfCodeParents[0].parentNode.parentNode;
+                    const snippetsList = [createCodepenSnippet(langData), createJSFiddleSnippet(langData)];
+
+                    addSnippets(snippetsList, snippetsInsertionTarget, postContent);
+                }
+            }
+        }
+
+        function processBlockOfCode(block, langData) {
+            const codeContent = [...block.querySelectorAll('.code .line')]
+                .reduce((codeLines, codeLine) => codeLines + codeLine.textContent + NEW_LINE, '');
+            const codeLang = block.querySelector('.syntaxhighlighter').classList.item(1);
+            const mappedSnippetLang = SNIPPET_LANG_MAP[codeLang];
+
+            if (mappedSnippetLang) {
+                langData[mappedSnippetLang] = codeContent;
+            }
+        }
+    }
+
+    /*
+     * Code based on Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
+     */
+    function createCodepenSnippet(codeData) {
+        const codeAsJSON = JSON.stringify(codeData)
+            // Quotes will screw up the JSON
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+
+        const codepenSnippetForm = document.createElement('form');
+        codepenSnippetForm.action = 'https://codepen.io/pen/define';
+        codepenSnippetForm.method = 'POST';
+        codepenSnippetForm.target = '_blank';
+        codepenSnippetForm.classList.add('codepen-snippet');
+
+        const dataCarrierInput = document.createElement('input');
+        dataCarrierInput.type = 'hidden';
+        dataCarrierInput.name = 'data';
+        dataCarrierInput.value = codeAsJSON;
+
+        const submitSnippet = document.createElement('input');
+        submitSnippet.type = 'submit';
+        submitSnippet.value = 'CODEPEN';
+
+        codepenSnippetForm.append(dataCarrierInput, submitSnippet);
+
+        return codepenSnippetForm;
+    }
+
+    /*
+     * Code based on JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
+     */
+    function createJSFiddleSnippet(jsfiddleData) {
+        const jsfiddleSnippetForm = document.createElement('form');
+        jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
+        jsfiddleSnippetForm.method = 'POST';
+        jsfiddleSnippetForm.target = '_blank';
+        jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
+
+        const htmlTxt = document.createElement('textarea');
+        htmlTxt.name = 'html';
+        htmlTxt.value = jsfiddleData.html || '';
+
+        const cssTxt = document.createElement('textarea');
+        cssTxt.name = 'css';
+        cssTxt.value = jsfiddleData.css || '';
+
+        const jsTxt = document.createElement('textarea');
+        jsTxt.name = 'js';
+        jsTxt.value = jsfiddleData.js || '';
+
+        const submitSnippet = document.createElement('input');
+        submitSnippet.type = 'submit';
+        submitSnippet.value = 'JSFIDDLE';
+
+        jsfiddleSnippetForm.append(htmlTxt, cssTxt, jsTxt, submitSnippet);
+
+        return jsfiddleSnippetForm;
+    }
+
+    function addSnippets(snippetsList, snippetsInsertionTarget, postContent) {
+        const snippetsParent = document.createElement('div');
+        snippetsParent.classList.add('snippets-parent');
+        snippetsParent.append(...snippetsList);
+
+        snippetsInsertionTarget.appendChild(snippetsParent);
+
+        if (snippetsInsertionTarget.classList.contains('qa-c-item-content')) {
+            snippetsParent.classList.add('inside-comment');
+            postContent.classList.add('comment-snippets');
+        }
+    }
+})();
 
 /**
  * Feature: Make the topic's author nick style different from other users
@@ -846,6 +785,7 @@ function qa_ajax_error()
             const setCursorToAnnotationEnd = ( editor, ckeTxt ) => {
                 editor.focus();
 
+                // TODO: handle 'getRanges of null' error
                 const currentRange = editor.getSelection().getRanges()[ 0 ];
                 const ckeNode = new CKEDITOR.dom.node( ckeTxt );
                 const newRange = new CKEDITOR.dom.range( currentRange.document );

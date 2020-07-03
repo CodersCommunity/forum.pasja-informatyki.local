@@ -1974,6 +1974,19 @@ input[type="submit"], button {
 .qa-form-tall-button-ask, .qa-form-tall-button-answer {
 	background: #27ae60 none;
 }
+
+.qa-form-tall-button-answer[disabled],
+.qa-form-tall-button-comment[disabled] {
+	background: #0a5d5e;
+	color: darkgrey;
+}
+
+.qa-form-tall-button-answer[disabled]:hover,
+.qa-form-tall-button-comment[disabled]:hover {
+	cursor: not-allowed;
+	background: #0a5d5e;
+}
+
 .qa-form-tall-button-save:hover, .qa-form-tall-button-save:focus,
 .qa-form-wide-button-save:hover, .qa-form-wide-button-save:focus,
 .qa-form-wide-button-saverecalc:hover, .qa-form-wide-button-saverecalc:focus,
@@ -4562,13 +4575,13 @@ a.sidebarnav:hover {
 {
 	color: #2ecc71;
 }
-/* for SPOJ detection */
-.spoj-alert
+
+.post-submission-alert
 {
 	border: 2px solid red;
 	color: red;
-	padding: 5px 0;
-	margin-top: 5px;
+	padding: 15px 0;
+	margin: 5px 0;
 	text-align: center;
 	font-weight: bold;
 	line-height: 20px;
@@ -4895,8 +4908,7 @@ form div.qa-q-view-content
 	height: 19px;
 }
 
-.entry-content.below-snippets
-{
+.entry-content.comment-snippets {
 	padding-top: 10px;
 }
 

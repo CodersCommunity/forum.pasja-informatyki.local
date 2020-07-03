@@ -1,7 +1,7 @@
 CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 	var getDefaultOptions=function() {
 		var options=new Object();
-		var validLangs=['applescript','actionscript3','as3','bash','shell','sh','coldfusion','cf','cpp','c','c#','c-sharp','csharp','css','delphi','pascal','pas','diff','patch','erl','erlang','groovy','java','jfx','javafx','js','jscript','javascript','perl','Perl','pl','php','text','plain','powershell','ps','posh','py','python','ruby','rails','ror','rb','sass','scss','scala','sql','tap','Tap','TAP','ts','typescript','vb','vbnet','xml','xhtml','xslt','html'];
+		var validLangs= SyntaxHighlighter.languages.codes;
 		options.hideGutter=String(editor.config.syntaxhighlight_hideGutter).toLowerCase()==='true';
 		options.hideControls=String(editor.config.syntaxhighlight_hideControls).toLowerCase()==='true';
 		options.collapse=String(editor.config.syntaxhighlight_collapse).toLowerCase()==='true';
@@ -11,7 +11,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 		options.firstLine=editor.config.syntaxhighlight_firstLine;
 		options.highlightChecked=String(editor.config.syntaxhighlight_highlightChecked).toLowerCase()==='true';
 		options.highlight=editor.config.syntaxhighlight_highlight;
-		options.lang=(validLangs.indexOf(editor.config.syntaxhighlight_lang)>-1) ? editor.config.syntaxhighlight_lang : 'plain';
+		options.lang=(validLangs.indexOf(editor.config.syntaxhighlight_lang)>-1) ? editor.config.syntaxhighlight_lang : SyntaxHighlighter.defaults['code-language'].alias;
 		options.code=editor.config.syntaxhighlight_code;
 		return options
 	};
@@ -142,34 +142,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 								labelLayout : 'horizontal',
 								label : editor.lang.syntaxhighlight.langLbl,
 								widths : ['25%','75%'],
-								items : [
-									['ActionScript3','as3'],
-									['AppleScript','applescript'],
-									['Bash (Shell)','bash'],
-									['ColdFusion','cf'],
-									['C#','csharp'],
-									['C/C++','cpp'],
-									['CSS','css'],
-									['Delphi','delphi'],
-									['Diff','diff'],
-									['Erlang','erl'],
-									['Groovy','groovy'],
-									['Javascript','jscript'],
-									['Java','java'],
-									['Java FX','javafx'],
-									['Perl','perl'],
-									['PHP','php'],
-									['Plain (Text)','plain'],
-									['PowerShell','ps'],
-									['Python','python'],
-									['Ruby','ruby'],
-									['Sass','scss'],
-									['Scala','scala'],
-									['SQL','sql'],
-									['TAP','tap'],
-									['VB','vb'],
-									['XML/XHTML','xml']
-								],
+								items : SyntaxHighlighter.languages.entries,
 								setup : function(data) {
 									if(data.lang) {
 										this.setValue(data.lang)
