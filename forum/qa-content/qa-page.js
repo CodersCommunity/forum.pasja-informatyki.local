@@ -310,7 +310,7 @@ function qa_ajax_error()
 
         let codeBlocks = [];
 
-        if (!chosenCodeBlocks) {
+        if (!chosenCodeBlocks || !chosenCodeBlocks.length) {
             const blocksSelector = insidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
             codeBlocks = document.querySelectorAll(blocksSelector);
 
@@ -322,7 +322,13 @@ function qa_ajax_error()
             codeBlocks = chosenCodeBlocks;
         }
 
-        codeBlocks.forEach(processBlock);
+        codeBlocks.forEach((codeBlock) => {
+            const codeBlockPrevElemSibling = codeBlock.previousElementSibling;
+
+            if (!codeBlockPrevElemSibling || !codeBlockPrevElemSibling.classList.contains('syntaxhighlighter-block-bar')) {
+                processBlock(codeBlock);
+            }
+        });
 
         function processBlock(codeBlock) {
             const blockBar = document.createElement('div');
@@ -779,6 +785,7 @@ function qa_ajax_error()
             const setCursorToAnnotationEnd = ( editor, ckeTxt ) => {
                 editor.focus();
 
+                // TODO: handle 'getRanges of null' error
                 const currentRange = editor.getSelection().getRanges()[ 0 ];
                 const ckeNode = new CKEDITOR.dom.node( ckeTxt );
                 const newRange = new CKEDITOR.dom.range( currentRange.document );
