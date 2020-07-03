@@ -22,6 +22,8 @@ if (!defined('QA_VERSION')) { // don't allow this page to be requested directly 
 define('GOOGLEAUTHENTICATOR_BASIC_PATH', __DIR__);
 
 qa_register_plugin_phrases('src/i18n/q2a-googleauthenticator-lang-*.php', 'plugin_2fa');
+qa_register_plugin_module('page', 'q2a-user-security-page.php', user_security_page::class, 'User security page');
+qa_register_plugin_layer('q2a-user-security-layer.php', 'User security Layer');
 qa_register_plugin_layer('q2a-googleauthenticator-layer.php', 'Google 2FA Layer');
 qa_register_plugin_module(
     'module',
@@ -31,4 +33,4 @@ qa_register_plugin_module(
 );
 
 qa_register_plugin_overrides('q2a-googleauthenticator-overrides.php');
-qa_register_plugin_module('page', 'q2a-googleauthenticator-page-login.php', 'q2a_googleauthenticator_page_login', 'Google Authenticator Code');
+qa_register_plugin_module('page', 'q2a-googleauthenticator-page-login.php', q2a_googleauthenticator_page_login::class, 'Google Authenticator Code');

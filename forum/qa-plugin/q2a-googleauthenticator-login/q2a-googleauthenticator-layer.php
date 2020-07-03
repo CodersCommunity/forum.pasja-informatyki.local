@@ -8,7 +8,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         parent::doctype();
 
-        if ('account' === $this->request && true === (bool) qa_opt('googleauthenticator_login')) {
+        if ('account/security' === $this->request && true === (bool) qa_opt('googleauthenticator_login')) {
             $content = [
                 'tags'    => 'method="post" action="' . qa_self_html() . '"',
                 'style'   => 'wide',
@@ -95,7 +95,7 @@ class qa_html_theme_layer extends qa_html_theme_base
                 'old' => [
                     'label' => qa_lang('plugin_2fa/plugin_is_enabled'),
                     'tags'  => 'name="oldpassword" disabled',
-                    'value' => $date,
+                    'value' => (string) $date,
                     'type'  => 'input'
                 ],
             ],
