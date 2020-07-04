@@ -23,7 +23,6 @@ define('GOOGLEAUTHENTICATOR_BASIC_PATH', __DIR__);
 
 qa_register_plugin_phrases('src/i18n/q2a-googleauthenticator-lang-*.php', 'plugin_2fa');
 qa_register_plugin_module('page', 'q2a-user-security-page.php', user_security_page::class, 'User security page');
-qa_register_plugin_layer('q2a-user-security-layer.php', 'User security Layer');
 qa_register_plugin_layer('q2a-googleauthenticator-layer.php', 'Google 2FA Layer');
 qa_register_plugin_module(
     'module',
