@@ -842,8 +842,8 @@ function qa_ajax_error()
             }
 
             getContentToCopy(target) {
-                const blockOfCodeBar = target.parentNode.parentNode;
-                const linesOfCode = [...blockOfCodeBar.querySelector('.code .container').children];
+                const blockOfCodeParent = target.parentNode.parentNode.parentNode;
+                const linesOfCode = [...blockOfCodeParent.querySelector('.code .container').children];
                 const contentToCopy = linesOfCode
                     .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
                         return concatenatedCode + singleLineOfCode + this.NEW_LINE;
