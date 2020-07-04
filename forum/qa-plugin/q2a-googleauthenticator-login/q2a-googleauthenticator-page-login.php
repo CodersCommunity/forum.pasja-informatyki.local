@@ -13,71 +13,66 @@ class q2a_googleauthenticator_page_login
 
     public function process_request()
     {
-        if (empty(qa_post_text('login')) || empty(qa_post_text('password'))) {
-            qa_redirect('');
+        $login = qa_get('handle');
+        $loginCode = qa_get('login_code');
+        $code = qa_post_text('2fa_code');
 
-            return;
+        if (empty($loginCode) || empty($login)) {
+            qa_redirect('');
         }
-        if (empty(qa_post_text('2fa_code'))) {
+
+        if (empty($code)) {
             $content = qa_content_prepare();
             $content['title'] = qa_lang('plugin_2fa/title');
             $content['form']  = $this->prepareTwoFactorAuthForm();
 
             return $content;
         }
-        $secret = qa_db_read_all_assoc(
-            qa_db_query_sub(
-                'SELECT 2fa_secret FROM ^users WHERE handle = $',
-                qa_post_text('login')
-            )
-        );
-        if (empty($secret)) {
-            // that would never occur...
+
+        $authenticationData = qa_db_read_all_assoc(
+            qa_db_query_sub('SELECT 2fa_login_code, 2fa_secret FROM ^users WHERE handle = $', $login)
+        )[0];
+
+        $secret = $authenticationData['2fa_secret'];
+        $init = new GoogleAuthenticator($secret);
+
+        if (!isset($secret) && empty($secret)) {
             qa_fatal_error(qa_lang('plugin_2fa/secret_error'));
-            die;
         }
-        $init = new GoogleAuthenticator($secret[0]['2fa_secret']);
-        $code     = qa_post_text('2fa_code');
-        $login    = qa_post_text('login');
-        $password = qa_post_text('password');
-        if ($init->verifyCode($code) && $this->checkLogin($login, $password)) {
-            $userId = qa_db_read_all_assoc(
-                          qa_db_query_sub(
-                              'SELECT userid FROM ^users WHERE handle = $',
-                              $login
-                          )
-                      )[0]['userid'];
-            $this->login($userId, $login, (bool) qa_post_text('remember'), qa_post_text('redirect'));
 
-            return;
+
+        if ($init->verifyCode($code) && ($loginCode === $authenticationData['2fa_login_code'])) {
+            $userId = qa_db_read_all_assoc(qa_db_query_sub('SELECT userid FROM ^users WHERE handle = $', $login))[0]['userid'];
+            $this->login($userId, $login, (bool) qa_get('remember'), qa_get('redirect'));
         }
+
         $recoveryCode = qa_db_read_all_assoc(
-                            qa_db_query_sub(
-                                'SELECT 2fa_recovery_code FROM ^users WHERE handle = $',
-                                $login
-                            )
-                        )[0]['2fa_recovery_code'];
-        if ($code == $recoveryCode) {
-            // logged in with recovery code
-            if ($this->checkLogin($login, $password)) {
-                qa_db_query_sub(
-                    'UPDATE ^users SET 2fa_recovery_code = NULL WHERE handle = $',
-                    $login
-                );
-                $userId = qa_db_read_all_assoc(
-                              qa_db_query_sub(
-                                  'SELECT userid FROM ^users WHERE handle = $',
-                                  $login
-                              )
-                          )[0]['userid'];
-                $this->login($userId, $login, (bool) qa_post_text('remember'), 'NOTHING');
-                $content           = qa_content_prepare();
-                $content['title']  = qa_lang('plugin_2fa/title');
-                $content['custom'] = qa_lang('plugin_2fa/recover_code_page_info');
+            qa_db_query_sub('SELECT 2fa_recovery_code FROM ^users WHERE handle = $', $login)
+        )[0]['2fa_recovery_code'];
 
-                return $content;
-            }
-        }
+// todo
+//        if ($code == $recoveryCode) {
+//            // logged in with recovery code
+//            if ($this->checkLogin($login, $password)) {
+//                qa_db_query_sub(
+//                    'UPDATE ^users SET 2fa_recovery_code = NULL WHERE handle = $',
+//                    $login
+//                );
+//                $userId = qa_db_read_all_assoc(
+//                              qa_db_query_sub(
+//                                  'SELECT userid FROM ^users WHERE handle = $',
+//                                  $login
+//                              )
+//                          )[0]['userid'];
+//                $this->login($userId, $login, (bool) qa_post_text('remember'), 'NOTHING');
+//                $content = qa_content_prepare();
+//                $content['title']  = qa_lang('plugin_2fa/title');
+//                $content['custom'] = qa_lang('plugin_2fa/recover_code_page_info');
+//
+//                return $content;
+//            }
+//        }
+
         $content = qa_content_prepare();
         $content['title'] = qa_lang('plugin_2fa/title');
         $content['form']  = $this->prepareTwoFactorAuthForm();
@@ -86,33 +81,32 @@ class q2a_googleauthenticator_page_login
         return $content;
     }
 
-    private function checkLogin($login, $password): bool
+    private function login($userid, $login, $remember = false, $redirectPath = null): void
     {
-        if (false !== strpos($login, '@')) {
-            $matchUsers = qa_db_user_find_by_email($login);
+        qa_set_session_user($userid, '2fa');
+
+        require_once QA_INCLUDE_DIR . 'db/selects.php';
+
+        $userinfo = qa_db_single_select(qa_db_user_account_selectspec($userid, true));
+        if (empty($userinfo['sessioncode']) || ('2fa' !== $userinfo['sessionsource'])) {
+            $sessioncode = qa_db_user_rand_sessioncode();
+            qa_db_user_set($userid, 'sessioncode', $sessioncode);
+            qa_db_user_set($userid, 'sessionsource', '2fa');
         } else {
-            $matchUsers = qa_db_user_find_by_handle($login);
-        }
-        if (1 !== count($matchUsers)) {
-            return false;
-        }
-        $userInfo = qa_db_select_with_pending(qa_db_user_account_selectspec($matchUsers[0], true));
-        // I dont know what it does, it's copied from Q2A core
-        if (strtolower(qa_db_calc_passcheck($password, $userInfo['passsalt'])) === strtolower($userInfo['passcheck'])) {
-            return true;
+            $sessioncode = $userinfo['sessioncode'];
         }
 
-        return false;
-    }
+        qa_db_user_logged_in($userid, qa_remote_ip_address());
+        qa_set_session_cookie($login, $sessioncode, $remember);
+        qa_report_event('u_login', $userid, $userinfo['handle'], qa_cookie_get());
 
-    private function login($userId, $login, $remember = false, $redirectPath = null): void
-    {
-        qa_set_logged_in_user($userId, $login, $remember, '2fa');
-        if (null === $redirectPath) {
-            qa_redirect('');
-        } elseif ('NOTHING' != $redirectPath) {
-            qa_redirect_raw(qa_path_to_root() . $redirectPath);
+        $topath = qa_get('to') ?? $redirectPath;
+
+        if (isset($topath)) {
+            qa_redirect_raw(qa_path_to_root() . $topath);
         }
+
+        qa_redirect('');
     }
 
     private function prepareTwoFactorAuthForm(): array
@@ -134,10 +128,6 @@ class q2a_googleauthenticator_page_login
                 ]
             ],
             'hidden'  => [
-                'login'    => qa_post_text('login'),
-                'password' => qa_post_text('password'),
-                'remember' => qa_post_text('remember'),
-                'redirect' => qa_post_text('redirect'),
                 'code'     => qa_get_form_security_code('2faform'),
             ]
         ];

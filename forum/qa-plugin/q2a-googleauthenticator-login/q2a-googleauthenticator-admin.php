@@ -35,6 +35,10 @@ class q2a_googleauthenticator_admin
             $queries[] = 'ALTER TABLE ^users ADD `2fa_recovery_code` VARCHAR (11) DEFAULT 0';
         }
 
+        if (!in_array('2fa_login_code', $columns, true)) {
+            $queries[] = 'ALTER TABLE ^users ADD `2fa_login_code` VARCHAR (8) DEFAULT 0';
+        }
+
         if(count($queries)) {
             $result = $queries;
         }

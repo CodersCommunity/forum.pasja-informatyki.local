@@ -41,9 +41,10 @@
     border: 1px solid #0f192a;
 }
 
-
-
-
 .qa-custom-2fa-code {
     text-align: center;
+}
+
+.qa-custom-2fa-text-bottom {
+    margin-bottom: 1.5em
 }
