@@ -30,3 +30,20 @@
     margin: 0;
     padding-bottom: 0.5em;
 }
+
+.qa-custom-2fa-qrcode {
+    text-align: center;
+    margin-bottom: 1.5em
+}
+
+.qa-custom-2fa-qrcode img {
+    border-radius: 10px;
+    border: 1px solid #0f192a;
+}
+
+
+
+
+.qa-custom-2fa-code {
+    text-align: center;
+}

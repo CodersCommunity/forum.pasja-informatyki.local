@@ -21,7 +21,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             && !$this->isExcludedPage()
         ) {
             $navigation[] = [
-                'label' => '<b class="color: red">Ustawienia zabezpieczeń konta</b>',
+                'label' => 'Ustawienia zabezpieczeń konta',
                 'url' => qa_path_html('account/security'),
                 'selected' => 'account/security' === qa_request()
             ];
@@ -53,15 +53,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
 
         if ('account' === $this->request) {
-            $content = [
-                'tags'    => 'method="post" action="' . qa_self_html() . '"',
-                'style'   => 'wide',
-                'title'   => qa_lang('plugin_2fa/title'),
-                'class' => 'ok'
-            ];
-
             $url = qa_path_html('account/security');
-
             $this->content['custom_2fa'] = <<<EOF
 <div class="qa-custom-center">
     <h2>Ustawienia zabezpieczeń konta</h2>
@@ -122,9 +114,9 @@ EOF;
             $note = str_replace(
                 ['{{ QR_CODE }}', '{{ SECRET }}', '{{ RECOVERY_CODE }}', '{{ ERROR_START }}', '{{ ERROR_END }}'],
                 [
-                    '<div style="text-align: center; margin-bottom: 1.5em"><img src="' . $this->init->getQRCode() . '"></div>',
-                    '<div style="text-align: center;"><code>' . chunk_split($secret, 4, ' ') . '</code></div>',
-                    '<div class="qa-warning" style="text-align: center;"><code>' . $recoveryCode . '</code></div><br>',
+                    '<div class="qa-custom-2fa-qrcode"><img src="' . $this->init->getQRCode() . '"></div>',
+                    '<div class="qa-custom-2fa-code"><code>' . chunk_split($secret, 4, ' ') . '</code></div>',
+                    '<div class="qa-warning qa-custom-2fa-code"><code>' . $recoveryCode . '</code></div><br>',
                     '<div class="qa-error" style="margin-bottom: 1.5em">',
                     '</div>'
                 ],
