@@ -1,6 +1,6 @@
 .qa-custom-center {
-    margin-bottom: 5px;
-    padding: 10px;
+    text-align: center;
+    line-height: 1.5em;
 }
 
 .qa-custom-center a {
@@ -12,40 +12,21 @@
     border-bottom: 0;
 }
 
-.qa-custom-center {
-    margin-bottom: 0;
-    /*background: #d35400;*/
-    text-align: center;
+.qa-custom-center h2 {
+    text-align: left;
+    margin: 0;
+    padding-bottom: 0.83em;
+}
+
+.qa-custom-2fa-text {
+    padding-top: 0.5em;
+    /*line-height: 1.5em;*/
     font-size: 1em;
-    line-height: 1.5em;
+    border-top: 1px solid #313640;
+    border-bottom: 1px solid #313640;
 }
 
-.qa-part-form-profile .qa-form-tall-spacer ,
-.qa-part-form-profile .qa-form-wide-data,
-.qa-part-form-profile .qa-form-wide-label {
-    border-top: none !important;
-    border-bottom: none !important;
-    padding: 10px 5px;
-}
-
-.qa-part-form-profile .qa-form-wide-label,
-.qa-part-form-profile .qa-form-wide-data,
-.qa-part-form-profile .qa-form-tall-spacer {
-    border-top: none !important;
-    border-bottom: none !important;
-}
-
-.qa-part-form-password .qa-form-tall-spacer ,
-.qa-part-form-password .qa-form-wide-data,
-.qa-part-form-password .qa-form-wide-label {
-    border-top: none !important;
-    border-bottom: none !important;
-    padding: 10px 5px;
-}
-
-.qa-part-form-password .qa-form-wide-label,
-.qa-part-form-password .qa-form-wide-data,
-.qa-part-form-password .qa-form-tall-spacer {
-    border-top: none !important;
-    border-bottom: none !important;
+.qa-custom-2fa-text p {
+    margin: 0;
+    padding-bottom: 0.5em;
 }

@@ -39,11 +39,6 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         parent::doctype();
 
-        if (isset($this->content['form_profile'], $this->content['form_password'])) {
-            $this->content['form_profile']['title']  = 'Edycja profilu<hr>';
-            $this->content['form_password']['title'] .= '<hr>';
-        }
-
         if ('account/security' === $this->request && true === (bool) qa_opt('googleauthenticator_login')) {
             $content = [
                 'tags'    => 'method="post" action="' . qa_self_html() . '"',
@@ -65,13 +60,12 @@ class qa_html_theme_layer extends qa_html_theme_base
                 'class' => 'ok'
             ];
 
-            $content +=  $this->link();
             $url = qa_path_html('account/security');
 
             $this->content['custom_2fa'] = <<<EOF
-<div>
-    <h2>Ustawienia zabezpieczeń konta</h2><hr>
-    <div class="qa-custom-center">
+<div class="qa-custom-center">
+    <h2>Ustawienia zabezpieczeń konta</h2>
+    <div class="qa-custom-2fa-text">
         <p>Przejdź do strony <a href="{$url}">zabezpieczeń</a></p>
     </div>
 </div>
@@ -79,22 +73,6 @@ EOF;
 
             qa_html_theme_base::doctype();
         }
-    }
-
-    private function link(): array
-    {
-        return [
-            'fields'  => [
-                'old' => [
-                    'label' => 'Przejdź do strony: <a href="' . qa_path_html('account/security') . '">ustawienia zabezpieczeń konta</a>',
-                    'value' => '',
-                    'type'  => 'custom'
-                ]
-            ],
-            'hidden'  => [
-                'code' => qa_get_form_security_code('2faform')
-            ]
-        ];
     }
 
     private function getUserQuery($userId): ?array
