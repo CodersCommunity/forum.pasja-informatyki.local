@@ -102,8 +102,10 @@ window.scanUnprocessedCodeBlocks = (function highlightCodeBlocks() {
                 for (let i = 0; i < loadedBrushes.length; i++) {
                     const { name, aliases } = loadedBrushes[i];
                     const brushRegExp = new RegExp(`brush\:(${ aliases.join('|') });`);
+                    const [, brushLanguageName] = preClassName.match(brushRegExp) || [];
 
-                    if (brushRegExp.test(preClassName)) {
+                    if (brushLanguageName) {
+                        setPreElemCodeLanguageName(pre, brushLanguageName);
                         isBrashKnown = true;
                         break;
                     }
@@ -120,11 +122,21 @@ window.scanUnprocessedCodeBlocks = (function highlightCodeBlocks() {
             unknownLangElems.forEach(replaceUnknownLangWithDefault);
 
             function replaceUnknownLangWithDefault(pre) {
-                const oldToken = pre.classList.item(0);
-                const newToken = `brush:${ SyntaxHighlighter.defaults['code-language'].alias };`;
+                const oldClassName = pre.className.split(';').find(getCodeLanguageNameGroup);
+                const codeLanguageAlias = SyntaxHighlighter.defaults['code-language'].alias;
+                const newClassName = `brush:${ codeLanguageAlias }`;
 
-                pre.classList.replace(oldToken, newToken);
+                pre.className = pre.className.replace(oldClassName, newClassName);
+                setPreElemCodeLanguageName(pre, codeLanguageAlias);
             }
+        }
+
+        function getCodeLanguageNameGroup(classNameFragment) {
+            return classNameFragment.split(':')[0] === 'brush';
+        }
+
+        function setPreElemCodeLanguageName(pre, languageName) {
+            pre.dataset.codeLangName = languageName;
         }
     }
 })();
@@ -134,6 +146,8 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
 
     const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 30;
     const languages = {};
+    prepareLanguages();
+
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
 
     // document.addEventListener('DOMContentLoaded', prepareLanguages);
@@ -161,8 +175,6 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             postProcessCodeBlock(processedCodeBlock);
         });
     }
-
-    prepareLanguages();
 
     return addInteractiveBarToCodeBlocks;
 
@@ -283,11 +295,8 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
 
         class LanguageLabel {
             getLanguageName(codeBlock) {
-                const [zerothClassName, firstClassName] = codeBlock.classList;
-                const languageExplicitName = languages[firstClassName];
-                const languageImplicitName = languages[zerothClassName.slice(zerothClassName.indexOf(':') + 1, -1)];
-
-                return languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
+                const languageExplicitName = codeBlock.dataset && languages[codeBlock.dataset.codeLangName];
+                return languageExplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
             }
 
             getLanguageLabel(codeBlock) {
