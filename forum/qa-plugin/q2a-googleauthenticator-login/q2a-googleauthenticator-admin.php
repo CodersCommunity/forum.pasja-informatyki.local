@@ -36,7 +36,11 @@ class q2a_googleauthenticator_admin
         }
 
         if (!in_array('2fa_login_code', $columns, true)) {
-            $queries[] = 'ALTER TABLE ^users ADD `2fa_login_code` VARCHAR (8) DEFAULT 0';
+            $queries[] = 'ALTER TABLE ^users ADD `2fa_login_code` VARCHAR (32) DEFAULT 0';
+        }
+
+        if (!in_array('2fa_login_code_created', $columns, true)) {
+            $queries[] = 'ALTER TABLE ^users ADD `2fa_login_code_created` TIMESTAMP NULL DEFAULT NULL;';
         }
 
         if(count($queries)) {

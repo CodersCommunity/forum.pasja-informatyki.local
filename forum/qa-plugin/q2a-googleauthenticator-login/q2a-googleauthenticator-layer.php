@@ -5,9 +5,23 @@ require_once QA_INCLUDE_DIR . 'db/users.php';
 
 class qa_html_theme_layer extends qa_html_theme_base
 {
+    private $isSecurityPage;
+
+    public function __construct($template, $content, $rooturl, $request)
+    {
+        $this->isSecurityPage = $request === 'account/security';
+
+        parent::__construct($template, $content, $rooturl, $request);
+    }
+
     public function nav_list($navigation, $class, $level = null)
     {
         $isLoggedUser = qa_get_logged_in_userid();
+
+        if ($this->isSecurityPage) {
+            $this->content['navigation']['sub'] = qa_user_sub_navigation(qa_get_logged_in_handle(), 'account/security', true);
+        }
+
         $this->prepareNavigation($class, $isLoggedUser, $navigation);
 
         parent::nav_list($navigation, $class, $level);
@@ -17,7 +31,11 @@ class qa_html_theme_layer extends qa_html_theme_base
     {
         parent::doctype();
 
-        if ('account/security' === $this->request && (bool) qa_opt('googleauthenticator_login')) {
+        if(QA_FINAL_EXTERNAL_USERS) {
+            return;
+        }
+
+        if ($this->isSecurityPage && (bool) qa_opt('googleauthenticator_login')) {
             $content = [
                 'tags'    => 'method="post" action="' . qa_self_html() . '"',
                 'style'   => 'wide',
@@ -146,8 +164,9 @@ EOF;
             $navigation[] = [
                 'label' => 'Ustawienia zabezpieczeń konta',
                 'url' => qa_path_html('account/security'),
-                'selected' => 'account/security' === qa_request()
+                'selected' => $this->isSecurityPage
             ];
+            unset($navigation['polls']);
         }
     }
 
@@ -170,7 +189,7 @@ EOF;
         return empty($users) ? null : $users[0];
     }
 
-    private function updateUserEnable2FA($userId, $isEnabled, $secret = null, $recoveryCode = null): ?bool
+    private function updateUserEnable2FA($userId, $isEnabled, $secret = null, $recoveryCode = null)
     {
         $time = $this->setTime();
         $result = qa_db_query_sub(
@@ -214,7 +233,7 @@ EOF;
         $userActive2fa = $userAccount['2fa_enabled'];
 
         if (!empty(qa_post_text('code')) && (!qa_check_form_security_code('2faform', qa_post_text('code')))) {
-            throw new \Exception('Invalid CSRF code');
+            qa_fatal_error('Invalid CSRF code');
         }
 
         if (false === (bool) $userAccount['2fa_enabled'] && qa_clicked('doenable2fa')) {
@@ -223,7 +242,7 @@ EOF;
             $recoveryCode = $this->init->getRandomRecoveryCode();
             $secret       = $this->init->getSecret();
             $userActive2fa = $this->updateUserEnable2FA($userAccount, true, $secret, $recoveryCode);
-        } elseif (qa_clicked('dodisable2fa') && (bool) $userAccount['2fa_enabled'] ) {
+        } elseif ((bool) $userAccount['2fa_enabled']  && qa_clicked('dodisable2fa')) {
             $userActive2fa = $this->updateUserEnable2FA($userAccount, false);
         }
 

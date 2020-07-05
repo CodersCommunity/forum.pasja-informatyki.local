@@ -23,12 +23,12 @@ function qa_set_logged_in_user($userid, $handle = '', $remember = false, $source
 
         $inpassword = qa_post_text('password');
         $userinfo = qa_db_single_select(qa_db_user_account_selectspec($userid, true));
-        $inremember=qa_post_text('remember');
+        $inremember = qa_post_text('remember');
         $topath = qa_get('to');
 
         if (strtolower(qa_db_calc_passcheck($inpassword, $userinfo['passsalt'])) === strtolower($userinfo['passcheck'])) {
-            $factorCode = qa_random_alphanum(8);
-            qa_db_query_sub('UPDATE ^users SET 2fa_login_code=$ WHERE userid=#', $factorCode, $userid);
+            $factorCode = qa_random_alphanum(32);
+            qa_db_query_sub('UPDATE ^users SET 2fa_login_code=$, 2fa_login_code_created=CURRENT_TIMESTAMP WHERE userid=#', $factorCode, $userid);
 
             qa_redirect('2fa-auth', ['redirect' => $topath, 'remember' => $inremember, 'handle' => $handle, 'login_code' => $factorCode]);
         }
