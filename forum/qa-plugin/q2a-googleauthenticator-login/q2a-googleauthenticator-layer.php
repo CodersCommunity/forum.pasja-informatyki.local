@@ -37,7 +37,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 
         if ($this->isSecurityPage && (bool) qa_opt('googleauthenticator_login')) {
             $content = [
-                'tags'    => 'method="post" action="' . qa_self_html() . '"',
+                'tags'    => 'method="post" action="/account/security"',
                 'style'   => 'wide',
                 'title'   => qa_lang('plugin_2fa/title')
             ];

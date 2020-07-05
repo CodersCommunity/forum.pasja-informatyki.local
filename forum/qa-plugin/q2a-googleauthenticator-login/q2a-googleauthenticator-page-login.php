@@ -52,28 +52,11 @@ class q2a_googleauthenticator_page_login
             qa_db_query_sub('SELECT 2fa_recovery_code FROM ^users WHERE handle = $', $login)
         )[0]['2fa_recovery_code'];
 
-// todo
-//        if ($code == $recoveryCode) {
-//            // logged in with recovery code
-//            if ($this->checkLogin($login, $password)) {
-//                qa_db_query_sub(
-//                    'UPDATE ^users SET 2fa_recovery_code = NULL WHERE handle = $',
-//                    $login
-//                );
-//                $userId = qa_db_read_all_assoc(
-//                              qa_db_query_sub(
-//                                  'SELECT userid FROM ^users WHERE handle = $',
-//                                  $login
-//                              )
-//                          )[0]['userid'];
-//                $this->login($userId, $login, (bool) qa_post_text('remember'), 'NOTHING');
-//                $content = qa_content_prepare();
-//                $content['title']  = qa_lang('plugin_2fa/title');
-//                $content['custom'] = qa_lang('plugin_2fa/recover_code_page_info');
-//
-//                return $content;
-//            }
-//        }
+        if (($code === $recoveryCode) && ($loginCode === $authenticationData['2fa_login_code'])) {
+            qa_db_query_sub('UPDATE ^users SET 2fa_recovery_code = 0, 2fa_login_code = 0, 2fa_login_code_created = 0 WHERE handle = $', $login);
+            $userId = qa_db_read_all_assoc(qa_db_query_sub('SELECT userid FROM ^users WHERE handle = $', $login))[0]['userid'];
+            $this->login($userId, $login, (bool) qa_get('remember'), 'account/security?restore=1');
+        }
 
         $content = qa_content_prepare();
         $content['title'] = qa_lang('plugin_2fa/title');

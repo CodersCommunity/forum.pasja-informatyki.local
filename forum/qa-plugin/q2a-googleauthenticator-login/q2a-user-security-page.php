@@ -36,6 +36,16 @@ class user_security_page
             return $qa_content;
         }
 
+        $twoFactorIsEnabled = qa_db_read_all_assoc(
+            qa_db_query_sub('SELECT 2fa_enabled FROM ^users WHERE handle = $', qa_get_logged_in_handle())
+        )[0]['2fa_enabled'];
+
+        if (false === (bool) $twoFactorIsEnabled && null !== qa_get('restore') && 1 === (int) qa_get('restore')) {
+            $qa_content['error'] = qa_lang('plugin_2fa/recover_code_page_info');
+
+            return $qa_content;
+        }
+
         $qa_content['navigation']['sub'] = qa_user_sub_navigation($this->getUsername($loggedIn), '', false);
 
         return $qa_content;
