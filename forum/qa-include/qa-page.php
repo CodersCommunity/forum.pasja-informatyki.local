@@ -381,11 +381,8 @@
 
 		if (isset($qa_content['script_src'])) {
 			$uniquesrc = array_unique($qa_content['script_src']); // remove any duplicates
-//			var_dump('<br> $uniquesrc: ', $uniquesrc, '<br>');
-			foreach ($uniquesrc as $script_src) {
-//			    $script[] = '<script src="'.qa_html($script_src).'" ' . $optionallyDeferred . '></script>';
-                $script[] = '<script src="'.qa_html($script_src).'"></script>';
-            }
+			foreach ($uniquesrc as $script_src)
+				$script[] = '<script src="'.qa_html($script_src).'"></script>';
 		}
 
 		$qa_content['script'] = $script;

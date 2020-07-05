@@ -290,16 +290,10 @@ class qa_html_theme_base
 	public function head_script()
 	{
 		if (isset($this->content['script'])) {
-		    $heavyScripts = [/*'jquery-1.11.3.min.js',*/ 'ckeditor.js?1.7.3'/*, 'snow-core.js?1.7.3'*/];
+		    $deferredScripts = ['ckeditor.js?'];
 
 			foreach ($this->content['script'] as $scriptline) {
-//			    echo('<br> src: ' . str_replace('<', '&lt;', $scriptline));
-
-			    $isHeavyScript = array_reduce($heavyScripts, function($isFound, $scriptFileName) use ($scriptline) {
-                    return $isFound || strpos($scriptline, $scriptFileName);
-                }, false);
-			    $optionallyDeferred = $isHeavyScript ? 'defer': '';
-                $scriptline = str_replace('src="', $optionallyDeferred .' src="', $scriptline);
+                $scriptline = $this->tryDeferScript($deferredScripts, $scriptline);
 
 				$this->output_raw($scriptline);
             }
@@ -2387,5 +2381,14 @@ class qa_html_theme_base
 		$this->q_title_list($q_list, 'target="_blank"');
 
 		$this->output('</div>');
+	}
+
+	private function tryDeferScript($deferredScripts, $scriptline) {
+        $isDeferredScript = array_reduce($deferredScripts, function($isFound, $scriptFileName) use ($scriptline) {
+            return $isFound || strpos($scriptline, $scriptFileName);
+        }, false);
+        $optionalDeferAttribute = $isDeferredScript ? 'defer': '';
+
+	    return str_replace('src="', $optionalDeferAttribute .' src="', $scriptline);
 	}
 }
