@@ -231,8 +231,12 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             }
 
             prepareCollapsibleAnimationValue(codeBlock) {
-                const codeBlockRawHeight = codeBlock/*.querySelector('table')*/.clientHeight;
-                codeBlock.style.setProperty('--code-block-raw-height', `${ codeBlockRawHeight }px`);
+                const rawHeightProperty = '--code-block-raw-height';
+
+                if (!codeBlock.style.getPropertyValue(rawHeightProperty)) {
+                    const codeBlockRawHeight = codeBlock.querySelector('table').clientHeight;
+                    codeBlock.style.setProperty(rawHeightProperty, `${ codeBlockRawHeight }px`);
+                }
             }
 
             isCodeCollapsible(codeBlock) {
@@ -251,9 +255,7 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
                 codeBlockCollapsibleBtn.classList.add('syntaxhighlighter-collapsible-button', this.collapsedState);
                 codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(true);
                 codeBlockCollapsibleBtn.type = 'button';
-                codeBlockCollapsibleBtn.addEventListener('click', () => this.toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn));
-
-                this.prepareCollapsibleAnimationValue(codeBlock);
+                codeBlockCollapsibleBtn.addEventListener('click', this.toggleCodeBlockBtnCollapseState.bind(this));
 
                 return codeBlockCollapsibleBtn;
             }
@@ -262,8 +264,11 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
                 return isCollapsed ? 'Rozwiń' : 'Zwiń' ;
             }
 
-            toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn) {
+            toggleCodeBlockBtnCollapseState({ target: codeBlockCollapsibleBtn }) {
+                const codeBlock = codeBlockCollapsibleBtn.closest('.syntaxhighlighter-parent').querySelector('.syntaxhighlighter');
                 const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+
+                this.prepareCollapsibleAnimationValue(codeBlock);
 
                 codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
                 codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
