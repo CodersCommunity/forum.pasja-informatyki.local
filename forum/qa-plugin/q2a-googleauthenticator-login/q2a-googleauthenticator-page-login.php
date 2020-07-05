@@ -41,9 +41,11 @@ class q2a_googleauthenticator_page_login
         }
 
 
-        if ($init->verifyCode($code) && ($loginCode === $authenticationData['2fa_login_code'])) {
+        if (($loginCode === $authenticationData['2fa_login_code']) && $init->verifyCode($code)) {
             $userId = qa_db_read_all_assoc(qa_db_query_sub('SELECT userid FROM ^users WHERE handle = $', $login))[0]['userid'];
             $this->login($userId, $login, (bool) qa_get('remember'), qa_get('redirect'));
+
+            qa_db_query_sub('UPDATE ^users SET 2fa_login_code=null, 2fa_login_code_created=null WHERE userid=#', $userId);
         }
 
         $recoveryCode = qa_db_read_all_assoc(
