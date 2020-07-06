@@ -62,7 +62,7 @@ window.scanUnprocessedCodeBlocks = (function highlightCodeBlocks() {
         }
     }
 
-    function scanUnprocessedCodeBlocks(event, root = document) {
+    function scanUnprocessedCodeBlocks(root = document) {
         const preElements = [...root.querySelectorAll('pre[class*="brush:"]')];
         const loadedBrushes = Object
             .entries(SyntaxHighlighter.brushes)
@@ -141,7 +141,7 @@ window.scanUnprocessedCodeBlocks = (function highlightCodeBlocks() {
     }
 })();
 
-window.addSnippetsToPost = (function postSnippets() {
+const addSnippetsToPost = (function postSnippets() {
     const SNIPPET_LANG_MAP = Object.freeze({
         xml: 'html',
         css: 'css',
@@ -270,50 +270,24 @@ window.addSnippetsToPost = (function postSnippets() {
 window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
     'use strict';
 
-    const languages = {};
-    prepareLanguages();
+    const codeLanguages = getPreparedLanguages();
 
     const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 20;
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
 
-    const codeBlocksPerPost = {
-        postName: null,
-        postContentDOM: null,
-        postCodeBlocks: null,
-    };
-
-    // document.addEventListener('DOMContentLoaded', prepareLanguages);
-    // Object.defineProperty(window, 'addInteractiveBarToCodeBlocks', {
-    //     configurable: false,
-    //     writable: false,
-    //     value: addInteractiveBarToCodeBlocks
-    // });
-
     // TODO: check this on backend side - perhaps in separate Pull Request
     if (window.location.pathname.search(/\d+/) === 1) {
-        const postsContainer = document.querySelector('.qa-main');
-        const rawCodeBlocks = scanUnprocessedCodeBlocks(null, postsContainer);
-        rawCodeBlocks.forEach((codeBlock) => {
-            /*
-             * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
-             * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
-             */
-            const postProcessCodeBlock = addInteractiveBarToCodeBlocks(false, /*[*/codeBlock /*processedCodeBlock*//*]*/);
 
-            const origCodeBlockParent = codeBlock.parentNode;
-            SyntaxHighlighter.highlight(null, codeBlock);
-            // const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
-            const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
-            postProcessCodeBlock(processedCodeBlock);
-
-            addSnippetsToPostWithDecoratedCodeBlocks(processedCodeBlock);
-        });
     }
 
     return addInteractiveBarToCodeBlocks;
 
-    function prepareLanguages() {
+    function getPreparedLanguages() {
+        const languages = {};
+
         SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
+
+        return languages;
     }
 
     // TODO: adjust function usages to second parameter not being array!!!
@@ -332,7 +306,7 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             }
         };
 
-        function getCodeBlocks(isInsidePreview, chosenCodeBlocks){
+        function getCodeBlocks(isInsidePreview, chosenCodeBlocks) {
             if (chosenCodeBlocks) {
                 return chosenCodeBlocks;
             }
@@ -429,7 +403,7 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
 
         class LanguageLabel {
             getLanguageName(codeBlock, codeLangName) {
-                const languageExplicitName = codeLangName && languages[codeLangName];
+                const languageExplicitName = codeLangName && codeLanguages[codeLangName];
                 return languageExplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
             }
 
@@ -562,13 +536,62 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             return wrapper;
         }
     }
+})();
 
-    function addSnippetsToPostWithDecoratedCodeBlocks(processedCodeBlock) {
+window.highlightAndDecorateCodeBlocks = (postsToHighlight, addSnippets = true) => {
+    const codeBlocksPerPost = {
+        postName: null,
+        postContentDOM: null,
+        postCodeBlocks: null,
+    };
+
+    if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
+        const postsContainer = postsToHighlight || document.querySelector('.qa-main');
+        const rawCodeBlocks = scanUnprocessedCodeBlocks(postsContainer);
+        rawCodeBlocks.forEach((codeBlock) => {
+            // 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
+            const postProcessCodeBlock = addInteractiveBarToCodeBlocks(false, /*[*/codeBlock /*processedCodeBlock*//*]*/);
+
+            const origCodeBlockParent = codeBlock.parentNode;
+            SyntaxHighlighter.highlight(null, codeBlock);
+            // const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
+            const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
+            postProcessCodeBlock(processedCodeBlock);
+
+            if (addSnippets) {
+                prepareCodeBlocksForSnippetsAddition(processedCodeBlock);
+            }
+        });
+
+        // const codeBlocks = [...postsToHighlight.querySelectorAll('pre')];
+        //
+        // window.scanUnprocessedCodeBlocks(postsToHighlight);
+        //
+        // const processedCodeBlocks = codeBlocks.map((codeBlock) => {
+        //     /*
+        //      * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
+        //      * Temporary caching is needed to retrieve processed element within parent context afterwards.
+        //      */
+        //     const origCodeBlockParent = codeBlock.parentNode;
+        //     SyntaxHighlighter.highlight(null, codeBlock);
+        //     const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
+        //
+        //     return processedCodeBlock;
+        // });
+        //
+        // if (!ignoreAddingInteractiveBar) {
+        //     window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
+        // }
+    } else {
+        console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
+    }
+
+    function prepareCodeBlocksForSnippetsAddition(processedCodeBlock) {
         const postContentDOM = processedCodeBlock.closest('.entry-content').previousElementSibling;
 
         if (postContentDOM.name !== codeBlocksPerPost.postName) {
             if (codeBlocksPerPost.postName) {
-                window.addSnippetsToPost(codeBlocksPerPost.postCodeBlocks, codeBlocksPerPost.postContentDOM.parentNode);
+                addSnippetsToPost(codeBlocksPerPost.postCodeBlocks, codeBlocksPerPost.postContentDOM.parentNode);
                 Object.keys(codeBlocksPerPost).forEach(key => codeBlocksPerPost[key] = null);
             }
 
@@ -579,30 +602,6 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             codeBlocksPerPost.postCodeBlocks.push(processedCodeBlock);
         }
     }
-})();
-
-window.reloadBlocksOfCode = (postsToHighlight, ignoreAddingInteractiveBar) => {
-        if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
-            const codeBlocks = [...postsToHighlight.querySelectorAll('pre')];
-
-            window.scanUnprocessedCodeBlocks(null, postsToHighlight);
-
-            const processedCodeBlocks = codeBlocks.map((codeBlock) => {
-                /*
-                 * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
-                 * Temporary caching is needed to retrieve processed element within parent context afterwards.
-                 */
-                const origCodeBlockParent = codeBlock.parentNode;
-                SyntaxHighlighter.highlight(null, codeBlock);
-                const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
-
-                return processedCodeBlock;
-            });
-
-            if (!ignoreAddingInteractiveBar) {
-                window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
-            }
-        } else {
-            console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
-        }
 };
+
+highlightAndDecorateCodeBlocks();

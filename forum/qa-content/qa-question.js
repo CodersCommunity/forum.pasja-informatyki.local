@@ -329,12 +329,12 @@ function qa_scroll_page_to(scroll)
 }
 
 function tryReloadCodeBlocks(target, targetId) {
-	if (typeof window.reloadBlocksOfCode === 'function' && (target || targetId)) {
+	if (typeof window.highlightAndDecorateCodeBlocks === 'function' && (target || targetId)) {
 		if (targetId) {
 			target = document.querySelector(`[name="${ targetId }"]`).parentNode;
 		}
 
-		window.reloadBlocksOfCode(target);
+		window.highlightAndDecorateCodeBlocks(target);
 	}
 }
 

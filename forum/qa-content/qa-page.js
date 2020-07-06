@@ -209,14 +209,9 @@ function qa_ajax_error()
  *
  * ////////////////////
  */
-;(function(document)
+;(function postPreview()
 {
     'use strict';
-
-    /*
-     * Feature: Post content preview as Modal
-     * Date: 07.07.2016r.
-     */
 
     function destroyModal()
     {
@@ -251,8 +246,9 @@ function qa_ajax_error()
         const modalParent = document.querySelector('.qa-main-wrapper');
         modalParent.appendChild(modal);
 
-        window.reloadBlocksOfCode(modalContent, true);
-        window.addInteractiveBarToCodeBlocks(true);
+        window.highlightAndDecorateCodeBlocks(modalContent, false);
+        // window.highlightAndDecorateCodeBlocks(modalContent, true);
+        // window.addInteractiveBarToCodeBlocks(true);
     }
 
     function createPostPreviewButton(postForm, ckeInstanceName) {
@@ -277,7 +273,7 @@ function qa_ajax_error()
 
 
     // when Forum (sub)page DOM with it's CSSes and synchronously loaded scripts (excluding CKEDITOR, which needs separate Event Handling) are ready
-    window.addEventListener('load', function() {
+    window.addEventListener('DOMContentLoaded', function() {
         const questionId = parseInt(location.pathname.split('/')[1]);
         const newQuestion = location.pathname.includes('ask');
 
@@ -299,7 +295,7 @@ function qa_ajax_error()
             });
         }
     });
-}(document));
+}());
 
 /**
  * Feature: Make the topic's author nick style different from other users
