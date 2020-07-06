@@ -100,7 +100,7 @@ function qa_submit_answer(questionid, elem)
 				answerFormParent.qa_disabled=true;
 
 				qa_conceal(answerFormParent, 'form');
-				qa_reveal(answerItem, 'answer', () => tryReloadCodeBlocks(answerItem));
+				qa_reveal(answerItem, 'answer', () => tryHighlightAndDecorateCodeBlocks(answerItem));
 			} else if (lines[0]=='0') {
 				const [, answerRefuseReason ] = lines;
 
@@ -138,7 +138,7 @@ function qa_submit_comment(questionid, parentid, elem) {
 			const updatedCommentsList = updateCommentsList(lines);
 			updateFormState();
 			revealNewComment(lines[1])
-				.then(() => tryReloadCodeBlocks(updatedCommentsList));
+				.then(() => tryHighlightAndDecorateCodeBlocks(updatedCommentsList));
 		} else if (lines[0] == '0') {
 			const [, commentRefuseReason] = lines;
 
@@ -228,7 +228,7 @@ function qa_answer_click(answerid, questionid, target)
 
 				if (answerContent.length) {
 					qa_set_outer_html(answerDOM, 'answer', answerContent);
-					tryReloadCodeBlocks(null, answerid);
+					tryHighlightAndDecorateCodeBlocks(null, answerid);
 				} else {
 					qa_conceal(answerDOM, 'answer');
 				}
@@ -262,7 +262,7 @@ function qa_comment_click(commentid, questionid, parentid, target)
 
 				if (commentContent.length) {
 					qa_set_outer_html(commentDOM, 'comment', commentContent);
-					tryReloadCodeBlocks(null, commentid);
+					tryHighlightAndDecorateCodeBlocks(null, commentid);
 				} else {
 					qa_conceal(commentDOM, 'comment');
 				}
@@ -291,7 +291,7 @@ function qa_show_comments(questionid, parentid, elem)
 				var commentsList=document.getElementById('c'+parentid+'_list');
 				commentsList.innerHTML=lines.slice(1).join("\n");
 
-				tryReloadCodeBlocks(commentsList);
+				tryHighlightAndDecorateCodeBlocks(commentsList);
 
 				commentsList.style.display='none';
 				qa_reveal(commentsList, 'comments');
@@ -328,7 +328,7 @@ function qa_scroll_page_to(scroll)
 	$('html,body').animate({scrollTop: scroll}, 400);
 }
 
-function tryReloadCodeBlocks(target, targetId) {
+function tryHighlightAndDecorateCodeBlocks(target, targetId) {
 	if (typeof window.highlightAndDecorateCodeBlocks === 'function' && (target || targetId)) {
 		if (targetId) {
 			target = document.querySelector(`[name="${ targetId }"]`).parentNode;

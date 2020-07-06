@@ -1,14 +1,14 @@
-window.scanUnprocessedCodeBlocks = (function highlightCodeBlocks() {
+const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
     'use strict';
 
     prepareCodeLanguages();
-    // document.addEventListener('DOMContentLoaded', scanUnprocessedCodeBlocks);
-
-    // SyntaxHighlighter.all();
 
     return scanUnprocessedCodeBlocks;
 
-    // Extend SyntaxHighlighter with property object declaring supported programming languages used by CKEditor and SyntaxHighlighter itself
+    /**
+     * Extend SyntaxHighlighter with property object declaring supported programming languages
+     * used by CKEditor and SyntaxHighlighter itself
+     */
     function prepareCodeLanguages() {
         prepareDefaultLanguage();
         prepareAvailableLanguages();
@@ -193,9 +193,7 @@ const addSnippetsToPost = (function postSnippets() {
         }
     }
 
-    /*
-     * Code based on Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
-     */
+    // Code based on Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
     function createCodepenSnippet(codeData) {
         const codeAsJSON = JSON.stringify(codeData)
         // Quotes will screw up the JSON
@@ -222,9 +220,7 @@ const addSnippetsToPost = (function postSnippets() {
         return codepenSnippetForm;
     }
 
-    /*
-     * Code based on JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
-     */
+    // Code based on JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
     function createJSFiddleSnippet(jsfiddleData) {
         const jsfiddleSnippetForm = document.createElement('form');
         jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
@@ -267,7 +263,7 @@ const addSnippetsToPost = (function postSnippets() {
     }
 })();
 
-window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
+const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
     'use strict';
 
     const codeLanguages = getPreparedLanguages();
@@ -290,10 +286,10 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
         return languages;
     }
 
-    // TODO: adjust function usages to second parameter not being array!!!
-    function addInteractiveBarToCodeBlocks(isInsidePreview, chosenCodeBlocks) {
+    // TODO: adjust function usages with parameter not being array!!!
+    function addInteractiveBarToCodeBlocks(chosenCodeBlocks) {
         // getCodeBlocks(isInsidePreview, chosenCodeBlocks).forEach(decorateCodeBlock);
-        const { codeBlockBar, codeBlockParent } = decorateCodeBlock(getCodeBlocks(isInsidePreview, chosenCodeBlocks));
+        const { codeBlockBar, codeBlockParent } = decorateCodeBlock(/*getCodeBlocks(isInsidePreview,*/ chosenCodeBlocks/*)*/);
 
         return function postProcessCodeBlock(processedCodeBlock) {
             const codeBlockDefaultParent = processedCodeBlock.parentNode;
@@ -306,41 +302,41 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             }
         };
 
-        function getCodeBlocks(isInsidePreview, chosenCodeBlocks) {
-            if (chosenCodeBlocks) {
-                return chosenCodeBlocks;
-            }
+        // function getCodeBlocks(isInsidePreview, chosenCodeBlocks) {
+        //     if (chosenCodeBlocks) {
+        //         return chosenCodeBlocks;
+        //     }
+        //
+        //     const highlightedCodeBlocksSelector = isInsidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
+        //     const highlightedCodeBlocks = document.querySelectorAll(highlightedCodeBlocksSelector);
+        //
+        //     if (highlightedCodeBlocks.length) {
+        //         return highlightedCodeBlocks;
+        //     }
+        //
+        //     const rawCodeBlocks = document.querySelectorAll('pre[class*="brush:"]');
+        //     return rawCodeBlocks;
+        // }
+    }
 
-            const highlightedCodeBlocksSelector = isInsidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
-            const highlightedCodeBlocks = document.querySelectorAll(highlightedCodeBlocksSelector);
+    function decorateCodeBlock(codeBlock) {
+        const codeBlockBar = document.createElement('div');
+        codeBlockBar.classList.add('syntaxhighlighter-block-bar', 'block-bar-transparency');
+        codeBlockBar.append(...getCodeBlockBarFeatureItems(codeBlock));
 
-            if (highlightedCodeBlocks.length) {
-                return highlightedCodeBlocks;
-            }
-
-            const rawCodeBlocks = document.querySelectorAll('pre[class*="brush:"]');
-            return rawCodeBlocks;
+        if (codeBlockBar.querySelector('.syntaxhighlighter-collapsible-button')) {
+            codeBlockBar.classList.add('is-collapsible');
         }
 
-        function decorateCodeBlock(codeBlock) {
-            const codeBlockBar = document.createElement('div');
-            codeBlockBar.classList.add('syntaxhighlighter-block-bar', 'block-bar-transparency');
-            codeBlockBar.append(...getCodeBlockBarFeatureItems(codeBlock));
+        const codeBlockParent = document.createElement('div');
+        codeBlockParent.classList.add('syntaxhighlighter-parent');
 
-            if (codeBlockBar.querySelector('.syntaxhighlighter-collapsible-button')) {
-                codeBlockBar.classList.add('is-collapsible');
-            }
+        codeBlock.parentNode.insertBefore(codeBlockParent, codeBlock);
+        codeBlockParent.append(codeBlockBar, codeBlock);
 
-            const codeBlockParent = document.createElement('div');
-            codeBlockParent.classList.add('syntaxhighlighter-parent');
+        requestAnimationFrame(() => codeBlockBar.classList.remove('block-bar-transparency'));
 
-            codeBlock.parentNode.insertBefore(codeBlockParent, codeBlock);
-            codeBlockParent.append(codeBlockBar, codeBlock);
-
-            requestAnimationFrame(() => codeBlockBar.classList.remove('block-bar-transparency'));
-
-            return { codeBlockBar, codeBlockParent };
-        }
+        return { codeBlockBar, codeBlockParent };
     }
 
     function initInteractiveFeatures() {
@@ -459,8 +455,8 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
 
             copyByClipboardAPI({ target }) {
                 window.navigator.clipboard
-                .writeText(this.getContentToCopy(target))
-                .catch(() => this.tryFallbackToOlderCopyMethod(target));
+                    .writeText(this.getContentToCopy(target))
+                    .catch(() => this.tryFallbackToOlderCopyMethod(target));
             }
 
             tryFallbackToOlderCopyMethod(target) {
@@ -538,70 +534,67 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
     }
 })();
 
-window.highlightAndDecorateCodeBlocks = (postsToHighlight, addSnippets = true) => {
-    const codeBlocksPerPost = {
+window.highlightAndDecorateCodeBlocks = (function codeBlocksHighlighterAndDecorator() {
+    if (typeof SyntaxHighlighter !== 'object' || !SyntaxHighlighter || typeof SyntaxHighlighter.highlight !== 'function') {
+        throw new TypeError('Cannot highlight and decorate blocks of code, because SyntaxHighlighter is not available!');
+    }
+
+    const snippetsIntermediateConfig = {
         postName: null,
         postContentDOM: null,
         postCodeBlocks: null,
     };
 
-    if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
-        const postsContainer = postsToHighlight || document.querySelector('.qa-main');
-        const rawCodeBlocks = scanUnprocessedCodeBlocks(postsContainer);
-        rawCodeBlocks.forEach((codeBlock) => {
-            // 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
-            const postProcessCodeBlock = addInteractiveBarToCodeBlocks(false, /*[*/codeBlock /*processedCodeBlock*//*]*/);
+    return highlightAndDecorateCodeBlocks;
 
-            const origCodeBlockParent = codeBlock.parentNode;
-            SyntaxHighlighter.highlight(null, codeBlock);
-            // const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
-            const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
-            postProcessCodeBlock(processedCodeBlock);
-
-            if (addSnippets) {
-                prepareCodeBlocksForSnippetsAddition(processedCodeBlock);
-            }
+    function highlightAndDecorateCodeBlocks(
+        postsToHighlight = document.querySelector('.qa-main'), shouldAddSnippets = true
+    ) {
+        const rawCodeBlocks = scanUnprocessedCodeBlocks(postsToHighlight);
+        rawCodeBlocks.forEach((rawCodeBlock, index) => {
+            const isLastIteration = rawCodeBlocks.length - 1 === index;
+            processRawCodeBlocks(rawCodeBlock, shouldAddSnippets, isLastIteration);
         });
-
-        // const codeBlocks = [...postsToHighlight.querySelectorAll('pre')];
-        //
-        // window.scanUnprocessedCodeBlocks(postsToHighlight);
-        //
-        // const processedCodeBlocks = codeBlocks.map((codeBlock) => {
-        //     /*
-        //      * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
-        //      * Temporary caching is needed to retrieve processed element within parent context afterwards.
-        //      */
-        //     const origCodeBlockParent = codeBlock.parentNode;
-        //     SyntaxHighlighter.highlight(null, codeBlock);
-        //     const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
-        //
-        //     return processedCodeBlock;
-        // });
-        //
-        // if (!ignoreAddingInteractiveBar) {
-        //     window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
-        // }
-    } else {
-        console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
     }
 
-    function prepareCodeBlocksForSnippetsAddition(processedCodeBlock) {
-        const postContentDOM = processedCodeBlock.closest('.entry-content').previousElementSibling;
+    function processRawCodeBlocks(codeBlock, shouldAddSnippets, isLastIteration) {
+        const postProcessCodeBlock = addInteractiveBarToCodeBlocks(codeBlock);
 
-        if (postContentDOM.name !== codeBlocksPerPost.postName) {
-            if (codeBlocksPerPost.postName) {
-                addSnippetsToPost(codeBlocksPerPost.postCodeBlocks, codeBlocksPerPost.postContentDOM.parentNode);
-                Object.keys(codeBlocksPerPost).forEach(key => codeBlocksPerPost[key] = null);
-            }
+        const origCodeBlockParent = codeBlock.parentNode;
+        SyntaxHighlighter.highlight(null, codeBlock);
 
-            codeBlocksPerPost.postName = postContentDOM.name;
-            codeBlocksPerPost.postContentDOM = postContentDOM;
-            codeBlocksPerPost.postCodeBlocks = [processedCodeBlock];
-        } else {
-            codeBlocksPerPost.postCodeBlocks.push(processedCodeBlock);
+        const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
+        postProcessCodeBlock(processedCodeBlock);
+
+        if (shouldAddSnippets) {
+            prepareCodeBlocksForSnippetsAddition(processedCodeBlock, isLastIteration);
         }
     }
-};
+
+    function prepareCodeBlocksForSnippetsAddition(processedCodeBlock, isLastIteration) {
+        const postContentDOM = processedCodeBlock.closest('.entry-content').previousElementSibling;
+
+        if (postContentDOM.name !== snippetsIntermediateConfig.postName) {
+            if (snippetsIntermediateConfig.postName) {
+                addSnippetsAndClearConfigObj();
+            }
+
+            snippetsIntermediateConfig.postName = postContentDOM.name;
+            snippetsIntermediateConfig.postContentDOM = postContentDOM;
+            snippetsIntermediateConfig.postCodeBlocks = [processedCodeBlock];
+        } else {
+            snippetsIntermediateConfig.postCodeBlocks.push(processedCodeBlock);
+        }
+
+        if (isLastIteration) {
+            addSnippetsAndClearConfigObj();
+        }
+    }
+
+    function addSnippetsAndClearConfigObj() {
+        addSnippetsToPost(snippetsIntermediateConfig.postCodeBlocks, snippetsIntermediateConfig.postContentDOM.parentNode);
+        Object.keys(snippetsIntermediateConfig).forEach(key => snippetsIntermediateConfig[key] = null);
+    }
+})();
 
 highlightAndDecorateCodeBlocks();

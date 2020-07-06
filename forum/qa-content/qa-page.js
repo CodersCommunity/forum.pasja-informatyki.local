@@ -246,9 +246,9 @@ function qa_ajax_error()
         const modalParent = document.querySelector('.qa-main-wrapper');
         modalParent.appendChild(modal);
 
-        window.highlightAndDecorateCodeBlocks(modalContent, false);
-        // window.highlightAndDecorateCodeBlocks(modalContent, true);
-        // window.addInteractiveBarToCodeBlocks(true);
+        if (typeof window.highlightAndDecorateCodeBlocks === 'function') {
+            window.highlightAndDecorateCodeBlocks(modalContent, false);
+        }
     }
 
     function createPostPreviewButton(postForm, ckeInstanceName) {
@@ -276,14 +276,6 @@ function qa_ajax_error()
     window.addEventListener('DOMContentLoaded', function() {
         const questionId = parseInt(location.pathname.split('/')[1]);
         const newQuestion = location.pathname.includes('ask');
-
-        // if (questionId) {
-        //     /*
-		// 	 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
-		// 	 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
-		// 	 */
-        //     window.addInteractiveBarToCodeBlocks(false);
-        // }
 
         if (questionId || newQuestion) {
             CKEDITOR.on("instanceReady", function(event) {
