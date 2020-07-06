@@ -1,12 +1,14 @@
 const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
     'use strict';
 
+    const BRUSHES_SELECTOR = 'pre[class*="brush:"]';
+
     prepareCodeLanguages();
 
     return scanUnprocessedCodeBlocks;
 
     /**
-     * Extend SyntaxHighlighter with property object declaring supported programming languages
+     * Extend SyntaxHighlighter object with supported programming languages
      * used by CKEditor and SyntaxHighlighter itself
      */
     function prepareCodeLanguages() {
@@ -62,8 +64,8 @@ const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
         }
     }
 
-    function scanUnprocessedCodeBlocks(root = document) {
-        const preElements = [...root.querySelectorAll('pre[class*="brush:"]')];
+    function scanUnprocessedCodeBlocks(inputElem = document) {
+        const preElements = flattenInputElem(inputElem);
         const loadedBrushes = Object
             .entries(SyntaxHighlighter.brushes)
             .map(([name, ctor]) => ({
@@ -139,9 +141,27 @@ const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
             pre.dataset.codeLangName = languageName;
         }
     }
+
+    function flattenInputElem(elem) {
+        if (Array.isArray(elem)) {
+            const normalizedElems = [];
+
+            elem.forEach(elemItem => {
+                elemItem.querySelectorAll(BRUSHES_SELECTOR).forEach((brush) => {
+                    normalizedElems.push(brush);
+                });
+            });
+
+            return normalizedElems;
+        }
+
+        return [...elem.querySelectorAll(BRUSHES_SELECTOR)];
+    }
 })();
 
 const addSnippetsToPost = (function postSnippets() {
+    'use strict';
+
     const SNIPPET_LANG_MAP = Object.freeze({
         xml: 'html',
         css: 'css',
@@ -286,10 +306,8 @@ const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
         return languages;
     }
 
-    // TODO: adjust function usages with parameter not being array!!!
     function addInteractiveBarToCodeBlocks(chosenCodeBlocks) {
-        // getCodeBlocks(isInsidePreview, chosenCodeBlocks).forEach(decorateCodeBlock);
-        const { codeBlockBar, codeBlockParent } = decorateCodeBlock(/*getCodeBlocks(isInsidePreview,*/ chosenCodeBlocks/*)*/);
+        const { codeBlockBar, codeBlockParent } = decorateCodeBlock(chosenCodeBlocks);
 
         return function postProcessCodeBlock(processedCodeBlock) {
             const codeBlockDefaultParent = processedCodeBlock.parentNode;
@@ -301,22 +319,6 @@ const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
                 processedCodeBlock.classList.add('collapsed-block');
             }
         };
-
-        // function getCodeBlocks(isInsidePreview, chosenCodeBlocks) {
-        //     if (chosenCodeBlocks) {
-        //         return chosenCodeBlocks;
-        //     }
-        //
-        //     const highlightedCodeBlocksSelector = isInsidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
-        //     const highlightedCodeBlocks = document.querySelectorAll(highlightedCodeBlocksSelector);
-        //
-        //     if (highlightedCodeBlocks.length) {
-        //         return highlightedCodeBlocks;
-        //     }
-        //
-        //     const rawCodeBlocks = document.querySelectorAll('pre[class*="brush:"]');
-        //     return rawCodeBlocks;
-        // }
     }
 
     function decorateCodeBlock(codeBlock) {
@@ -535,6 +537,8 @@ const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
 })();
 
 window.highlightAndDecorateCodeBlocks = (function codeBlocksHighlighterAndDecorator() {
+    'use strict';
+
     if (typeof SyntaxHighlighter !== 'object' || !SyntaxHighlighter || typeof SyntaxHighlighter.highlight !== 'function') {
         throw new TypeError('Cannot highlight and decorate blocks of code, because SyntaxHighlighter is not available!');
     }

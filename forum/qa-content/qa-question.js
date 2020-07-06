@@ -228,7 +228,7 @@ function qa_answer_click(answerid, questionid, target)
 
 				if (answerContent.length) {
 					qa_set_outer_html(answerDOM, 'answer', answerContent);
-					tryHighlightAndDecorateCodeBlocks(null, answerid);
+					tryHighlightAndDecorateCodeBlocks(null, answerid, true);
 				} else {
 					qa_conceal(answerDOM, 'answer');
 				}
@@ -328,10 +328,15 @@ function qa_scroll_page_to(scroll)
 	$('html,body').animate({scrollTop: scroll}, 400);
 }
 
-function tryHighlightAndDecorateCodeBlocks(target, targetId) {
+function tryHighlightAndDecorateCodeBlocks(target, targetId, includeCommentsList) {
 	if (typeof window.highlightAndDecorateCodeBlocks === 'function' && (target || targetId)) {
 		if (targetId) {
 			target = document.querySelector(`[name="${ targetId }"]`).parentNode;
+
+			if (includeCommentsList) {
+				const commentsList = document.querySelector(`#c${ targetId }_list`);
+				target = [target, commentsList];
+			}
 		}
 
 		window.highlightAndDecorateCodeBlocks(target);
