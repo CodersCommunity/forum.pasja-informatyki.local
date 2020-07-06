@@ -35,6 +35,22 @@ class qa_html_theme_layer extends qa_html_theme_base
             return;
         }
 
+        /**
+         * TODO:
+         * 1. Przed utworzeniem 2fa należy poprosić o hasło użytkownika
+         *   a) Kliknij włącz 2fa
+         *   b) przekieruj na stronę z podaniem hasła
+         *     - jeśli poprawne: przekieruj do strony z QR code
+         *     - jeśli nie: wyloguj (?) lub przerwij akcję (po prostu poprosić jeszcze raz a jakby się pomylił np. 3 razy to wtedy można całkowicie wylogować dla bezpieczeństwa)
+         *   c) poproś o kod z aplikacji
+         *     - jeśli poprawne: dodaj 2fa do konta
+         *     - jeśli nie: przenieś do początkowej strony nie włączając niczego ( jak ktoś raz źle poda, to chyba jeszcze nie powód aby wszystko anulować, po prostu poprosić jeszcze raz bez ponownego skanowania?)
+         * 2. Przed wyłączeniem 2fa należy poprosić o kod z aplikacji oraz o hasło użytkownika (flow podobne do powyższego)
+         *   a) Kliknij wyłącz 2fa
+         *   b) przekieruj na stronę z podaniem hasła ORAZ jednocześnie z kodem z aplikacji
+         *     - jeśli poprawne: wyłączy 2fa dla konta
+         *     - jeśli nie: przekieruje do początkowej strony; do rozważenia, czy wysłać mail z powiadomieniem, że ktoś próbował wyłączyć 2fa czy też notify
+         */
         if ($this->isSecurityPage && (bool) qa_opt('googleauthenticator_login')) {
             $content = [
                 'tags'    => 'method="post" action="/account/security"',
@@ -66,13 +82,13 @@ EOF;
     private function switchPluginState(): array
     {
         $userAccount   = $this->getUser();
-        [$userActive2fa, $recoveryCode, $secret] = $this->prepareGoogleAuthenticator($userAccount);
+        [$userHasActiveTwoFactorAuth, $recoveryCode, $secret] = $this->prepareGoogleAuthenticator($userAccount);
 
-        if (!(bool) $userActive2fa) {
-            return $this->renderFormIsDisabled();
+        if (!$userHasActiveTwoFactorAuth) {
+            return $this->showFormToEnableTwoFactorAuth();
         }
 
-        $result = $this->renderFormIsEnabled(
+        $result = $this->showFormWithButtonToDisableTwoFactorAuth(
             $userAccount['2fa_change_date'],
             (bool) $userAccount['2fa_enabled']
         );
@@ -84,7 +100,7 @@ EOF;
         return $result;
     }
 
-    private function renderFormIsEnabled($date, bool $showDateField): array
+    private function showFormWithButtonToDisableTwoFactorAuth($date, bool $showDateField): array
     {
         if ($showDateField) {
             $field = ['old' => [
@@ -109,7 +125,7 @@ EOF;
         ];
     }
 
-    private function renderFormIsDisabled(): array
+    private function showFormToEnableTwoFactorAuth(): array
     {
         return [
             'fields'  => [
@@ -230,7 +246,7 @@ EOF;
 
     private function prepareGoogleAuthenticator(?array $userAccount): array
     {
-        $userActive2fa = $userAccount['2fa_enabled'];
+        $userHasActiveTwoFactorAuth = $userAccount['2fa_enabled'];
 
         if (!empty(qa_post_text('code')) && (!qa_check_form_security_code('2faform', qa_post_text('code')))) {
             qa_fatal_error('Invalid CSRF code');
@@ -241,11 +257,11 @@ EOF;
             $this->init->createSecret();
             $recoveryCode = $this->init->getRandomRecoveryCode();
             $secret       = $this->init->getSecret();
-            $userActive2fa = $this->updateUserEnable2FA($userAccount, true, $secret, $recoveryCode);
+            $userHasActiveTwoFactorAuth = (bool) $this->updateUserEnable2FA($userAccount, true, $secret, $recoveryCode);
         } elseif ((bool) $userAccount['2fa_enabled']  && qa_clicked('dodisable2fa')) {
-            $userActive2fa = $this->updateUserEnable2FA($userAccount, false);
+            $userHasActiveTwoFactorAuth = (bool) $this->updateUserEnable2FA($userAccount, false);
         }
 
-        return [$userActive2fa ?? false, $recoveryCode ?? false, $secret ?? false];
+        return [$userHasActiveTwoFactorAuth ?? false, $recoveryCode ?? false, $secret ?? false];
     }
 }
