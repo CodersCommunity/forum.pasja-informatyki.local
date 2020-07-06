@@ -141,14 +141,146 @@ window.scanUnprocessedCodeBlocks = (function highlightCodeBlocks() {
     }
 })();
 
+window.addSnippetsToPost = (function postSnippets() {
+    const SNIPPET_LANG_MAP = Object.freeze({
+        xml: 'html',
+        css: 'css',
+        jscript: 'js'
+    });
+    const NEW_LINE = '\r\n';
+
+    // const questionId = parseInt(location.pathname.split('/')[1]);
+    // const newQuestion = location.pathname.includes('ask');
+
+    // if (questionId || newQuestion) {
+    //     window.addEventListener('load', initSnippets);
+    // }
+
+    return addSnippetsToPost;
+
+    function addSnippetsToPost(codeBlocks, snippetsInsertionLocation) {
+        codeBlocks.forEach(prepareCodeBlockForSnippet);
+
+        function prepareCodeBlockForSnippet(codeBlock) {
+            const langData = {
+                html: '',
+                css: '',
+                js: ''
+            };
+
+            processBlockOfCode(codeBlock, langData);
+
+            const langDataHasAnyValue = Object.values(langData).some(Boolean);
+            if (langDataHasAnyValue) {
+                addSnippets(
+                    [createCodepenSnippet(langData), createJSFiddleSnippet(langData)],
+                    snippetsInsertionLocation,
+                    codeBlock
+                );
+            }
+        }
+    }
+
+    function processBlockOfCode(block, langData) {
+        const codeContent = [
+            ...block.querySelectorAll('.code .line')
+        ].reduce((codeLines, codeLine) => codeLines + codeLine.textContent + NEW_LINE, '');
+        const codeLang = block.parentNode.querySelector('[data-code-lang-alias]').dataset.codeLangAlias;
+        const mappedSnippetLang = SNIPPET_LANG_MAP[codeLang];
+
+        if (mappedSnippetLang) {
+            langData[mappedSnippetLang] = codeContent;
+        }
+    }
+
+    /*
+     * Code based on Codepen API tutorial: https://blog.codepen.io/documentation/api/prefill/
+     */
+    function createCodepenSnippet(codeData) {
+        const codeAsJSON = JSON.stringify(codeData)
+        // Quotes will screw up the JSON
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+
+        const codepenSnippetForm = document.createElement('form');
+        codepenSnippetForm.action = 'https://codepen.io/pen/define';
+        codepenSnippetForm.method = 'POST';
+        codepenSnippetForm.target = '_blank';
+        codepenSnippetForm.classList.add('codepen-snippet');
+
+        const dataCarrierInput = document.createElement('input');
+        dataCarrierInput.type = 'hidden';
+        dataCarrierInput.name = 'data';
+        dataCarrierInput.value = codeAsJSON;
+
+        const submitSnippet = document.createElement('input');
+        submitSnippet.type = 'submit';
+        submitSnippet.value = 'CodePen';
+
+        codepenSnippetForm.append(dataCarrierInput, submitSnippet);
+
+        return codepenSnippetForm;
+    }
+
+    /*
+     * Code based on JSFiddle API tutorial: http://doc.jsfiddle.net/api/post.html
+     */
+    function createJSFiddleSnippet(jsfiddleData) {
+        const jsfiddleSnippetForm = document.createElement('form');
+        jsfiddleSnippetForm.action = 'https://jsfiddle.net/api/post/library/pure/';
+        jsfiddleSnippetForm.method = 'POST';
+        jsfiddleSnippetForm.target = '_blank';
+        jsfiddleSnippetForm.classList.add('jsfiddle-snippet');
+
+        const htmlTxt = document.createElement('textarea');
+        htmlTxt.name = 'html';
+        htmlTxt.value = jsfiddleData.html || '';
+
+        const cssTxt = document.createElement('textarea');
+        cssTxt.name = 'css';
+        cssTxt.value = jsfiddleData.css || '';
+
+        const jsTxt = document.createElement('textarea');
+        jsTxt.name = 'js';
+        jsTxt.value = jsfiddleData.js || '';
+
+        const submitSnippet = document.createElement('input');
+        submitSnippet.type = 'submit';
+        submitSnippet.value = 'JSFiddle';
+
+        jsfiddleSnippetForm.append(htmlTxt, cssTxt, jsTxt, submitSnippet);
+
+        return jsfiddleSnippetForm;
+    }
+
+    function addSnippets(snippetsList, snippetsInsertionLocation, postContent) {
+        const snippetsParent = document.createElement('div');
+        snippetsParent.classList.add('snippets-parent');
+        snippetsParent.append(...snippetsList);
+
+        snippetsInsertionLocation.appendChild(snippetsParent);
+
+        if (snippetsInsertionLocation.classList.contains('qa-c-item-content')) {
+            snippetsParent.classList.add('inside-comment');
+            postContent.classList.add('comment-snippets');
+        }
+    }
+})();
+
 window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
     'use strict';
 
-    const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 30;
     const languages = {};
     prepareLanguages();
 
+    const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 20;
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
+
+    const codeBlocksPerPost = {
+        postName: null,
+        postContentDOM: null,
+        postCodeBlocks: null,
+    };
 
     // document.addEventListener('DOMContentLoaded', prepareLanguages);
     // Object.defineProperty(window, 'addInteractiveBarToCodeBlocks', {
@@ -173,6 +305,8 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             // const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
             const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
             postProcessCodeBlock(processedCodeBlock);
+
+            addSnippetsToPostWithDecoratedCodeBlocks(processedCodeBlock);
         });
     }
 
@@ -294,14 +428,19 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
         }
 
         class LanguageLabel {
-            getLanguageName(codeBlock) {
-                const languageExplicitName = codeBlock.dataset && languages[codeBlock.dataset.codeLangName];
+            getLanguageName(codeBlock, codeLangName) {
+                const languageExplicitName = codeLangName && languages[codeLangName];
                 return languageExplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
+            }
+
+            getLanguageAlias(codeBlock) {
+                return codeBlock.dataset && codeBlock.dataset.codeLangName;
             }
 
             getLanguageLabel(codeBlock) {
                 const languageNameLabel = document.createElement('div');
-                languageNameLabel.textContent = this.getLanguageName(codeBlock);
+                languageNameLabel.dataset.codeLangAlias = this.getLanguageAlias(codeBlock);
+                languageNameLabel.textContent = this.getLanguageName(codeBlock, languageNameLabel.dataset.codeLangAlias);
                 languageNameLabel.classList.add('syntaxhighlighter-language');
 
                 return languageNameLabel;
@@ -423,4 +562,47 @@ window.addInteractiveBarToCodeBlocks = (function interactiveCodeBlockBar() {
             return wrapper;
         }
     }
+
+    function addSnippetsToPostWithDecoratedCodeBlocks(processedCodeBlock) {
+        const postContentDOM = processedCodeBlock.closest('.entry-content').previousElementSibling;
+
+        if (postContentDOM.name !== codeBlocksPerPost.postName) {
+            if (codeBlocksPerPost.postName) {
+                window.addSnippetsToPost(codeBlocksPerPost.postCodeBlocks, codeBlocksPerPost.postContentDOM.parentNode);
+                Object.keys(codeBlocksPerPost).forEach(key => codeBlocksPerPost[key] = null);
+            }
+
+            codeBlocksPerPost.postName = postContentDOM.name;
+            codeBlocksPerPost.postContentDOM = postContentDOM;
+            codeBlocksPerPost.postCodeBlocks = [processedCodeBlock];
+        } else {
+            codeBlocksPerPost.postCodeBlocks.push(processedCodeBlock);
+        }
+    }
 })();
+
+window.reloadBlocksOfCode = (postsToHighlight, ignoreAddingInteractiveBar) => {
+        if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
+            const codeBlocks = [...postsToHighlight.querySelectorAll('pre')];
+
+            window.scanUnprocessedCodeBlocks(null, postsToHighlight);
+
+            const processedCodeBlocks = codeBlocks.map((codeBlock) => {
+                /*
+                 * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
+                 * Temporary caching is needed to retrieve processed element within parent context afterwards.
+                 */
+                const origCodeBlockParent = codeBlock.parentNode;
+                SyntaxHighlighter.highlight(null, codeBlock);
+                const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
+
+                return processedCodeBlock;
+            });
+
+            if (!ignoreAddingInteractiveBar) {
+                window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
+            }
+        } else {
+            console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
+        }
+};
