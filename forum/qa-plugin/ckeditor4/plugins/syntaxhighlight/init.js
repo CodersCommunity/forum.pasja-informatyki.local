@@ -1,21 +1,6 @@
-if (!areSyntaxHighlighterFeaturesNeeded()) {
-    throw new Error('SyntaxHighlighter features are not needed on this page, so they will not be initiated.');
-}
+'use strict';
 
-function areSyntaxHighlighterFeaturesNeeded() {
-    const { pathname } = location;
-    const isAskOrTopicPage =
-        pathname
-            .split('/')
-            .some(part => part === 'ask' || parseInt(part));
-    const isAdminFlaggedPage = pathname.includes('admin/flagged');
-
-    return isAskOrTopicPage || isAdminFlaggedPage;
-}
-
-const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
-    'use strict';
-
+const rawCodeBlocksPreProcessor = () => {
     const BRUSHES_SELECTOR = 'pre[class*="brush:"]';
 
     prepareCodeLanguages();
@@ -172,11 +157,9 @@ const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
 
         return [...elem.querySelectorAll(BRUSHES_SELECTOR)];
     }
-})();
+};
 
-const addSnippetsToPost = (function postSnippets() {
-    'use strict';
-
+const postSnippets = () => {
     const SNIPPET_LANG_MAP = Object.freeze({
         xml: 'html',
         css: 'css',
@@ -284,11 +267,9 @@ const addSnippetsToPost = (function postSnippets() {
             snippetsInsertionLocation.classList.add('comment-snippets');
         }
     }
-})();
+};
 
-const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
-    'use strict';
-
+const codeBlockInteractiveBar = () => {
     const codeLanguages = getPreparedLanguages();
     const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 20;
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
@@ -531,15 +512,9 @@ const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
             return wrapper;
         }
     }
-})();
+};
 
-window.highlightAndDecorateCodeBlocks = (function codeBlocksHighlighterAndDecorator() {
-    'use strict';
-
-    if (typeof SyntaxHighlighter !== 'object' || !SyntaxHighlighter || typeof SyntaxHighlighter.highlight !== 'function') {
-        throw new TypeError('Cannot highlight and decorate blocks of code, because SyntaxHighlighter is not available!');
-    }
-
+const codeBlocksHighlighterAndDecorator = (scanUnprocessedCodeBlocks, addInteractiveBarToCodeBlocks, addSnippetsToPost) => {
     const snippetsIntermediateConfig = {
         postName: null,
         postContentDOM: null,
@@ -602,6 +577,32 @@ window.highlightAndDecorateCodeBlocks = (function codeBlocksHighlighterAndDecora
         addSnippetsToPost(snippetsIntermediateConfig.postCodeBlocks, snippetsIntermediateConfig.postContentDOM);
         Object.keys(snippetsIntermediateConfig).forEach(key => snippetsIntermediateConfig[key] = null);
     }
-})();
+};
 
-highlightAndDecorateCodeBlocks();
+const initSyntaxHighlighterFeatures = () => {
+    if (typeof SyntaxHighlighter !== 'object' || !SyntaxHighlighter || typeof SyntaxHighlighter.highlight !== 'function') {
+        throw new TypeError('Cannot highlight and decorate blocks of code, because SyntaxHighlighter is not available!');
+    }
+
+    window.highlightAndDecorateCodeBlocks = codeBlocksHighlighterAndDecorator(
+        rawCodeBlocksPreProcessor(), codeBlockInteractiveBar(), postSnippets()
+    );
+    highlightAndDecorateCodeBlocks();
+}
+
+if (areSyntaxHighlighterFeaturesNeeded()) {
+    initSyntaxHighlighterFeatures();
+} else {
+    console.warn('SyntaxHighlighter features are not needed on this page, so they will not be initiated.');
+}
+
+function areSyntaxHighlighterFeaturesNeeded() {
+    const { pathname } = location;
+    const isAskOrTopicPage =
+        pathname
+        .split('/')
+        .some(part => part === 'ask' || parseInt(part));
+    const isAdminFlaggedPage = pathname.includes('admin/flagged');
+
+    return isAskOrTopicPage || isAdminFlaggedPage;
+}
