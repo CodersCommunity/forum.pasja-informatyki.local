@@ -602,7 +602,7 @@ function areSyntaxHighlighterFeaturesNeeded() {
         pathname
         .split('/')
         .some(part => part === 'ask' || parseInt(part));
-    const isAdminFlaggedPage = pathname.includes('admin/flagged');
+    const isAdminSubPage = /admin\/(flagged|hidden)/.test(pathname);
 
-    return isAskOrTopicPage || isAdminFlaggedPage;
+    return isAskOrTopicPage || isAdminSubPage;
 }
