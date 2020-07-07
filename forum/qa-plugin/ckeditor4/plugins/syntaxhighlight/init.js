@@ -1,3 +1,18 @@
+if (!areSyntaxHighlighterFeaturesNeeded()) {
+    throw new Error('SyntaxHighlighter features are not needed on this page, so they will not be initiated.');
+}
+
+function areSyntaxHighlighterFeaturesNeeded() {
+    const { pathname } = location;
+    const isAskOrTopicPage =
+        pathname
+            .split('/')
+            .some(part => part === 'ask' || parseInt(part));
+    const isAdminFlaggedPage = pathname.includes('admin/flagged');
+
+    return isAskOrTopicPage || isAdminFlaggedPage;
+}
+
 const scanUnprocessedCodeBlocks = (function rawCodeBlocksPreProcessor() {
     'use strict';
 
@@ -169,42 +184,30 @@ const addSnippetsToPost = (function postSnippets() {
     });
     const NEW_LINE = '\r\n';
 
-    // const questionId = parseInt(location.pathname.split('/')[1]);
-    // const newQuestion = location.pathname.includes('ask');
-
-    // if (questionId || newQuestion) {
-    //     window.addEventListener('load', initSnippets);
-    // }
-
     return addSnippetsToPost;
 
     function addSnippetsToPost(codeBlocks, snippetsInsertionLocation) {
-        codeBlocks.forEach(prepareCodeBlockForSnippet);
+        const langData = {
+            html: '',
+            css: '',
+            js: ''
+        };
 
-        function prepareCodeBlockForSnippet(codeBlock) {
-            const langData = {
-                html: '',
-                css: '',
-                js: ''
-            };
+        codeBlocks.forEach(codeBlock => processBlockOfCode(codeBlock, langData));
 
-            processBlockOfCode(codeBlock, langData);
-
-            const langDataHasAnyValue = Object.values(langData).some(Boolean);
-            if (langDataHasAnyValue) {
-                addSnippets(
-                    [createCodepenSnippet(langData), createJSFiddleSnippet(langData)],
-                    snippetsInsertionLocation,
-                    codeBlock
-                );
-            }
+        const langDataHasAnyValue = Object.values(langData).some(Boolean);
+        if (langDataHasAnyValue) {
+            addSnippets(
+                [createCodepenSnippet(langData), createJSFiddleSnippet(langData)],
+                snippetsInsertionLocation
+            );
         }
     }
 
     function processBlockOfCode(block, langData) {
         const codeContent = [
             ...block.querySelectorAll('.code .line')
-        ].reduce((codeLines, codeLine) => codeLines + codeLine.textContent + NEW_LINE, '');
+        ].reduce((lines, codeLine) => lines + codeLine.textContent + NEW_LINE, '');
         const codeLang = block.parentNode.querySelector('[data-code-lang-alias]').dataset.codeLangAlias;
         const mappedSnippetLang = SNIPPET_LANG_MAP[codeLang];
 
@@ -269,16 +272,16 @@ const addSnippetsToPost = (function postSnippets() {
         return jsfiddleSnippetForm;
     }
 
-    function addSnippets(snippetsList, snippetsInsertionLocation, postContent) {
+    function addSnippets(snippetsList, snippetsInsertionLocation) {
         const snippetsParent = document.createElement('div');
         snippetsParent.classList.add('snippets-parent');
         snippetsParent.append(...snippetsList);
 
-        snippetsInsertionLocation.appendChild(snippetsParent);
+        snippetsInsertionLocation.insertAdjacentElement('afterend', snippetsParent);
 
-        if (snippetsInsertionLocation.classList.contains('qa-c-item-content')) {
+        if (snippetsInsertionLocation.parentNode.classList.contains('qa-c-item-content')) {
             snippetsParent.classList.add('inside-comment');
-            postContent.classList.add('comment-snippets');
+            snippetsInsertionLocation.classList.add('comment-snippets');
         }
     }
 })();
@@ -287,14 +290,8 @@ const addInteractiveBarToCodeBlocks = (function interactiveBarForCodeBlock() {
     'use strict';
 
     const codeLanguages = getPreparedLanguages();
-
     const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 20;
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
-
-    // TODO: check this on backend side - perhaps in separate Pull Request
-    if (window.location.pathname.search(/\d+/) === 1) {
-
-    }
 
     return addInteractiveBarToCodeBlocks;
 
@@ -576,14 +573,20 @@ window.highlightAndDecorateCodeBlocks = (function codeBlocksHighlighterAndDecora
     }
 
     function prepareCodeBlocksForSnippetsAddition(processedCodeBlock, isLastIteration) {
-        const postContentDOM = processedCodeBlock.closest('.entry-content').previousElementSibling;
+        const postContentDOM = processedCodeBlock.closest('.entry-content');
 
-        if (postContentDOM.name !== snippetsIntermediateConfig.postName) {
+        if (!postContentDOM) {
+            return;
+        }
+
+        const postName = postContentDOM.previousElementSibling;
+
+        if (postName !== snippetsIntermediateConfig.postName) {
             if (snippetsIntermediateConfig.postName) {
                 addSnippetsAndClearConfigObj();
             }
 
-            snippetsIntermediateConfig.postName = postContentDOM.name;
+            snippetsIntermediateConfig.postName = postName;
             snippetsIntermediateConfig.postContentDOM = postContentDOM;
             snippetsIntermediateConfig.postCodeBlocks = [processedCodeBlock];
         } else {
@@ -596,7 +599,7 @@ window.highlightAndDecorateCodeBlocks = (function codeBlocksHighlighterAndDecora
     }
 
     function addSnippetsAndClearConfigObj() {
-        addSnippetsToPost(snippetsIntermediateConfig.postCodeBlocks, snippetsIntermediateConfig.postContentDOM.parentNode);
+        addSnippetsToPost(snippetsIntermediateConfig.postCodeBlocks, snippetsIntermediateConfig.postContentDOM);
         Object.keys(snippetsIntermediateConfig).forEach(key => snippetsIntermediateConfig[key] = null);
     }
 })();
