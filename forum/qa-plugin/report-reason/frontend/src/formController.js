@@ -106,14 +106,12 @@ class FormController {
 	getListItemsHTML({ reasonKey, reasonValue, index, isLast, textAreaDOM }) {
 		return `
 			<li>
-				<label for="${reasonKey}">
-					<input id="${reasonKey}" 
-							type="radio" 
-							value="${index}" 
-							name="reportReason"
-							required>
-					${reasonValue}
-				</label>
+				<input id="${reasonKey}" 
+						type="radio" 
+						value="${index}" 
+						name="reportReason"
+						required>
+				<label for="${reasonKey}">${reasonValue}</label>
 				${isLast ? textAreaDOM : ''}
 			</li>`;
 	}

@@ -43,15 +43,14 @@
     padding: 0;
 }
 
-.report-reason-popup__list label {
-    display: block;
-    word-break: break-word;
-    margin-left: 20px;
+.report-reason-popup__list li {
+    display: flex;
+    align-items: baseline;
 }
 
-.report-reason-popup__list input {
-    display: inline-block;
-    margin-left: -20px;
+.report-reason-popup__list label {
+    word-break: break-word;
+    margin-left: 5px;
 }
 
 .report-reason-popup__list li:last-of-type input {
@@ -59,13 +58,19 @@
 }
 
 .report-reason-popup__list li:last-of-type {
+    flex-wrap: wrap;
+    max-width: 390px;
+}
+
+.report-reason-popup__custom-report-reason-wrapper {
+    flex-basis: 100%;
     position: relative;
 }
 
 .report-reason-popup__custom-report-reason-char-counter-wrapper {
     position: absolute;
     right: 5.5%;
-    top: 2px;
+    top: -25px;
     font-style: italic;
 }
 
@@ -216,10 +221,6 @@
         padding: 5px;
     }
 
-    .report-reason-popup__form fieldset {
-        position: relative;
-    }
-
     .report-reason-popup__form legend {
         text-align: center;
     }
@@ -237,9 +238,14 @@
         margin: 5px 0;
     }
 
+    .report-reason-popup__list li:last-of-type {
+        max-width: 330px;
+    }
+
     .report-reason-popup__list label {
         display: flex;
         font-size: 0.9em;
+        flex-basis: 75%;
     }
 
     .report-reason-popup__list input {
@@ -253,7 +259,8 @@
 
     .report-reason-popup__custom-report-reason-char-counter-wrapper {
         width: 75px;
-        top: 2px;
+        top: -30px;
+        right: 2%;
         line-height: 15px;
     }
 }
@@ -264,6 +271,6 @@
     }
 
     .report-reason-popup__custom-report-reason-char-counter-wrapper {
-        top: 20px;
+        top: -30px;
     }
 }

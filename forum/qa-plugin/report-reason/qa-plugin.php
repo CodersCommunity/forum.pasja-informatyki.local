@@ -93,8 +93,8 @@ function q2apro_count_postflags_output($postId)
 
         $flagOutput[] = '<li class="qa-item-reason-list-entry">';
         $flagOutput[] =
-            '<span class="qa-item-flag-reason-prefix">Przez <a href="' . qa_path('user') . '/' .
-            $handle . '" class="qa-item-flag-reason-author">' . $handle . '</a>, z powodu: </span>'.
+            '<span class="qa-item-flag-reason-prefix">Przez <a href="/user/' . $handle .
+            '" class="qa-item-flag-reason-author">' . $handle . '</a>, z powodu: </span>' .
             '<strong class="qa-item-flag-reason-item">' .
             $reasonList[$flag['reasonid']] . $notice .
             '</strong>'
