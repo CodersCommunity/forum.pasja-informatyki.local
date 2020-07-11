@@ -100,11 +100,7 @@ function qa_submit_answer(questionid, elem)
 				answerFormParent.qa_disabled=true;
 
 				qa_conceal(answerFormParent, 'form');
-				qa_reveal(answerItem, 'answer', () => {
-					if (typeof window.reloadBlocksOfCode === 'function') {
-						window.reloadBlocksOfCode(answerItem);
-					}
-				});
+				qa_reveal(answerItem, 'answer', () => tryReloadCodeBlocks(answerItem));
 			} else if (lines[0]=='0') {
 				const [, answerRefuseReason ] = lines;
 
@@ -142,11 +138,7 @@ function qa_submit_comment(questionid, parentid, elem) {
 			const updatedCommentsList = updateCommentsList(lines);
 			updateFormState();
 			revealNewComment(lines[1])
-				.then(() => {
-					if (typeof window.reloadBlocksOfCode === 'function') {
-						window.reloadBlocksOfCode(updatedCommentsList);
-					}
-				});
+				.then(() => tryReloadCodeBlocks(updatedCommentsList));
 		} else if (lines[0] == '0') {
 			const [, commentRefuseReason] = lines;
 
@@ -231,14 +223,15 @@ function qa_answer_click(answerid, questionid, target)
 			if (lines[0]=='1') {
 				qa_set_inner_html(document.getElementById('a_list_title'), 'a_list_title', lines[1]);
 
-				var l=document.getElementById('a'+answerid);
-				var h=lines.slice(2).join("\n");
+				const answerDOM = document.getElementById('a'+answerid);
+				const answerContent = lines.slice(2).join("\n");
 
-				if (h.length)
-					qa_set_outer_html(l, 'answer', h);
-				else
-					qa_conceal(l, 'answer');
-
+				if (answerContent.length) {
+					qa_set_outer_html(answerDOM, 'answer', answerContent);
+					tryReloadCodeBlocks(null, answerid);
+				} else {
+					qa_conceal(answerDOM, 'answer');
+				}
 			} else {
 				target.form.elements.qa_click.value=target.name;
 				target.form.submit();
@@ -264,14 +257,15 @@ function qa_comment_click(commentid, questionid, parentid, target)
 	qa_ajax_post('click_c', params,
 		function (lines) {
 			if (lines[0]=='1') {
-				var l=document.getElementById('c'+commentid);
-				var h=lines.slice(1).join("\n");
+				const commentDOM = document.getElementById('c'+commentid);
+				const commentContent = lines.slice(1).join("\n");
 
-				if (h.length)
-					qa_set_outer_html(l, 'comment', h)
-				else
-					qa_conceal(l, 'comment');
-
+				if (commentContent.length) {
+					qa_set_outer_html(commentDOM, 'comment', commentContent);
+					tryReloadCodeBlocks(null, commentid);
+				} else {
+					qa_conceal(commentDOM, 'comment');
+				}
 			} else {
 				target.form.elements.qa_click.value=target.name;
 				target.form.submit();
@@ -297,9 +291,7 @@ function qa_show_comments(questionid, parentid, elem)
 				var commentsList=document.getElementById('c'+parentid+'_list');
 				commentsList.innerHTML=lines.slice(1).join("\n");
 
-				if (typeof window.reloadBlocksOfCode === 'function') {
-					window.reloadBlocksOfCode(commentsList);
-				}
+				tryReloadCodeBlocks(commentsList);
 
 				commentsList.style.display='none';
 				qa_reveal(commentsList, 'comments');
@@ -334,6 +326,16 @@ function qa_scroll_page_to(scroll)
 
 {
 	$('html,body').animate({scrollTop: scroll}, 400);
+}
+
+function tryReloadCodeBlocks(target, targetId) {
+	if (typeof window.reloadBlocksOfCode === 'function' && (target || targetId)) {
+		if (targetId) {
+			target = document.querySelector(`[name="${ targetId }"]`).parentNode;
+		}
+
+		window.reloadBlocksOfCode(target);
+	}
 }
 
 function handleRefusedPost({ submitButton, postRefuseReason, postType, parentId, parentPostIsQuestion }) {

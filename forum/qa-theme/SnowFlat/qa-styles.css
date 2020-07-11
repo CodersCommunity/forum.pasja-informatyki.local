@@ -4595,24 +4595,42 @@ pre[class*="brush:"]
 	overflow: scroll;
 }
 
-.syntaxhighlighter-parent,
 .syntaxhighlighter
 {
-	position: relative;
+	max-height: var(--code-block-raw-height); /* provided by inline style from JavaScript */
+	--syntaxhighlighter-collapsible-transition: max-height 0.2s ease-in-out;
+	transition: var(--syntaxhighlighter-collapsible-transition);
 }
+
+.syntaxhighlighter-parent .syntaxhighlighter .toolbar
+{
+	/* Used !important to override default SH styles */
+	right: 0 !important;
+	left: 3px !important;
+	top: 3px !important;
+}
+
+.syntaxhighlighter-parent .syntaxhighlighter caption
+{
+	/* Used !important to override default SH styles */
+	text-align: center !important;
+	font-weight: bold !important;
+}
+
 .syntaxhighlighter.collapsed-block,
 pre[class*="brush:"].collapsed-block
 {
-  	height: 110px;
+  	max-height: 110px;
+	transition: var(--syntaxhighlighter-collapsible-transition);
 	overflow: hidden;
- }
+}
 
+.post-preview.syntaxhighlighter-parent pre[class*="brush:"]
+{
+	margin: 1px 0;
+	width: 100%;
+}
 
- .post-preview.syntaxhighlighter-parent pre[class*="brush:"]
- {
-	 margin: 1px 0;
-	 width: 100%;
- }
 pre[class*="brush:"]::before
 {
 	content: attr(data-state);
@@ -4636,49 +4654,284 @@ pre[class*="brush:"]::after
 	padding: 0 5px;
 	background: white;
 }
+
+/* Start of Interactive Code Block Bar */
+
+.syntaxhighlighter-block-bar.block-bar-transparency
+{
+	opacity: 0;
+}
+
 .syntaxhighlighter-block-bar
 {
+	display: flex;
+	align-items: center;
+	min-height: 30px;
+	opacity: 1;
+	transition: opacity 0.2s;
+	border-radius: 50px 50px 1px 1px;
+
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
 	background: -moz-linear-gradient(left,  rgba(52,152,219,0.45) 0%, rgba(52,152,219,0.75) 50%, rgba(52,152,219,0.45) 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(left,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to right,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
-
-	height: 24px;
-	width: 100%;
-	position: relative;
-	border-radius: 50px 50px 1px 1px;
 }
 
-.syntaxhighlighter-button
+.syntaxhighlighter-block-bar-item
 {
-	color: white;
-	position: absolute;
-	border-radius: 5px;
-	background: #3498db;
-	top: 2px;
-	left: 0;
-	right: 0;
-	margin: 0 auto;
-	width: 85px;
-	font-size: 12px;
-	border: 1px solid white;
-	font-weight: bold;
-	outline: none;
+	width: 50%;
 }
 
+.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item
+{
+	width: 33.3%;
+}
+
+.syntaxhighlighter-block-bar-item:last-child
+{
+	display: inline-flex;
+	justify-content: flex-end;
+}
+
+.syntaxhighlighter-language,
+.syntaxhighlighter-collapsible-button,
+.content-copy-btn
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: white;
+}
 
 .syntaxhighlighter-language
 {
-	font-size: 12px;
-	position: absolute;
-	left: 1.25%;
-	top: 2px;
-	border-radius: 17px 2px;
-	padding: 1px 15px;
-	font-weight: bold;
-	color: white;
+	height: auto;
+	margin-left: 25px;
 }
+
+.syntaxhighlighter-collapsible-button
+{
+	position: relative;
+	width: 55px;
+	height: 20px;
+	display: block;
+	margin: 0 auto;
+	border: none;
+	outline: none;
+	background: transparent;
+}
+
+.syntaxhighlighter-collapsible-button:hover
+{
+	color: #2c3e50;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after,
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	content:'';
+	display: block;
+	position: absolute;
+	width: 23px;
+	height: 1px;
+	background: white;
+
+	--vertical-alignment-value: -0.5px;
+	--horizontal-alignment-value: 5px;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::before
+{
+	left: var(--horizontal-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::after,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	right: var(--horizontal-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after
+{
+	top: var(--vertical-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	bottom: var(--vertical-alignment-value);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after
+{
+	transform: rotate(-10deg);
+}
+
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after
+{
+	transform: rotate(10deg);
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state:hover::before,
+.syntaxhighlighter-collapsible-button.expanded-state:hover::after,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::after
+{
+	background: #2c3e50;
+}
+
+.collapsible-btn-sign
+{
+	display: flex;
+	align-self: baseline;
+}
+
+.content-copy-btn
+{
+	height: 22px;
+	margin-right: 8px;
+	padding: 2px 15px;
+	border: none;
+	border-radius: 0px 40px;
+	outline: none;
+	background: #2c3e50;
+	position: relative;
+}
+
+.content-copy-btn:hover {
+	background: #476481;
+}
+
+.content-copy-btn[disabled]
+{
+	background: lightgray;
+	color: gray;
+}
+
+.content-copy-btn[disabled]:hover
+{
+	cursor: not-allowed;
+}
+
+.content-copy-tooltip::before
+{
+	position: absolute;
+	background: black;
+	color: white;
+	font-size: 10px;
+	top: -20px;
+	right: -7px;
+	width: 125px;
+	height: 15px;
+	line-height: 15px;
+	font-weight: normal;
+	border-radius: 5px;
+}
+
+.content-copy-tooltip.content-copy-error::before
+{
+	content: 'Błąd kopiowania!';
+}
+
+.content-copy-btn[disabled].content-copy-tooltip:hover::before
+{
+	content: "Kopiowanie niedostępne";
+}
+
+.content-copy-btn[disabled]:hover::after,
+.content-copy-error::after
+{
+	content: "";
+	width: 0;
+	height: 0;
+	top: -5px;
+	right: 30px;
+	border-top: 8px solid black;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+	position: absolute;
+}
+
+.content-copy-placeholder
+{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+}
+
+@media (max-width: 320px) {
+	.syntaxhighlighter-block-bar .syntaxhighlighter-language {
+		text-align: center;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible {
+		height: 50px;
+		flex-wrap: wrap;
+		justify-content: space-around;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item:first-child {
+		flex-basis: 100%;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item {
+		flex-basis: 35%;
+		justify-content: center;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-language {
+		margin-left: 0;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-collapsible-button,
+	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
+		margin: 0 auto 3px;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
+		border-radius: 0 10px 0 10px;
+		padding-left: 6px;
+		padding-right: 6px;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn:hover {
+		background: #476481;
+	}
+}
+
+@media (max-width: 290px) {
+	.syntaxhighlighter-block-bar:not(.is-collapsible) {
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-around;
+		height: 55px;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .syntaxhighlighter-block-bar-item {
+		justify-content: center;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .syntaxhighlighter-language,
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
+		margin: 0;
+		line-height: 1;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
+		border-radius: 5px;
+		padding-left: 6px;
+		padding-right: 6px;
+	}
+}
+
+/* End of Interactive Code Block Bar */
 
 .modal-background
 {
@@ -4768,75 +5021,6 @@ pre[class*="brush:"]::after
 	}
 }
 
-
-/*
- *	Source: http://stackoverflow.com/a/30810322/4983840
- */
-.content-copy
-{
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 2em;
-	height: 2em;
-	padding: 0;
-	border: none;
-	outline: none;
-	box-shadow: none;
-	background: transparent;
-}
-
-.content-copy-btn
-{
-	background: #2c3e50;
-	position: absolute;
-	color: white;
-	right: 1.25%;
-	top: 3px;
-	border-radius: 2px 30px;
-	padding: 2px 15px;
-	font-size: 12px;
-	font-weight: bold;
-	border: none;
-	outline: none;
-}
-
-.content-copy-btn-disabled
-{
-	background: lightgray;
-	color: gray;
-	cursor: auto;
-}
-
-.content-copy-btn-disabled:hover::before
-{
-	content: "Kopiowanie niedostępne";
-	position: absolute;
-	background: black;
-	color: white;
-	font-size: 10px;
-	top: -20px;
-	right: -7px;
-	width: 125px;
-	height: 15px;
-	line-height: 15px;
-	font-weight: normal;
-	border-radius: 5px;
-}
-
-.content-copy-btn-disabled:hover::after
-{
-	content: "";
-	width: 0;
-	height: 0;
-	top: -5px;
-	right: 30px;
-	border-top: 8px solid black;
-	border-right: 8px solid transparent;
-	border-left: 8px solid transparent;
-	position: absolute;
-}
-
 form div[class$="-item-content"],
 form div.qa-q-view-content
 {
@@ -4845,44 +5029,66 @@ form div.qa-q-view-content
 
 .snippets-parent
 {
+	display: flex;
+	align-items: center;
 	position: absolute;
 	top: -20px;
 	right: 5px;
+	height: 23px;
+	font-size: 9px;
 }
 
-.codepen-snippet
+.snippets-parent:hover::before
 {
+	content: 'Przetestuj kod klikając w jeden z przycisków';
 	position: absolute;
+	bottom: 25px;
 	right: 0;
-	top: 0;
-	width: 0;
-	height: 0;
+	width: 225px;
+	padding: 1px;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	background: black;
+	font-size: 10.5px;
+	color: white;
+	text-align: center;
 }
 
-.codepen-snippet:hover
+.snippets-parent:hover::after {
+	content: '';
+	position: absolute;
+	bottom: 19px;
+	right: 41px;
+	border-top: 7px solid black;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+}
+
+@media (max-width: 320px)
 {
-	cursor: pointer;
+	.snippets-parent::before
+	{
+		max-width: 50vw;
+	}
+}
+
+.snippets-parent form
+{
+	display: inline-block;
+}
+
+.snippets-parent input[type="submit"]:not(:first-of-type) {
+	margin-right: 3px;
 }
 
 .codepen-snippet input[type="submit"]
 {
 	background: black;
-	right: 47px;
-}
-
-.jsfiddle-snippet
-{
-	width: 0;
-	height: 0;
-	position: absolute;
-	top: 0;
-	right: 0;
 }
 
 .jsfiddle-snippet input[type="submit"]
 {
 	background: #4679A4;
-	right: 0;
 }
 
 .jsfiddle-snippet select,
@@ -4901,9 +5107,7 @@ form div.qa-q-view-content
 	border-radius: 6px;
 	color: white;
 	margin: 0;
-	position: absolute;
-	top: 1px;
-	font-size: 8px;
+	font-size: inherit;
 	padding: 4px;
 	height: 19px;
 }

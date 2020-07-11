@@ -112,15 +112,30 @@
   color: #ffaa3e !important;
 }
 
-.syntaxhighlighter-button, .content-copy-btn {
-	background: #3a404b;
-	color: $color;
-	border: none;
-	border-radius: 0;
-	margin-top: 3px;
+.syntaxhighlighter-collapsible-button, .content-copy-btn {
+  background: #3a404b;
+  color: $color;
 }
 
-.content-copy-btn {
-	margin-top: 2px;
-	font-size: 12px;
+.syntaxhighlighter-collapsible-button {
+  background: transparent;
+}
+
+.syntaxhighlighter-collapsible-button:hover {
+  color: $blue;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state::before,
+.syntaxhighlighter-collapsible-button.expanded-state::after,
+.syntaxhighlighter-collapsible-button.collapsed-state::before,
+.syntaxhighlighter-collapsible-button.collapsed-state::after {
+  background: white;
+}
+
+.syntaxhighlighter-collapsible-button.expanded-state:hover::before,
+.syntaxhighlighter-collapsible-button.expanded-state:hover::after,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::after,
+.content-copy-btn:hover {
+  background: $blue;
 }

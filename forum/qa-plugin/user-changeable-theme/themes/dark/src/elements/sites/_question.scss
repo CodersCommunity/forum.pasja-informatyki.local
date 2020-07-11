@@ -105,19 +105,22 @@ div#qa-poll-div {
 
 // highlighter
 .syntaxhighlighter-block-bar {
-	border-radius: 0;
 	border: 1px solid $border;
-	border-bottom: none;
-
-	margin: 0;
-
-	height: 30px;
-
 	background: $bcg-dark;
+	border-radius: 50px 50px 1px 1px;
 }
 
 .syntaxhighlighter {
 	margin-top: 0 !important;
 	border: 1px solid $border;
 	border-top: none;
+}
+
+// snippets
+.snippets-parent:hover::before {
+	border: 1px solid white;
+}
+
+.snippets-parent:hover::after {
+	border-top-color: white;
 }

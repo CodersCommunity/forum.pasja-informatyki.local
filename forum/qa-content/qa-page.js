@@ -213,185 +213,35 @@ function qa_ajax_error()
 {
     'use strict';
 
-    const isClipboardSupported = !!(window.getSelection && document.queryCommandSupported('copy'));
-
     Object.defineProperty(window, 'reloadBlocksOfCode', {
         configurable: false,
         writable: false,
-        value: (commentsToHighlight) => {
+        value: (postsToHighlight, ignoreAddingInteractiveBar) => {
             if (typeof SyntaxHighlighter === 'object' && SyntaxHighlighter && typeof SyntaxHighlighter.highlight === 'function') {
-                const codeBlocks = [...commentsToHighlight.querySelectorAll('pre')];
-                const processedCodeBlocks = codeBlocks.map(codeBlock => {
+                const codeBlocks = [...postsToHighlight.querySelectorAll('pre')];
+
+                window.scanUnprocessedCodeBlocks(null, postsToHighlight);
+
+                const processedCodeBlocks = codeBlocks.map((codeBlock) => {
                     /*
                      * SyntaxHighlighter restructures processed element DOM, thus it loses it's parent.
                      * Temporary caching is needed to retrieve processed element within parent context afterwards.
                      */
                     const origCodeBlockParent = codeBlock.parentNode;
                     SyntaxHighlighter.highlight(null, codeBlock);
-                    const processedCodeBlock = origCodeBlockParent.querySelector('.syntaxhighlighter');
+                    const processedCodeBlock = [...origCodeBlockParent.querySelectorAll('.syntaxhighlighter')].pop();
 
                     return processedCodeBlock;
                 });
-                handleCodeCollapsing(false, isClipboardSupported, processedCodeBlocks);
+
+                if (!ignoreAddingInteractiveBar) {
+                    window.addInteractiveBarToCodeBlocks(false, processedCodeBlocks);
+                }
             } else {
                 console.error('Cannot reload blocks of code, because SyntaxHighlighter is not available!');
             }
         }
     });
-
-    /*
-     *    Feature: copy code from code-block to clipboard on button click - then user can paste it wherever he wants into
-     */
-    function copyToClipboard(ev)
-    {
-        // prevent page refresh (or something weird) as default button action
-        ev.preventDefault();
-        if ( !ev.defaultPrevented ) { return false; }
-
-        var code = [];
-        var t = ev.target;
-        var blockOfCodeBar = t.parentNode.parentNode;
-
-        // get block of code content - practically all lines of code inside
-        Array.from(blockOfCodeBar.querySelector('.code .container').children).forEach(function(lineOfCode)
-        {
-            code.push(lineOfCode.textContent);
-        });
-
-        /*
-         * In order to be able to copy the code inside block into the clipboard - so user can easily paste it wherever he wants - within single button click
-         * a code must be first selected (or highlighted in human meaning), so JavaScript can copy it.
-         * However selecting is only possible on HTML elements that are 'inputs', such as <textarea>.
-         * That's why below code creates <textarea> (which has 'display: none'; in CSS) and inserts there code content from block,
-         * copy it to clipboard and removes it (so user can't really see temporary <textarea> element appears) after whole process.
-         */
-        var textArea = document.createElement("textarea");
-        textArea.classList.add('content-copy');
-
-        code.forEach(function(singleLineOfCode)
-        {
-            textArea.value += singleLineOfCode + '\r\n';
-        });
-
-        document.body.appendChild(textArea);
-
-        // if anything on the page is selected (a.k.a highlighted) - clear the selection
-        if (window.getSelection().rangeCount)
-            window.getSelection().removeAllRanges();
-
-        /*
-         * Below code will select given DOM elements
-         * and create Range Object, so that text content can be selected (a.k.a highlighted)
-         * Modified script from source: http://stackoverflow.com/a/1173319/4983840
-         */
-        var range = document.createRange();
-        range.selectNode( textArea );
-        window.getSelection().addRange(range);
-
-        // copy content that is select inside Document - so that is only textarea
-        document.execCommand('copy');
-
-        // remove <textarea> from DOM
-        document.body.removeChild(textArea);
-    }
-
-
-    /*
-     * Feature: Collapsable blocks of code
-     * Date: 05.07.2016r.
-     */
-    function handleCodeCollapsing(insidePreview, addCopyBtn, chosenCodeBlocks) {
-        // Set number of lines when block of code should be able to collapse (so it's considered as being too long)
-        const numberOfLines = 30;
-
-        // languages got from Forum site DOM
-        const languages = {};
-        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
-
-        let codeBlocks = [];
-
-        if (!chosenCodeBlocks || !chosenCodeBlocks.length) {
-            const blocksSelector = insidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
-            codeBlocks = document.querySelectorAll(blocksSelector);
-
-            // when 'codeBlocks' are still unavailable - it probably is happening on /ask page (with preview modal displayed). Then check for <pre> tags
-            if (!codeBlocks.length) {
-                codeBlocks = document.querySelectorAll('pre[class*="brush:"]');
-            }
-        } else {
-            codeBlocks = chosenCodeBlocks;
-        }
-
-        codeBlocks.forEach((codeBlock) => {
-            const codeBlockPrevElemSibling = codeBlock.previousElementSibling;
-
-            if (!codeBlockPrevElemSibling || !codeBlockPrevElemSibling.classList.contains('syntaxhighlighter-block-bar')) {
-                processBlock(codeBlock);
-            }
-        });
-
-        function processBlock(codeBlock) {
-            const blockBar = document.createElement('div');
-            const blockButton = document.createElement('button');
-            const languageName = document.createElement('div');
-            const copyCodeBtn = document.createElement('button');
-
-            blockBar.classList.add('syntaxhighlighter-block-bar');
-            languageName.classList.add('syntaxhighlighter-language');
-
-            // Check number of lines of code inside block and compare it with maximum set accepted number - collapse block when it's greater than max.
-            const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= numberOfLines;
-            const isLongCodeAtAsk = (codeBlock.innerHTML.indexOf('\n') > -1 && codeBlock.innerHTML.match(/\n/g).length + 1 >= numberOfLines);
-
-            if (isLongCodeAtReply || isLongCodeAtAsk) {
-                blockButton.classList.add('syntaxhighlighter-button');
-                blockButton.textContent = '-- Rozwiń --';
-
-                codeBlock.classList.add('collapsed-block');
-
-                blockButton.addEventListener('click', onBlockButtonClick);
-                blockBar.appendChild(blockButton);
-
-                function onBlockButtonClick(ev) {
-                    ev.preventDefault();
-
-                    /*
-                    * when block-code is collapsed or not - write info on button and add/remove CSS class
-                    * to notify user the state of code-block
-                    */
-                    if (codeBlock.classList.contains('collapsed-block')) {
-                        codeBlock.classList.remove('collapsed-block');
-                        blockButton.textContent = '-- Zwiń --';
-                    } else {
-                        codeBlock.classList.add('collapsed-block');
-                        blockButton.textContent = '-- Rozwiń --';
-                    }
-                }
-            }
-
-            // based on each code-block CSS class - find out what language is used inside it
-            const languageExplicitName = languages[codeBlock.classList[1]];
-            const languageImplicitName = languages[codeBlock.classList[0].slice(codeBlock.classList[0].indexOf(':') + 1, -1)];
-            languageName.textContent = languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
-
-            blockBar.appendChild(languageName);
-
-            copyCodeBtn.setAttribute('type', 'button');
-            copyCodeBtn.textContent = 'Kopiuj';
-            copyCodeBtn.classList.add('content-copy-btn');
-
-            if (addCopyBtn && window.hasOwnProperty('SyntaxHighlighter')) {
-                copyCodeBtn.addEventListener('click', copyToClipboard);
-            } else {
-                copyCodeBtn.classList.add('content-copy-btn-disabled');
-            }
-
-            blockBar.appendChild(copyCodeBtn);
-
-            codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
-            codeBlock.parentNode.insertBefore(blockBar, codeBlock);
-        }
-    }
 
     /*
      * Feature: Post content preview as Modal
@@ -431,16 +281,8 @@ function qa_ajax_error()
         const modalParent = document.querySelector('.qa-main-wrapper');
         modalParent.appendChild(modal);
 
-        if (window.hasOwnProperty('SyntaxHighlighter'))
-        {
-            SyntaxHighlighter.highlight();
-        }
-
-        /*
-         * prepare blocks of code inside Preview to be collapsed/expanded
-         * "true" parameter lets to display collapsing blocks inside Preview Modal
-         */
-        handleCodeCollapsing(true, isClipboardSupported);
+        window.reloadBlocksOfCode(modalContent, true);
+        window.addInteractiveBarToCodeBlocks(true);
     }
 
     function createPostPreviewButton(postForm, ckeInstanceName) {
@@ -474,7 +316,7 @@ function qa_ajax_error()
 			 * 1st argument notifies function that the page is not /ask.html - so different blocks of code collapsing method will be used
 			 * 2nd parameter notifies function if it can "turn on" Copy To Clipboard function - so user can copy code inside block within button click
 			 */
-            handleCodeCollapsing(false, isClipboardSupported);
+            window.addInteractiveBarToCodeBlocks(false);
         }
 
         if (questionId || newQuestion) {
@@ -567,7 +409,7 @@ function qa_ajax_error()
 
         const submitSnippet = document.createElement('input');
         submitSnippet.type = 'submit';
-        submitSnippet.value = 'CODEPEN';
+        submitSnippet.value = 'CodePen';
 
         codepenSnippetForm.append(dataCarrierInput, submitSnippet);
 
@@ -598,7 +440,7 @@ function qa_ajax_error()
 
         const submitSnippet = document.createElement('input');
         submitSnippet.type = 'submit';
-        submitSnippet.value = 'JSFIDDLE';
+        submitSnippet.value = 'JSFiddle';
 
         jsfiddleSnippetForm.append(htmlTxt, cssTxt, jsTxt, submitSnippet);
 
@@ -845,3 +687,248 @@ function qa_ajax_error()
         }
     } );
 } () );
+
+// Feature: interactive code block bar
+;(() => {
+    'use strict';
+
+    const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 30;
+    const languages = {};
+
+    document.addEventListener('DOMContentLoaded', prepareLanguages);
+    Object.defineProperty(window, 'addInteractiveBarToCodeBlocks', {
+        configurable: false,
+        writable: false,
+        value: addInteractiveBarToCodeBlocks
+    });
+
+    const getCodeBlockBarFeatureItems = initInteractiveFeatures();
+
+    function prepareLanguages() {
+        SyntaxHighlighter.languages.entries.forEach(([name, code]) => languages[code] = name);
+    }
+
+    function addInteractiveBarToCodeBlocks(isInsidePreview, chosenCodeBlocks) {
+        getCodeBlocks(isInsidePreview, chosenCodeBlocks).forEach(decorateCodeBlock);
+
+        function getCodeBlocks(isInsidePreview, chosenCodeBlocks){
+            if (chosenCodeBlocks) {
+                return chosenCodeBlocks;
+            }
+
+            const highlightedCodeBlocksSelector = isInsidePreview ? '.post-preview-parent .syntaxhighlighter' : '.syntaxhighlighter';
+            const highlightedCodeBlocks = document.querySelectorAll(highlightedCodeBlocksSelector);
+
+            if (highlightedCodeBlocks.length) {
+                return highlightedCodeBlocks;
+            }
+
+            const rawCodeBlocks = document.querySelectorAll('pre[class*="brush:"]');
+            return rawCodeBlocks;
+        }
+
+        function decorateCodeBlock(codeBlock) {
+            const codeBlockBar = document.createElement('div');
+            codeBlockBar.classList.add('syntaxhighlighter-block-bar', 'block-bar-transparency');
+            codeBlockBar.append(...getCodeBlockBarFeatureItems(codeBlock));
+
+            if (codeBlockBar.querySelector('.syntaxhighlighter-collapsible-button')) {
+                codeBlockBar.classList.add('is-collapsible');
+            }
+
+            codeBlock.parentNode.classList.add('syntaxhighlighter-parent');
+            codeBlock.parentNode.insertBefore(codeBlockBar, codeBlock);
+
+            requestAnimationFrame(() => codeBlockBar.classList.remove('block-bar-transparency'));
+        }
+    }
+
+    function initInteractiveFeatures() {
+        class CollapsibleCodeBlocks {
+            constructor() {
+                this.collapsedState = 'collapsed-state';
+                this.expandedState = 'expanded-state';
+            }
+
+            prepareCollapsibleAnimationValue(codeBlock) {
+                const codeBlockRawHeight = codeBlock.querySelector('table').clientHeight;
+                codeBlock.style.setProperty('--code-block-raw-height', `${ codeBlockRawHeight }px`);
+            }
+
+            isCodeCollapsible(codeBlock) {
+                const isLongCodeAtReply = codeBlock.querySelectorAll('.line').length >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE;
+                const isLongCodeAtQuestion = (codeBlock.innerHTML.includes('\n') && codeBlock.innerHTML.match(/\n/g).length + 1 >= MIN_LINES_NUMBER_TO_COLLAPSE_CODE);
+
+                return isLongCodeAtReply || isLongCodeAtQuestion;
+            }
+
+            getCodeBlockCollapsingBtn(codeBlock) {
+                if (!this.isCodeCollapsible(codeBlock)) {
+                    return;
+                }
+
+                const codeBlockCollapsibleBtn = document.createElement('button');
+                codeBlockCollapsibleBtn.classList.add('syntaxhighlighter-collapsible-button', this.collapsedState);
+                codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(true);
+                codeBlockCollapsibleBtn.type = 'button';
+                codeBlockCollapsibleBtn.addEventListener('click', () => this.toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn));
+
+                codeBlock.classList.add('collapsed-block');
+
+                this.prepareCollapsibleAnimationValue(codeBlock);
+
+                return codeBlockCollapsibleBtn;
+            }
+
+            getCodeBlockCollapseBtnTxt(isCollapsed) {
+                return isCollapsed ? 'Rozwiń' : 'Zwiń' ;
+            }
+
+            toggleCodeBlockBtnCollapseState(codeBlock, codeBlockCollapsibleBtn) {
+                const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+
+                codeBlockCollapsibleBtn.innerHTML = this.getCodeBlockCollapseBtnTxt(!isCodeBlockCollapsed);
+                codeBlock.classList.toggle('collapsed-block', !isCodeBlockCollapsed);
+
+                if (isCodeBlockCollapsed) {
+                    codeBlockCollapsibleBtn.classList.replace(this.collapsedState, this.expandedState);
+                } else {
+                    codeBlockCollapsibleBtn.classList.replace(this.expandedState, this.collapsedState);
+                }
+            }
+        }
+
+        class LanguageLabel {
+            getLanguageName(codeBlock) {
+                const [zerothClassName, firstClassName] = codeBlock.classList;
+                const languageExplicitName = languages[firstClassName];
+                const languageImplicitName = languages[zerothClassName.slice(zerothClassName.indexOf(':') + 1, -1)];
+
+                return languageExplicitName || languageImplicitName || SyntaxHighlighter.defaults['code-language'].fullName;
+            }
+
+            getLanguageLabel(codeBlock) {
+                const languageNameLabel = document.createElement('div');
+                languageNameLabel.textContent = this.getLanguageName(codeBlock);
+                languageNameLabel.classList.add('syntaxhighlighter-language');
+
+                return languageNameLabel;
+            }
+        }
+
+        class CodeCopy {
+            constructor() {
+                this.NEW_LINE = '\r\n';
+                this.initCopyingMethod();
+            }
+
+            initCopyingMethod() {
+                this.isCopyByQueryCommand =
+                    !!window.getSelection && document.queryCommandSupported('copy');
+                this.isCopyByClipboardAPI = window.navigator.clipboard && window.navigator.clipboard.writeText;
+
+                if (this.isCopyByClipboardAPI) {
+                    this.isCopyingSupported = true;
+                    this.copyToClipboard = this.copyByClipboardAPI;
+                } else if (this.isCopyByQueryCommand) {
+                    this.isCopyingSupported = true;
+                    this.copyToClipboard = this.copyByQueryCommand;
+                } else {
+                    this.isCopyingSupported = false;
+                    this.copyToClipboard = function() {
+                        console.error('Copy to clipboard is not available!');
+                    }
+                }
+            }
+
+            getContentToCopy(target) {
+                const blockOfCodeParent = target.parentNode.parentNode.parentNode;
+                const linesOfCode = [...blockOfCodeParent.querySelector('.code .container').children];
+                const contentToCopy = linesOfCode
+                    .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
+                        return concatenatedCode + singleLineOfCode + this.NEW_LINE;
+                    }, '');
+
+                return contentToCopy;
+            }
+
+            copyByClipboardAPI({ target }) {
+                window.navigator.clipboard
+                    .writeText(this.getContentToCopy(target))
+                    .catch(() => this.tryFallbackToOlderCopyMethod(target));
+            }
+
+            tryFallbackToOlderCopyMethod(target) {
+                if (this.isCopyByQueryCommand) {
+                    this.copyByQueryCommand({ target });
+                } else {
+                    target.classList.add('content-copy-tooltip', 'content-copy-error');
+
+                    setTimeout(() => {
+                        target.classList.remove('content-copy-tooltip', 'content-copy-error');
+                    }, 3000);
+                }
+            }
+
+            copyByQueryCommand({ target }) {
+                const textArea = document.createElement("textarea");
+                textArea.classList.add('content-copy-placeholder');
+                textArea.value = this.getContentToCopy(target);
+
+                const selection = window.getSelection();
+                if (selection.rangeCount) {
+                    selection.removeAllRanges();
+                }
+
+                document.body.appendChild(textArea);
+
+                const range = document.createRange();
+                range.selectNode(textArea);
+                selection.addRange(range);
+
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+
+            addClickListener(copyCodeBtn) {
+                copyCodeBtn.addEventListener('click', this.copyToClipboard.bind(this));
+            }
+
+            getCopyToClipboardBtn() {
+                const copyCodeBtn = document.createElement('button');
+                copyCodeBtn.textContent = 'Kopiuj';
+                copyCodeBtn.classList.add('content-copy-btn');
+                copyCodeBtn.type = 'button';
+
+                if (this.isCopyingSupported) {
+                    this.addClickListener(copyCodeBtn);
+                } else {
+                    copyCodeBtn.classList.add('content-copy-tooltip');
+                    copyCodeBtn.disabled = true;
+                }
+
+                return copyCodeBtn;
+            }
+        }
+
+        const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
+        const languageLabel = new LanguageLabel();
+        const codeCopy = new CodeCopy();
+
+        return function getCodeBlockBarFeatureItems(codeBlock) {
+            return [
+                languageLabel.getLanguageLabel(codeBlock),
+                collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
+                codeCopy.getCopyToClipboardBtn()
+            ].filter(Boolean).map(wrapCodeBlockBarFeatureItem);
+        }
+
+        function wrapCodeBlockBarFeatureItem(item) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('syntaxhighlighter-block-bar-item');
+            wrapper.appendChild(item);
+
+            return wrapper;
+        }
+    }
+})();
