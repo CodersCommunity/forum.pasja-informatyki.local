@@ -1,4 +1,5 @@
 <?php
+
 return [
     'REASON_LIST' => [
         'SPAM lub reklama',

@@ -1,6 +1,7 @@
 <?php
 
-class q2apro_flag_reasons_validation {
+class q2apro_flag_reasons_validation
+{
     private $propsModel = [
         'notice' => '',
         'postId' => -1,
@@ -12,25 +13,29 @@ class q2apro_flag_reasons_validation {
         'reportType' => 'addFlag'
     ];
 
-    protected function wrapFlagReasonError($errorCode) {
+    protected function wrapFlagReasonError($errorCode)
+    {
         return ['processingFlagReasonError' => $errorCode];
     }
 
-    protected function handleReportError($errorCode) {
+    protected function handleReportError($errorCode)
+    {
         $wrappedErrorCode = $this->wrapFlagReasonError($errorCode);
         echo json_encode($wrappedErrorCode);
 
-        $wrappedErrorCode['_reportReasonRequestJSON'] = $this->_reportReasonRequestJSON;
+        $wrappedErrorCode['_reportReasonRequestJSON'] = $this->reportReasonRequestJSON;
         error_log(json_encode($wrappedErrorCode));
     }
 
-    protected function handleReportErrorAndExit($errorCode) {
-        $this->handleReportError(errorCode);
+    protected function handleReportErrorAndExit($errorCode)
+    {
+        $this->handleReportError($errorCode);
         exit();
     }
 
-    protected function isValidJSON() {
-        if (json_last_error() != JSON_ERROR_NONE) {
+    protected function isValidJSON()
+    {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             $this->handleReportError('REQUEST_IS_NOT_VALID_JSON');
             return false;
         }
@@ -38,7 +43,8 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function isDataSet($data) {
+    protected function isDataSet($data)
+    {
         if (empty($data)) {
             $this->handleReportError('EMPTY_REQUEST');
             return false;
@@ -47,7 +53,8 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function isRequestSecureCodeValid($relativeParentPostId, $code) {
+    protected function isRequestSecureCodeValid($relativeParentPostId, $code)
+    {
         $postAction = 'buttons-' . $relativeParentPostId;
 
         if (!qa_check_form_security_code($postAction, $code)) {
@@ -58,7 +65,8 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function isValidData($props) {
+    protected function isValidData($props)
+    {
         $propsKeys = array_keys($props);
         $matchedPropsKeysNum = 0;
         $noticeProp = 'notice';
@@ -72,8 +80,7 @@ class q2apro_flag_reasons_validation {
                 TODO:
                     -   Should validate if specified post (question, answer or comment) is already flagged by the User?
             */
-            if (
-                !$this->isRequestPropMatched($key, $propsKeys) ||
+            if (!$this->isRequestPropMatched($key, $propsKeys) ||
                 !$this->isRequestPropSet($propValue, $key, $noticeProp, $reasonIdValue) ||
                 !$this->hasRequestPropCorrectType($propValue, $this->propsModel[$key]) ||
                 !$this->hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $this->propsModel[$key])
@@ -84,14 +91,17 @@ class q2apro_flag_reasons_validation {
             $matchedPropsKeysNum++;
         }
 
-        if (!$this->isCorrectReasonId($props['reasonId'], $props['notice']) || !$this->isRequestPropsCorrectSize($propsKeys, $matchedPropsKeysNum)) {
+        if (!$this->isCorrectReasonId($props['reasonId'], $props['notice'])
+            || !$this->isRequestPropsCorrectSize($propsKeys, $matchedPropsKeysNum)
+        ) {
             return false;
         }
 
         return true;
     }
 
-    protected function isRequestPropMatched($key, $propsKeys) {
+    protected function isRequestPropMatched($key, $propsKeys)
+    {
         if (!in_array($key, $propsKeys)) {
             $this->handleReportError('UNMATCHED_REQUEST_PROP');
             return false;
@@ -100,21 +110,25 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function isRequestPropSet($propValue, $key, $noticeProp, $reasonIdValue) {
+    protected function isRequestPropSet($propValue, $key, $noticeProp, $reasonIdValue)
+    {
         if ($propValue === null || $propValue === '') {
             if ($key !== $noticeProp) {
                 $this->handleReportError('NO_REASON_CHECKED');
                 return false;
-            } else if ($reasonIdValue === $this->CUSTOM_REPORT_REASON_ID) {
-                $this->handleReportError('CUSTOM_REASON_EMPTY');
-                return false;
+            } else {
+                if ($reasonIdValue === $this->customReportReasonId) {
+                    $this->handleReportError('CUSTOM_REASON_EMPTY');
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
-    protected function hasRequestPropCorrectType($propValue, $propsModelValue) {
+    protected function hasRequestPropCorrectType($propValue, $propsModelValue)
+    {
         if (gettype($propValue) !== gettype($propsModelValue)) {
             $this->handleReportError('INCORRECT_REQUEST_PROP_TYPE');
             return false;
@@ -123,7 +137,8 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $propsModelValue) {
+    protected function hasRequestReportTypeCorrectValue($key, $reportTypeProp, $propValue, $propsModelValue)
+    {
         if ($key === $reportTypeProp && $propValue !== $propsModelValue) {
             $this->handleReportError('INCORRECT_REPORT_TYPE');
             return false;
@@ -132,19 +147,23 @@ class q2apro_flag_reasons_validation {
         return true;
     }
 
-    protected function isCorrectReasonId($reasonId, $noticeValue) {
-        if ($reasonId < 0 || $reasonId > $this->CUSTOM_REPORT_REASON_ID) {
+    protected function isCorrectReasonId($reasonId, $noticeValue)
+    {
+        if ($reasonId < 0 || $reasonId > $this->customReportReasonId) {
             $this->handleReportError('INVALID_REASON_ID');
             return false;
-        } else if ($noticeValue && $reasonId !== $this->CUSTOM_REPORT_REASON_ID) {
-            $this->handleReportError('INAPPROPRIATE_CUSTOM_REASON_USAGE');
-            return false;
+        } else {
+            if ($noticeValue && $reasonId !== $this->customReportReasonId) {
+                $this->handleReportError('INAPPROPRIATE_CUSTOM_REASON_USAGE');
+                return false;
+            }
         }
 
         return true;
     }
 
-    protected function isRequestPropsCorrectSize($propsKeys, $matchedPropsKeysNum) {
+    protected function isRequestPropsCorrectSize($propsKeys, $matchedPropsKeysNum)
+    {
         if (count($propsKeys) !== $matchedPropsKeysNum) {
             $this->handleReportError('REQUEST_NOT_CONTAIN_ALL_PROPS');
             return false;

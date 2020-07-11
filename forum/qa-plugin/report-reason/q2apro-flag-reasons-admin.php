@@ -7,7 +7,7 @@ class q2apro_flagreasons_admin
     public function init_queries($tablesLc)
     {
         $tableName = qa_db_add_table_prefix('flagreasons');
-        $result    = null;
+        $result = null;
 
         if (!in_array($tableName, $tablesLc, true)) {
             require_once QA_INCLUDE_DIR . 'qa-app-users.php';
@@ -23,6 +23,7 @@ class q2apro_flagreasons_admin
                 ENGINE=InnoDB DEFAULT CHARSET=utf8;
             ';
         }
+
         return $result;
     }
 
@@ -33,7 +34,6 @@ class q2apro_flagreasons_admin
 
     public function allow_template($template)
     {
-        return ('admin' !== $template);
+        return 'admin' !== $template;
     }
 }
-

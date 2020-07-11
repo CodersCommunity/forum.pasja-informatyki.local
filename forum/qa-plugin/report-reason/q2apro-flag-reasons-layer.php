@@ -17,17 +17,20 @@ class qa_html_theme_layer extends qa_html_theme_base
             $reportPopupLabels = ['POPUP_LABELS' => qa_lang('q2apro_flagreasons_lang/POPUP_LABELS')];
             $reportErrorCodes = ['ERROR_CODES' => qa_lang('q2apro_flagreasons_lang/ERROR_CODES')];
 
-            $flagReasonsMetadata = json_encode(array_merge($flagReasonNoticeLength, $reportFlagList, $reportPopupLabels, $reportErrorCodes));
+            $flagReasonsMetadata = json_encode(array_merge(
+                $flagReasonNoticeLength,
+                $reportFlagList,
+                $reportPopupLabels,
+                $reportErrorCodes
+            ));
 
-            $this->output(
-            '
+            $this->output('
                 <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/style.css">
                 <script>
                     const FLAG_REASONS_METADATA = Object.freeze(' . $flagReasonsMetadata . ');
                 </script>
                 <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/dist/script.js" defer></script>
-            '
-            );
+            ');
         }
     }
 
@@ -57,9 +60,9 @@ class qa_html_theme_layer extends qa_html_theme_base
 
         if (1 === $flagsCount) {
             $flagsCountText = ' zgłoszenie';
-        } elseif ((1 === $flagsCount%10 && 1 !== $flagsCount) || (4 < $flagsCount%10)) {
+        } elseif ((1 === $flagsCount % 10 && 1 !== $flagsCount) || (4 < $flagsCount % 10)) {
             $flagsCountText = ' zgłoszeń';
-        } elseif (1 < $flagsCount%10 && 5 > $flagsCount%10) {
+        } elseif (1 < $flagsCount % 10 && 5 > $flagsCount % 10) {
             $flagsCountText = ' zgłoszenia';
         }
 
