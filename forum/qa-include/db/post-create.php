@@ -38,7 +38,7 @@
 			$categoryid, $type, $parentid, $userid, $cookieid, $ip, $title, $content, $format, $tagstring, $notify, $name
 		);
 
-		//send_to_websocket_server('add-post');
+		send_to_websocket_server('add-post');
 
 		return qa_db_last_insert_id();
 	}

@@ -53,7 +53,7 @@
 				QA_UPDATE_SELECTED, $lastuserid, $lastip, $selchildid
 			);
 
-		//send_to_websocket_server('update-post');
+		send_to_websocket_server('update-post');
 	}
 
 
@@ -74,7 +74,7 @@
 				$closedbyid, $questionid
 			);
 
-		//send_to_websocket_server('update-post');
+		send_to_websocket_server('update-post');
 	}
 
 
@@ -95,7 +95,7 @@
 			);
 
 
-		//send_to_websocket_server('update-post');
+		send_to_websocket_server('update-post');
 	}
 
 
@@ -135,7 +135,7 @@
 				$title, $content, $format, $tagstring, $name, $notify, $postid
 			);
 
-		//send_to_websocket_server('update-post');
+		send_to_websocket_server('update-post');
 	}
 
 
@@ -167,7 +167,7 @@
 				$categoryid, $postid
 			);
 
-		//send_to_websocket_server('update-post');
+		send_to_websocket_server('update-post');
 	}
 
 
@@ -230,7 +230,7 @@
 			$postid
 		);
 
-		//send_to_websocket_server('delete-post');
+		send_to_websocket_server('delete-post');
 	}
 
 

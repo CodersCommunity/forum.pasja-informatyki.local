@@ -40,7 +40,7 @@
 			$postid, $userid, $vote, $vote
 		);
 
-		//send_to_websocket_server('vote');
+		send_to_websocket_server('vote');
 	}
 
 
