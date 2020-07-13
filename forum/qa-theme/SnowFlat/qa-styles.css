@@ -4615,6 +4615,20 @@ pre[class*="brush:"]
 	/* Used !important to override default SH styles */
 	text-align: center !important;
 	font-weight: bold !important;
+	padding-left: 0 !important;
+	position: absolute !important;
+	left: 50% !important;
+	width: 100% !important;
+
+	transform: translateX(-50%);
+	z-index: 1;
+	white-space: pre;
+}
+
+.syntaxhighlighter caption + ::before {
+	content: '';
+	display: block;
+	height: 33px;
 }
 
 .syntaxhighlighter.collapsed-block,
@@ -4712,7 +4726,7 @@ pre[class*="brush:"]::after
 .syntaxhighlighter-collapsible-button
 {
 	position: relative;
-	width: 55px;
+	width: 65px;
 	height: 20px;
 	display: block;
 	margin: 0 auto;
@@ -4739,7 +4753,7 @@ pre[class*="brush:"]::after
 	background: white;
 
 	--vertical-alignment-value: -0.5px;
-	--horizontal-alignment-value: 5px;
+	--horizontal-alignment-value: 10px;
 }
 
 .syntaxhighlighter-collapsible-button.expanded-state::before,
