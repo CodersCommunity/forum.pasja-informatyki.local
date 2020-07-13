@@ -1,12 +1,13 @@
 window.addEventListener('DOMContentLoaded', function() {
 
 	// Is this the main page?
-	if ($('.qa-template-qa').length === 0) {
+	if ($('.qa-template-qa, .qa-template-activity').length === 0) {
 		return // no
 	}
 
 	// connect to websocket
 	var socket = new WebSocket('ws://localhost:3000')
+	window._socket = socket;
 
 
 	// get question list node
@@ -28,6 +29,10 @@ window.addEventListener('DOMContentLoaded', function() {
 	socket.addEventListener('error', event => {
 		console.error('Socket error: ', event);
 	})
+
+	window.addEventListener('beforeunload', () => {
+		socket.close();
+	});
 
 	console.warn('...listen to socket msgs');
 })
