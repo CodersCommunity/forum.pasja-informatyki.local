@@ -1,11 +1,8 @@
-const URL = '/report-flag';
-const CONTENT_TYPE = 'application/json';
-
 function sendReport(data) {
-	return fetch(URL, {
+	return fetch('/report-flag', {
 		method: 'POST',
 		headers: {
-			'Content-Type': CONTENT_TYPE,
+			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(data),
 	}).then((response) => {

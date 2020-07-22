@@ -4,7 +4,7 @@
   "description": "Plugin purpose is to make descriptive reason of flagged post. Thus it will be more understandable for Administration to consider if certain post violates regulations.",
   "main": "index.js",
   "scripts": {
-    "prettier": "node_modules/.bin/prettier --write index.js src/",
+    "prettier": "node_modules/.bin/prettier --write index.js src/ test/ !test/cjs-src",
     "pretest": "test/prepareTestFiles.js || exit 0",
     "test": "mocha --watch test/spec/*.spec.js",
     "test:prod": "mocha test/spec/*.spec.js",
@@ -23,6 +23,7 @@
     "chai": "^4.2.0",
     "mocha": "^8.0.1",
     "prettier": "^2.0.5",
+    "sinon": "^9.0.2",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }
