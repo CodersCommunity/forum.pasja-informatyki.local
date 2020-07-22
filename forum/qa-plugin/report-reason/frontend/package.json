@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "prettier": "node_modules/.bin/prettier --write index.js src/",
+    "pretest": "test/prepareTestFiles.js || exit 0",
+    "test": "mocha --watch test/spec/*.spec.js",
+    "test:prod": "mocha test/spec/*.spec.js",
     "dev": "node_modules/.bin/webpack --env.development",
-    "prebuild": "npm run prettier",
+    "prebuild": "npm run prettier && npm run test:prod || exit 0",
     "build": "node_modules/.bin/webpack --env.production"
   },
   "keywords": [],
@@ -14,8 +17,11 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
     "@babel/preset-env": "^7.10.2",
     "babel-loader": "^8.1.0",
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1",
     "prettier": "^2.0.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
