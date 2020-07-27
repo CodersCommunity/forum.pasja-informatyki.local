@@ -1,7 +1,7 @@
-import { bootstrapReportReasonPopup, postFlagReasonWrapper } from './src/bootstrap';
+import { bootstrapReportReasonPopup, wrapPostFlagReasons } from './src/bootstrap';
 
 const onClick = bootstrapReportReasonPopup();
-postFlagReasonWrapper();
+wrapPostFlagReasons();
 
 const eventDelegationRoot = document.querySelector('.qa-main');
 eventDelegationRoot.addEventListener(

@@ -30,15 +30,15 @@ const postFlagReasonWrapper = (() => {
 	const WRAPPED_REASON_CLAZZ = 'wrapped-reason';
 	const WRAP_FROM_LENGTH = 50;
 
-	return (runImmediately) => {
+	return function wrapPostFlagReasons(runImmediately) {
 		if (runImmediately) {
-			wrapper();
+			wrap();
 		} else {
-			document.addEventListener('DOMContentLoaded', wrapper);
+			document.addEventListener('DOMContentLoaded', wrap);
 		}
 	};
 
-	function wrapper() {
+	function wrap() {
 		document.querySelectorAll('.qa-item-flag-reason-item--custom').forEach((item) => {
 			if (item.textContent.length > WRAP_FROM_LENGTH) {
 				item.classList.add(WRAPPED_REASON_CLAZZ);
@@ -52,4 +52,4 @@ const postFlagReasonWrapper = (() => {
 	}
 })();
 
-export { bootstrapReportReasonPopup, postFlagReasonWrapper };
+export { bootstrapReportReasonPopup, postFlagReasonWrapper as wrapPostFlagReasons };

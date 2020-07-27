@@ -7,14 +7,21 @@ global.FLAG_REASONS_METADATA = {
 
 const { expect } = require('chai');
 const { JSDOM } = require('jsdom');
-const { bootstrapReportReasonPopup, postFlagReasonWrapper } = require('../cjs-src/bootstrap');
+const { bootstrapReportReasonPopup, wrapPostFlagReasons } = require('../cjs-src/bootstrap');
 
 const { window } = new JSDOM();
 
-global.window = window;
-global.document = window.document;
-
 describe('bootstrap', () => {
+	before(() => {
+		global.window = window;
+		global.document = window.document;
+	});
+
+	after(() => {
+		global.window = null;
+		global.document = null;
+	});
+
 	describe('bootstrapReportReasonPopup()', () => {
 		it('should return bound onClick method with one argument', () => {
 			const boundOnClickMethod = bootstrapReportReasonPopup();
@@ -24,10 +31,10 @@ describe('bootstrap', () => {
 		});
 	});
 
-	describe('postFlagReasonWrapper()', () => {
+	describe('wrapPostFlagReasons()', () => {
 		it('should be a function with one argument', () => {
-			expect(postFlagReasonWrapper).to.be.a('function');
-			expect(postFlagReasonWrapper).to.have.a.property('length').that.equals(1);
+			expect(wrapPostFlagReasons).to.be.a('function');
+			expect(wrapPostFlagReasons).to.have.a.property('length').that.equals(1);
 		});
 
 		describe('in context of DOM manipulation', () => {
@@ -51,7 +58,7 @@ describe('bootstrap', () => {
 			});
 
 			it('should call wrapper function on DOMContentLoaded event when runImmediately argument is falsy/omitted', (done) => {
-				postFlagReasonWrapper();
+				wrapPostFlagReasons();
 
 				expect(flagReasonCustomItem.classList.contains(WRAPPED_REASON_CLAZZ)).to.be.false;
 
@@ -64,7 +71,7 @@ describe('bootstrap', () => {
 			it('should call wrapper function immediately when argument runImmediately is truthy', () => {
 				expect(flagReasonCustomItem.classList.contains(WRAPPED_REASON_CLAZZ)).to.be.false;
 
-				postFlagReasonWrapper(true);
+				wrapPostFlagReasons(true);
 
 				expect(flagReasonCustomItem.classList.contains(WRAPPED_REASON_CLAZZ)).to.be.true;
 			});
