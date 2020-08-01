@@ -14,9 +14,15 @@ const defaultFetchResponse = Object.freeze({
 });
 const { stub } = sinon;
 
-global.fetch = stub();
-
 describe('sendReport()', () => {
+	before(() => {
+		global.fetch = stub();
+	});
+
+	after(() => {
+		global.fetch = null;
+	});
+
 	beforeEach(() => fetch.reset());
 
 	it('should return a promise', () => {

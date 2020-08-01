@@ -9,6 +9,7 @@ const bootstrapReportReasonPopup = () => {
 		getFlagButtonDOM: flagController.getFlagButtonDOM.bind(flagController),
 		formInvalidityListenerAPI: formController.formInvalidityListenerAPI,
 		getFormDOM: formController.getFormDOM.bind(formController),
+		resetForm: formController.resetForm.bind(formController),
 		getPostParentId: flagController.getPostParentId.bind(flagController),
 		swapFlagBtn: flagController.swapFlagBtn.bind(flagController),
 		updateCurrentPostFlags: flagController.updateCurrentPostFlags.bind(flagController),
@@ -28,7 +29,7 @@ const bootstrapReportReasonPopup = () => {
 
 const postFlagReasonWrapper = (() => {
 	const WRAPPED_REASON_CLAZZ = 'wrapped-reason';
-	const WRAP_FROM_LENGTH = 50;
+	const WRAP_FROM_LENGTH = FLAG_REASONS_METADATA.CONFIG.WRAP_CUSTOM_FLAG_REASON_CONTENT_FROM_LENGTH;
 
 	return function wrapPostFlagReasons(runImmediately) {
 		if (runImmediately) {

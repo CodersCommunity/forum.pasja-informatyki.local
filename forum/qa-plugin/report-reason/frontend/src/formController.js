@@ -104,14 +104,16 @@ class FormController {
 	}
 
 	getListItemsHTML({ reasonKey, reasonValue, index, isLast, textAreaDOM }) {
+		const paddedReasonKey = `reportReason-${reasonKey}`;
+
 		return `
 			<li>
-				<input id="${reasonKey}" 
+				<input id="${paddedReasonKey}" 
 						type="radio" 
 						value="${index}" 
 						name="reportReason"
 						required>
-				<label for="${reasonKey}">${reasonValue}</label>
+				<label for="${paddedReasonKey}">${reasonValue}</label>
 				${isLast ? textAreaDOM : ''}
 			</li>`;
 	}
@@ -137,6 +139,13 @@ class FormController {
 
 	getFormDOM() {
 		return this.formDOM;
+	}
+
+	resetForm() {
+		this.formDOM.reset();
+		this.formDOM.elements.customReportReason.required = false;
+		this.formDOM.elements.cancelReportReason.disabled = false;
+		this.formDOM.elements.sendReportReason.disabled = false;
 	}
 
 	getReportReasonValidationErrorDOM() {

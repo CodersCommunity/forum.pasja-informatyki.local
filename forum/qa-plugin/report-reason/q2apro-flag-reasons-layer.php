@@ -14,12 +14,14 @@ class qa_html_theme_layer extends qa_html_theme_base
 
             $flagReasonNoticeLength = ['NOTICE_LENGTH' => q2apro_flagreasons_admin::NOTICE_LENGTH];
             $reportFlagList = ['REASON_LIST' => qa_lang('q2apro_flagreasons_lang/REASON_LIST')];
+            $reportConfig = ['CONFIG' => qa_lang('q2apro_flagreasons_lang/CONFIG')];
             $reportPopupLabels = ['POPUP_LABELS' => qa_lang('q2apro_flagreasons_lang/POPUP_LABELS')];
             $reportErrorCodes = ['ERROR_CODES' => qa_lang('q2apro_flagreasons_lang/ERROR_CODES')];
 
             $flagReasonsMetadata = json_encode(array_merge(
                 $flagReasonNoticeLength,
                 $reportFlagList,
+                $reportConfig,
                 $reportPopupLabels,
                 $reportErrorCodes
             ));

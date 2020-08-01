@@ -7,6 +7,7 @@ class PopupController {
 		getFlagButtonDOM,
 		formInvalidityListenerAPI,
 		getFormDOM,
+		resetForm,
 		getPostParentId,
 		swapFlagBtn,
 		updateCurrentPostFlags,
@@ -16,6 +17,7 @@ class PopupController {
 		this.getFlagButtonDOM = getFlagButtonDOM;
 		this.formInvalidityListenerAPI = formInvalidityListenerAPI;
 		this.getFormDOM = getFormDOM;
+		this.resetForm = resetForm;
 		this.getPostParentId = getPostParentId;
 		this.swapFlagBtn = swapFlagBtn;
 		this.updateCurrentPostFlags = updateCurrentPostFlags;
@@ -93,7 +95,7 @@ class PopupController {
 		this.formInvalidityListenerAPI.attach();
 		this.reportReasonPopupDOMWrapper.classList.remove('display-none');
 		this.reportReasonPopupDOMReferences.reportReasonPopup.classList.remove('display-none');
-		this.getFormDOM().elements.reportReason[0].focus();
+		this.getFormDOM().elements.namedItem('reportReason-0').focus();
 		document.body.classList.add('disable-scroll');
 	}
 
@@ -106,12 +108,7 @@ class PopupController {
 		this.getReportReasonValidationErrorDOM().classList.remove('display-block');
 		document.body.classList.remove('disable-scroll');
 
-		const formDOM = this.getFormDOM();
-		formDOM.reset();
-		formDOM.elements.customReportReason.required = false;
-		formDOM.elements.cancelReportReason.disabled = false;
-		formDOM.elements.sendReportReason.disabled = false;
-
+		this.resetForm();
 		this.resetCustomReportReasonCharCounter();
 		this.getReportReasonValidationErrorDOM().innerHTML = ERROR_CODES.GENERIC_ERROR;
 	}

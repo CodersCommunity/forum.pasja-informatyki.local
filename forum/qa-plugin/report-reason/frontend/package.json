@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "prettier": "node_modules/.bin/prettier --write index.js src/ test/",
+
     "pretest": "node test/prepareTestFiles.js || exit 0",
+    "pretest:prod": "npm run pretest",
     "test": "mocha --watch test/spec/*.spec.js",
     "test:debug": "mocha --inspect-brk test/spec/*.spec.js",
     "test:prod": "mocha test/spec/*.spec.js",
+
     "dev": "node_modules/.bin/webpack --env.development",
     "prebuild": "npm run prettier && npm run test:prod || exit 0",
     "build": "node_modules/.bin/webpack --env.production"

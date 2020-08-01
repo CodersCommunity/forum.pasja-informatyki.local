@@ -1,7 +1,12 @@
 global.FLAG_REASONS_METADATA = {
 	REASON_LIST: ['test'],
+	CONFIG: {
+		WRAP_CUSTOM_FLAG_REASON_CONTENT_FROM_LENGTH: 5,
+	},
 	NOTICE_LENGTH: -1,
-	ERROR_CODES: {},
+	ERROR_CODES: {
+		GENERIC_ERROR: '<strong>test</strong>',
+	},
 	POPUP_LABELS: {},
 };
 
@@ -43,7 +48,9 @@ describe('bootstrap', () => {
 
 			beforeEach(() => {
 				flagReasonCustomItem = document.createElement('div');
-				flagReasonCustomItem.textContent = 'x'.repeat(51 /* value higher than WRAP_FROM_LENGTH constant */);
+				flagReasonCustomItem.textContent = 'x'.repeat(
+					global.FLAG_REASONS_METADATA.CONFIG.WRAP_CUSTOM_FLAG_REASON_CONTENT_FROM_LENGTH + 1
+				);
 				flagReasonCustomItem.classList.add('qa-item-flag-reason-item--custom');
 				document.body.appendChild(flagReasonCustomItem);
 			});

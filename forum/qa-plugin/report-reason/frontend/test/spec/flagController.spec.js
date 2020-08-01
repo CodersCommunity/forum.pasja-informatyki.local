@@ -2,13 +2,11 @@ const { default: FlagController } = require('../cjs-src/flagController');
 const { spy } = require('sinon');
 const { expect } = require('chai');
 const { JSDOM } = require('jsdom');
-
 const { window } = new JSDOM();
-const { document } = window;
 
 describe('FlagController', () => {
 	before(() => {
-		global.document = document;
+		global.document = window.document;
 	});
 
 	after(() => {

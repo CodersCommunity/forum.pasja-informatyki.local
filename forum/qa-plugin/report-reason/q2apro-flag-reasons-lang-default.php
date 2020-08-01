@@ -10,6 +10,9 @@ return [
         'Duplikat pytania',
         'Inny (własny)',
     ],
+    'CONFIG' => [
+        'WRAP_CUSTOM_FLAG_REASON_CONTENT_FROM_LENGTH' => 50,
+    ],
     'POPUP_LABELS' => [
         'HEADER' => 'Zaznacz powód zgłoszenia lub podaj własny:',
         'CHAR_COUNTER_INFO' => 'pozostało znaków: ',
