@@ -108,13 +108,16 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation
             return $questionFlagError;
         }
 
+        if ($this->isPostHidden($question)) {
+            $this->handleReportErrorAndExit('POST_HIDDEN');
+        }
+
         if (qa_flag_set_tohide($question, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
 //            $answers = qa_page_q_load_as($question, $childPosts);
             qa_question_set_hidden($question, true, null, null, null, $answers, $commentsFollows, $closePost);
         }
 
         $pageError = [];
-        // TODO: validate special cases
         if (qa_page_q_single_click_q($question, $answers, $commentsFollows, $closePost, $pageError)) {
             $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
         }
@@ -144,6 +147,10 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation
             return $answerFlagError;
         }
 
+        if ($this->isPostHidden($answer) || $this->isPostHidden($question)) {
+            $this->handleReportErrorAndExit('POST_HIDDEN');
+        }
+
         if (qa_flag_set_tohide($answer, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $question)) {
             qa_answer_set_hidden($answer, true, null, null, null, $question, $commentsFollows);
         }
@@ -151,7 +158,6 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation
         $answers = qa_post_get_question_answers($questionId);
         $pageError = [];
 
-        // TODO: validate special cases
         if (qa_page_q_single_click_a($answer, $question, $answers, $commentsFollows, true, $pageError)) {
             $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
         }
@@ -179,13 +185,16 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation
             return $commentFlagError;
         }
 
+        if ($this->isPostHidden($comment) || $this->isPostHidden($question) || $this->isPostHidden($parent)) {
+            $this->handleReportErrorAndExit('POST_HIDDEN');
+        }
+
         if (qa_flag_set_tohide($comment, $userId, qa_userid_to_handle($userId), qa_cookie_get(), $comment)) {
             qa_comment_set_hidden($comment, true, null, null, null, $question, $parent);
         }
 
         $pageError = [];
 
-        // TODO: validate special cases
         if (qa_page_q_single_click_c($comment, $question, $parent, $pageError)) {
             $this->handleReportErrorAndExit('PAGE_NEEDS_RELOAD');
         }
@@ -210,6 +219,10 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation
             !$this->isValidData($flagData)
         ) {
             exit();
+        }
+
+        if ($this->isAlreadyFlaggedByLogged($flagData['postId'])) {
+            $this->handleReportErrorAndExit('ALREADY_FLAGGED');
         }
 
         return $flagData;

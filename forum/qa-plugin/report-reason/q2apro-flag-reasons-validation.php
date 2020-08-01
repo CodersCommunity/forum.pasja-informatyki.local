@@ -76,10 +76,6 @@ class q2apro_flag_reasons_validation
         foreach ($this->propsModel as $key => $value) {
             $propValue = $props[$key] ?? null;
 
-            /*
-                TODO:
-                    -   Should validate if specified post (question, answer or comment) is already flagged by the User?
-            */
             if (!$this->isRequestPropMatched($key, $propsKeys) ||
                 !$this->isRequestPropSet($propValue, $key, $noticeProp, $reasonIdValue) ||
                 !$this->hasRequestPropCorrectType($propValue, $this->propsModel[$key]) ||
@@ -170,5 +166,22 @@ class q2apro_flag_reasons_validation
         }
 
         return true;
+    }
+
+    protected function isAlreadyFlaggedByLogged($postId)
+    {
+        $userId = qa_get_logged_in_userid();
+        $postsCount = qa_db_read_one_value(qa_db_query_sub(
+            'SELECT COUNT(userid) FROM `^flagreasons` WHERE userid=# AND postid=#',
+            $userId,
+            $postId
+        ));
+
+        return $postsCount > 0;
+    }
+
+    protected function isPostHidden($post)
+    {
+        return strpos($post['type'], 'HIDDEN') !== false;
     }
 }
