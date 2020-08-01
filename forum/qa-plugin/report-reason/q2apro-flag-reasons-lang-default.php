@@ -38,7 +38,7 @@ return [
         'REPORTED_ANSWER_NOT_FOUND' => 'Nie znaleziono odpowiedzi, do której odnosi się zgłoszenie.',
         'REPORTED_COMMENT_NOT_FOUND' => 'Nie znaleziono komentarza, do którego odnosi się zgłoszenie.',
         'PAGE_NEEDS_RELOAD' => 'Zgłoszenie posta nie powiodło się.<br>Strona wymaga odświeżenia.',
-        'POST_HIDDEN' => 'Nie można zgłosić wybranego posta, ponieważ został ukryty.',
+        'POST_HIDDEN' => 'Nie można zgłosić tej treści.',
         'ALREADY_FLAGGED' => 'Ten post został już przez Ciebie zgłoszony.'
     ]
 ];
