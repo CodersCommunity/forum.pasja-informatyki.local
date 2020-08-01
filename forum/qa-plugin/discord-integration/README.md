@@ -10,7 +10,7 @@ Clone or download this repository to *qa-plugin* directory in your Q2A.
  
 ## Configuration
 
-Prepare your Discord application. You might create it in [Discord Developer Portal](https://discordapp.com/developers/applications/).
+Prepare your Discord application. You might create it in [Discord Developer Portal](https://discord.com/developers/applications/).
 
 Go to admin panel and `Plugins` tab (*/admin/plugins*). Next, search *Discord integration* and click *settings* link next to the plugin description.
 
