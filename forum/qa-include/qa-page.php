@@ -373,17 +373,20 @@
 
 		$script[] = '</script>';
 
-		if (isset($qa_content['script_rel'])) {
-			$uniquerel = array_unique($qa_content['script_rel']); // remove any duplicates
-			foreach ($uniquerel as $script_rel)
-				$script[] = '<script src="'.qa_html(qa_path_to_root().$script_rel).'"></script>';
-		}
+        if (isset($qa_content['script_rel'])) {
+            $uniquerel = array_unique($qa_content['script_rel']); // remove any duplicates
+            foreach ($uniquerel as $script_rel) {
+                $path = qa_html(qa_path_to_root() . $script_rel) . '?v=' . QA_RESOURCE_VERSION;
+                $script[] = '<script src="' . $path . '"></script>';
+            }
+        }
 
-		if (isset($qa_content['script_src'])) {
-			$uniquesrc = array_unique($qa_content['script_src']); // remove any duplicates
-			foreach ($uniquesrc as $script_src)
-				$script[] = '<script src="'.qa_html($script_src).'"></script>';
-		}
+        if (isset($qa_content['script_src'])) {
+        $uniquesrc = array_unique($qa_content['script_src']); // remove any duplicates
+            foreach ($uniquesrc as $script_src) {
+                $script[] = '<script src="' . qa_html($script_src) . '?v=' . QA_RESOURCE_VERSION .'"></script>';
+            }
+        }
 
 		$qa_content['script'] = $script;
 
@@ -798,7 +801,7 @@
 		}
 
 		$qa_content['script_rel']=array('qa-content/jquery-1.11.3.min.js');
-		$qa_content['script_rel'][]='qa-content/qa-page.js?'.QA_VERSION;
+		$qa_content['script_rel'][]='qa-content/qa-page.js';
 
 		if ($voting)
 			$qa_content['error']=@$qa_page_error_html;

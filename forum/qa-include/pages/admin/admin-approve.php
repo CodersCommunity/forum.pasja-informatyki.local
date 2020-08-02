@@ -129,7 +129,7 @@
 
 
 	$qa_content['navigation']['sub']=qa_admin_sub_navigation();
-	$qa_content['script_rel'][]='qa-content/qa-admin.js?'.QA_VERSION;
+	$qa_content['script_rel'][]='qa-content/qa-admin.js';
 
 
 	return $qa_content;

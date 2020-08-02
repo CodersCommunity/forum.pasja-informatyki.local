@@ -34,6 +34,7 @@ define('SENTRY_ENVIRONMENT', 'local');
 
 define('QA_COOKIE_HTTPONLY', true);
 define('QA_COOKIE_SECURE', false);
+define('QA_RESOURCE_VERSION', null);
 
 /*
     Set QA_EXTERNAL_USERS to true to use your user identification code in qa-external/qa-external-users.php

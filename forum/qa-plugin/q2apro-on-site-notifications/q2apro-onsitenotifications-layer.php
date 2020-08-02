@@ -31,8 +31,8 @@
 				$this->output('<script type="text/javascript">
 						var eventnotifyAjaxURL = "'.qa_path('eventnotify').'";
 					</script>');
-				$this->output('<script type="text/javascript" src="'.QA_HTML_THEME_LAYER_URLTOROOT.'script.js"></script>');
-				$this->output('<link rel="stylesheet" type="text/css" href="'.QA_HTML_THEME_LAYER_URLTOROOT.'styles.css">');
+                $this->output('<script type="text/javascript" src="'.QA_HTML_THEME_LAYER_URLTOROOT.'script.js?v=' . QA_RESOURCE_VERSION . '"></script>');
+                $this->output('<link rel="stylesheet" type="text/css" href="'.QA_HTML_THEME_LAYER_URLTOROOT.'styles.css?v=' . QA_RESOURCE_VERSION . '">');
 
 				// hack for snow flat theme (q2a v1.7) to show the notification icon outside the user's drop down
 				if(qa_opt('site_theme')=='SnowFlat') {

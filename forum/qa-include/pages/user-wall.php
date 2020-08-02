@@ -102,7 +102,7 @@
 	$qa_content['title'] = qa_lang_html_sub('profile/wall_for_x', $userhtml);
 	$qa_content['error'] = @$errors['page'];
 
-	$qa_content['script_rel'][] = 'qa-content/qa-user.js?'.QA_VERSION;
+	$qa_content['script_rel'][] = 'qa-content/qa-user.js';
 
 	$qa_content['message_list'] = array(
 		'tags' => 'id="wallmessages"',

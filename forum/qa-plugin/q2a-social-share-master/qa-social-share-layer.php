@@ -44,11 +44,11 @@
                 $ogp = new OpenGraphProtocol();
                 $ogp->setLocale( $locale );
                 $ogp->setSiteName( qa_opt( 'site_title' ) );
-                
+
                 if ( isset($this->content['title']) ) {
                     $ogp->setTitle( strip_tags( $this->content['title'] ) );
                 }
-                
+
                 $ogp->setDescription( strip_tags( $description ) );
                 $ogp->setType( 'website' );
                 $ogp->setURL( qa_path_absolute( qa_request() ) );
@@ -61,7 +61,7 @@
                     $profile->setUsername( $username );
 
                     $ogp_html_arr = explode( PHP_EOL, $profile->toHTML() );
-                    
+
                     if(count($ogp_html_arr)) {
                         foreach ($ogp_html_arr as $key => $ogp_html) {
                             $this->output_raw( $ogp_html );
@@ -84,13 +84,13 @@
                 }
 
                 $ogp_html_arr = explode( PHP_EOL, $ogp->toHTML() );
-                
+
                 if(count($ogp_html_arr)) {
                     foreach ($ogp_html_arr as $key => $ogp_html) {
                         $this->output_raw( $ogp_html );
                     }
                 }
-                
+
                 $facebook_app_id = qa_opt( qa_sss_opt::FACEBOOK_APP_ID );
 
                 if ( !empty( $facebook_app_id ) ) {
@@ -100,7 +100,7 @@
                 $twitter_username = trim( qa_opt( qa_sss_opt::TWITTER_HANDLE ) );
 
                 if ( !empty( $twitter_username ) ) {
-                    
+
                     if ( strpos( $twitter_username, '@' ) !== 0 )
                         $twitter_username = '@' . $twitter_username;
 
@@ -116,8 +116,8 @@
         {
             parent::head_css();
 
-            //$this->output( '<link rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/icons.css?'.SOCIAL_SHARE_PLUGIN_VERSION.'">' );
-            $this->output( '<link rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/social-share.css?'.SOCIAL_SHARE_PLUGIN_VERSION.'">' );
+            //$this->output( '<link rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/icons.css?v=' . QA_RESOURCE_VERSION . '">' );
+            $this->output( '<link rel="stylesheet" href="' . qa_path_to_root() . 'qa-plugin/' . SOCIAL_SHARE_PLUGIN_DIR_NAME . '/css/social-share.css?v=' . QA_RESOURCE_VERSION . '">' );
 
             $style_open = '<style type="text/css">';
             $style_close = '</style>';
@@ -161,7 +161,7 @@
                 $social_share->generateShareButtons();
                 $this->output( '</div>' );
             }
-            
+
             parent::q_view_buttons( $q_view );
         }
 

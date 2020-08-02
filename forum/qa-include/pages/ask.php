@@ -212,7 +212,7 @@
 		unset($qa_content['form']['fields']['custom']);
 
 	if (qa_opt('do_ask_check_qs') || qa_opt('do_example_tags')) {
-		$qa_content['script_rel'][]='qa-content/qa-ask.js?'.QA_VERSION;
+		$qa_content['script_rel'][]='qa-content/qa-ask.js';
 		$qa_content['form']['fields']['title']['tags'].=' onchange="qa_title_change(this.value);"';
 
 		if (strlen(@$in['title']))
@@ -281,7 +281,7 @@
 	$qa_content['focusid']='title';
 
 	$qa_content['script_rel'][] = 'qa-content/qa-forms-protection.js';
-	
+
 	return $qa_content;
 
 

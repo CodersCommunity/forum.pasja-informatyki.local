@@ -1547,7 +1547,7 @@
 	{
 		$template='<a href="#" class="qa-tag-link" onclick="return qa_tag_click(this);">^</a>';
 
-		$qa_content['script_rel'][]='qa-content/qa-ask.js?'.QA_VERSION;
+		$qa_content['script_rel'][]='qa-content/qa-ask.js';
 		$qa_content['script_var']['qa_tag_template']=$template;
 		$qa_content['script_var']['qa_tag_onlycomma']=(int)qa_opt('tag_separator_comma');
 		$qa_content['script_var']['qa_tags_examples']=qa_html(implode(',', $exampletags));
@@ -1610,7 +1610,7 @@
 		else
 			$maxdepth = QA_CATEGORY_DEPTH;
 
-		$qa_content['script_rel'][] = 'qa-content/qa-ask.js?' . QA_VERSION;
+		$qa_content['script_rel'][] = 'qa-content/qa-ask.js';
 		$qa_content['script_onloads'][] = sprintf('qa_category_select(%s, %s);', qa_js($fieldname), qa_js($startpath));
 
 		$qa_content['script_var']['qa_cat_exclude'] = $excludecategoryid;

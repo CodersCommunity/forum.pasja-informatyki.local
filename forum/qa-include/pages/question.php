@@ -183,7 +183,7 @@
 		$qa_content['favorite']=qa_favorite_form(QA_ENTITY_QUESTION, $questionid, $favorite,
 			qa_lang($favorite ? 'question/remove_q_favorites' : 'question/add_q_favorites'));
 
-	$qa_content['script_rel'][]='qa-content/qa-question.js?'.QA_VERSION;
+	$qa_content['script_rel'][]='qa-content/qa-question.js';
 
 	if (isset($pageerror))
 		$qa_content['error']=$pageerror; // might also show voting error set in qa-index.php
