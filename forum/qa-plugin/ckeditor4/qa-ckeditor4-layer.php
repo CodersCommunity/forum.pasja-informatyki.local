@@ -69,4 +69,30 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::main_part($key, $part);
     }
+
+    public function head_css()
+    {
+        $this->content['css_src'][] = '/qa-content/css/shCore.css';
+        $this->content['css_src'][] = '/qa-content/css/shThemeDefault.css';
+
+        qa_html_theme_base::head_css();
+    }
+
+    public function head_script()
+    {
+        $scripts = [
+            'shCore', 'shLegacy', 'shBrushBash', 'shBrushCpp', 'shBrushCSharp', 'shBrushCss', 'shBrushDelphi',
+            'shBrushJava', 'shBrushJScript', 'shBrushPerl', 'shBrushPhp', 'shBrushPlain', 'shBrushPowerShell',
+            'shBrushPython', 'shBrushRuby', 'shBrushSql', 'shBrushVb', 'shBrushXml'
+        ];
+        foreach ($scripts as $script) {
+            $path = "/qa-content/javascript/{$script}.js?v=" . QA_RESOURCE_VERSION;
+            $this->content['script'][] = '<script src="' . $path . '"></script>';
+        }
+
+        $path = QA_HTML_THEME_LAYER_URLTOROOT . 'plugins/syntaxhighlight/init.js?v=' . QA_RESOURCE_VERSION;
+        $this->content['script'][] = '<script src="' . $path . '"></script>';
+
+        qa_html_theme_base::head_script();
+    }
 }

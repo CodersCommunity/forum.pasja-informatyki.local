@@ -800,8 +800,11 @@
 					$qa_content['notices'][]=qa_notice_form('welcome', qa_opt('notice_welcome'));
 		}
 
-		$qa_content['script_rel']=array('qa-content/jquery-1.11.3.min.js');
-		$qa_content['script_rel'][]='qa-content/qa-page.js';
+        $qa_content['script_rel'] = [
+            'qa-content/jquery-1.11.3.min.js',
+            'qa-content/qa-page.js',
+            'qa-content/javascript/imgpre.js'
+        ];
 
 		if ($voting)
 			$qa_content['error']=@$qa_page_error_html;
