@@ -13,10 +13,6 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 
 	function setupWebSocketConnection() {
 		const webSocket = new WebSocket('ws://localhost:3000');
-
-		// TODO: just for tests
-		window._webSocket = webSocket;
-
 		webSocket.addEventListener('open', onOpen);
 		webSocket.addEventListener('message', onMessage);
 		webSocket.addEventListener('error', onError);
@@ -58,15 +54,13 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 		const notifierTargetPlace = document.querySelector('.qa-part-q-list');
 		const NOTIFIER_CLASSES = Object.freeze({
 			BASE: 'qa-custom-new-content-notifier',
-			VISIBLE: 'qa-custom-new-content-notifier--visible'
+			VISIBLE: 'qa-custom-new-content-notifier--visible',
+			ANIMATE: 'qa-custom-new-content-notifier--animate'
 		});
 		const { notifier, notifierCounter } = createNotifierDOM();
 		const disconnectIntersectionObserver = observeNotifierIntersections(notifier);
 
 		let notifierCounterValue = 0;
-
-		////
-		show();
 
 		return { show, hide, disconnectIntersectionObserver };
 
@@ -83,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 			notifierTargetPlace.insertAdjacentElement('beforebegin', notifier);
 
 			const [ , notifierCounter ] = notifier.children;
+			notifierCounter.addEventListener('animationend', () => {
+				notifierCounter.classList.remove(NOTIFIER_CLASSES.ANIMATE);
+			});
 
 			return { notifier, notifierCounter };
 		}
@@ -98,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 		}
 
 		function incrementCounter() {
+			notifierCounter.classList.add(NOTIFIER_CLASSES.ANIMATE);
 			notifierCounter.textContent = ++notifierCounterValue;
 		}
 
@@ -121,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 	}
 
 	function showUpdatedPageContent(updatedContent, notifier) {
-		// TODO: consider wrapping it with requestAnimationFrame function
 		questionList.innerHTML = updatedContent;
 		newContentNotifier.hide();
 
