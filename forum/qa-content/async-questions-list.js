@@ -27,15 +27,12 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 	}
 
 	function onOpen(event) {
-		console.warn('open: ', event);
-
 		webSocket.send(JSON.stringify({ pathname }));
 	}
 
 	function onMessage(event) {
 		// TODO: data variable will be used when WebSocket will eventually send HTML content
 		const data = window.JSON.parse(event.data);
-		console.warn('message: ', data);
 
 		notifyUserAboutNewContent();
 	}
