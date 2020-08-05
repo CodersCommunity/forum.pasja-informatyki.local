@@ -5280,3 +5280,89 @@ form div.qa-q-view-content
 width: 300px;
 padding: 10px;
 }
+
+/* Notification from WebSocket */
+.qa-custom-new-content-notifier,
+.qa-custom-new-content-notifier--visible {
+	transition: opacity 0.2s;
+}
+
+.qa-custom-new-content-notifier {
+	display: block;
+	width: 175px;
+	height: 0;
+	margin: 5px auto;
+	opacity: 0;
+	background: #1abc9c;
+	border-color: transparent;
+	border-radius: 15px;
+	font-size: 16px;
+	color: white;
+
+	--scale-predefined-value: 1.1;
+	--center-relative-to-parent: -205px;
+}
+
+.qa-custom-new-content-notifier output {
+	font-weight: bold;
+}
+
+.qa-custom-new-content-notifier--visible {
+	height: 30px;
+	opacity: 1;
+	transition: height 0.125s, opacity 0.125s 0.125s ease-out;
+	animation: pulse 0.5s 0.25s;
+}
+
+.qa-custom-new-content-notifier--visible.fixed-to-top {
+	position: fixed;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	box-shadow: white 0 0 5px 5px;
+}
+
+.qa-custom-new-content-notifier--visible:hover {
+	animation: none;
+	transform: scale(var(--scale-predefined-value));
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(var(--scale-predefined-value));
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+@media (min-width: 1180px) {
+	.qa-custom-new-content-notifier--visible.fixed-to-top {
+		transform: translateX(var(--center-relative-to-parent));
+	}
+
+	.qa-custom-new-content-notifier--visible.fixed-to-top:hover {
+		transform: translateX(var(--center-relative-to-parent)) scale(var(--scale-predefined-value));
+	}
+
+	@keyframes pulse {
+		0% {
+			transform: translateX(var(--center-relative-to-parent)) scale(1);
+		}
+
+		50% {
+			transform: translateX(var(--center-relative-to-parent)) scale(var(--scale-predefined-value));
+		}
+
+		100% {
+			transform: translateX(var(--center-relative-to-parent)) scale(1);
+		}
+	}
+}
+
+/* End of notification from WebSocket */
