@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
-	const { pathname } = window.location;
-	const isMainOrActivityPage = /^$|\/$|(\/?)activity/.test(pathname);
+	const { pathname, hostname } = window.location;
+	const isMainOrActivityPage = /^$|\/$|^(\/?)activity/.test(pathname);
 
 	if (!isMainOrActivityPage) {
 		return;
@@ -12,14 +12,13 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 	const webSocket = setupWebSocketConnection();
 
 	function setupWebSocketConnection() {
-		const webSocket = new WebSocket('ws://localhost:3000');
+		const webSocket = new WebSocket(`ws://${hostname}:3000`);
 		webSocket.addEventListener('open', onOpen);
 		webSocket.addEventListener('message', onMessage);
+		webSocket.addEventListener('close', onClose);
 		webSocket.addEventListener('error', onError);
 
 		window.addEventListener('beforeunload', () => {
-			console.warn('close webSocket...');
-
 			webSocket.close();
 			newContentNotifier.disconnectIntersectionObserver();
 		});
@@ -34,16 +33,22 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 	}
 
 	function onMessage(event) {
-		const data = window.JSON.parse(event.data)
-		console.warn('data: ', data);
+		// TODO: data variable will be used when WebSocket will eventually send HTML content
+		const data = window.JSON.parse(event.data);
+		console.warn('message: ', data);
 
 		notifyUserAboutNewContent();
 	}
 
-	function onError(event) {
-		console.error('Socket error: ', event);
+	function onClose(event) {
+		if (event.reason) {
+			console.warn(`Closing WebSocket, because of reason: "${event.reason}"`);
+		}
+	}
 
-		// TODO: send error via Ajax to Node, which will send an email to PM
+	function onError(event) {
+		console.error('WebSocket error: ', event);
+		newContentNotifier.disconnectIntersectionObserver();
 	}
 
 	function notifyUserAboutNewContent() {

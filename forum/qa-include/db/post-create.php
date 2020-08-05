@@ -38,7 +38,8 @@
 			$categoryid, $type, $parentid, $userid, $cookieid, $ip, $title, $content, $format, $tagstring, $notify, $name
 		);
 
-		send_to_websocket_server('add-post');
+		$actionName = ($type === 'C_QUEUED' || $type === 'C') ? 'add-comment-post' : 'add-post';
+		send_to_websocket_server($actionName);
 
 		return qa_db_last_insert_id();
 	}
