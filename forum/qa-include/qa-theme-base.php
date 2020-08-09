@@ -290,8 +290,13 @@ class qa_html_theme_base
 	public function head_script()
 	{
 		if (isset($this->content['script'])) {
-			foreach ($this->content['script'] as $scriptline)
+		    $deferredScripts = ['ckeditor.js?'];
+
+			foreach ($this->content['script'] as $scriptline) {
+                $scriptline = $this->tryDeferScript($deferredScripts, $scriptline);
+
 				$this->output_raw($scriptline);
+            }
 		}
 	}
 
@@ -675,6 +680,8 @@ class qa_html_theme_base
 		$this->widgets('main', 'bottom');
 
 		$this->output('</div> <!-- END qa-main -->', '');
+
+		$this->output('<script type="text/javascript" src="/qa-plugin/ckeditor4/plugins/syntaxhighlight/init.js"></script>');
 	}
 
 	public function page_title_error()
@@ -2374,5 +2381,14 @@ class qa_html_theme_base
 		$this->q_title_list($q_list, 'target="_blank"');
 
 		$this->output('</div>');
+	}
+
+	private function tryDeferScript($deferredScripts, $scriptline) {
+        $isDeferredScript = array_reduce($deferredScripts, function($isFound, $scriptFileName) use ($scriptline) {
+            return $isFound || strpos($scriptline, $scriptFileName);
+        }, false);
+        $optionalDeferAttribute = $isDeferredScript ? 'defer': '';
+
+	    return str_replace('src="', $optionalDeferAttribute .' src="', $scriptline);
 	}
 }
