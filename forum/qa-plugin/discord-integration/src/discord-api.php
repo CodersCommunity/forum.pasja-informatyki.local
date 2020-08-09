@@ -2,7 +2,7 @@
 
 class discord_api
 {
-    protected $discord_url = 'https://discordapp.com/api';
+    protected $discord_url = 'https://discord.com/api';
 
     public function get_discord_url()
     {
