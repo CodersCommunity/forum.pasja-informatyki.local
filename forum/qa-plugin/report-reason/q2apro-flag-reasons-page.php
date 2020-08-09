@@ -52,7 +52,7 @@ class q2apro_flag_reasons_page extends q2apro_flag_reasons_validation
         $postType = $flagData['postType'];
         $reasonId = (int) $flagData['reasonId'];
 
-        $notice = empty($flagData['notice']) ? null : trim($flagData['notice']);
+        $notice = empty($flagData['notice']) ? null : htmlspecialchars(trim($flagData['notice']));
         $userId = qa_get_logged_in_userid();
 
         require_once QA_INCLUDE_DIR . 'app/votes.php';
