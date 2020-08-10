@@ -15,6 +15,7 @@ return [
     ],
     'POPUP_LABELS' => [
         'HEADER' => 'Zaznacz powód zgłoszenia lub podaj własny:',
+        'REPORT_REASON_ACCESSIBILITY' => 'Powód zgłoszenia i jego autor będą widoczne tylko i wyłącznie dla <a href="/zasluzeni-pasjonaci-hall-of-fame">Administracji</a>.',
         'CHAR_COUNTER_INFO' => 'pozostało znaków: ',
         'SEND' => 'Wyślij',
         'CANCEL' => 'Anuluj',

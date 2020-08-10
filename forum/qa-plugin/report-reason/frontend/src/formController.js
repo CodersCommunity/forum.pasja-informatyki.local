@@ -125,6 +125,8 @@ class FormController {
 				<ul id="reportReasonList" class="report-reason-popup__list">${listItemsDOM}</ul>
 	
 				<span id="reportReasonValidationError" class="report-reason-popup__validation-error">${ERROR_CODES.GENERIC_ERROR}</span>
+				
+				<small class="report-reason-popup__accessibility-information">${POPUP_LABELS.REPORT_REASON_ACCESSIBILITY}</small>
 	
 				<div class="report-reason-popup-buttons">
 					<button id="cancelReportReason"
