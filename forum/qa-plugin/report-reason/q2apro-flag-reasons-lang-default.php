@@ -7,6 +7,8 @@ return [
         'Nieprawidłowy temat/kategoria/otagowanie',
         'Niepełna lub niezrozumiała treść',
         'Kod nie jest umieszczony w odpowiednim bloczku',
+        'Prośba o gotowca',
+        'Odpowiedź nie jest na temat lub go odkopuje',
         'Duplikat pytania',
         'Inny (własny)',
     ],
