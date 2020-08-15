@@ -5,13 +5,11 @@
   "main": "index.js",
   "scripts": {
     "prettier": "node_modules/.bin/prettier --write index.js src/ test/",
-
     "pretest": "node test/prepareTestFiles.js || exit 0",
     "pretest:prod": "npm run pretest",
     "test": "mocha --watch test/spec/*.spec.js",
     "test:debug": "mocha --inspect-brk test/spec/*.spec.js",
     "test:prod": "mocha test/spec/*.spec.js",
-
     "dev": "node_modules/.bin/webpack --env.development",
     "prebuild": "npm run prettier && npm run test:prod || exit 0",
     "build": "node_modules/.bin/webpack --env.production"
@@ -26,7 +24,7 @@
     "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
     "jsdom": "^16.3.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.1.1",
     "prettier": "^2.0.5",
     "sinon": "^9.0.2",
     "webpack": "^4.43.0",
