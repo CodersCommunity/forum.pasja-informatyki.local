@@ -26,6 +26,9 @@
 	color: darken($grey, 10%);
 	a { color: lighten($grey, 20%) }
 }
+.qa-item-flag-reason-author {
+	color: darken($grey, 10%);
+}
 .qa-c-item-buttons, .qa-a-item-buttons {
 	border-color: $border-light;
 }
@@ -98,6 +101,14 @@ blockquote {
 	}
 }
 
+.qa-item-flag-reason-list {
+	color: darken($grey, 10%);
+}
+
+.qa-item-flag-reason-prefix {
+	color: inherit;
+}
+
 div#qa-poll-div {
 	background-color: $bcg-dark;
 	border-color: $border;
@@ -114,6 +125,26 @@ div#qa-poll-div {
 	margin-top: 0 !important;
 	border: 1px solid $border;
 	border-top: none;
+}
+
+.modal-background {
+	.qa-flag-reasons-wrap {
+		-webkit-box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
+		box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
+		background-color: #282c34;
+
+		.qa-spam-reason-text::-webkit-input-placeholder {
+			color: #181a1f
+		}
+
+		.qa-spam-reason-text::-moz-placeholder {
+			color: #181a1f
+		}
+
+		.qa-spam-reason-text::placeholder {
+			color: #181a1f
+		}
+	}
 }
 
 // snippets

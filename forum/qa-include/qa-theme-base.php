@@ -1823,7 +1823,9 @@ class qa_html_theme_base
 		$this->post_meta_flags($post, $class);
 
 		if (!empty($post['what_2'])) {
-			$this->output($separator);
+			if (empty($post['flags']) || qa_get_logged_in_level() <= QA_USER_LEVEL_EXPERT) {
+			    $this->output($separator);
+			}
 
 			foreach ($order as $element) {
 				switch ($element) {
