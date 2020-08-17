@@ -4,8 +4,10 @@ class q2apro_flagreasons_event
 {
     public function process_event($event, $userId, $handle, $cookieId, $params)
     {
-        $this->processUnflagEvent($event, $userId, $params['postid']);
-        $this->processClearflagEvent($event, $params['postid']);
+        if (isset($params['postid'])) {
+            $this->processUnflagEvent($event, $userId, $params['postid']);
+            $this->processClearflagEvent($event, $params['postid']);
+        }
     }
 
     private function processUnflagEvent($event, $userId, $postId)
