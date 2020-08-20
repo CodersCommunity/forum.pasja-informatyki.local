@@ -22,6 +22,7 @@
     To start, copy this file to qa-config.php and modify it if you need.
     Don't modify and don't remove this file!
 */
+define('QA_ENVIRONMENT', 'local'); // production or local
 
 define('QA_MYSQL_HOSTNAME', 'forum-mysql');
 define('QA_MYSQL_USERNAME', 'test');
@@ -120,8 +121,7 @@ define('QA_DB_MAX_CONTENT_LENGTH', 15000);
     to a specific domain name, instead of the full domain name of the request by default. This is
     useful if you're running multiple Q2A sites on subdomains with a shared user base.
 */
-if ($_SERVER['HTTP_HOST'] !== 'localhost') {
-    // Na produkcji potrzebna domena by wprowadzić bezpieczne ciastko sesyjne.
+if (QA_ENVIRONMENT === 'production') {
     define('QA_COOKIE_DOMAIN', '.' . $_SERVER['HTTP_HOST']); // be sure to keep the leading period
 }
 
