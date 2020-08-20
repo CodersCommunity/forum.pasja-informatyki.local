@@ -30,9 +30,6 @@ ErrorDocument 403 /vagrant/forum/index.php
     Header set X-Frame-Options "DENY"
     Header always set Strict-Transport-Security "max-age=63072000;"
 
-    # do usunięcia w przyszłości
-    Header set X-XSS-Protection "1; mode=block"
-
     Header set X-Content-Type-Options "nosniff"
     Header set Referrer-Policy "no-referrer"
     Header unset X-Powered-By
