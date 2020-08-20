@@ -1,7 +1,7 @@
 Options -Indexes
 DirectoryIndex index.php
 
-# Change the path below in production or other environments 
+# Change the path below in production or other environments
 ErrorDocument 403 /vagrant/forum/index.php
 
 <IfModule mod_rewrite.c>
@@ -24,8 +24,19 @@ ErrorDocument 403 /vagrant/forum/index.php
 
 <IfModule mod_headers.c>
     Header set X-Frame-Options "DENY"
+
+    # do usunięcia w przyszłości
     Header set X-XSS-Protection "1; mode=block"
+
     Header set X-Content-Type-Options "nosniff"
     Header set Referrer-Policy "no-referrer"
-    Header set Expect-CT "max-age=7776000, enforce"
+
+    # nastepny krok to "enforce, max-age=30, report-uri=\"https://forumpasjainformatyki.report-uri.com/r/d/ct/enforce\""
+    Header set Expect-CT "max-age=0, report-uri=\"https://forumpasjainformatyki.report-uri.com/r/d/ct/reportOnly\""
+    Header set Upgrade-Insecure-Requests "1"
+
+    # Tryb Report-Only z wizzardem report-uri (pomoże ogarnac caly bajzel)
+    Header set Content-Security-Policy-Report-Only "default-src 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content; report-uri https://forumpasjainformatyki.report-uri.com/r/d/csp/wizard"
+    # max strict ckeditor:
+    # default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; style-src 'self'; frame-src 'self'
 </IfModule>

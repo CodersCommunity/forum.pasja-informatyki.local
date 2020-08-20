@@ -32,6 +32,8 @@ if (!file_exists(QA_BASE_DIR . 'qa-config.php')) {
 }
 require_once QA_BASE_DIR . 'qa-config.php';
 
+header('Report-To: {"group":"default","max_age":31536000,"endpoints":[{"url":"https://forumpasjainformatyki.report-uri.com/a/d/g"}],"include_subdomains":true}');
+
 global $client;
 $client = new Raven_Client(SENTRY_DSN, ['environment' => SENTRY_ENVIRONMENT]);
 $error_handler = new Raven_ErrorHandler($client);
