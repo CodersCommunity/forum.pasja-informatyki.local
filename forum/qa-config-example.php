@@ -34,8 +34,8 @@ define('SENTRY_DSN', '');
 define('SENTRY_ENVIRONMENT', 'local');
 
 define('QA_COOKIE_HTTPONLY', true);
-define('QA_COOKIE_SECURE', false);   // devel:false prod:true
-define('QA_COOKIE_SAMESITE', 'lax'); // devel:lax prod:Strict
+define('QA_COOKIE_SECURE', QA_ENVIRONMENT === 'production');
+define('QA_COOKIE_SAMESITE', (QA_ENVIRONMENT === 'production' ? 'Strict' : 'Lax'));
 define('QA_SESSION_EXPIRE', 86400);
 
 
