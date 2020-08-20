@@ -147,3 +147,4 @@ if (QA_ENVIRONMENT === 'production') {
 
     define('QA_WORDPRESS_INTEGRATE_PATH', '/PATH/TO/WORDPRESS');
 */
+
