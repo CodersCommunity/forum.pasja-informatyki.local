@@ -138,14 +138,29 @@
 		{
 			if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
 
-			@ini_set('session.gc_maxlifetime', 86400); // worth a try, but won't help in shared hosting environment
-			@ini_set('session.use_trans_sid', false); // sessions need cookies to work, since we redirect after login
-			@ini_set('session.cookie_domain', QA_COOKIE_DOMAIN);
-			@ini_set('session.cookie_secure', QA_COOKIE_SECURE);
-			@ini_set('session.cookie_httponly', QA_COOKIE_HTTPONLY);
+            if(PHP_VERSION_ID < 70300) {
+                session_set_cookie_params(QA_SESSION_EXPIRE, '/; samesite=' . QA_COOKIE_SAMESITE, QA_COOKIE_DOMAIN, QA_COOKIE_SECURE, QA_COOKIE_HTTPONLY);
+            } else {
+                session_set_cookie_params([
+                    'lifetime' => QA_SESSION_EXPIRE,
+                    'use_trans_sid' => false,
+                    'path' => '/',
+                    'domain' => QA_COOKIE_DOMAIN,
+                    'secure' => QA_COOKIE_SECURE,
+                    'httponly' => QA_COOKIE_HTTPONLY,
+                    'samesite' => QA_COOKIE_SAMESITE
+                ]);
+            }
 
-			if (!isset($_SESSION))
+			if (!isset($_SESSION)) {
+				session_name(
+				    (array_key_exists($_SERVER['HTTP_HOST'], ['forum.pasja-informatyki.pl', 'pasja-informatyki.pl'])
+                        ? '__Secure-PHPSESSID'
+                        : 'PHPSESSID'
+                    )
+                );
 				session_start();
+			}
 		}
 
 

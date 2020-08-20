@@ -33,7 +33,10 @@ define('SENTRY_DSN', '');
 define('SENTRY_ENVIRONMENT', 'local');
 
 define('QA_COOKIE_HTTPONLY', true);
-define('QA_COOKIE_SECURE', false);
+define('QA_COOKIE_SECURE', false);   // devel:false prod:true
+define('QA_COOKIE_SAMESITE', 'lax'); // devel:lax prod:Strict
+define('QA_SESSION_EXPIRE', 86400);
+
 
 /*
     Set QA_EXTERNAL_USERS to true to use your user identification code in qa-external/qa-external-users.php
@@ -116,9 +119,11 @@ define('QA_DB_MAX_CONTENT_LENGTH', 15000);
     If you wish, you can define QA_COOKIE_DOMAIN so that any cookies created by Q2A are assigned
     to a specific domain name, instead of the full domain name of the request by default. This is
     useful if you're running multiple Q2A sites on subdomains with a shared user base.
-
-    define('QA_COOKIE_DOMAIN', '.example.com'); // be sure to keep the leading period
 */
+if ($_SERVER['HTTP_HOST'] !== 'localhost') {
+    // Na produkcji potrzebna domena by wprowadzić bezpieczne ciastko sesyjne.
+    define('QA_COOKIE_DOMAIN', '.' . $_SERVER['HTTP_HOST']); // be sure to keep the leading period
+}
 
 /*
     If you wish, you can define an array $QA_CONST_PATH_MAP to modify the URLs used in your Q2A site.
