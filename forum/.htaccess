@@ -24,6 +24,7 @@ ErrorDocument 403 /vagrant/forum/index.php
 
 <IfModule mod_headers.c>
     Header set X-Frame-Options "DENY"
+    Header set Strict-Transport-Security "max-age=63072000;"
 
     # do usunięcia w przyszłości
     Header set X-XSS-Protection "1; mode=block"
