@@ -1305,74 +1305,73 @@
 	}
 
 
-	function qa_path($request, $params=null, $rooturl=null, $neaturls=null, $anchor=null)
-/*
-	Return the relative URI path for $request, with optional parameters $params and $anchor.
-	Slashes in $request will not be urlencoded, but any other characters will.
-	If $neaturls is set, use that, otherwise retrieve the option. If $rooturl is set, take
-	that as the root of the Q2A site, otherwise use path to root which was set elsewhere.
-*/
-	{
-		if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
+function qa_path($request, $params = null, $rooturl = null, $neaturls = null, $anchor = null)
+{
+    if (qa_to_override(__FUNCTION__)) { $args=func_get_args(); return qa_call_override(__FUNCTION__, $args); }
 
-		if (!isset($neaturls)) {
-			require_once QA_INCLUDE_DIR.'app/options.php';
-			$neaturls=qa_opt('neat_urls');
-		}
+    if (!isset($neaturls)) {
+        require_once QA_INCLUDE_DIR . 'app/options.php';
+        $neaturls = qa_opt('neat_urls');
+    }
 
-		if (!isset($rooturl))
-			$rooturl=qa_path_to_root();
+    if (!isset($rooturl))
+        $rooturl = qa_path_to_root();
 
-		$url=$rooturl.( (empty($rooturl) || (substr($rooturl, -1)=='/') ) ? '' : '/');
-		$paramsextra='';
+    $url = $rooturl . ((empty($rooturl) || (substr($rooturl, -1) == '/')) ? '' : '/');
+    $paramsextra = '';
 
-		$requestparts=explode('/', $request);
-		$pathmap=qa_get_request_map();
+    $requestparts = explode('/', $request);
+    $pathmap = qa_get_request_map();
 
-		if (isset($pathmap[$requestparts[0]])) {
-			$newpart=$pathmap[$requestparts[0]];
+    if (isset($pathmap[$requestparts[0]])) {
+        $newpart = $pathmap[$requestparts[0]];
 
-			if (strlen($newpart))
-				$requestparts[0]=$newpart;
-			elseif (count($requestparts)==1)
-				array_shift($requestparts);
-		}
+        if (strlen($newpart))
+            $requestparts[0] = $newpart;
+        elseif (count($requestparts) == 1)
+            array_shift($requestparts);
+    }
 
-		foreach ($requestparts as $index => $requestpart)
-			$requestparts[$index]=urlencode($requestpart);
-		$requestpath=implode('/', $requestparts);
+    foreach ($requestparts as $index => $requestpart) {
+        $requestparts[$index] = urlencode($requestpart);
+    }
+    $requestpath = implode('/', $requestparts);
 
-		switch ($neaturls) {
-			case QA_URL_FORMAT_INDEX:
-				if (!empty($request))
-					$url.='index.php/'.$requestpath;
-				break;
+    switch ($neaturls) {
+        case QA_URL_FORMAT_INDEX:
+            if (!empty($request))
+                $url .= 'index.php/' . $requestpath;
+            break;
 
-			case QA_URL_FORMAT_NEAT:
-				$url.=$requestpath;
-				break;
+        case QA_URL_FORMAT_NEAT:
+            $url .= $requestpath;
+            break;
 
-			case QA_URL_FORMAT_PARAM:
-				if (!empty($request))
-					$paramsextra='?qa='.$requestpath;
-				break;
+        case QA_URL_FORMAT_PARAM:
+            if (!empty($request))
+                $paramsextra = '?qa=' . $requestpath;
+            break;
 
-			default:
-				$url.='index.php';
+        default:
+            $url .= 'index.php';
 
-			case QA_URL_FORMAT_PARAMS:
-				if (!empty($request))
-					foreach ($requestparts as $partindex => $requestpart)
-						$paramsextra.=(strlen($paramsextra) ? '&' : '?').'qa'.($partindex ? ('_'.$partindex) : '').'='.$requestpart;
-				break;
-		}
+        case QA_URL_FORMAT_PARAMS:
+            if (!empty($request)) {
+                foreach ($requestparts as $partindex => $requestpart)
+                    $paramsextra .= (strlen($paramsextra) ? '&' : '?') . 'qa' . ($partindex ? ('_' . $partindex) : '') . '=' . $requestpart;
+            }
+            break;
+    }
 
-		if (isset($params))
-			foreach ($params as $key => $value)
-				$paramsextra.=(strlen($paramsextra) ? '&' : '?').urlencode($key).'='.urlencode((string)$value);
+    if (is_array($params)) {
+        foreach ($params as $key => $value) {
+            $value = is_array($value) ? '' : (string) $value;
+            $paramsextra .= (strlen($paramsextra) ? '&' : '?') . urlencode($key) . '=' . urlencode($value);
+        }
+    }
 
-		return $url.$paramsextra.( empty($anchor) ? '' : '#'.urlencode($anchor) );
-	}
+    return $url . $paramsextra . (empty($anchor) ? '' : '#' . urlencode($anchor));
+}
 
 
 	function qa_path_html($request, $params=null, $rooturl=null, $neaturls=null, $anchor=null)
