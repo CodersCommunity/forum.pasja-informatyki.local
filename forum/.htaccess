@@ -23,11 +23,12 @@ ErrorDocument 403 /vagrant/forum/index.php
 </IfModule>
 
 <IfModule mod_headers.c>
-    Header set X-Frame-Options "DENY"
-    Header always set Strict-Transport-Security "max-age=63072000;"
+    Header set X-Frame-Options "SameOrigin"
+    # na sam początek wolimy na krótko
+    Header always set Strict-Transport-Security "max-age=3600;"
 
     Header set X-Content-Type-Options "nosniff"
-    Header set Referrer-Policy "no-referrer"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
     Header unset X-Powered-By
     Header unset Server
 
