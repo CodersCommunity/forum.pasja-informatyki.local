@@ -4,7 +4,7 @@
     "description": "Let's user to report a post with a specified reason (predefined or custom), making it easier for administration to consider if that post indeed violated forum regulations. It's based on https://github.com/q2apro/q2apro-flag-reasons",
     "version": "1.0",
     "date": "2020-06-23",
-    "author": "JSHolic & Mariusz08",
+    "author": "ScriptyChris & Mariusz08",
     "author_uri": "http://forum.pasja-informatyki.pl",
     "license": "",
     "update_uri": "",

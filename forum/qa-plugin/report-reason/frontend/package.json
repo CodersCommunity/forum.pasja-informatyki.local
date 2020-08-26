@@ -15,7 +15,7 @@
     "build": "node_modules/.bin/webpack --env.production"
   },
   "keywords": [],
-  "author": "JSHoliq",
+  "author": "ScriptyChris",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.10.2",
