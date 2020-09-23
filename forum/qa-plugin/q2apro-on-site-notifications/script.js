@@ -9,8 +9,8 @@
 	Plugin License: GPLv3
 	Plugin Minimum Question2Answer Version: 1.5
 	Plugin Update Check URI: https://raw.githubusercontent.com/q2apro/q2apro-on-site-notifications/master/qa-plugin.php
-	
-	This program is free software. You can redistribute and modify it 
+
+	This program is free software. You can redistribute and modify it
 	under the terms of the GNU General Public License.
 
 	This program is distributed in the hope that it will be useful,
@@ -42,7 +42,7 @@ $(document).ready(function(){
 				 success: function(data) {
 					// remove Event-Box if formerly loaded
 					$('#nfyWrap').fadeOut(500, function(){$(this).remove() });
-					// insert ajax-loaded html 
+					// insert ajax-loaded html
 					// $('.qa-nav-user').append(data);
 					$('.osn-new-events-link').after(data);
 					// make yellow notification bubble gray
@@ -51,14 +51,27 @@ $(document).ready(function(){
 			});
 		}
 	});
-	
+
 	// fade out notifybox if visible on stage
-	$(document).click(function(event) { 
+	$(document).click(function(event) {
 		if($(event.target).parents().index($('#nfyWrap')) == -1) {
 			if($('#nfyWrap').is(':visible')) {
 				$('#nfyWrap').fadeOut(500, function(){$(this).remove() });
 			}
-		}        
+		} else {
+			handleNotificationClickOnSamePage(event.target);
+		}
 	})
+
+	function handleNotificationClickOnSamePage(clickedElement) {
+		const isAnchorClick = clickedElement.tagName.toLowerCase() === 'a';
+		const anchorURL = new URL(clickedElement.href);
+		const isAnchorHrefSameAsPage = anchorURL.pathname === window.location.pathname;
+
+		if (isAnchorClick && clickedElement.href && isAnchorHrefSameAsPage) {
+			window.location.assign(anchorURL.hash);
+			window.location.reload();
+		}
+	}
 
 });
