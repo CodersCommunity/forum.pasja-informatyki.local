@@ -400,7 +400,12 @@ const codeBlockInteractiveBar = () => {
         class CodeCopy {
             constructor() {
                 this.NEW_LINE = '\r\n';
+                this.NBSP_CHAR_UNICODE_REG_EXP = /\u00a0/g;
                 this.initCopyingMethod();
+            }
+
+            fixSpaces(text) {
+                return text.replace(this.NBSP_CHAR_UNICODE_REG_EXP, ' ');
             }
 
             initCopyingMethod() {
@@ -427,7 +432,7 @@ const codeBlockInteractiveBar = () => {
                 const linesOfCode = [...blockOfCodeParent.querySelector('.code .container').children];
                 const contentToCopy = linesOfCode
                 .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
-                    return concatenatedCode + singleLineOfCode + this.NEW_LINE;
+                    return concatenatedCode + this.fixSpaces(singleLineOfCode) + this.NEW_LINE;
                 }, '');
 
                 return contentToCopy;
