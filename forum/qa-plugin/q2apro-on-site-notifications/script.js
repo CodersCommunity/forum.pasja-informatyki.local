@@ -59,23 +59,23 @@ $(document).ready(function(){
 				$('#nfyWrap').fadeOut(500, function(){$(this).remove() });
 			}
 		} else {
-			handleNotificationClickOnSamePage(event.target, event.preventDefault.bind(event));
+			handleNotificationClickWithinWrapper(event.target, event.preventDefault.bind(event));
 		}
 	})
 
-	function handleNotificationClickOnSamePage(clickedElement, preventDefault) {
-		const isAnchorClick = clickedElement.tagName.toLowerCase() === 'a';
-		const anchorURL = new URL(clickedElement.href);
-		const isAnchorHrefSameAsPage = anchorURL.pathname === window.location.pathname;
+	function handleNotificationClickWithinWrapper(clickedElement, preventDefault) {
+		const isAnchorClicked = clickedElement.tagName.toLowerCase() === 'a';
+		const notificationURL = new URL(clickedElement.href);
+		const isNotificationURLEqualsCurrentPage = notificationURL.pathname === window.location.pathname;
 
-		if (isAnchorClick && clickedElement.href && isAnchorHrefSameAsPage) {
-			const isNotificationElementAlreadyOnPage = document.querySelector(anchorURL.hash);
+		if (isAnchorClicked && clickedElement.href && isNotificationURLEqualsCurrentPage) {
+			const isNotificationNew = !document.querySelector(notificationURL.hash);
 
-			if (!isNotificationElementAlreadyOnPage) {
+			if (isNotificationNew) {
 				preventDefault();
 
-				anchorURL.search = new URLSearchParams({ show: anchorURL.hash.slice(1) }).toString();
-				window.location.href = anchorURL;
+				notificationURL.search = new URLSearchParams({ show: notificationURL.hash.slice(1) }).toString();
+				window.location.href = notificationURL;
 			}
 		}
 	}
