@@ -59,18 +59,24 @@ $(document).ready(function(){
 				$('#nfyWrap').fadeOut(500, function(){$(this).remove() });
 			}
 		} else {
-			handleNotificationClickOnSamePage(event.target);
+			handleNotificationClickOnSamePage(event.target, event.preventDefault.bind(event));
 		}
 	})
 
-	function handleNotificationClickOnSamePage(clickedElement) {
+	function handleNotificationClickOnSamePage(clickedElement, preventDefault) {
 		const isAnchorClick = clickedElement.tagName.toLowerCase() === 'a';
 		const anchorURL = new URL(clickedElement.href);
 		const isAnchorHrefSameAsPage = anchorURL.pathname === window.location.pathname;
 
 		if (isAnchorClick && clickedElement.href && isAnchorHrefSameAsPage) {
-			window.location.assign(anchorURL.hash);
-			window.location.reload();
+			const isNotificationElementAlreadyOnPage = document.querySelector(anchorURL.hash);
+
+			if (!isNotificationElementAlreadyOnPage) {
+				preventDefault();
+
+				anchorURL.search = new URLSearchParams({ show: anchorURL.hash.slice(1) }).toString();
+				window.location.href = anchorURL;
+			}
 		}
 	}
 
