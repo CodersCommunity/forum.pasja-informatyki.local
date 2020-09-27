@@ -1,5 +1,13 @@
 'use strict';
 
+const fixSpaces = (() => {
+    const NBSP_CHAR_UNICODE_REG_EXP = /\u00a0/g;
+
+    return (text) => {
+        return text.replace(NBSP_CHAR_UNICODE_REG_EXP, ' ');
+    };
+})();
+
 const rawCodeBlocksPreProcessor = () => {
     const BRUSHES_SELECTOR = 'pre[class*="brush:"]';
 
@@ -190,7 +198,7 @@ const postSnippets = () => {
     function processBlockOfCode(block, langData) {
         const codeContent = [
             ...block.querySelectorAll('.code .line')
-        ].reduce((lines, codeLine) => lines + codeLine.textContent + NEW_LINE, '');
+        ].reduce((lines, codeLine) => lines + fixSpaces(codeLine.textContent) + NEW_LINE, '');
         const codeLang = block.parentNode.querySelector('[data-code-lang-alias]').dataset.codeLangAlias;
         const mappedSnippetLang = SNIPPET_LANG_MAP[codeLang];
 
@@ -400,12 +408,7 @@ const codeBlockInteractiveBar = () => {
         class CodeCopy {
             constructor() {
                 this.NEW_LINE = '\r\n';
-                this.NBSP_CHAR_UNICODE_REG_EXP = /\u00a0/g;
                 this.initCopyingMethod();
-            }
-
-            fixSpaces(text) {
-                return text.replace(this.NBSP_CHAR_UNICODE_REG_EXP, ' ');
             }
 
             initCopyingMethod() {
@@ -432,7 +435,7 @@ const codeBlockInteractiveBar = () => {
                 const linesOfCode = [...blockOfCodeParent.querySelector('.code .container').children];
                 const contentToCopy = linesOfCode
                 .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
-                    return concatenatedCode + this.fixSpaces(singleLineOfCode) + this.NEW_LINE;
+                    return concatenatedCode + fixSpaces(singleLineOfCode) + this.NEW_LINE;
                 }, '');
 
                 return contentToCopy;
