@@ -9,8 +9,8 @@
 	Plugin License: GPLv3
 	Plugin Minimum Question2Answer Version: 1.5
 	Plugin Update Check URI: https://raw.githubusercontent.com/q2apro/q2apro-on-site-notifications/master/qa-plugin.php
-	
-	This program is free software. You can redistribute and modify it 
+
+	This program is free software. You can redistribute and modify it
 	under the terms of the GNU General Public License.
 
 	This program is distributed in the hope that it will be useful,
@@ -42,7 +42,7 @@ $(document).ready(function(){
 				 success: function(data) {
 					// remove Event-Box if formerly loaded
 					$('#nfyWrap').fadeOut(500, function(){$(this).remove() });
-					// insert ajax-loaded html 
+					// insert ajax-loaded html
 					// $('.qa-nav-user').append(data);
 					$('.osn-new-events-link').after(data);
 					// make yellow notification bubble gray
@@ -51,14 +51,33 @@ $(document).ready(function(){
 			});
 		}
 	});
-	
+
 	// fade out notifybox if visible on stage
-	$(document).click(function(event) { 
+	$(document).click(function(event) {
 		if($(event.target).parents().index($('#nfyWrap')) == -1) {
 			if($('#nfyWrap').is(':visible')) {
 				$('#nfyWrap').fadeOut(500, function(){$(this).remove() });
 			}
-		}        
+		} else {
+			handleNotificationClickWithinWrapper(event.target, event.preventDefault.bind(event));
+		}
 	})
+
+	function handleNotificationClickWithinWrapper(clickedElement, preventDefault) {
+		const isAnchorClicked = clickedElement.tagName.toLowerCase() === 'a';
+		const notificationURL = new URL(clickedElement.href);
+		const isNotificationURLEqualsCurrentPage = notificationURL.pathname === window.location.pathname;
+
+		if (isAnchorClicked && clickedElement.href && isNotificationURLEqualsCurrentPage) {
+			const isNotificationNew = !document.querySelector(notificationURL.hash);
+
+			if (isNotificationNew) {
+				preventDefault();
+
+				notificationURL.search = new URLSearchParams({ show: notificationURL.hash.slice(1) }).toString();
+				window.location.href = notificationURL;
+			}
+		}
+	}
 
 });
