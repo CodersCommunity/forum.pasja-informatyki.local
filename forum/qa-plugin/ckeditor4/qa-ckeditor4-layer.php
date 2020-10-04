@@ -76,9 +76,9 @@ class qa_html_theme_layer extends qa_html_theme_base
         parent::head_css();
     }
 
-    public function main()
+    public function body_suffix()
     {
-        parent::main();
+        parent::body_suffix();
 
         $scriptsOutput = '';
 
