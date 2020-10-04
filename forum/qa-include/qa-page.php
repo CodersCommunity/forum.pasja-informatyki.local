@@ -382,7 +382,7 @@
         }
 
         if (isset($qa_content['script_src'])) {
-        $uniquesrc = array_unique($qa_content['script_src']); // remove any duplicates
+            $uniquesrc = array_unique($qa_content['script_src']); // remove any duplicates
             foreach ($uniquesrc as $script_src) {
                 $script[] = '<script src="' . qa_html($script_src) . '?v=' . QA_RESOURCE_VERSION .'"></script>';
             }

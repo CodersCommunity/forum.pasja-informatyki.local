@@ -78,8 +78,12 @@ class qa_html_theme_layer extends qa_html_theme_base
         qa_html_theme_base::head_css();
     }
 
-    public function head_script()
+    public function main()
     {
+        parent::main();
+
+        $scriptsOutput = '';
+
         $scripts = [
             'shCore', 'shLegacy', 'shBrushBash', 'shBrushCpp', 'shBrushCSharp', 'shBrushCss', 'shBrushDelphi',
             'shBrushJava', 'shBrushJScript', 'shBrushPerl', 'shBrushPhp', 'shBrushPlain', 'shBrushPowerShell',
@@ -87,12 +91,12 @@ class qa_html_theme_layer extends qa_html_theme_base
         ];
         foreach ($scripts as $script) {
             $path = "/qa-content/javascript/{$script}.js?v=" . QA_RESOURCE_VERSION;
-            $this->content['script'][] = '<script src="' . $path . '"></script>';
+            $scriptsOutput .= '<script src="' . $path . '"></script>';
         }
 
-        $path = QA_HTML_THEME_LAYER_URLTOROOT . 'plugins/syntaxhighlight/init.js?v=' . QA_RESOURCE_VERSION;
-        $this->content['script'][] = '<script src="' . $path . '"></script>';
+        $path = '/qa-plugin/ckeditor4/plugins/syntaxhighlight/init.js?v=' . QA_RESOURCE_VERSION;
+        $scriptsOutput .= '<script src="' . $path . '"></script>';
 
-        qa_html_theme_base::head_script();
+        $this->output($scriptsOutput);
     }
 }
