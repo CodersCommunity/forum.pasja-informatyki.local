@@ -76,9 +76,9 @@ class qa_html_theme_layer extends qa_html_theme_base
         parent::head_css();
     }
 
-    public function main()
+    public function head_script()
     {
-        parent::main();
+        parent::head_script();
 
         $scriptsOutput = '';
 
@@ -89,11 +89,11 @@ class qa_html_theme_layer extends qa_html_theme_base
         ];
         foreach ($scripts as $script) {
             $path = "/qa-content/javascript/{$script}.js?v=" . QA_RESOURCE_VERSION;
-            $scriptsOutput .= '<script src="' . $path . '"></script>';
+            $scriptsOutput .= '<script src="' . $path . '" defer></script>';
         }
 
         $path = '/qa-plugin/ckeditor4/plugins/syntaxhighlight/init.js?v=' . QA_RESOURCE_VERSION;
-        $scriptsOutput .= '<script src="' . $path . '"></script>';
+        $scriptsOutput .= '<script src="' . $path . '" defer></script>';
 
         $this->output($scriptsOutput);
     }
