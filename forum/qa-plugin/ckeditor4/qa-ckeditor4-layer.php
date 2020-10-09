@@ -70,8 +70,8 @@ class qa_html_theme_layer extends qa_html_theme_base
 
     public function head_css()
     {
-        $this->content['css_src'][] = '/qa-content/css/shCore.css?v=' . QA_RESOURCE_VERSION;
-        $this->content['css_src'][] = '/qa-content/css/shThemeDefault.css?v=' . QA_RESOURCE_VERSION;
+        $this->content['css_src'][] = '/qa-content/css/shCore.css';
+        $this->content['css_src'][] = '/qa-content/css/shThemeDefault.css';
 
         parent::head_css();
     }
