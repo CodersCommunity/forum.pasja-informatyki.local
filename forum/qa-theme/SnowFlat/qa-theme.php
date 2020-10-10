@@ -86,7 +86,7 @@ class qa_html_theme extends qa_html_theme_base
     {
         // add RTL CSS file
         if ($this->isRTL) {
-            $this->content['css_src'][] = $this->rooturl . 'qa-styles-rtl.css?' . QA_VERSION;
+            $this->content['css_src'][] = $this->rooturl . 'qa-styles-rtl.css';
         }
 
         // add Ubuntu font CSS file
@@ -144,9 +144,10 @@ class qa_html_theme extends qa_html_theme_base
      */
     public function head_script()
     {
-        $jsUrl = $this->rooturl . $this->js_dir . 'snow-core.js?' . QA_VERSION;
-        $this->content['script'][] = '<script src="' . $jsUrl . '"></script>';
-        $this->content['script'][] = '<script src="' . $this->rooturl . $this->js_dir .'selectLanguage.js' . '"></script>';
+        $pathPrefix = $this->rooturl . $this->js_dir;
+        $pathSuffix = '?v=' . QA_RESOURCE_VERSION;
+        $this->content['script'][] = '<script src="' . $pathPrefix . 'snow-core.js' . $pathSuffix . '"></script>';
+        $this->content['script'][] = '<script src="' . $pathPrefix . 'selectLanguage.js' . $pathSuffix . '"></script>';
 
         qa_html_theme_base::head_script();
     }

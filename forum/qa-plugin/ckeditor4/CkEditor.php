@@ -266,7 +266,7 @@ class CkEditor
     }
 
     function get_field(&$qa_content, $content, $format, $fieldname, $rows /* $autofocus parameter deprecated */) {
-        $scriptsrc=$this->urlRoot.'ckeditor.js?'.QA_VERSION;
+        $scriptsrc=$this->urlRoot.'ckeditor.js';
         $alreadyadded=false;
 
         if (isset($qa_content['script_src']))

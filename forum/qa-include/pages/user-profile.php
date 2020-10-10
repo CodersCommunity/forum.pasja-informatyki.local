@@ -202,7 +202,7 @@
 
                 $maxlevelassign = QA_USER_LEVEL_EXPERT;
 
-                
+
 
             if ($loginlevel >= QA_USER_LEVEL_ADMIN)
 
@@ -790,7 +790,7 @@
 
 
 
-    $qa_content['script_rel'][] = 'qa-content/qa-user.js?'.QA_VERSION;
+    $qa_content['script_rel'][] = 'qa-content/qa-user.js';
 
 
 

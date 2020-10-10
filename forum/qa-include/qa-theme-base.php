@@ -306,7 +306,7 @@ class qa_html_theme_base
 
 		if (isset($this->content['css_src'])) {
 			foreach ($this->content['css_src'] as $css_src)
-				$this->output('<link rel="stylesheet" href="'.$css_src.'"/>');
+				$this->output('<link rel="stylesheet" href="' . $css_src . '?v=' . QA_RESOURCE_VERSION . '"/>');
 		}
 
 		if (!empty($this->content['notices'])) {
@@ -320,7 +320,7 @@ class qa_html_theme_base
 
 	public function css_name()
 	{
-		return 'qa-styles.css?'.QA_VERSION;
+		return 'qa-styles.css?v=' . QA_RESOURCE_VERSION;
 	}
 
 	public function head_lines()
@@ -680,8 +680,6 @@ class qa_html_theme_base
 		$this->widgets('main', 'bottom');
 
 		$this->output('</div> <!-- END qa-main -->', '');
-
-		$this->output('<script type="text/javascript" src="/qa-plugin/ckeditor4/plugins/syntaxhighlight/init.js"></script>');
 	}
 
 	public function page_title_error()

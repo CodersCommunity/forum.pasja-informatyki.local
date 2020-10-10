@@ -834,7 +834,7 @@
     $qa_content['title'] = qa_lang_html('admin/admin_title').' - '.qa_lang_html($subtitle);
     $qa_content['error'] = $securityexpired ? qa_lang_html('admin/form_security_expired') : qa_admin_page_error();
 
-    $qa_content['script_rel'][] = 'qa-content/qa-admin.js?'.QA_VERSION;
+    $qa_content['script_rel'][] = 'qa-content/qa-admin.js';
 
     $qa_content['form'] = array(
         'ok' => $formokhtml,

@@ -27,11 +27,11 @@ class qa_html_theme_layer extends qa_html_theme_base
             ));
 
             $this->output('
-                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/style.css">
+                <link rel="stylesheet" href="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/style.css?v=' . QA_RESOURCE_VERSION . '">
                 <script>
                     const FLAG_REASONS_METADATA = Object.freeze(' . $flagReasonsMetadata . ');
                 </script>
-                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/dist/script.js" defer></script>
+                <script type="text/javascript" src="' . QA_HTML_THEME_LAYER_URLTOROOT . 'frontend/dist/script.js?v=' . QA_RESOURCE_VERSION . '" defer></script>
             ');
         }
     }

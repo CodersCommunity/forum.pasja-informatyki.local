@@ -213,6 +213,7 @@
         defined('QA_OPTIMIZE_DISTANT_DB') || define('QA_OPTIMIZE_DISTANT_DB', false);
         defined('QA_PERSISTENT_CONN_DB') || define('QA_PERSISTENT_CONN_DB', false);
         defined('QA_DEBUG_PERFORMANCE') || define('QA_DEBUG_PERFORMANCE', false);
+        defined('QA_RESOURCE_VERSION') || define('QA_RESOURCE_VERSION', null);
 
 	//	Start performance monitoring
 

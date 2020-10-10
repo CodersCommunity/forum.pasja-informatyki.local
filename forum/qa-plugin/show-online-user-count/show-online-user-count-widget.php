@@ -1,11 +1,11 @@
 <?php
 
 class show_online_user_count_widget {
-	
+
 	function allow_template($template)
 	{
 		$allow=false;
-		
+
 		switch ($template)
 		{
 		case 'account':
@@ -17,7 +17,7 @@ class show_online_user_count_widget {
 		case 'favorites':
 		case 'feedback':
 		case 'hot':
-		case 'ip':	
+		case 'ip':
 		case 'login':
 		case 'message':
 		case 'qa':
@@ -34,25 +34,25 @@ class show_online_user_count_widget {
 				$allow=true;
 				break;
 		}
-		
+
 		return $allow;
 	}
-	
+
 	function allow_region($region)
 	{
 		$allow=false;
-		
+
 		switch ($region)
 		{
-			
+
 			case 'side':
 				$allow=true;
 				break;
 			case 'main':
-			case 'full':					
+			case 'full':
 				break;
 		}
-		
+
 		return $allow;
 	}
 	function clean_offline_user()
@@ -63,7 +63,7 @@ class show_online_user_count_widget {
 		$query='DELETE FROM ^online_user WHERE last_activity<"'.date('Y-m-d H:i:s',$timestamp).'"';
 		qa_db_query_sub($query);
 	}
-	
+
 	function activity_update()
 	{
 		$logged_userid=qa_get_logged_in_userid();
@@ -71,18 +71,18 @@ class show_online_user_count_widget {
 		$resultDb=qa_db_query_sub('SELECT id FROM ^online_user WHERE ip="'.$_SERVER['REMOTE_ADDR'].'"');
 		$activity_id=qa_db_read_one_assoc($resultDb,true);
 		if (isset($activity_id['id']))
-		{			
+		{
 			$query="UPDATE ^online_user SET user_id='".((isset($logged_userid))?$logged_userid:0)."',last_activity='".date('Y-m-d H:i:s')."' WHERE id='".$activity_id['id']."'";
-		    
+
 		}
 		else
 		{
 			$query="INSERT INTO ^online_user (user_id,ip,last_activity) VALUES ('".((isset($logged_userid))?$logged_userid:0)."','".$_SERVER['REMOTE_ADDR']."','".date('Y-m-d H:i:s')."')";
-			
+
 		}
-		
+
 		 qa_db_query_sub($query);
-		
+
 	}
 	function output_widget($region, $place, $themeobject, $template, $request, $qa_content)
 	{
@@ -100,7 +100,7 @@ class show_online_user_count_widget {
 		$online_member_html='<span class="show-online-user-count-data">'.$online_member_count['COUNT(*)'].'</span>';
 		$tempStr=str_replace('^1',$online_member_html,qa_lang_html('show_online_user_count_lang/online_guest_member'));
 		$tempStr=str_replace('^2',$online_quest_html,$tempStr);
-		$themeobject->output('<link rel="stylesheet" type="text/css" href="'.qa_opt('site_url').'qa-plugin/show-online-user-count/css/style.css">');
+		$themeobject->output('<link rel="stylesheet" type="text/css" href="' . qa_opt('site_url') . 'qa-plugin/show-online-user-count/css/style.css?v=' . QA_RESOURCE_VERSION . '">');
 		$themeobject->output('<div class="show-online-user-count-total">');
 		$themeobject->output(str_replace('^',$total_onilne_html,qa_lang_html('show_online_user_count_lang/total_online_users')));
 		$themeobject->output('</div>');
@@ -115,7 +115,7 @@ class show_online_user_count_widget {
 				$html='';
 				while (list($user_name)=mysql_fetch_row($resultDb))
 				{
-				  $html.=qa_get_one_user_html($user_name, true, $relative_url_prefix).'-';	
+				  $html.=qa_get_one_user_html($user_name, true, $relative_url_prefix).'-';
 				}
 				$html= substr( $html,0,-1);
 				$themeobject->output('<div class="show-online-user-list">');

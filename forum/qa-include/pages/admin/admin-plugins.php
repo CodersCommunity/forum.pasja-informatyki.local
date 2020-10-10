@@ -67,7 +67,7 @@
 
 	$qa_content['error'] = qa_admin_page_error();
 
-	$qa_content['script_rel'][] = 'qa-content/qa-admin.js?'.QA_VERSION;
+	$qa_content['script_rel'][] = 'qa-content/qa-admin.js';
 
 	$pluginfiles = glob(QA_PLUGIN_DIR.'*/qa-plugin.php');
 
