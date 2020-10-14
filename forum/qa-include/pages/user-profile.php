@@ -1392,95 +1392,53 @@
 
 
 
-    //    Show other profile fields
-
-
+        // Show other profile fields
 
         $fieldsediting = $fieldseditable && $userediting;
-
-
-
         foreach ($userfields as $userfield) {
-
-            if (($userfield['flags'] & QA_FIELD_FLAGS_LINK_URL) && !$fieldsediting)
-
-                $valuehtml = qa_url_to_html_link(@$userprofile[$userfield['title']], qa_opt('links_in_new_window'));
-
-
-
-            else {
-
-                $value = @$inprofile[$userfield['fieldid']];
-
-                if (!isset($value))
-
-                    $value = @$userprofile[$userfield['title']];
-
-
+            if (($userfield['flags'] & QA_FIELD_FLAGS_LINK_URL) && !$fieldsediting) {
+                $valuehtml = qa_url_to_html_link(
+                    $userprofile[$userfield['title']] ?? null,
+                    qa_opt('links_in_new_window')
+                );
+            } else {
+                $value = $inprofile[$userfield['fieldid']] ?? null;
+                if (!isset($value)) {
+                    $value = $userprofile[$userfield['title']] ?? null;
+                }
 
                 $valuehtml = qa_html($value, (($userfield['flags'] & QA_FIELD_FLAGS_MULTI_LINE) && !$fieldsediting));
-
             }
-
-
 
             $label = trim(qa_user_userfield_label($userfield), ':');
-
-            if (strlen($label))
-
+            if (strlen($label)) {
                 $label .= ':';
-
-
-
-            $notehtml = null;
-
-            if (isset($userfield['permit']) && !$userediting) {
-
-                if ($userfield['permit'] <= QA_PERMIT_ADMINS)
-
-                    $notehtml = qa_lang_html('users/only_shown_admins');
-
-                elseif ($userfield['permit'] <= QA_PERMIT_MODERATORS)
-
-                    $notehtml = qa_lang_html('users/only_shown_moderators');
-
-                elseif ($userfield['permit'] <= QA_PERMIT_EDITORS)
-
-                    $notehtml = qa_lang_html('users/only_shown_editors');
-
-                elseif ($userfield['permit'] <= QA_PERMIT_EXPERTS)
-
-                    $notehtml = qa_lang_html('users/only_shown_experts');
-
-
             }
 
+            $notehtml = null;
+            if (isset($userfield['permit']) && !$userediting) {
+                if ($userfield['permit'] <= QA_PERMIT_ADMINS) {
+                    $notehtml = qa_lang_html('users/only_shown_admins');
+                } elseif ($userfield['permit'] <= QA_PERMIT_MODERATORS) {
+                    $notehtml = qa_lang_html('users/only_shown_moderators');
+                } elseif ($userfield['permit'] <= QA_PERMIT_EDITORS) {
+                    $notehtml = qa_lang_html('users/only_shown_editors');
+                } elseif ($userfield['permit'] <= QA_PERMIT_EXPERTS) {
+                    $notehtml = qa_lang_html('users/only_shown_experts');
+                }
+            }
 
-
-            $qa_content['form_profile']['fields'][$userfield['title']] = array(
-
+            $qa_content['form_profile']['fields'][$userfield['title']] = [
                 'type' => $fieldsediting ? 'text' : 'static',
-
                 'label' => qa_html($label),
-
                 'tags' => 'name="field_'.$userfield['fieldid'].'"',
-
                 'value' => $valuehtml,
-
-                'error' => qa_html(@$errors[$userfield['fieldid']]),
-
+                'error' => qa_html($errors[$userfield['fieldid']] ?? null),
                 'note' => $notehtml,
-
                 'rows' => ($userfield['flags'] & QA_FIELD_FLAGS_MULTI_LINE) ? 8 : null,
-
                 'id' => 'userfield-'.$userfield['fieldid'],
-
-            );
-
+            ];
         }
-
-
-
 
 
     //    Edit form or button, if appropriate

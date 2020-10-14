@@ -656,15 +656,13 @@
 		$fields = array('raw' => $message);
 		$fields['tags'] = 'id="m'.qa_html($message['messageid']).'"';
 
-	//	Message content
-
-		$viewer = qa_load_viewer($message['content'], $message['format']);
-
-		$fields['content'] = $viewer->get_html($message['content'], $message['format'], array(
-			'blockwordspreg' => @$options['blockwordspreg'],
-			'showurllinks' => @$options['showurllinks'],
-			'linksnewwindow' => @$options['linksnewwindow'],
-		));
+        // Message content
+        $viewer = qa_load_viewer($message['content'], $message['format']);
+        $fields['content'] = $viewer->get_html($message['content'], $message['format'], [
+            'blockwordspreg' => $options['blockwordspreg'] ?? false,
+            'showurllinks' => $options['showurllinks'] ?? false,
+            'linksnewwindow' => $options['linksnewwindow'] ?? false,
+        ]);
 
 	//	Set ordering of meta elements which can be language-specific
 
