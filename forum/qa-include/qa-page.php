@@ -388,7 +388,7 @@
                 if (substr($script_src, 0, 4) !== 'http') {
                     $line .= '?v=' . QA_RESOURCE_VERSION;
                 }
-                $line .= '"></script>';
+                $line .= '" defer></script>';
 
                 $script[] = $line;
             }
