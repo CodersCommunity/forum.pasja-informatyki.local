@@ -1395,8 +1395,10 @@
         // Show other profile fields
 
         $fieldsediting = $fieldseditable && $userediting;
+        $canSeeLink = qa_is_logged_in() || $userpoints['points'] >= 500;
+
         foreach ($userfields as $userfield) {
-            if (($userfield['flags'] & QA_FIELD_FLAGS_LINK_URL) && !$fieldsediting) {
+            if (($userfield['flags'] & QA_FIELD_FLAGS_LINK_URL) && !$fieldsediting && $canSeeLink) {
                 $valuehtml = qa_url_to_html_link(
                     $userprofile[$userfield['title']] ?? null,
                     qa_opt('links_in_new_window')
