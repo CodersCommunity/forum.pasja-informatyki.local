@@ -1395,7 +1395,7 @@
         // Show other profile fields
 
         $fieldsediting = $fieldseditable && $userediting;
-        $canSeeLink = qa_is_logged_in() || $userpoints['points'] >= 500;
+        $canSeeLink = qa_is_logged_in() || $userpoints['points'] >= MIN_POINTS_TO_SHOW_PROFILE_LINKS;
 
         foreach ($userfields as $userfield) {
             if (($userfield['flags'] & QA_FIELD_FLAGS_LINK_URL) && !$fieldsediting && $canSeeLink) {

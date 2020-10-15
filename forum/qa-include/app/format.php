@@ -658,7 +658,8 @@
 
         // Message content
         $userPoints = qa_db_select_with_pending(qa_db_user_points_selectspec($message['touserid'], true));
-        $showUrlLinks = ($options['showurllinks'] ?? false) && (qa_is_logged_in() || $userPoints['points'] >= 500);
+        $showUrlLinks = ($options['showurllinks'] ?? false)
+            && (qa_is_logged_in() || $userPoints['points'] >= MIN_POINTS_TO_SHOW_PROFILE_LINKS);
 
         $viewer = qa_load_viewer($message['content'], $message['format']);
         $fields['content'] = $viewer->get_html($message['content'], $message['format'], [

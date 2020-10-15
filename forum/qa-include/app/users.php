@@ -50,6 +50,7 @@
 
 	@define('QA_FORM_EXPIRY_SECS', 86400); // how many seconds a form is valid for submission
 	@define('QA_FORM_KEY_LENGTH', 32);
+	define('MIN_POINTS_TO_SHOW_PROFILE_LINKS', 500);
 
 
 	if (QA_FINAL_EXTERNAL_USERS) {
