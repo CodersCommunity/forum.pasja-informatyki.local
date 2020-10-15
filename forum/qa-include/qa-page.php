@@ -384,7 +384,13 @@
         if (isset($qa_content['script_src'])) {
             $uniquesrc = array_unique($qa_content['script_src']); // remove any duplicates
             foreach ($uniquesrc as $script_src) {
-                $script[] = '<script src="' . qa_html($script_src) . '?v=' . QA_RESOURCE_VERSION .'"></script>';
+                $line = '<script src="' . qa_html($script_src);
+                if (substr($script_src, 0, 4) !== 'http') {
+                    $line .= '?v=' . QA_RESOURCE_VERSION;
+                }
+                $line .= '" defer></script>';
+
+                $script[] = $line;
             }
         }
 

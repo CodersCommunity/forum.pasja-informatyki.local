@@ -287,18 +287,14 @@ class qa_html_theme_base
 		}
 	}
 
-	public function head_script()
-	{
-		if (isset($this->content['script'])) {
-		    $deferredScripts = ['ckeditor.js?'];
-
-			foreach ($this->content['script'] as $scriptline) {
-                $scriptline = $this->tryDeferScript($deferredScripts, $scriptline);
-
-				$this->output_raw($scriptline);
+    public function head_script()
+    {
+        if (isset($this->content['script'])) {
+            foreach ($this->content['script'] as $scriptline) {
+                $this->output_raw($scriptline);
             }
-		}
-	}
+        }
+    }
 
 	public function head_css()
 	{
@@ -2381,14 +2377,5 @@ class qa_html_theme_base
 		$this->q_title_list($q_list, 'target="_blank"');
 
 		$this->output('</div>');
-	}
-
-	private function tryDeferScript($deferredScripts, $scriptline) {
-        $isDeferredScript = array_reduce($deferredScripts, function($isFound, $scriptFileName) use ($scriptline) {
-            return $isFound || strpos($scriptline, $scriptFileName);
-        }, false);
-        $optionalDeferAttribute = $isDeferredScript ? 'defer': '';
-
-	    return str_replace('src="', $optionalDeferAttribute .' src="', $scriptline);
 	}
 }
