@@ -124,10 +124,22 @@
 				qa_update_post_text($in, $oldin);
 			}
 
-			if (qa_using_categories() && count($categories) && (!qa_opt('allow_no_category')) && !isset($in['categoryid']))
-				$errors['categoryid']=qa_lang_html('question/category_required'); // check this here because we need to know count($categories)
-			elseif (qa_user_permit_error('permit_post_q', null, $userlevel))
-				$errors['categoryid']=qa_lang_html('question/category_ask_not_allowed');
+            $categoriesEnabled = qa_using_categories() && count($categories) > 0;
+            $noSubcategory = qa_opt('allow_no_sub_category');
+            $mainCategory = qa_post_text('category_1');
+
+            $subcategories = array_filter($categories, function ($category) use ($mainCategory) {
+                return $category['parentid'] === $mainCategory;
+            });
+            $subcategories = array_column($subcategories, 'categoryid');
+
+            if ($categoriesEnabled && !qa_opt('allow_no_category') && !isset($in['categoryid'])) {
+                $errors['categoryid'] = qa_lang_html('question/category_required');
+            } elseif (qa_user_permit_error('permit_post_q', null, $userlevel)) {
+                $errors['categoryid'] = qa_lang_html('question/category_ask_not_allowed');
+            } elseif (!$noSubcategory && !empty($subcategories) && !in_array($in['categoryid'], $subcategories)) {
+                $errors['categoryid'] = qa_lang_html('question/subcategory_required');
+            }
 
 			if ($captchareason) {
 				require_once QA_INCLUDE_DIR.'app/captcha.php';
