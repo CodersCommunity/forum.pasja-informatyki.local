@@ -131,13 +131,13 @@
             $subcategories = array_filter($categories, function ($category) use ($mainCategory) {
                 return $category['parentid'] === $mainCategory;
             });
-            $subcategories = array_column($subcategories, 'categoryid');
+            $subcategoriesIds = array_column($subcategories, 'categoryid');
 
             if ($categoriesEnabled && !qa_opt('allow_no_category') && !isset($in['categoryid'])) {
                 $errors['categoryid'] = qa_lang_html('question/category_required');
             } elseif (qa_user_permit_error('permit_post_q', null, $userlevel)) {
                 $errors['categoryid'] = qa_lang_html('question/category_ask_not_allowed');
-            } elseif (!$noSubcategory && !empty($subcategories) && !in_array($in['categoryid'], $subcategories)) {
+            } elseif (!$noSubcategory && !empty($subcategoriesIds) && !in_array($in['categoryid'], $subcategoriesIds)) {
                 $errors['categoryid'] = qa_lang_html('question/subcategory_required');
             }
 
