@@ -656,15 +656,17 @@
 		$fields = array('raw' => $message);
 		$fields['tags'] = 'id="m'.qa_html($message['messageid']).'"';
 
-	//	Message content
+        // Message content
+        $userPoints = qa_db_select_with_pending(qa_db_user_points_selectspec($message['touserid'], true));
+        $showUrlLinks = ($options['showurllinks'] ?? false)
+            && (qa_is_logged_in() || $userPoints['points'] >= MIN_POINTS_TO_SHOW_PROFILE_LINKS);
 
-		$viewer = qa_load_viewer($message['content'], $message['format']);
-
-		$fields['content'] = $viewer->get_html($message['content'], $message['format'], array(
-			'blockwordspreg' => @$options['blockwordspreg'],
-			'showurllinks' => @$options['showurllinks'],
-			'linksnewwindow' => @$options['linksnewwindow'],
-		));
+        $viewer = qa_load_viewer($message['content'], $message['format']);
+        $fields['content'] = $viewer->get_html($message['content'], $message['format'], [
+            'blockwordspreg' => $options['blockwordspreg'] ?? false,
+            'showurllinks' => $showUrlLinks,
+            'linksnewwindow' => $options['linksnewwindow'] ?? false,
+        ]);
 
 	//	Set ordering of meta elements which can be language-specific
 
