@@ -26,8 +26,8 @@
 		'allow_login_email_only' => 'Dozwolone logowanie tylko przez adres email (nie nazwę użytkownika):',
 		'allow_multi_answers' => 'Więcej niż jedna odpowiedź na użytkownika:',
 		'allow_no_category' => 'Pozwól na pytania bez kategorii',
-		'allow_no_sub_category' => 'Pozwój na pytania w kategorii ale bez podkategorii',
-		'allow_private_messages' => 'Pozwój na wysyłanie wiadomości między użytkownikami:',
+		'allow_no_sub_category' => 'Pozwól na pytania w kategorii ale bez podkategorii',
+		'allow_private_messages' => 'Pozwól na wysyłanie wiadomości między użytkownikami:',
 		'allow_self_answer' => 'Pozwól użytkownikom na odpowiadanie na ich własne pytania:',
 		'allow_view_q_bots' => 'Pozwól wyszukiwarkom na dostęp do strony z pytaniem',
 		'avatar_allow_gravatar' => 'Pozwól na ^1Gravatary^2:',
@@ -285,7 +285,7 @@
 		'show_register_terms' => "Zasady i Warunki checkbox na formie rejestracyjnej - dozwolone tagi HTML:",
 		'site_text_direction' => "Kierunek znaków na stronie:",
 	);
-	
+
 
 /*
 	Omit PHP closing tag to help avoid accidental output

@@ -233,8 +233,7 @@ function qa_category_select(idprefix, startpath)
 										newelem.name=newelem.id=idprefix+'_'+(l+1);
 										newelem.options.length=0;
 
-										if (l ? qa_cat_allownosub : qa_cat_allownone)
-											newelem.options[0]=new Option(l ? '' : elem.options[0].text, '', true, true);
+										newelem.options[0]=new Option('', '', true, true);
 
 										for (var i=2; i<lines.length; i++) {
 											var parts=lines[i].split('/');

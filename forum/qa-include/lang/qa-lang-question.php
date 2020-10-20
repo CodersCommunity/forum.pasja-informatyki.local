@@ -62,6 +62,7 @@
 		'category_ask_not_allowed' => 'You do not have permission to ask questions in this category',
 		'category_js_note' => 'To select any category, please enable Javascript in your web browser.',
 		'category_required' => 'Please choose a category',
+		'subcategory_required' => 'Please choose a subcategory',
 		'claim_a_popup' => 'Assign this answer to your user account',
 		'claim_button' => 'I wrote this',
 		'claim_c_popup' => 'Assign this comment to your user account',

@@ -54,6 +54,7 @@
 		'c_your_waiting_approval' => 'Twój komentarz został przekazany do moderacji.',
 		'category_js_note' => 'Aby wybrać kategorię, włącz JavaScript w swojej przeglądarce.',
 		'category_required' => 'Wybierz kategorię',
+		'subcategory_required' => 'Wybierz podkategorię',
 		'claim_button' => 'Ja to napisałem/napisałam',
 		'clear_flags_button' => 'wycofaj zgłoszenia',
 		'clear_flags_popup' => 'Wycofaj zgłoszenia wszystkich użytkowników',
