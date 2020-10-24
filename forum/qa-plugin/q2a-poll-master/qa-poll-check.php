@@ -5,23 +5,27 @@ class qa_poll_event
     public function process_event($event, $userid, $handle, $cookieid, $params)
     {
         if (qa_opt('poll_enable') && $event === 'q_post' && qa_post_text('is_poll') === '1') {
-            qa_db_query_sub(
-                'INSERT INTO ^postmeta (post_id,meta_key,meta_value) VALUES (#,$,$)',
-                $params['postid'],
-                'is_poll',
-                (qa_post_text('poll_multiple') ? '2' : '1')
-            );
-
-            $count = 0;
-            while (isset($_POST['poll_answer_' . (++$count)])) {
-                if (!qa_post_text('poll_answer_' . $count)) {
+            $number = 0;
+            $added = 0;
+            while (isset($_POST['poll_answer_' . (++$number)])) {
+                if (!qa_post_text('poll_answer_' . $number)) {
                     continue;
                 }
 
                 qa_db_query_sub(
                     'INSERT INTO ^polls (parentid,content) VALUES (#,$)',
                     $params['postid'],
-                    qa_post_text('poll_answer_' . $count)
+                    qa_post_text('poll_answer_' . $number)
+                );
+                $added++;
+            }
+
+            if ($added > 0) {
+                qa_db_query_sub(
+                    'INSERT INTO ^postmeta (post_id,meta_key,meta_value) VALUES (#,$,$)',
+                    $params['postid'],
+                    'is_poll',
+                    (qa_post_text('poll_multiple') ? '2' : '1')
                 );
             }
         }
