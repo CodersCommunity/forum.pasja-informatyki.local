@@ -153,7 +153,7 @@
 	}
 </script>');
 				}
-				else if($this->template == 'question' && @$this->poll && !qa_user_permit_error('permit_post_q')) {
+				else if($this->template == 'question' && @$this->poll) {
 					$this->output('<style>',str_replace('^',QA_HTML_THEME_LAYER_URLTOROOT,qa_opt('poll_css')),'</style>');
 					if(qa_permit_check('permit_vote_poll'))
 						$this->output_raw("<script>
