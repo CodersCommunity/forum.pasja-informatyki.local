@@ -116,8 +116,12 @@ class q2apro_onsitenotifications_page
 
         foreach ($events as $postid_string => $event) {
             // $postid_string, e.g. 32_1 (32 is postid, 1 is global event count)
-            $type = $event['event'];
 
+            if (array_key_exists('handle', $event) && $event['handle'] === null) {
+                continue;
+            }
+
+            $type = $event['event'];
             if ($type == 'u_message') {
                 $eventName = qa_lang('q2apro_onsitenotifications_lang/you_received') . ' ';
                 $itemIcon = '<div class="nicon nmessage"></div>';
@@ -234,8 +238,8 @@ class q2apro_onsitenotifications_page
                 $cssNewEv = '-new';
             }
 
-            // if post has been deleted there is no link, dont output
-            if ($activity_url == '') {
+            // if post has been deleted (no url) or hidden (title is null), dont output
+            if ($activity_url === '' || $linkTitle === null) {
                 continue;
             }
 
