@@ -36,6 +36,9 @@ define('QA_COOKIE_HTTPONLY', true);
 define('QA_COOKIE_SECURE', false);
 define('QA_RESOURCE_VERSION', null);
 
+define('QA_WS_TOKEN', 'secretKey');
+define('QA_WS_URL', 'http://localhost:3000');
+
 /*
     Set QA_EXTERNAL_USERS to true to use your user identification code in qa-external/qa-external-users.php
     This allows you to integrate with your existing user database and management system. For more details,
