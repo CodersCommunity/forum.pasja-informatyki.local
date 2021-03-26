@@ -1,0 +1,10 @@
+FROM node:14-alpine
+RUN apk --no-cache add git
+WORKDIR /app
+RUN git clone https://github.com/CodersCommunity/http-websocket-server.git .
+
+#delete this step after branch is merged with master
+RUN git checkout fix/websocket-connection-loss--latest-lib
+RUN npm install
+RUN npm run build
+CMD ["npm", "run", "serve"]
