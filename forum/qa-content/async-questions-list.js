@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
-	const { pathname, hostname } = window.location;
+	const { pathname, hostname, protocol } = window.location;
 	const isMainOrActivityPage = /^$|\/$|^(\/?)activity/.test(pathname);
 
 	if (!isMainOrActivityPage) {
@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 	const webSocket = setupWebSocketConnection();
 
 	function setupWebSocketConnection() {
-		const webSocket = new WebSocket(`ws://${hostname}:3000`);
+		const socketProtocol = protocol === 'https:' ? 'wss' : 'ws';
+		const webSocket = new WebSocket(`${socketProtocol}://${hostname}:3000`);
 		webSocket.addEventListener('open', onOpen);
 		webSocket.addEventListener('message', onMessage);
 		webSocket.addEventListener('close', onClose);
