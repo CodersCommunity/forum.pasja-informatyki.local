@@ -71,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 			const notifier = document.createElement('button');
 			notifier.title = 'Aktualizuj listę postów';
 			notifier.classList.add(NOTIFIER_CLASSES.BASE);
+			// TODO: remove this line after ensuring WebSockets work stable on production!
+			notifier.style = 'display: none !important';
 			notifier.innerHTML = `
 				<span>Nowych postów: </span>
 				<output></output>
