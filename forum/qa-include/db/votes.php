@@ -20,7 +20,6 @@
 	More about this license: http://www.question2answer.org/license.php
 */
 
-	require_once QA_INCLUDE_DIR.'util/send-to-websocket-server.php';
 
 	if (!defined('QA_VERSION')) { // don't allow this page to be requested directly from browser
 		header('Location: ../');
@@ -39,8 +38,6 @@
 			'INSERT INTO ^uservotes (postid, userid, vote, flag) VALUES (#, #, #, 0) ON DUPLICATE KEY UPDATE vote=#',
 			$postid, $userid, $vote, $vote
 		);
-
-		send_to_websocket_server('vote');
 	}
 
 
