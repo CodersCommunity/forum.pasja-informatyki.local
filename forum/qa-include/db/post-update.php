@@ -27,7 +27,6 @@
 
 
 	require_once QA_INCLUDE_DIR.'app/updates.php';
-	require_once QA_INCLUDE_DIR.'util/send-to-websocket-server.php';
 
 
 	function qa_db_post_set_selchildid($questionid, $selchildid, $lastuserid=null, $lastip=null)
@@ -52,8 +51,6 @@
 				"UPDATE ^posts SET updated=NOW(), updatetype=$, lastuserid=$, lastip=INET_ATON($) WHERE postid=#",
 				QA_UPDATE_SELECTED, $lastuserid, $lastip, $selchildid
 			);
-
-		send_to_websocket_server('update-post');
 	}
 
 
@@ -73,8 +70,6 @@
 				'UPDATE ^posts SET closedbyid=# WHERE postid=#',
 				$closedbyid, $questionid
 			);
-
-		send_to_websocket_server('update-post');
 	}
 
 
@@ -93,9 +88,6 @@
 				'UPDATE ^posts SET type=$ WHERE postid=#',
 				$type, $postid
 			);
-
-
-		send_to_websocket_server('update-post');
 	}
 
 
@@ -134,8 +126,6 @@
 				'UPDATE ^posts SET title=$, content=$, format=$, tags=$, name=COALESCE($, name), notify=$ WHERE postid=#',
 				$title, $content, $format, $tagstring, $name, $notify, $postid
 			);
-
-		send_to_websocket_server('update-post');
 	}
 
 
@@ -166,8 +156,6 @@
 				'UPDATE ^posts SET categoryid=# WHERE postid=#',
 				$categoryid, $postid
 			);
-
-		send_to_websocket_server('update-post');
 	}
 
 
@@ -229,8 +217,6 @@
 			'DELETE FROM ^posts WHERE postid=#',
 			$postid
 		);
-
-		send_to_websocket_server('delete-post');
 	}
 
 
