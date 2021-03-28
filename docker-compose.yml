@@ -29,9 +29,7 @@ services:
       - 1025:1025
 
   web_socket:
-    build:
-      context: .
-      dockerfile: Dockerfile-socket
+    image: ghcr.io/coderscommunity/http-websocket-server:rc
     env_file:
       - web_socket.env
     ports:
