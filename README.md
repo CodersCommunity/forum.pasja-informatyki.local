@@ -75,14 +75,6 @@ Aby wybrać odpowiednią wersję obrazu kontenera, w pliku `docker-compose.overr
 
 **Nie wprowadzaj zmian do pliku docker-compose.yml**
 
-Jeżeli nie korzystasz z Dockera, w pliku `qa-config.php` zamień linię:
-
-`define('QA_WS_URL', 'http://web_socket:3000');`
-
-na:
-
-`define('QA_WS_URL', 'http://localhost:3000');`
-
 ## Xdebug
 
 Jest zainstalowany, ale domyślnie wyłączony. Możesz go łatwo włączyć i dostosować konfigurację do swoich potrzeb poprzez nadpisanie konfiguracji Dockera, jak opisano to powyżej. Domyślną konfigurację możesz podejrzeć w pliku `docker-compose.yml`.
@@ -101,6 +93,27 @@ services:
 ## MailHog
 
 W celu łatwego testowania maili dostępny jest MailHog. Wszystkie maile, które zostaną wysłane z lokalnego forum, **trafiają do jednej skrzynki** znajdującej się pod adresem http://localhost:8025. Jeżeli potrzebujesz wysłać maila na wprowadzony adres e-mail, musisz skonfigurować własne konto SMTP w zakładce "Emaile" panelu administracyjnego.
+
+## WebSocket
+
+Aby wysyłać powiadomienia o nowych wydarzeniach na forum (takich jak dodanie postu czy komentarza) bez konieczności odświeżania, forum łączy się z WebSocketem i wysyła do niego eventy z forum, a następnie serwer WebSocketa wysyła informacje o zmianie do użytkowników. Dla ułatwienia, WebSocket jest postawiony obok forum za pomocą docker-compose.
+
+**Jeżeli nie korzystasz z Dockera,** sklonuj repozytorium z serwerem websocketa:
+
+```bash
+git clone https://github.com/CodersCommunity/http-websocket-server.git
+```
+
+a następnie odpal lokalnie server z WebSocketem według instrukcji załączonych na repozytorium:
+https://github.com/CodersCommunity/http-websocket-server
+
+Następnie w pliku `qa-config.php` zamień linię:
+
+`define('QA_WS_URL', 'http://web_socket:3000');`
+
+na:
+
+`define('QA_WS_URL', 'http://localhost:3000');`
 
 ## Baza danych
 
