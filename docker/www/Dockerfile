@@ -13,7 +13,7 @@ RUN apt-get install -y --no-install-recommends libzip-dev zip unzip git libfreet
 
 RUN docker-php-ext-install mysqli calendar mbstring
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install -j$(nproc) gd
-RUN pecl install xdebug && docker-php-ext-enable xdebug && \
+RUN pecl install xdebug-2.9.8 && docker-php-ext-enable xdebug && \
     echo "xdebug.remote_enable=${XDEBUG_REMOTE_ENABLE}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "xdebug.remote_connect_back=${XDEBUG_REMOTE_CONNECT_BACK}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "xdebug.remote_host=${XDEBUG_REMOTE_HOST}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
