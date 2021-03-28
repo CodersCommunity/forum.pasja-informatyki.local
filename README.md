@@ -17,8 +17,6 @@ Po zainstalowaniu oprogramowania pozostaje nam ściągnąć projekt z GitHuba:
 git clone https://github.com/CodersCommunity/forum.pasja-informatyki.local.git
 ```
 
-Należy wybrać odpowiednią wersje obrazu WebSocket-a w `docker-compose.yml`. Odkomentuj tą wersje którą chcesz używać i zakomentuj drugą.
-
 Teraz należy skopiować zawartość pliku `web_socket.example.env` do pliku `web_socket.env`.
 
 Następnie uruchamiamy Dockera:
@@ -72,6 +70,18 @@ Login i hasło są takie same oraz odzwierciedlają jednocześnie rangę użytko
 W razie potrzeby zmodyfikuj konfigurację w pliku `qa-config.php`. Nie zmieniaj ani nie usuwaj pliku `qa-config-example.php`.
 
 Jeżeli potrzebujesz zmienić konfigurację środowiska Dockera, należy nadpisać plik `docker-compose.yml` poprzez stworzenie pliku `docker-compose.override.yml` (nie zostanie on zauważony przez Gita). Wystarczy, że będzie on zawierał to, co chcesz zmienić. Więcej informacji na ten temat: https://docs.docker.com/compose/extends/. Nie modyfikuj pliku `docker-compose.yml`.
+
+Aby wybrać odpowiednią wersję obrazu kontenera, w pliku `docker-compose.override.yml` odkomentuj odpowiednią linię z nazwą obrazu i wykomentuj linię z nazwą nieużywanego obrazu. Dostępne obrazy można zobaczyć tutaj: https://github.com/orgs/CodersCommunity/packages/container/package/http-websocket-server
+
+**Nie wprowadzaj zmian do pliku docker-compose.yml**
+
+Jeżeli nie korzystasz z Dockera, w pliku `qa-config.php` zamień linię:
+
+`define('QA_WS_URL', 'http://web_socket:3000');`
+
+na:
+
+`define('QA_WS_URL', 'http://localhost:3000');`
 
 ## Xdebug
 
