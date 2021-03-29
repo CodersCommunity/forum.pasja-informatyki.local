@@ -9,5 +9,6 @@ return [
     'enable_plugin'      => 'Włącz',
     'disable_plugin'     => 'Wyłącz',
     'enabled_plugin'      => 'Jeśli chcesz wyłączyć użytkownikom limit zmian nazwy użytkownika, odznacz ten checkbox',
-    'disabled_plugin'    => 'Włącz limit zmian nazwy użytkownika zaznaczając ten checkbox'
+    'disabled_plugin'    => 'Włącz limit zmian nazwy użytkownika zaznaczając ten checkbox',
+    'routing_currently_overwritten' => 'Routing jest aktualnie nadpisany - proszę sprawdzić, czy to nie jest problem'
 ];
