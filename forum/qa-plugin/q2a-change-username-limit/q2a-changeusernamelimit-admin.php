@@ -7,7 +7,6 @@ class q2a_changeusernamelimit_admin
     public function init_queries()
     {
         $isActive = qa_opt('changeusernamelimit');
-        $result = null;
 
         if (1 === $isActive) {
             return null;
@@ -23,6 +22,7 @@ class q2a_changeusernamelimit_admin
             $queries[] = 'ALTER TABLE ^users ADD `username_change_history` JSON DEFAULT NULL';
         }
 
+        $result = null;
         if (count($queries)) {
             $result = $queries;
         }
