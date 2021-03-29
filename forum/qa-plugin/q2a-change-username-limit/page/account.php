@@ -130,7 +130,7 @@ else {
             $errors = qa_handle_email_filter($inhandle, $inemail, $useraccount);
 
             if (!isset($errors['handle'])) {
-                if (null !== checkLastChangeUsername($userid) && checkLastChangeUsername($userid) < 30) {
+                if (null !== checkLastChangeUsername($userid) && checkLastChangeUsername($userid) < CHANGE_USERNAME_LIMIT_IN_DAYS) {
 
                     $errors['handle'] = qa_lang('plugin_username_limit/change_username_limit_in_days');
                 } else {
