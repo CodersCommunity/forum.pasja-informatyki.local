@@ -47,10 +47,10 @@ class q2a_changeusernamelimit_admin
             'ok' => $saved ? qa_lang('plugin_username_limit/saved_plugin_settings') : null,
             'fields' => [[
                 'type' => 'checkbox',
-                'label' => qa_opt('changeusernamelimit_login') ?
+                'label' => qa_opt('changeusernamelimit') ?
                     qa_lang('plugin_username_limit/enabled_plugin') :
                     qa_lang('plugin_username_limit/disabled_plugin'),
-                'value' => qa_opt('changeusernamelimit_login') ? true : false,
+                'value' => qa_opt('changeusernamelimit') ? true : false,
                 'tags' => 'NAME="changeusernamelimit_enable_plugin"'
             ]],
             'buttons' => [[
