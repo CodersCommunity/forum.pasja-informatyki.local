@@ -60,7 +60,9 @@ function modifyChangeUsernameHistory($userid, $oldhandle, $newhandle, $date): vo
         'date' => $date
     ];
 
-    qa_db_query_sub('UPDATE ^users SET username_change_history=$ WHERE userid=#', json_encode($history), $userid);
+    if ($oldhandle !== $newhandle) {
+        qa_db_query_sub('UPDATE ^users SET username_change_history=$ WHERE userid=#', json_encode($history), $userid);
+    }
 }
 
 function changeHandle($userid, $inhandle, $useraccount): void
