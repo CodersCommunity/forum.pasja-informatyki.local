@@ -20,13 +20,24 @@ services:
       - 80:80
     depends_on:
       - mysql
-
+      - web_socket
   mail:
     image: mailhog/mailhog
     container_name: forum-mail
     ports:
       - 8025:8025
       - 1025:1025
+
+  web_socket:
+    #use this image for development/release candidate version
+    # image: ghcr.io/coderscommunity/http-websocket-server:rc
+    
+    #use this image for production version
+    image: ghcr.io/coderscommunity/http-websocket-server:latest
+    env_file:
+      - web_socket.env
+    ports:
+      - 3000:3000
 
   mysql:
     image: mysql:5.7.30

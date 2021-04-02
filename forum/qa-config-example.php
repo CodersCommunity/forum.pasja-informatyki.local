@@ -37,7 +37,7 @@ define('QA_COOKIE_SECURE', false);
 define('QA_RESOURCE_VERSION', null);
 
 define('QA_WS_TOKEN', 'secretKey');
-define('QA_WS_URL', 'http://localhost:3000');
+define('QA_WS_URL', 'http://web_socket:3000');
 
 define('CHANGE_USERNAME_LIMIT_IN_DAYS', 30);
 
