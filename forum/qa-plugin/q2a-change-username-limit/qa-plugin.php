@@ -22,6 +22,13 @@ if (!defined('QA_VERSION')) {
 
 qa_register_plugin_phrases('q2a-changeusernamelimit-lang-*.php', 'plugin_username_limit');
 qa_register_plugin_module(
+    'event',
+    'q2a-changeusernamelimit-event.php',
+    q2a_changeusernamelimit_event::class,
+    'User page for admin edition'
+);
+
+qa_register_plugin_module(
     'module',
     'q2a-changeusernamelimit-admin.php',
     q2a_changeusernamelimit_admin::class,
@@ -29,4 +36,3 @@ qa_register_plugin_module(
 );
 
 qa_register_plugin_overrides('q2a-changeusernamelimit-override.php');
-
