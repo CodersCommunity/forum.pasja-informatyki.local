@@ -9,7 +9,7 @@
   Plugin Author URI: https://github.com/event15
   Plugin License: GPLv2
   Plugin Minimum Question2Answer Version: 1.5
-  Plugin Update Check URI: https://github.com/CodersCommunity/forum.pasja-informatyki.local/tree/master/forum/qa-plugin/q2a-change-username-limit
+  Plugin Update Check URI: https://github.com/CodersCommunity/forum.pasja-informatyki.local/tree/master/forum/qa-plugin/q2a-change-username-limit/metadata.json
 */
 
 
