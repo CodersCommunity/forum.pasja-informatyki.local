@@ -63,6 +63,13 @@ function modifyChangeUsernameHistory($userid, $oldhandle, $newhandle, $date): vo
     qa_db_query_sub('UPDATE ^users SET username_change_history=$ WHERE userid=#', json_encode($history), $userid);
 }
 
+function changeHandle($userid, $inhandle, $useraccount): void
+{
+    qa_db_user_set($userid, 'handle', $inhandle);
+    qa_db_user_set($userid, 'username_change_date', date('Y-m-d H:i:s'));
+    modifyChangeUsernameHistory($userid, $useraccount, $inhandle, date('Y-m-d H:i:s'));
+}
+
 require_once QA_INCLUDE_DIR.'db/users.php';
 require_once QA_INCLUDE_DIR.'app/format.php';
 require_once QA_INCLUDE_DIR.'app/users.php';
@@ -130,13 +137,15 @@ else {
             $errors = qa_handle_email_filter($inhandle, $inemail, $useraccount);
 
             if (!isset($errors['handle'])) {
-		    $lastTimeUsernameChanged = checkLastChangeUsername($userid);
-                if (isset($lastTimeUsernameChanged) && $lastTimeUsernameChanged < CHANGE_USERNAME_LIMIT_IN_DAYS) {
-                    $errors['handle'] = qa_lang('plugin_username_limit/change_username_limit_in_days');
+                if (qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN) {
+                    changeHandle($userid, $inhandle, $useraccount);
                 } else {
-                    qa_db_user_set($userid, 'handle', $inhandle);
-                    qa_db_user_set($userid, 'username_change_date', date('Y-m-d H:i:s'));
-                    modifyChangeUsernameHistory($userid, $useraccount['handle'], $inhandle, date('Y-m-d H:i:s'));
+                    $lastTimeUsernameChanged = checkLastChangeUsername($userid);
+                    if (isset($lastTimeUsernameChanged) && $lastTimeUsernameChanged < CHANGE_USERNAME_LIMIT_IN_DAYS) {
+                        $errors['handle'] = qa_lang('plugin_username_limit/change_username_limit_in_days');
+                    } else {
+                        changeHandle($userid, $inhandle, $useraccount);
+                    }
                 }
             }
 
