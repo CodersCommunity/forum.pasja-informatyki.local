@@ -1,0 +1,26 @@
+{
+  "name": "forum.pasja-informatyki.local",
+  "version": "1.0.0",
+  "description": "To repozytorium zawiera skonfigurowane **środowisko deweloperskie** naszego forum - przygotowane przez grupę **CodersCommunity**. Dzięki temu możliwe jest łatwe i szybkie odwzorowanie warunków środowiska produkcyjnego u każdego, kto zechce pomóc przy rozwoju kodu.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test:e2e": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodersCommunity/forum.pasja-informatyki.local.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodersCommunity/forum.pasja-informatyki.local/issues"
+  },
+  "homepage": "https://github.com/CodersCommunity/forum.pasja-informatyki.local#readme",
+  "devDependencies": {
+    "cypress": "^6.8.0"
+  }
+}

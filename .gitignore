@@ -1,7 +1,12 @@
 .idea/
+.vscode
 .vagrant/
 *.retry
 /vendor/
+node_modules
+cypress/videos/
+cypress/downloads/
+cypress/screenshots/
 /forum/vendor/
 /forum/qa-config.php
 /docker/apache2/**
