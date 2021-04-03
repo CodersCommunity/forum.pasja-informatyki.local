@@ -15,6 +15,7 @@
 
 use CodersCommunity\q2a_changeusernamelimit_admin;
 use CodersCommunity\q2a_changeusernamelimit_event;
+use CodersCommunity\q2a_changeusernamelimit_widget;
 
 if (!defined('QA_VERSION')) {
     header('Location: ../../');
@@ -22,6 +23,14 @@ if (!defined('QA_VERSION')) {
 }
 
 qa_register_plugin_phrases('q2a-changeusernamelimit-lang-*.php', 'plugin_username_limit');
+
+qa_register_plugin_module(
+    'module',
+    'q2a-changeusernamelimit-admin.php',
+    q2a_changeusernamelimit_admin::class,
+    'q2a Change username limit Admin'
+);
+
 qa_register_plugin_module(
     'event',
     'q2a-changeusernamelimit-event.php',
@@ -30,10 +39,10 @@ qa_register_plugin_module(
 );
 
 qa_register_plugin_module(
-    'module',
-    'q2a-changeusernamelimit-admin.php',
-    q2a_changeusernamelimit_admin::class,
-    'q2a Change username limit Admin'
+    'widget',
+    'q2a-changeusernamelimit-widget.php',
+    q2a_changeusernamelimit_widget::class,
+    'q2a Change username limit user profile widget'
 );
 
 qa_register_plugin_overrides('q2a-changeusernamelimit-override.php');
