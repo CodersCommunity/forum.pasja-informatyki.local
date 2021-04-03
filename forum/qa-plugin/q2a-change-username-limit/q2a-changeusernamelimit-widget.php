@@ -29,9 +29,26 @@ class q2a_changeusernamelimit_widget
 
             if (isset($history)) {
                 $themeobject->output('<h2>Historia zmian nazwy użytkownika</h2>');
-                $themeobject->output('<ul>');
+                $themeobject->output('<ul class="q2a-change-username-history-list">');
                 foreach ($history as $item) {
-                    $themeobject->output('<li>Old handle: ' . $item['old'] . '<br>New handle: ' . $item['new'] . '<br>Date: ' . $item['date']. '</li>');
+                    $themeobject->output(
+                        '<li>
+                            <dl>
+                                <div class="q2a-change-username-history-list__entry">
+                                    <dt>Old handle:</dt>
+                                    <dd>' . $item['old'] . '</dd>
+                                </div>
+                                <div class="q2a-change-username-history-list__entry">
+                                    <dt>New handle:</dt>
+                                    <dd>' . $item['new'] . '</dd>
+                                </div>
+                                <div class="q2a-change-username-history-list__entry">
+                                    <dt>Date:</dt>
+                                    <dd>' . $item['date'] . '</dd>
+                                </div>
+                            </dl>
+                        </li>'
+                    );
                 }
                 $themeobject->output('</ul>');
             }
