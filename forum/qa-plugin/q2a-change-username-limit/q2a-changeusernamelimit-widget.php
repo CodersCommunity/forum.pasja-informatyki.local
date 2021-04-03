@@ -23,9 +23,9 @@ class q2a_changeusernamelimit_widget
 
             if (isset($history)) {
                 $themeobject->output('<h2>' . qa_lang('plugin_username_limit/history_title_label') . '</h2>');
-                $themeobject->output('<ul class="q2a-change-username-history-list">');
+                $themeobject->output('<div class="timeline">');
                 $this->populateList($history, $themeobject);
-                $themeobject->output('</ul>');
+                $themeobject->output('</div>');
             }
         }
     }
@@ -43,24 +43,16 @@ class q2a_changeusernamelimit_widget
 
     private function populateList(array $history, $themeobject): void
     {
-        foreach ($history as $item) {
-            $themeobject->output(
-                '<li>
-                    <dl>
-                        <div class="q2a-change-username-history-list__entry">
-                            <dt>' . qa_lang('plugin_username_limit/old_handle_label') . '</dt>
-                            <dd>' . $item['old'] . '</dd>
-                        </div>
-                        <div class="q2a-change-username-history-list__entry">
-                            <dt>' . qa_lang('plugin_username_limit/new_handle_label') . '</dt>
-                            <dd>' . $item['new'] . '</dd>
-                        </div>
-                        <div class="q2a-change-username-history-list__entry">
-                            <dt>' . qa_lang('plugin_username_limit/date_label') . '</dt>
-                            <dd>' . $item['date'] . '</dd>
-                        </div>
-                    </dl>
-                </li>'
+        foreach($history as $key => $item) {
+            $side = ($key % 2 === 0) ? 'left' : 'right';
+            $themeobject->output("
+                <div class=\"container {$side}\">
+                    <div class=\"content\">
+                        <h2>{$item['date']}</h2>
+                        <p>" . qa_lang('plugin_username_limit/old_handle_label') . " {$item['old']}</p>
+                        <p>" . qa_lang('plugin_username_limit/new_handle_label') . " {$item['new']}</p>
+                    </div>
+                </div>"
             );
         }
     }
