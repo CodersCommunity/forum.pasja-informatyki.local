@@ -14,6 +14,7 @@
 
 
 use CodersCommunity\q2a_changeusernamelimit_admin;
+use CodersCommunity\q2a_changeusernamelimit_event;
 
 if (!defined('QA_VERSION')) {
     header('Location: ../../');
