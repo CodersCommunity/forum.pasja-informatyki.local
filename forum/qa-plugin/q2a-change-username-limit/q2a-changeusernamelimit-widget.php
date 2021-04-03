@@ -22,28 +22,9 @@ class q2a_changeusernamelimit_widget
             $history = $this->loadHistoryFromDatabase($user);
 
             if (isset($history)) {
-                $themeobject->output('<h2>Historia zmian nazwy użytkownika</h2>');
+                $themeobject->output('<h2>' . qa_lang('plugin_username_limit/history_title_label') . '</h2>');
                 $themeobject->output('<ul class="q2a-change-username-history-list">');
-                foreach ($history as $item) {
-                    $themeobject->output(
-                        '<li>
-                            <dl>
-                                <div class="q2a-change-username-history-list__entry">
-                                    <dt>Old handle:</dt>
-                                    <dd>' . $item['old'] . '</dd>
-                                </div>
-                                <div class="q2a-change-username-history-list__entry">
-                                    <dt>New handle:</dt>
-                                    <dd>' . $item['new'] . '</dd>
-                                </div>
-                                <div class="q2a-change-username-history-list__entry">
-                                    <dt>Date:</dt>
-                                    <dd>' . $item['date'] . '</dd>
-                                </div>
-                            </dl>
-                        </li>'
-                    );
-                }
+                $this->populateList($history, $themeobject);
                 $themeobject->output('</ul>');
             }
         }
@@ -58,5 +39,29 @@ class q2a_changeusernamelimit_widget
                     WHERE handle=#',
                 $user))['username_change_history'],
             true);
+    }
+
+    private function populateList(array $history, $themeobject): void
+    {
+        foreach ($history as $item) {
+            $themeobject->output(
+                '<li>
+                    <dl>
+                        <div class="q2a-change-username-history-list__entry">
+                            <dt>' . qa_lang('plugin_username_limit/old_handle_label') . '</dt>
+                            <dd>' . $item['old'] . '</dd>
+                        </div>
+                        <div class="q2a-change-username-history-list__entry">
+                            <dt>' . qa_lang('plugin_username_limit/new_handle_label') . '</dt>
+                            <dd>' . $item['new'] . '</dd>
+                        </div>
+                        <div class="q2a-change-username-history-list__entry">
+                            <dt>' . qa_lang('plugin_username_limit/date_label') . '</dt>
+                            <dd>' . $item['date'] . '</dd>
+                        </div>
+                    </dl>
+                </li>'
+            );
+        }
     }
 }
