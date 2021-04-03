@@ -6,7 +6,7 @@ class q2a_changeusernamelimit_widget
 {
     public function allow_template(string $template): bool
     {
-        return 'user' === $template;
+        return ('user' === $template) && (qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN);
     }
 
     public function allow_region(string $region): bool
@@ -19,13 +19,7 @@ class q2a_changeusernamelimit_widget
         $user = explode('/', $request)[1];
 
         if (!empty($user)) {
-            $history = json_decode(
-                qa_db_read_one_assoc(qa_db_query_sub('
-                    SELECT username_change_history 
-                    FROM ^users 
-                    WHERE handle=#',
-                    $user))['username_change_history'],
-                true);
+            $history = $this->loadHistoryFromDatabase($user);
 
             if (isset($history)) {
                 $themeobject->output('<h2>Historia zmian nazwy użytkownika</h2>');
@@ -53,5 +47,16 @@ class q2a_changeusernamelimit_widget
                 $themeobject->output('</ul>');
             }
         }
+    }
+
+    private function loadHistoryFromDatabase(string $user): ?array
+    {
+         return json_decode(
+            qa_db_read_one_assoc(qa_db_query_sub('
+                    SELECT username_change_history 
+                    FROM ^users 
+                    WHERE handle=#',
+                $user))['username_change_history'],
+            true);
     }
 }

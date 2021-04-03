@@ -1,0 +1,5 @@
+.q2a-change-username-history-list .q2a-change-username-history-list__entry {
+    display: flex;
+    width: 300px;
+    justify-content: space-between;
+}
