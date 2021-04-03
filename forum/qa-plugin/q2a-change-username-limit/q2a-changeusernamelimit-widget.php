@@ -6,7 +6,7 @@ class q2a_changeusernamelimit_widget
 {
     public function allow_template(string $template): bool
     {
-        return ('user' === $template) && (qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR);
+        return ('user' === $template) && (qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN);
     }
 
     public function allow_region(string $region): bool
@@ -23,9 +23,9 @@ class q2a_changeusernamelimit_widget
 
             if (isset($history)) {
                 $themeobject->output('<h2>' . qa_lang('plugin_username_limit/history_title_label') . '</h2>');
-                $themeobject->output('<div class="timeline">');
+                $themeobject->output('<ul class="q2a-change-username-history-list">');
                 $this->populateList($history, $themeobject);
-                $themeobject->output('</div>');
+                $themeobject->output('</ul>');
             }
         }
     }
@@ -43,16 +43,21 @@ class q2a_changeusernamelimit_widget
 
     private function populateList(array $history, $themeobject): void
     {
-        foreach($history as $key => $item) {
-            $side = ($key % 2 === 0) ? 'left' : 'right';
-            $themeobject->output("
-                <div class=\"container {$side}\">
-                    <div class=\"content\">
-                        <h2>{$item['date']}</h2>
-                        <p>" . qa_lang('plugin_username_limit/old_handle_label') . " {$item['old']}</p>
-                        <p>" . qa_lang('plugin_username_limit/new_handle_label') . " {$item['new']}</p>
+        foreach ($history as $item) {
+            [$itemDate, $itemTime] = explode(' ', $item['date']);
+
+            $themeobject->output(
+                '<li class="q2a-change-username-history-list__item">
+                    <div class="q2a-change-username-history-list__entry">
+                        <div class="q2a-change-username-history-list__datetime">
+                            <time datetime="' . $itemDate . '">' . $itemDate . '</time>
+                            <time datetime="' . $itemTime . '">' . $itemTime . '</time>
+                        </div>
+                        <div class="q2a-change-username-history-list__info">
+                            <span>' . $item['old'] . '</span><i>&rarr;</i><span>' . $item['new'] . '</span>
+                        </div>
                     </div>
-                </div>"
+                </li>'
             );
         }
     }
