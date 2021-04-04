@@ -22,10 +22,12 @@ class q2a_changeusernamelimit_widget
             $history = $this->loadHistoryFromDatabase($user);
 
             if (isset($history)) {
-                $themeobject->output('<h2>' . qa_lang('plugin_username_limit/history_title_label') . '</h2>');
+                $themeobject->output('<div class="qa-part-message-list">');
+                $themeobject->output('<h2><a name="history">' . qa_lang('plugin_username_limit/history_title_label') . '</a></h2>');
                 $themeobject->output('<ul class="q2a-change-username-history-list">');
                 $this->populateList($history, $themeobject);
                 $themeobject->output('</ul>');
+                $themeobject->output('</div>');
             }
         }
     }
