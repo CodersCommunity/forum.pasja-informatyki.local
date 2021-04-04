@@ -20,6 +20,7 @@ class q2a_changeusernamelimit_widget
 
         if (!empty($user)) {
             $history = $this->loadHistoryFromDatabase($user);
+            $history = $this->sortHistory($history);
 
             if (isset($history)) {
                 $themeobject->output('<div class="qa-part-message-list">');
@@ -62,5 +63,13 @@ class q2a_changeusernamelimit_widget
                 </li>'
             );
         }
+    }
+
+    private function sortHistory(?array $history): ?array
+    {
+        array_multisort(array_map('strtotime', array_column($history, 'date')),
+            SORT_DESC,
+            $history);
+        return $history;
     }
 }
