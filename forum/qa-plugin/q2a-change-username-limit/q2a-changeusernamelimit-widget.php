@@ -6,7 +6,7 @@ class q2a_changeusernamelimit_widget
 {
     public function allow_template(string $template): bool
     {
-        return ('user' === $template) && (qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN);
+        return ('user' === $template) && (qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR);
     }
 
     public function allow_region(string $region): bool
