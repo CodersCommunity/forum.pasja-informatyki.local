@@ -20,9 +20,9 @@ class q2a_changeusernamelimit_widget
 
         if (!empty($user)) {
             $history = $this->loadHistoryFromDatabase($user);
-            $history = $this->sortHistory($history);
 
             if (isset($history)) {
+                $history = $this->sortHistory($history);
                 $themeobject->output('<section class="qa-part-form-profile">');
                 $themeobject->output('<h2><a id="history">' . qa_lang('plugin_username_limit/history_title_label') . '</a></h2>');
                 $themeobject->output('<ol class="q2a-change-username-history-list">');
@@ -65,7 +65,7 @@ class q2a_changeusernamelimit_widget
         }
     }
 
-    private function sortHistory(?array $history): ?array
+    private function sortHistory(array $history): ?array
     {
         array_multisort(array_map('strtotime', array_column($history, 'date')),
             SORT_DESC,
