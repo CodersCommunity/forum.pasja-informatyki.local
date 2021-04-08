@@ -1,6 +1,6 @@
 .q2a-change-username-history-list {
     list-style: none;
-    width: 450px;
+    width: 100%;
     position: relative;
 
     --primary-color: #4aa3df;
