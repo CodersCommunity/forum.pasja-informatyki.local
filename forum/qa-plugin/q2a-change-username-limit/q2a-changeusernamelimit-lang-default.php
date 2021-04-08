@@ -16,4 +16,5 @@ return [
     'new_handle_label' => 'Nowy nick: ',
     'date_label' => 'Data zmiany: ',
     'permission_denied' => 'Nie masz uprawnień.',
+    'no_changes' => 'Brak zmian.',
 ];

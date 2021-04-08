@@ -30,7 +30,7 @@ class q2a_changeusernamelimit_widget
                 $this->populateList($history, $themeobject);
                 $themeobject->output('</ol>');
             } else {
-                $themeobject->output('<p>Brak zmian</p>');
+                $themeobject->output('<p>'. qa_lang('plugin_username_limit/no_changes') .'</p>');
             }
 
             $themeobject->output('</section>');

@@ -67,9 +67,11 @@ function modifyChangeUsernameHistory($userid, $oldhandle, $newhandle, $date): vo
 
 function changeHandle($userid, $inhandle, $useraccount): void
 {
-    qa_db_user_set($userid, 'handle', $inhandle);
-    qa_db_user_set($userid, 'username_change_date', date('Y-m-d H:i:s'));
-    modifyChangeUsernameHistory($userid, $useraccount['handle'], $inhandle, date('Y-m-d H:i:s'));
+    if($inhandle !== $useraccount['handle']) {
+        qa_db_user_set($userid, 'handle', $inhandle);
+        qa_db_user_set($userid, 'username_change_date', date('Y-m-d H:i:s'));
+        modifyChangeUsernameHistory($userid, $useraccount['handle'], $inhandle, date('Y-m-d H:i:s'));
+    }
 }
 
 require_once QA_INCLUDE_DIR.'db/users.php';
