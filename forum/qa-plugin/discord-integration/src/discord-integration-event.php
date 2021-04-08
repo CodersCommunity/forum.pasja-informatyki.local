@@ -32,6 +32,17 @@ class discord_integration_event
                 }
 
                 break;
+            case 'u_save':
+                $result = qa_db_query_sub(
+                    'SELECT d.discord_id FROM ^users u JOIN ^discord_integrations d ON u.userid=d.id_user WHERE u.userid=$ AND d.disconnected_date IS NULL LIMIT 1',
+                    $userid
+                );
+                if ($result->num_rows > 0) {
+                    $data = qa_db_read_one_assoc($result);
+                    $this->api->change_user_nick($data['discord_id'], $handle);
+                }
+
+                break;
             case 'u_block':
                 $result = qa_db_query_sub(
                     'SELECT id_integration, discord_id FROM ^discord_integrations WHERE id_user=$ AND disconnected_date IS NULL LIMIT 1',
@@ -42,7 +53,7 @@ class discord_integration_event
                     $this->api->remove_user_from_guild($data['discord_id']);
 
                     qa_db_query_sub(
-                        "UPDATE ^discord_integrations SET disconnected_date=NOW() WHERE id_integration=#",
+                        'UPDATE ^discord_integrations SET disconnected_date=NOW() WHERE id_integration=#',
                         $data['id_integration']
                     );
                 }

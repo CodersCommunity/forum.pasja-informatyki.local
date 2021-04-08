@@ -1,12 +1,13 @@
 {
     "name": "Discord integration",
     "uri": "https://github.com/awaluk/q2a-discord-integration",
-    "description": "Plugin to link Discord account with Q2A account",
-    "version": "1.0",
-    "date": "2019-08-15",
+    "description": "Link Discord accounts with Q2A accounts",
+    "version": "1.0.1",
+    "date": "2020-08-29",
     "author": "Arkadiusz Waluk",
-    "author_uri": "http://waluk.pl",
+    "author_uri": "https://waluk.pl",
     "license": "MIT",
     "update_uri": "https://raw.githubusercontent.com/awaluk/q2a-discord-integration/master/metadata.json",
-    "min_q2a": "1.5"
+    "min_q2a": "1.7",
+    "min_php": "7.0"
 }

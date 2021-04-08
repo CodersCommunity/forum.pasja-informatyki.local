@@ -21,7 +21,8 @@ class discord_integration_admin
             qa_opt('discord_integration_bottom_info', $bottom_info);
             $saved = true;
         }
-        $form = [
+
+        return [
             'ok' => $saved ? qa_lang_html('discord_integration/admin_ok_info') : null,
             'fields' => [
                 'input1' => [
@@ -70,8 +71,6 @@ class discord_integration_admin
                 ]
             ]
         ];
-
-        return $form;
     }
 
     public function init_queries($tableslc)

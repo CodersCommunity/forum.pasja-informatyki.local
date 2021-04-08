@@ -3,19 +3,20 @@
 /*
     Plugin Name: Discord integration
     Plugin URI: https://github.com/awaluk/q2a-discord-integration
-    Plugin Description: Plugin to link Discord account with Q2A account
-    Plugin Version: 1.0
-    Plugin Date: 2019-08-15
+    Plugin Description: Link Discord accounts with Q2A accounts
+    Plugin Version: 1.0.1
+    Plugin Date: 2020-08-29
     Plugin Author: Arkadiusz Waluk
     Plugin Author URI: https://waluk.pl
     Plugin License: MIT
-    Plugin Minimum Question2Answer Version: 1.5
+    Plugin Minimum Question2Answer Version: 1.7
+    Plugin Minimum PHP Version: 7.0
     Plugin Update Check URI: https://raw.githubusercontent.com/awaluk/q2a-discord-integration/master/metadata.json
 */
 
 if (!defined('QA_VERSION')) {
     header('Location: ../../');
-    exit;
+    exit();
 }
 
 qa_register_plugin_module('page', 'src/discord-integration-page.php', 'discord_integration_page', 'Discord integration');
