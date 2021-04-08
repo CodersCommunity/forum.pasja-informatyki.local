@@ -69,7 +69,7 @@ class discord_integration_page
             }
 
             $count = qa_db_read_one_value(qa_db_query_sub(
-                "SELECT COUNT(id_integration) FROM ^discord_integrations WHERE discord_id=# AND disconnected_date IS NULL",
+                'SELECT COUNT(id_integration) FROM ^discord_integrations WHERE discord_id=# AND disconnected_date IS NULL',
                 $user_data['id']
             ));
             if ($count > 0) {
@@ -82,7 +82,7 @@ class discord_integration_page
 
             $this->api->join_user_to_guild($user_data['id'], qa_get_logged_in_handle(), $token_data['access_token']);
             qa_db_query_sub(
-                "INSERT INTO ^discord_integrations (id_user, discord_id, discord_username, discord_discriminator) VALUES ($, #, #, #)",
+                'INSERT INTO ^discord_integrations (id_user, discord_id, discord_username, discord_discriminator) VALUES ($, #, #, #)',
                 $user_id,
                 $user_data['id'],
                 $user_data['username'],

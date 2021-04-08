@@ -27,7 +27,9 @@ class discord_api
 
     public function join_user_to_guild($user_id, $nick, $token)
     {
-        return $this->request('/guilds/' . qa_opt('discord_integration_guild_id') . '/members/' . $user_id, json_encode([
+        $url = '/guilds/' . qa_opt('discord_integration_guild_id') . '/members/' . $user_id;
+
+        return $this->request($url, json_encode([
             'nick' => $nick,
             'access_token' => $token
         ]), [
@@ -46,7 +48,9 @@ class discord_api
 
     public function change_user_nick($user_id, $nick)
     {
-        return $this->request('/guilds/' . qa_opt('discord_integration_guild_id') . '/members/' . $user_id, json_encode([
+        $url = '/guilds/' . qa_opt('discord_integration_guild_id') . '/members/' . $user_id;
+
+        return $this->request($url, json_encode([
             'nick' => $nick,
         ]), [
             'Content-Type: application/json',
