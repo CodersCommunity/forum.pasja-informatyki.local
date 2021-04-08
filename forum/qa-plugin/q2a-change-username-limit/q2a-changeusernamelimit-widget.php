@@ -74,6 +74,7 @@ class q2a_changeusernamelimit_widget
         array_multisort(array_map('strtotime', array_column($history, 'date')),
             SORT_DESC,
             $history);
+
         return $history;
     }
 }

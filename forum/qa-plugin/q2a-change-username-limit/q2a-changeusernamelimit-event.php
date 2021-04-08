@@ -11,10 +11,12 @@ class q2a_changeusernamelimit_event
             $newHandle = qa_post_text('handle');
             $oldUserId = $params['userid'];
 
-            if (($oldHandle !== $newHandle) && qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN) {
+            if ($oldHandle !== $newHandle) {
+                if (qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN) {
+                    qa_fatal_error(qa_lang('plugin_username_limit/permission_denied'));
+                }
+
                 $this->changeHandle($oldUserId, $oldHandle, $newHandle);
-            } else {
-                qa_fatal_error('Nie masz uprawnień.');
             }
         }
     }
