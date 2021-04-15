@@ -511,24 +511,22 @@ TAG
         $sidebar = $sidebar . '<div style="padding:10px; text-align:justify; line-height: 115%;">' .
             '<a href="/questions/programowanie/c-plus-plus" class="sidebarnav">C i C++</a> ' .
             '<a href="/questions/programowanie/html-css" class="sidebarnav">HTML i CSS</a> ' .
-            '<a href="/questions/programowanie/javascript-jquery-ajax" class="sidebarnav">JS, jQuery, AJAX</a> ' .
-            '<a href="/questions/programowanie/php-symfony-zend" class="sidebarnav">PHP, Symfony, Zend</a> ' .
-            '<a href="/questions/programowanie/mysql-bazy-danych" class="sidebarnav">SQL, bazy danych</a> ' .
-            '<a href="/questions/programowanie/hosting-domeny" class="sidebarnav">Hostingi, domeny</a> ' .
-            '<a href="/questions/programowanie/spoj" class="sidebarnav">SPOJ</a> ' .
-            '<a href="/questions/programowanie/systemy-cms" class="sidebarnav">Systemy CMS</a> ' .
-            '<a href="/questions/programowanie/pascal-delphi" class="sidebarnav">Pascal, Delphi</a> ' .
-            '<a href="/questions/programowanie/c-sharp-dot-net" class="sidebarnav">C# i .NET</a> ' .
+            '<a href="/questions/programowanie/javascript" class="sidebarnav">JavaScript</a> ' .
+            '<a href="/questions/programowanie/php" class="sidebarnav">PHP</a> ' .
+            '<a href="/questions/programowanie/sql-bazy-danych" class="sidebarnav">SQL, bazy danych</a> ' .
+            '<a href="/questions/programowanie/c-sharp" class="sidebarnav">C#</a> ' .
             '<a href="/questions/programowanie/java" class="sidebarnav">Java</a> ' .
-            '<a href="/questions/programowanie/python-django" class="sidebarnav">Python, &nbsp;Django </a>' .
+            '<a href="/questions/programowanie/spoj" class="sidebarnav">SPOJ</a> ' .
+            '<a href="/questions/programowanie/python" class="sidebarnav">Python</a> ' .
+            '<a href="/questions/programowanie/ruby-i-ruby-on-rails" class="sidebarnav">Ruby</a> ' .
             '<a href="/questions/programowanie/assembler" class="sidebarnav">Assembler</a> ' .
-            '<a href="/questions/programowanie/ruby-i-ruby-on-rails" class="sidebarnav">Ruby, Ruby On Rails</a> ' .
             '<a href="/questions/programowanie/visual-basic" class="sidebarnav">Visual Basic</a> ' .
             '<a href="/questions/programowanie/android-ios-swift-symbian" class="sidebarnav">Android, Swift, Symbian</a> ' .
             '<a href="/questions/programowanie/opengl-unity" class="sidebarnav">OpenGL, Unity</a> ' .
+            '<a href="/questions/programowanie/inne-jezyki" class="sidebarnav">Inne języki</a> ' .
             '<a href="/questions/programowanie/algorytmy" class="sidebarnav">Algorytmy</a> ' .
-            '<a href="/questions/programowanie/arduino" class="sidebarnav">Arduino</a> ' .
-            '<a href="/questions/programowanie/inne-jezyki" class="sidebarnav">Inne języki programowania</a> ';
+            '<a href="/questions/programowanie/systemy-cms" class="sidebarnav">Systemy CMS</a> ' .
+            '<a href="/questions/programowanie/mikrokontrolery" class="sidebarnav">Mikrokontrolery</a>';
 
         $sidebar .= '</div>' . $this->output_raw($sidebar);
         $this->output('</div></div>', '');
@@ -811,10 +809,11 @@ TAG
             'sprzet-komputerowy' => ['tooltip' => 'Sprzęt komputerowy', 'icon' => 'net'],
             'systemy-operacyjne-programy' => ['tooltip' => 'Systemy operacyjne, programy', 'icon' => 'os'],
             'sieci-komputerowe-internet' => ['tooltip' => 'Sieci komputerowe', 'icon' => 'eth'],
-            'telefony-tablety' => ['tooltip' => 'Telefony i tablety', 'icon' => 'ph'],
+            'hostingi-domeny-uslugi' => ['tooltip' => 'Hostingi, domeny, usługi', 'icon' => 'server'],
+            'urzadzenia-mobilne' => ['tooltip' => 'Urządzenia mobilne', 'icon' => 'ph'],
             'bezpieczenstwo-hacking' => ['tooltip' => 'Bezpieczeństwo, hacking', 'icon' => 'key'],
             'rozwoj-zawodowy' => ['tooltip' => 'Rozwój zawodowy, nauka, praca', 'icon' => 'stu'],
-            'egzaminy-e12-e13-e14' => ['tooltip' => 'Egzaminy zawodowe E12, E13, E14', 'icon' => 'egz'],
+            'egzaminy-zawodowe' => ['tooltip' => 'Egzaminy zawodowe', 'icon' => 'egz'],
             'matematyka-fizyka-logika' => ['tooltip' => 'Matematyka, fizyka, logika', 'icon' => 'ruler'],
             'grafika-i-multimedia' => ['tooltip' => 'Grafika i multimedia', 'icon' => 'brush'],
             'ogloszenia-zlecenia' => ['tooltip' => 'Ogłoszenia, zlecenia', 'icon' => 'note'],
@@ -867,7 +866,7 @@ TAG
         foreach ($categories as $category => $value) {
             $isActiveCategory = $this->isActiveCategory($adres, $category);
             $currentPosition++;
-            $tooltipPosition = (!in_array($currentPosition, [3, 4, 7, 8, 11, 12]) ? '' : 'tooltip-right-position');
+            $tooltipPosition = (!in_array($currentPosition, [3, 4, 7, 8, 11, 12, 15, 16]) ? '' : 'tooltip-right-position');
 
             $sidebar .= <<<EOF
 <div class="qa-nav-main-item">

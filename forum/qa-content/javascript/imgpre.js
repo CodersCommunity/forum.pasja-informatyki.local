@@ -6,6 +6,7 @@
 		'net1.png',
 		'os1.png',
 		'eth1.png',
+		'server1.png',
 		'ph1.png',
 		'key1.png',
 		'stu1.png',
@@ -21,12 +22,12 @@
 	];
 
 	window.addEventListener('load', function() {
-		
+
 		icons.forEach(function(icon) {
 			var asyncImg = new Image();
 			asyncImg.src = iconsFolderURL + icon;
 		});
 
 	});
-	
+
 })();
