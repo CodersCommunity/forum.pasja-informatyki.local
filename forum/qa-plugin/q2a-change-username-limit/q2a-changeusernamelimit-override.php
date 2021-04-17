@@ -9,6 +9,7 @@ function qa_page_routing()
     }
 
     $base['account'] = '../qa-plugin/q2a-change-username-limit/page/account.php';
+    $base['migrate'] = '../qa-plugin/q2a-change-username-limit/page/migrate.php';
 
     return $base;
 }
