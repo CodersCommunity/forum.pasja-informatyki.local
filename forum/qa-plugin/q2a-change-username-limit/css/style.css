@@ -1,0 +1,65 @@
+.q2a-change-username-history-list {
+    list-style: none;
+    width: 100%;
+    position: relative;
+
+    --primary-color: #4aa3df;
+    --secondary-color: white;
+}
+
+.q2a-change-username-history-list::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    height: 100%;
+    width: 5px;
+    background: var(--primary-color);
+}
+
+.q2a-change-username-history-list__item {
+    border: 2px solid var(--primary-color);
+    position: relative;
+    margin: 20px 0px;
+    border-radius: 5px;
+}
+
+.q2a-change-username-history-list__item::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    border: 2px solid var(--secondary-color);
+}
+
+.q2a-change-username-history-list__entry {
+    display: flex;
+    justify-content: space-between;
+}
+
+.q2a-change-username-history-list__datetime {
+    display: flex;
+    flex-direction: column;
+    padding: 3px 10px;
+}
+
+.q2a-change-username-history-list__datetime :first-child {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.q2a-change-username-history-list__info {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-grow: 1;
+}
+
+.q2a-change-username-history-list__info i {
+    font-size: 1.5em;
+}

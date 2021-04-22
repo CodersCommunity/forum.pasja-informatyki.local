@@ -39,6 +39,8 @@ define('QA_RESOURCE_VERSION', null);
 define('QA_WS_TOKEN', 'secretKey');
 define('QA_WS_URL', 'http://web_socket:3000');
 
+define('CHANGE_USERNAME_LIMIT_IN_DAYS', 30);
+
 /*
     Set QA_EXTERNAL_USERS to true to use your user identification code in qa-external/qa-external-users.php
     This allows you to integrate with your existing user database and management system. For more details,

@@ -1,0 +1,14 @@
+{
+  "name": "Set limit to change username",
+  "uri": "Web address for your plugin",
+  "description": "Set limit to change username",
+  "version": "1.0.0",
+  "date": "2021-03-28",
+  "author": "@event15",
+  "author_uri": "https://github.com/event15",
+  "license": "GPLv2",
+  "update_uri": "https://github.com/CodersCommunity/forum.pasja-informatyki.local/tree/master/forum/qa-plugin/q2a-change-username-limit/metadata.json",
+  "min_q2a": "1.5",
+  "min_php": "7.1",
+  "load_order": "after_db_init"
+}
