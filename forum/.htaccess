@@ -16,6 +16,7 @@ ErrorDocument 403 /vagrant/forum/index.php
 
     RewriteRule ^questions/telefony-tablety$ /questions/urzadzenia-mobilne [R=301,L]
     RewriteRule ^questions/egzaminy-e12-e13-e14$ /questions/egzaminy-zawodowe [R=301,L]
+    RewriteRule ^questions/programowanie/hosting-domeny$ /questions/hostingi-domeny-uslugi [R=301,L]
     RewriteRule ^questions/programowanie/javascript-jquery-ajax$ /questions/programowanie/javascript [R=301,L]
     RewriteRule ^questions/programowanie/php-symfony-zend$ /questions/programowanie/php [R=301,L]
     RewriteRule ^questions/programowanie/mysql-bazy-danych$ /questions/programowanie/sql-bazy-danych [R=301,L]
