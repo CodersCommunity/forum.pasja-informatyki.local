@@ -88,8 +88,8 @@ class qa_html_theme_layer extends qa_html_theme_base
 			// add some custom text
 			if(!empty($this->content['custom'])) {
 				$content = str_ireplace('<BR>', '', $this->content['custom']);
-				$this->content['custom'] = "<div>".'<p style="margin:24px 0;text-align:justify;">Używanie forum poprzez konto facebookowe oznacza wyrażenie zgody na przetwarzanie danych oraz akceptację <a href="https://forum.pasja-informatyki.pl/regulamin-forum" target="_blank" original-title="" title="">Regulaminu</a>  i <a href="https://forum.pasja-informatyki.pl/polityka-prywatnosci" target="_blank" original-title="" title="">Polityki Prywatności</a>.'."</p>$content</div>";
-				
+                $this->content['custom'] = "<div>".'<p style="margin:24px 0;text-align:justify;">Używanie forum poprzez konto facebookowe oznacza wyrażenie zgody na przetwarzanie danych oraz akceptację <a href="/regulamin-forum" target="_blank" original-title="" title="">Regulaminu</a>  i <a href="/polityka-prywatnosci" target="_blank" original-title="" title="">Polityki Prywatności</a>.<p style="margin:24px 0;text-align:justify;">Przy pierwszym logowaniu Twoją nazwą użytkownika stanie się imię i nazwisko z Facebooka. Możesz jednak łatwo wybrać inną nazwę poprzez <a href="/faq#czy-mozna-zmienic-nazwe-uzytkownika" target="_blank">zmianę ustawień konta</a>.</p>'."</p>$content</div>";
+
 				if($this->content['form'] != null) {
 					$this->content['custom'] = "<h1>$title</h1>{$this->content['custom']}";
 				}
