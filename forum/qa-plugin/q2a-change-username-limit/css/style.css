@@ -70,6 +70,10 @@
         flex-direction: column;
     }
 
+    .q2a-change-username-history-list__datetime :first-child {
+        font-size: 1.4em;
+    }
+
     .q2a-change-username-history-list__datetime {
         flex-direction: row;
         justify-content: space-around;
@@ -102,6 +106,7 @@
 }
 
 @media screen and (max-width: 375px) {
+
     .q2a-change-username-history-list__datetime {
         flex-direction: column;
         align-items: center;
