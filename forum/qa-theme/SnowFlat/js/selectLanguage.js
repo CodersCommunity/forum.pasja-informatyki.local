@@ -4,19 +4,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const categories = [
                 {category: 'HTML i CSS', language: 'xml'},
                 {category: 'C i C++', language: 'cpp'},
-                {category: 'JavaScript, jQuery, AJAX', language: 'jscript'},
-                {category: 'PHP, Symfony, Zend', language: 'php'},
+                {category: 'JavaScript', language: 'jscript'},
+                {category: 'PHP', language: 'php'},
                 {category: 'SQL, bazy danych', language: 'sql'},
-                {category: 'C# i .NET', language: 'csharp'},
+                {category: 'C#', language: 'csharp'},
                 {category: 'Java', language: 'java'},
-                {category: 'Python, Django', language: 'python'},
+                {category: 'Python', language: 'python'},
                 {category: 'SPOJ', language: 'cpp'},
-                {category: 'Pascal, Delphi', language: 'delphi'},
-                {category: 'Ruby, Ruby On Jails', language: 'ruby'},
+                {category: 'Ruby', language: 'ruby'},
                 {category: 'Visual Basic', language: 'vb'},
                 {category: 'Android, Swift, Symbian', language: 'java'},
                 {category: 'OpenGL, Unity', language: 'cpp'},
-                {category: 'Arduino', language: 'cpp'}
+                {category: 'Mikrokontrolery', language: 'cpp'},
+                {category: 'Systemy CMS', language: 'php'}
             ];
 
             let clickHandler;
