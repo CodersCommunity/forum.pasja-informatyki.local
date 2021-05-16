@@ -26,6 +26,8 @@ RUN curl -o /usr/local/bin/composer https://getcomposer.org/composer.phar && chm
 
 RUN echo "sendmail_path=/usr/local/bin/mhsendmail" >> /usr/local/etc/php/conf.d/php.ini
 
+RUN curl -fsSL https://deb.nodesource.com/setup_11.x | bash - && apt-get install -y nodejs
+
 COPY forum.conf /etc/apache2/sites-available/
 RUN a2enmod rewrite
 RUN a2dissite 000-default && a2ensite forum.conf
