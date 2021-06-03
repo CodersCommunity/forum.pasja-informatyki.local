@@ -48,6 +48,7 @@
 	if (qa_get_logged_in_level()<QA_USER_LEVEL_MODERATOR) {
 		$qa_content=qa_content_prepare();
 		$qa_content['error']=qa_lang_html('users/no_permission');
+		$qa_content['http_status']=403;
 		return $qa_content;
 	}
 

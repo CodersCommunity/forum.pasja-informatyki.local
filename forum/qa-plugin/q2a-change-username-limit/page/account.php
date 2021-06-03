@@ -419,6 +419,7 @@ if (!qa_opt('mailing_enabled')) {
 if ($isblocked) {
     unset($qa_content['form_profile']['buttons']['save']);
     $qa_content['error']=qa_lang_html('users/no_permission');
+    $qa_content['http_status']=403;
 }
 
 //	Avatar upload stuff

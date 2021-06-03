@@ -81,6 +81,7 @@
 
 		} else
 			$qa_content['error']=qa_lang_html('users/no_permission');
+			$qa_content['http_status']=403;
 
 		return $qa_content;
 	}

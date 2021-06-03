@@ -95,6 +95,7 @@
 			$qa_content['error']=qa_lang_html('question/q_hidden_other');
 
 		$qa_content['suggest_next']=qa_html_suggest_qs_tags(qa_using_tags());
+		$qa_content['http_status']=404;
 
 		return $qa_content;
 	}
@@ -108,18 +109,22 @@
 		switch ($permiterror) {
 			case 'login':
 				$qa_content['error']=qa_insert_login_links(qa_lang_html('main/view_q_must_login'), $topage);
+				$qa_content['http_status']=401;
 				break;
 
 			case 'confirm':
 				$qa_content['error']=qa_insert_login_links(qa_lang_html('main/view_q_must_confirm'), $topage);
+				$qa_content['http_status']=403;
 				break;
 
 			case 'approve':
 				$qa_content['error']=qa_lang_html('main/view_q_must_be_approved');
+				$qa_content['http_status']=403;
 				break;
 
 			default:
 				$qa_content['error']=qa_lang_html('users/no_permission');
+				$qa_content['http_status']=403;
 				break;
 		}
 

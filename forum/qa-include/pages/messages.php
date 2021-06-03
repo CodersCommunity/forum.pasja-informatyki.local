@@ -50,6 +50,7 @@
 	if (!isset($loginUserId)) {
 		$qa_content = qa_content_prepare();
 		$qa_content['error'] = qa_insert_login_links(qa_lang_html('misc/message_must_login'), qa_request());
+		$qa_content['http_status'] = 401;
 		return $qa_content;
 	}
 

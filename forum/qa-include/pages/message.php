@@ -47,12 +47,14 @@
 
 	if (!isset($loginuserid)) {
 		$qa_content['error'] = qa_insert_login_links(qa_lang_html('misc/message_must_login'), qa_request());
+		$qa_content['http_status'] = 401;
 		return $qa_content;
 	}
 
 	if ($handle === $fromhandle) {
 		// prevent users sending messages to themselves
 		$qa_content['error'] = qa_lang_html('users/no_permission');
+		$qa_content['http_status'] = 403;
 		return $qa_content;
 	}
 
