@@ -234,11 +234,11 @@
 	Update the titlecount column in the database for the words in $wordids, based on how many posts they appear in the title of
 */
 	{
-		if (qa_should_update_counts() && count($wordids))
-			qa_db_query_sub(
-				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^titlewords.wordid) AS titlecount FROM ^words LEFT JOIN ^titlewords ON ^titlewords.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.titlecount=a.titlecount WHERE x.wordid=a.wordid',
-				$wordids
-			);
+//		if (qa_should_update_counts() && count($wordids))
+//			qa_db_query_sub(
+//				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^titlewords.wordid) AS titlecount FROM ^words LEFT JOIN ^titlewords ON ^titlewords.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.titlecount=a.titlecount WHERE x.wordid=a.wordid',
+//				$wordids
+//			);
 	}
 
 
@@ -247,11 +247,11 @@
 	Update the contentcount column in the database for the words in $wordids, based on how many posts they appear in the content of
 */
 	{
-		if (qa_should_update_counts() && count($wordids))
-			qa_db_query_sub(
-				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^contentwords.wordid) AS contentcount FROM ^words LEFT JOIN ^contentwords ON ^contentwords.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.contentcount=a.contentcount WHERE x.wordid=a.wordid',
-				$wordids
-			);
+//		if (qa_should_update_counts() && count($wordids))
+//            qa_db_query_sub(
+//                'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^contentwords.wordid) AS contentcount FROM ^words LEFT JOIN ^contentwords ON ^contentwords.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.contentcount=a.contentcount WHERE x.wordid=a.wordid',
+//                $wordids
+//            );
 	}
 
 
@@ -260,11 +260,11 @@
 	Update the tagwordcount column in the database for the individual tag words in $wordids, based on how many posts they appear in the tags of
 */
 	{
-		if (qa_should_update_counts() && count($wordids))
-			qa_db_query_sub(
-				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^tagwords.wordid) AS tagwordcount FROM ^words LEFT JOIN ^tagwords ON ^tagwords.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.tagwordcount=a.tagwordcount WHERE x.wordid=a.wordid',
-				$wordids
-			);
+//		if (qa_should_update_counts() && count($wordids))
+//			qa_db_query_sub(
+//				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^tagwords.wordid) AS tagwordcount FROM ^words LEFT JOIN ^tagwords ON ^tagwords.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.tagwordcount=a.tagwordcount WHERE x.wordid=a.wordid',
+//				$wordids
+//			);
 	}
 
 
@@ -273,11 +273,11 @@
 	Update the tagcount column in the database for the whole tags in $wordids, based on how many posts they appear as tags of
 */
 	{
-		if (qa_should_update_counts() && count($wordids))
-			qa_db_query_sub(
-				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^posttags.wordid) AS tagcount FROM ^words LEFT JOIN ^posttags ON ^posttags.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.tagcount=a.tagcount WHERE x.wordid=a.wordid',
-				$wordids
-			);
+//		if (qa_should_update_counts() && count($wordids))
+//			qa_db_query_sub(
+//				'UPDATE ^words AS x, (SELECT ^words.wordid, COUNT(^posttags.wordid) AS tagcount FROM ^words LEFT JOIN ^posttags ON ^posttags.wordid=^words.wordid WHERE ^words.wordid IN (#) GROUP BY wordid) AS a SET x.tagcount=a.tagcount WHERE x.wordid=a.wordid',
+//				$wordids
+//			);
 	}
 
 
@@ -286,8 +286,10 @@
 	Update the cached count in the database of the number of questions (excluding hidden/queued)
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_qcount', COUNT(*) FROM ^posts WHERE type='Q'");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type='Q'"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_qcount', $count, $count);
+        }
 	}
 
 
@@ -296,8 +298,10 @@
 	Update the cached count in the database of the number of answers (excluding hidden/queued)
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_acount', COUNT(*) FROM ^posts WHERE type='A'");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type='A'"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_acount', $count, $count);
+        }
 	}
 
 
@@ -306,8 +310,10 @@
 	Update the cached count in the database of the number of comments (excluding hidden/queued)
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_ccount', COUNT(*) FROM ^posts WHERE type='C'");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type='C'"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_ccount', $count, $count);
+        }
 	}
 
 
@@ -316,8 +322,10 @@
 	Update the cached count in the database of the number of different tags used
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_tagcount', COUNT(*) FROM ^words WHERE tagcount>0");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^words WHERE tagcount>0"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_tagcount', $count, $count);
+        }
 	}
 
 
@@ -326,8 +334,10 @@
 	Update the cached count in the database of the number of unanswered questions (excluding hidden/queued)
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_unaqcount', COUNT(*) FROM ^posts WHERE type='Q' AND acount=0 AND closedbyid IS NULL");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type='Q' AND acount=0 AND closedbyid IS NULL"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_unaqcount', $count, $count);
+        }
 	}
 
 
@@ -336,8 +346,10 @@
 	Update the cached count in the database of the number of questions with no answer selected (excluding hidden/queued)
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_unselqcount', COUNT(*) FROM ^posts WHERE type='Q' AND selchildid IS NULL AND closedbyid IS NULL");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type='Q' AND selchildid IS NULL AND closedbyid IS NULL"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_unselqcount', $count, $count);
+        }
 	}
 
 
@@ -346,8 +358,10 @@
 	Update the cached count in the database of the number of questions with no upvoted answers (excluding hidden/queued)
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_unupaqcount', COUNT(*) FROM ^posts WHERE type='Q' AND amaxvote=0 AND closedbyid IS NULL");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type='Q' AND amaxvote=0 AND closedbyid IS NULL"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_unupaqcount', $count, $count);
+        }
 	}
 
 
@@ -356,8 +370,10 @@
 	Update the cached count in the database of the number of posts which are queued for moderation
 */
 	{
-		if (qa_should_update_counts())
-			qa_db_query_sub("REPLACE ^options (title, content) SELECT 'cache_queuedcount', COUNT(*) FROM ^posts WHERE type IN ('Q_QUEUED', 'A_QUEUED', 'C_QUEUED')");
+        if (qa_should_update_counts()) {
+            $count = qa_db_read_one_value(qa_db_query_sub("SELECT COUNT(*) FROM ^posts WHERE type IN ('Q_QUEUED', 'A_QUEUED', 'C_QUEUED')"));
+            qa_db_query_sub("INSERT INTO ^options (title, content) VALUES ($, $) ON DUPLICATE KEY UPDATE content=$", 'cache_queuedcount', $count, $count);
+        }
 	}
 
 /*
