@@ -58,7 +58,7 @@
 	if (qa_user_maximum_permit_error('permit_anon_view_ips')) {
 		$qa_content=qa_content_prepare();
 		$qa_content['error']=qa_lang_html('users/no_permission');
-		$qa_content['http_status']=403;
+		$qa_content['http_status']=Q2A_Response::STATUS_FORBIDDEN;
 		return $qa_content;
 	}
 

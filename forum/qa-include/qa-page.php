@@ -403,7 +403,7 @@
 		$themeclass->initialize();
 
 		header('Content-type: '.$qa_content['content_type']);
-		http_response_code($qa_content['http_status'] ?? 200);
+		http_response_code($qa_content['http_status'] ?? Q2A_Response::STATUS_OK);
 
 		$themeclass->doctype();
 		$themeclass->html();

@@ -39,7 +39,7 @@
 
 			$qa_content['title']=qa_lang_html('admin/admin_title');
 			$qa_content['error']=qa_insert_login_links(qa_lang_html('admin/not_logged_in'), qa_request());
-			$qa_content['http_status']=401;
+			$qa_content['http_status']=Q2A_Response::STATUS_UNAUTHORIZED;
 
 			return false;
 
@@ -48,7 +48,7 @@
 
 			$qa_content['title']=qa_lang_html('admin/admin_title');
 			$qa_content['error']=qa_lang_html('admin/no_privileges');
-			$qa_content['http_status']=403;
+			$qa_content['http_status']=Q2A_Response::STATUS_FORBIDDEN;
 
 			return false;
 		}
