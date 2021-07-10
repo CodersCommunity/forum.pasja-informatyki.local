@@ -4778,6 +4778,17 @@ pre[class*="brush:"]::after
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
 }
 
+.syntaxhighlighter-block-bar--full-screen {
+	/* !important are used to overwrite Q2A core styles */
+	width: 90vw !important;
+	position: fixed !important;
+	top: 5vw;
+	left: 5vh;
+	z-index: 1;
+	max-height: 90vh;
+	transform: translate(2.5vw, 2.5vh);
+}
+
 .syntaxhighlighter-block-bar-item
 {
 	width: 50%;

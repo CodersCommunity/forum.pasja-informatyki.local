@@ -500,14 +500,73 @@ const codeBlockInteractiveBar = () => {
             }
         }
 
+        class CodeBlockFullScreen {
+            constructor() {
+                this.isFullScreen = false;
+                const requestFullScreenMethodNames = ['requestFullScreen', 'requestFullscreen', 'webkitRequestFullScreen', 'webkitRequestFullscreen', 'mozRequestFullScreen'];
+                const exitFullScreenMethodNames = ['exitFullscreen', 'webkitCancelFullScreen', 'webkitExitFullscreen', 'mozCancelFullScreen'];
+                this.getRequestFullScreen = (element) => {
+                    const supportedMethodName = requestFullScreenMethodNames.find(methodName => element[methodName])
+                    
+                    return element[supportedMethodName].bind(element) || getFallbackFullScreenFeatureMethod();
+                }
+                this.exitFullScreen = (() => {
+                    const supportedMethodName = exitFullScreenMethodNames.find(methodName => document[methodName]);
+                    
+                    return document[supportedMethodName].bind(document) || getFallbackFullScreenFeatureMethod();
+                })();
+            }
+
+            getFallbackFullScreenFeatureMethod() {
+                return () => Promise.reject('FullScreen feature is unsupported!')
+            }
+
+            getFullScreenBtn() {
+                const fullScreenBtn = document.createElement('button');
+                fullScreenBtn.textContent = '[x]';
+                fullScreenBtn.type = 'button';
+                fullScreenBtn.addEventListener('click', async ({ target }) => {
+                    const codeBlock = target.closest('.syntaxhighlighter-parent').querySelector('.syntaxhighlighter');
+                    const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+                    const fullScreenTarget = codeBlock.parentNode;
+                    const requestFullScreen = this.getRequestFullScreen(fullScreenTarget);
+                    
+                    if (this.isFullScreen) {
+                        await this.exitFullScreen().catch(console.error);
+                    } else {
+                        await requestFullScreen().catch((error) => {
+                            console.error(error);
+                            this.rawFullScreenToggle(fullScreenTarget);
+                        });
+                    }
+                    
+                    
+                    if((!this.isFullScreen && isCodeBlockCollapsed) || (this.isFullScreen && !isCodeBlockCollapsed)) {
+                        const collapsibleCodeBlockBtn = codeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
+                        collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
+                    }
+
+                    this.isFullScreen = !this.isFullScreen;
+                });
+
+                return fullScreenBtn;
+            }
+
+            rawFullScreenToggle(fullScreenTarget) {
+                fullScreenTarget.classList.toggle('syntaxhighlighter-block-bar--full-screen');
+            }
+        }
+
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
         const languageLabel = new LanguageLabel();
         const codeCopy = new CodeCopy();
+        const codeBlockFullScreen = new CodeBlockFullScreen();
 
         return function getCodeBlockBarFeatureItems(codeBlock) {
             return [
                 languageLabel.getLanguageLabel(codeBlock),
                 collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
+                codeBlockFullScreen.getFullScreenBtn(),
                 codeCopy.getCopyToClipboardBtn()
             ].filter(Boolean).map(wrapCodeBlockBarFeatureItem);
         }
