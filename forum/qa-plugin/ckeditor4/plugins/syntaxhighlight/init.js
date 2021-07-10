@@ -508,7 +508,16 @@ const codeBlockInteractiveBar = () => {
 
             getFullScreenBtn() {
                 const fullScreenBtn = document.createElement('button');
-                fullScreenBtn.textContent = '[x]';
+                fullScreenBtn.innerHTML = `
+                    <svg version="1.1" width="30px" height="30px">
+                        <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z"></path>
+                        <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z"></path>
+                        <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z"></path>
+                        <path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z"></path>
+                    </svg>
+                `;
+                fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn');
+                fullScreenBtn.title = 'Pełny ekran';
                 fullScreenBtn.type = 'button';
                 fullScreenBtn.addEventListener('click', async ({ target }) => {
                     const codeBlock = target.closest('.syntaxhighlighter-parent').querySelector('.syntaxhighlighter');

@@ -4765,6 +4765,7 @@ pre[class*="brush:"]::after
 .syntaxhighlighter-block-bar
 {
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
 	min-height: 30px;
 	opacity: 1;
@@ -4782,21 +4783,21 @@ pre[class*="brush:"]::after
 	/* !important are used to overwrite Q2A core styles */
 	width: 90vw !important;
 	position: fixed !important;
-	top: 5vw;
-	left: 5vh;
+	top: 1vh;
+	left: 1vw;
+	bottom: 1vh;
 	z-index: 1;
 	max-height: 90vh;
 	transform: translate(2.5vw, 2.5vh);
 }
 
-.syntaxhighlighter-block-bar-item
-{
-	width: 50%;
+.syntaxhighlighter-block-bar-item__full-screen-btn {
+	background: none;
+	border: none;
 }
 
-.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item
-{
-	width: 33.3%;
+.syntaxhighlighter-block-bar-item__full-screen-btn:hover {
+	transform: scale(1.25);
 }
 
 .syntaxhighlighter-block-bar-item:last-child
@@ -4977,24 +4978,26 @@ pre[class*="brush:"]::after
 	z-index: -1;
 }
 
-@media (max-width: 320px) {
+@media (max-width: 340px) {
 	.syntaxhighlighter-block-bar .syntaxhighlighter-language {
 		text-align: center;
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible {
-		height: 50px;
+		min-height: 50px;
+		max-height: 80px;
 		flex-wrap: wrap;
 		justify-content: space-around;
 	}
 
-	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item:first-child {
-		flex-basis: 100%;
-	}
-
 	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item {
+		display: inline-flex;
 		flex-basis: 35%;
 		justify-content: center;
+	}
+
+	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-block-bar-item:first-child {
+		flex-basis: 100%;
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-language {
