@@ -4791,6 +4791,10 @@ pre[class*="brush:"]::after
 	transform: translate(2.5vw, 2.5vh);
 }
 
+.syntaxhighlighter-block-bar-item--hidden {
+	display: none;
+}
+
 .syntaxhighlighter-block-bar-item__full-screen-btn {
 	background: none;
 	border: none;
@@ -4798,6 +4802,12 @@ pre[class*="brush:"]::after
 
 .syntaxhighlighter-block-bar-item__full-screen-btn:hover {
 	transform: scale(1.25);
+}
+
+
+.syntaxhighlighter-block-bar-item:first-child {
+	min-width: 25%;
+	max-width: 33.3%;
 }
 
 .syntaxhighlighter-block-bar-item:last-child
