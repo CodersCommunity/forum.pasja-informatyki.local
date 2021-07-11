@@ -578,6 +578,7 @@ const codeBlockInteractiveBar = () => {
                 }
 
                 this.fullScreenBtn = document.createElement('button');
+                // modified SVG from https://stackoverflow.com/a/61253588/4983840
                 this.fullScreenBtn.innerHTML = `
                     <svg version="1.1" width="30px" height="30px">
                         <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z"></path>
@@ -625,12 +626,36 @@ const codeBlockInteractiveBar = () => {
                     }
                 } else {
                     this.fallbackFullScreenToggle(fullScreenTarget);
+                    document.body.classList.toggle('qa-disable-scroll', !this.isFullScreen);
                     this.postProcessFullScreenToggle(codeBlock);
                 }
             }
 
             fallbackFullScreenToggle(fullScreenTarget) {
-                fullScreenTarget.classList.toggle('syntaxhighlighter-block-bar--full-screen');
+                if (this.isFullScreen) {
+                    const fullScreenContainer = document.querySelector('.syntaxhighlighter-full-screen-container');                    
+                    const markerElement = document.getElementById('syntaxhighlighterFullScreenMarker');
+
+                    markerElement.parentNode.insertBefore(fullScreenTarget, markerElement);
+                    markerElement.remove();
+                    fullScreenContainer.remove();
+                } else {
+                    const fullScreenContainer = document.createElement('aside');
+                    fullScreenContainer.classList.add('syntaxhighlighter-full-screen-container');
+                    
+                    const { width, height } = window.getComputedStyle(fullScreenTarget);
+                    const markerElement = document.createElement('div');
+                    markerElement.id = 'syntaxhighlighterFullScreenMarker';
+                    markerElement.style.width = width;
+                    markerElement.style.height = height;
+                    
+                    fullScreenTarget.parentNode.insertBefore(markerElement, fullScreenTarget);
+                    document.body.appendChild(fullScreenContainer);
+                    fullScreenContainer.appendChild(fullScreenTarget);
+                }
+                
+
+                fullScreenTarget.classList.toggle('syntaxhighlighter-block--full-screen');
             }
 
             listenToFullScreenExitEvent() {
@@ -648,6 +673,15 @@ const codeBlockInteractiveBar = () => {
                 const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
 
                 if ((!this.isFullScreen && isCodeBlockCollapsed) || (this.isFullScreen && !isCodeBlockCollapsed)) {
+                    // this breaks SOLID and should be done along with extending CollapsibleCodeBlocks class API... but i was lazy here :(
+                    const codeBlockRawHeight = '--code-block-raw-height';
+                    if (this.isFullScreen) {
+                        codeBlock.style.removeProperty(codeBlockRawHeight);
+                    } else {
+                        const heightValue = codeBlock.scrollHeight + (codeBlock.scrollHeight - codeBlock.clientHeight);
+                        codeBlock.style.setProperty(codeBlockRawHeight, `${heightValue}px`);
+                    }
+
                     const collapsibleCodeBlockBtn = codeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
                     collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
                 }
