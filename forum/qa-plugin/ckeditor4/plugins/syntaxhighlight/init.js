@@ -554,21 +554,33 @@ const codeBlockInteractiveBar = () => {
                     return;
                 }
 
+                if (!window.ResizeObserver) {
+                    return;
+                }
+
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
 
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
-                    let showFullScreenButton = true;
+                    let hideFullScreenButton = false;
                     
                     const resizeObserver = new ResizeObserver((entries) => {
                         entries.forEach((entry) => {
                             if (entry.contentBoxSize) {
-                                entry.contentBoxSize.forEach((size) => {
-                                    showFullScreenButton = size.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
-                                });
+                                if (Array.isArray(entry.contentBoxSize)) {
+                                    entry.contentBoxSize.forEach((size) => {
+                                        hideFullScreenButton = size.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
+                                    });
+                                } else {
+                                    /*
+                                        Firefox deviation:
+                                        https://caniuse.com/?search=contentboxsize#:~:text=Implemented%20as%20a%20single%20object
+                                    */
+                                    hideFullScreenButton = entry.contentBoxSize.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
+                                }
                             }
                         });
 
-                        this.fullScreenBtn.parentNode.classList.toggle('syntaxhighlighter-block-bar-item--hidden', showFullScreenButton);
+                        this.fullScreenBtn.parentNode.classList.toggle('syntaxhighlighter-block-bar-item--hidden', hideFullScreenButton);
                     });
                     resizeObserver.observe(processedCodeBlock);
                 });
