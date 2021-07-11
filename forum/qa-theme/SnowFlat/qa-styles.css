@@ -4783,7 +4783,13 @@ pre[class*="brush:"]::after
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
 }
 
-.syntaxhighlighter-full-screen-container {
+.syntaxhighlighter-parent--center-full-screen {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.syntaxhighlighter-fallback-full-screen-container {
 	position: fixed;
 	top: 0;
 	left: 0;

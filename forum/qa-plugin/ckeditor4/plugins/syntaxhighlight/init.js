@@ -536,6 +536,8 @@ const codeBlockInteractiveBar = () => {
             constructor() {
                 this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH = 30;
                 this.MINIMUM_WIDTH_FOR_FULL_SCREEN = 400;
+                this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME = 'syntaxhighlighter-fallback-full-screen-container';
+                this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME = 'syntaxhighlighter-parent--center-full-screen';
                 this.enableFullScreen = true;
                 this.isFullScreen = false;
                 this.isModernFullScreenFeatureSupported = !!(Element.prototype.requestFullscreen && document.exitFullscreen);
@@ -602,7 +604,10 @@ const codeBlockInteractiveBar = () => {
                 if (this.isModernFullScreenFeatureSupported) {
                     if (this.isFullScreen) {
                         await document.exitFullscreen()
-                            .then(() => this.postProcessFullScreenToggle(codeBlock))
+                            .then(() => {
+                                fullScreenTarget.classList.remove(this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME);
+                                this.postProcessFullScreenToggle(codeBlock);
+                            })
                             .catch(console.error);
                     } else {
                         /*
@@ -621,6 +626,7 @@ const codeBlockInteractiveBar = () => {
                         });
 
                         await fullScreenTarget.requestFullscreen()
+                            .then(() => fullScreenTarget.classList.add(this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME))
                             .catch(() => this.fallbackFullScreenToggle(fullScreenTarget))
                             .finally(() => this.postProcessFullScreenToggle(codeBlock));
                     }
@@ -633,7 +639,7 @@ const codeBlockInteractiveBar = () => {
 
             fallbackFullScreenToggle(fullScreenTarget) {
                 if (this.isFullScreen) {
-                    const fullScreenContainer = document.querySelector('.syntaxhighlighter-full-screen-container');                    
+                    const fullScreenContainer = document.querySelector(`.${this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME}`);
                     const markerElement = document.getElementById('syntaxhighlighterFullScreenMarker');
 
                     markerElement.parentNode.insertBefore(fullScreenTarget, markerElement);
@@ -641,7 +647,7 @@ const codeBlockInteractiveBar = () => {
                     fullScreenContainer.remove();
                 } else {
                     const fullScreenContainer = document.createElement('aside');
-                    fullScreenContainer.classList.add('syntaxhighlighter-full-screen-container');
+                    fullScreenContainer.classList.add(this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME);
                     
                     const { width, height } = window.getComputedStyle(fullScreenTarget);
                     const markerElement = document.createElement('div');
