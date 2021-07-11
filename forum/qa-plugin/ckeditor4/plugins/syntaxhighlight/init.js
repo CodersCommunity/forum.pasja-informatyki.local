@@ -2,7 +2,7 @@
 
 const getCodeBlockMeta = (codeBlock) => {
     return {
-        postId: codeBlock.closest('[id]').id.match(/\d*/g).join(''),
+        postId: codeBlock.closest('.post-preview') ? 'post-preview' : codeBlock.closest('[id]').id.match(/\d*/g).join(''),
         numberInPost: [
             ...codeBlock.parentNode.querySelectorAll('[data-code-lang-name], .syntaxhighlighter-parent')
         ].findIndex(item => item === codeBlock) + 1,
