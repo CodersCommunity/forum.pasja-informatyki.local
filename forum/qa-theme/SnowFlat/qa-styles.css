@@ -4814,6 +4814,10 @@ pre[class*="brush:"]::after
 	border: none;
 }
 
+.syntaxhighlighter-block-bar-item__full-screen-btn svg {
+	fill: white;
+}
+
 .syntaxhighlighter-block-bar-item__full-screen-btn:hover {
 	transform: scale(1.25);
 }

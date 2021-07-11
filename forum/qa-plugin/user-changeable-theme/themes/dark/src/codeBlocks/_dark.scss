@@ -112,6 +112,10 @@
   color: #ffaa3e !important;
 }
 
+.syntaxhighlighter-block-bar-item__full-screen-btn svg {
+  fill: $color;
+}
+
 .syntaxhighlighter-collapsible-button, .content-copy-btn {
   background: #3a404b;
   color: $color;
