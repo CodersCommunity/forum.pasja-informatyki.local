@@ -4866,10 +4866,21 @@ pre[class*="brush:"]::after
 	color: #2c3e50;
 }
 
-.syntaxhighlighter-collapsible-button.expanded-state::before,
-.syntaxhighlighter-collapsible-button.expanded-state::after,
-.syntaxhighlighter-collapsible-button.collapsed-state::before,
-.syntaxhighlighter-collapsible-button.collapsed-state::after
+.syntaxhighlighter-collapsible-button[disabled] {
+	color: gray;
+}
+
+.syntaxhighlighter-collapsible-button[disabled]::before,
+.syntaxhighlighter-collapsible-button[disabled]::after {
+	background: gray;
+}
+
+.syntaxhighlighter-collapsible-button[disabled]:hover {
+	cursor: not-allowed;
+}
+
+.syntaxhighlighter-collapsible-button::before,
+.syntaxhighlighter-collapsible-button::after
 {
 	content:'';
 	display: block;
@@ -4918,10 +4929,8 @@ pre[class*="brush:"]::after
 	transform: rotate(10deg);
 }
 
-.syntaxhighlighter-collapsible-button.expanded-state:hover::before,
-.syntaxhighlighter-collapsible-button.expanded-state:hover::after,
-.syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
-.syntaxhighlighter-collapsible-button.collapsed-state:hover::after
+.syntaxhighlighter-collapsible-button:not([disabled]):hover::before,
+.syntaxhighlighter-collapsible-button:not([disabled]):hover::after
 {
 	background: #2c3e50;
 }

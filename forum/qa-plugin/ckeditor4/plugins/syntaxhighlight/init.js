@@ -689,19 +689,25 @@ const codeBlockInteractiveBar = () => {
 
             postProcessFullScreenToggle(codeBlock) {
                 const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+                const isCodeBlockCollapsible = codeBlock.previousElementSibling.classList.contains('is-collapsible');
 
-                if ((!this.isFullScreen && isCodeBlockCollapsed) || (this.isFullScreen && !isCodeBlockCollapsed)) {
-                    // this breaks SOLID and should be done along with extending CollapsibleCodeBlocks class API... but i was lazy here :(
-                    const codeBlockRawHeight = '--code-block-raw-height';
-                    if (this.isFullScreen) {
-                        codeBlock.style.removeProperty(codeBlockRawHeight);
-                    } else {
-                        const heightValue = codeBlock.scrollHeight + (codeBlock.scrollHeight - codeBlock.clientHeight);
-                        codeBlock.style.setProperty(codeBlockRawHeight, `${heightValue}px`);
+                if (isCodeBlockCollapsible) {
+                    const collapsibleCodeBlockBtn = codeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
+
+                    if ((!this.isFullScreen && isCodeBlockCollapsed) || (this.isFullScreen && !isCodeBlockCollapsed)) {
+                        // this breaks SOLID and should be done along with extending CollapsibleCodeBlocks class API... but i was lazy here :(
+                        const codeBlockRawHeight = '--code-block-raw-height';
+                        if (this.isFullScreen) {
+                            codeBlock.style.removeProperty(codeBlockRawHeight);
+                        } else {
+                            const heightValue = codeBlock.scrollHeight + (codeBlock.scrollHeight - codeBlock.clientHeight);
+                            codeBlock.style.setProperty(codeBlockRawHeight, `${heightValue}px`);
+                        }
+
+                        collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
                     }
 
-                    const collapsibleCodeBlockBtn = codeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
-                    collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
+                    collapsibleCodeBlockBtn.disabled = !this.isFullScreen;
                 }
 
                 this.isFullScreen = !this.isFullScreen;
