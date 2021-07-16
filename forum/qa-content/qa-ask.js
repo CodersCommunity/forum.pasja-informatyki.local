@@ -444,3 +444,25 @@ function set_category_description(idprefix)
     } );
 
 } () );
+
+;(function normalizeUnusualTags() {
+	window.addEventListener('DOMContentLoaded', () => {
+		const tags = document.getElementById('tags');
+		const askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"]');
+		const SPACE_SEPARATOR = ' ';
+		const UNUSUAL_TAGS_MAP = Object.freeze({
+			'c++': 'c-plus-plus',
+		});
+
+		if (tags && askQuestionBtn) {
+			askQuestionBtn.addEventListener('click', () => {
+				const normalizedTags = tags.value
+					.split(SPACE_SEPARATOR)
+					.map((tag) => UNUSUAL_TAGS_MAP[tag.toLowerCase()] || tag)
+					.join(SPACE_SEPARATOR);
+
+				tags.value = normalizedTags;
+			});
+		}
+	});
+})();
