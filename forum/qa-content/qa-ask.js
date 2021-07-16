@@ -342,12 +342,9 @@ function set_category_description(idprefix)
 			}
 		}
 
-		CKEDITOR.on('instanceReady', function(ev)
+		CKEDITOR.on('instanceReady', function(readyEvent)
 		{
-			 var iframe = document.querySelector('iframe[title^="Edytor tekstu sformatowanego"]');
-
-			// get CKEditor DOM from <iframe>
-			var ckeditor = iframe.contentWindow.document.body;
+			var ckeditor = readyEvent.editor.window.$.document.body;
 			var editorFrame = ( document.getElementById( 'cke_content' ) || document.getElementById( 'cke_q_content' ) ).parentNode;
 
 			// when user writes topic title
