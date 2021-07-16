@@ -435,6 +435,7 @@ function qa_ajax_error()
 
     window.addEventListener( 'DOMContentLoaded', () => {
         const qaMainElement = document.querySelector( '.qa-main' );
+        const NON_BREAKING_SPACE_UNICODE = '\u00A0';
 
         if ( qaMainElement ) {
             const addAnnotationToCommentedUser = ( relativeDomRef, ckeCurrentInstance ) => {
@@ -447,9 +448,12 @@ function qa_ajax_error()
                     currentContent = ckeTxt.innerHTML.replace( /[<]strong[>](.*)[,<\/]strong[>]/, '' );
                 }
 
-                ckeTxt.innerHTML = `<strong>@${ chosenCommentAuthor },</strong> ${ currentContent }`;
+                ckeTxt.innerHTML = `<strong>@${ chosenCommentAuthor },</strong>${ currentContent }`;
 
-                return ckeTxt;
+                const annotationSuccessor = document.createTextNode(NON_BREAKING_SPACE_UNICODE);
+                ckeTxt.insertBefore(annotationSuccessor, ckeTxt.querySelector('strong').nextSibling);
+
+                return annotationSuccessor;
             };
 
             const setCursorToAnnotationEnd = ( editor, ckeTxt ) => {
