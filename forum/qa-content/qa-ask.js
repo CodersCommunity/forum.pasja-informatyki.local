@@ -445,7 +445,7 @@ function set_category_description(idprefix)
 ;(function normalizeUnusualTags() {
 	window.addEventListener('DOMContentLoaded', () => {
 		const tags = document.getElementById('tags');
-		const askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"]');
+		const askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"], input[value="Zapisz"]');
 		const SPACE_SEPARATOR = ' ';
 		const UNUSUAL_TAGS_MAP = Object.freeze({
 			'c++': 'c-plus-plus',
