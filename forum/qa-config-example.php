@@ -37,7 +37,12 @@ define('QA_COOKIE_SECURE', false);
 define('QA_RESOURCE_VERSION', null);
 
 define('QA_WS_TOKEN', 'secretKey');
-define('QA_WS_URL', 'http://web_socket:3000');
+/*
+  WebSocket port number should be equal to the Node's one in
+  https://github.com/CodersCommunity/http-websocket-server/blob/master/.env.example
+*/
+define('QA_WS_PORT', 3000);
+define('QA_WS_URL', 'http://web_socket:' . QA_WS_PORT);
 
 define('CHANGE_USERNAME_LIMIT_IN_DAYS', 30);
 
