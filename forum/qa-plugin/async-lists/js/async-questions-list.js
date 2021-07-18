@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function runAsyncQuestionsList() {
 	const { pathname, hostname, protocol } = window.location;
-	const PORT = WS_PORT || 3000;
+	const PORT = window.WS_PORT || 3000;
 	const isMainOrActivityPage = /^$|\/$|^(\/?)activity/.test(pathname);
 
 	if (!isMainOrActivityPage) {
