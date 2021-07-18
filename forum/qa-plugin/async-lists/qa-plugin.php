@@ -20,3 +20,4 @@ if (!defined('QA_VERSION')) {
 
 qa_register_plugin_layer('async-lists-layer.php', 'Async lists layer');
 qa_register_plugin_module('event', 'async-lists-event.php', 'async_lists_event', 'Async lists event');
+qa_register_plugin_module('page', 'async-lists-page.php', 'async_lists_page', 'Async lists page');
