@@ -1,6 +1,6 @@
 <?php
 
-class async_lists_event
+class socket_integration_event
 {
     public function process_event($event, $userid, $handle, $cookieid, $params)
     {

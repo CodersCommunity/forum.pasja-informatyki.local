@@ -1,6 +1,6 @@
 <?php
 
-class async_lists_page
+class socket_integration_page
 {
     public function match_request($request)
     {
