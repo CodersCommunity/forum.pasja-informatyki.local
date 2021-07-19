@@ -446,6 +446,7 @@ function set_category_description(idprefix)
 	window.addEventListener('DOMContentLoaded', () => {
 		const tags = document.getElementById('tags');
 		const askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"], input[value="Zapisz"]');
+		const TAGS_SEPARATOR = /\s|,/g;
 		const SPACE_SEPARATOR = ' ';
 		const UNUSUAL_TAGS_MAP = Object.freeze({
 			'c++': 'c-plus-plus',
@@ -454,7 +455,7 @@ function set_category_description(idprefix)
 		if (tags && askQuestionBtn) {
 			askQuestionBtn.addEventListener('click', () => {
 				const normalizedTags = tags.value
-					.split(SPACE_SEPARATOR)
+					.split(TAGS_SEPARATOR)
 					.map((tag) => UNUSUAL_TAGS_MAP[tag.toLowerCase()] || tag)
 					.join(SPACE_SEPARATOR);
 
