@@ -342,12 +342,9 @@ function set_category_description(idprefix)
 			}
 		}
 
-		CKEDITOR.on('instanceReady', function(ev)
+		CKEDITOR.on('instanceReady', function(readyEvent)
 		{
-			 var iframe = document.querySelector('iframe[title^="Edytor tekstu sformatowanego"]');
-
-			// get CKEditor DOM from <iframe>
-			var ckeditor = iframe.contentWindow.document.body;
+			var ckeditor = readyEvent.editor.window.$.document.body;
 			var editorFrame = ( document.getElementById( 'cke_content' ) || document.getElementById( 'cke_q_content' ) ).parentNode;
 
 			// when user writes topic title
@@ -444,3 +441,26 @@ function set_category_description(idprefix)
     } );
 
 } () );
+
+;(function normalizeUnusualTags() {
+	window.addEventListener('DOMContentLoaded', () => {
+		const tags = document.getElementById('tags');
+		const askQuestionBtn = document.querySelector('input[value="Zadaj pytanie"], input[value="Zapisz"]');
+		const TAGS_SEPARATOR = /\s|,/g;
+		const SPACE_SEPARATOR = ' ';
+		const UNUSUAL_TAGS_MAP = Object.freeze({
+			'c++': 'c-plus-plus',
+		});
+
+		if (tags && askQuestionBtn) {
+			askQuestionBtn.addEventListener('click', () => {
+				const normalizedTags = tags.value
+					.split(TAGS_SEPARATOR)
+					.map((tag) => UNUSUAL_TAGS_MAP[tag.toLowerCase()] || tag)
+					.join(SPACE_SEPARATOR);
+
+				tags.value = normalizedTags;
+			});
+		}
+	});
+})();
