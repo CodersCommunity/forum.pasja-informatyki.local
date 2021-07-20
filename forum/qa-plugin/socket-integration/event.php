@@ -43,7 +43,7 @@ class socket_integration_event
                 $this->send_to_websocket($event, [
                     'userId' => (int)$userid,
                     'questionId' => (int)$questionParams['postid'],
-                    'questionTitle' => $slug,
+                    'questionSlug' => $slug,
                     'postId' => (int)$params['postid'],
                     'url' => qa_q_path(
                         $questionParams['postid'],
