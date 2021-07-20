@@ -16,20 +16,23 @@ class socket_integration_event
             case 'q_close':
             case 'q_reopen':
             case 'q_move':
-                $this->send_to_websocket($event, ['questionId' => (int)$params['postid']]);
+                $this->send_to_websocket($event, ['userId' => (int)$userid, 'questionId' => (int)$params['postid']]);
                 break;
             case 'a_edit':
             case 'a_hide':
             case 'a_reshow':
             case 'a_select':
             case 'a_unselect':
-                $this->send_to_websocket($event, ['questionId' => (int)$params['parentid']]);
+                $this->send_to_websocket($event, ['userId' => (int)$userid, 'questionId' => (int)$params['parentid']]);
                 break;
             case 'c_edit':
             case 'c_hide':
             case 'c_reshow':
             case 'a_to_c':
-                $this->send_to_websocket($event, ['questionId' => (int)$params['questionid']]);
+                $this->send_to_websocket($event, [
+                    'userId' => (int)$userid,
+                    'questionId' => (int)$params['questionid']
+                ]);
                 break;
             case 'a_post':
             case 'c_post':
@@ -38,6 +41,7 @@ class socket_integration_event
 
                 $this->get_recipients($event, $params);
                 $this->send_to_websocket($event, [
+                    'userId' => (int)$userid,
                     'questionId' => (int)$questionParams['postid'],
                     'questionTitle' => $slug,
                     'postId' => (int)$params['postid'],
