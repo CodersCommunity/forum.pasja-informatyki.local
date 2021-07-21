@@ -39,7 +39,6 @@ class socket_integration_event
                 $questionParams = $params['question'] ?? $params['parent'];
                 $slug = explode('/', qa_q_request($questionParams['postid'], $questionParams['title']))[1] ?? null;
 
-                $this->get_recipients($event, $params);
                 $this->send_to_websocket($event, [
                     'userId' => (int)$userid,
                     'questionId' => (int)$questionParams['postid'],
