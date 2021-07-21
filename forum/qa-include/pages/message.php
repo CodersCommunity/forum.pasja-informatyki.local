@@ -47,12 +47,14 @@
 
 	if (!isset($loginuserid)) {
 		$qa_content['error'] = qa_insert_login_links(qa_lang_html('misc/message_must_login'), qa_request());
+		$qa_content['http_status'] = Q2A_Response::STATUS_UNAUTHORIZED;
 		return $qa_content;
 	}
 
 	if ($handle === $fromhandle) {
 		// prevent users sending messages to themselves
 		$qa_content['error'] = qa_lang_html('users/no_permission');
+		$qa_content['http_status'] = Q2A_Response::STATUS_FORBIDDEN;
 		return $qa_content;
 	}
 
@@ -72,7 +74,7 @@
             $userLevel = qa_get_logged_in_level();
             if($userLevel < QA_USER_LEVEL_EDITOR) {
                 return include QA_INCLUDE_DIR.'qa-page-not-found.php';
-            }	
+            }
 
         }
 
@@ -248,7 +250,7 @@
 	$qa_content['raw']['account'] = $toaccount; // for plugin layers to access
 
 	$qa_content['script_rel'][] = 'qa-content/qa-forms-protection.js';
-	
+
 	return $qa_content;
 
 

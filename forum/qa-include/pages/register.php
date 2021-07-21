@@ -63,6 +63,7 @@
 	if (qa_user_permit_error()) {
 		$qa_content = qa_content_prepare();
 		$qa_content['error'] = qa_lang_html('users/no_permission');
+		$qa_content['http_status'] = Q2A_Response::STATUS_FORBIDDEN;
 		return $qa_content;
 	}
 

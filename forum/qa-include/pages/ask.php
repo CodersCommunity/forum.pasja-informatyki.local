@@ -65,22 +65,27 @@
 		switch ($permiterror) {
 			case 'login':
 				$qa_content['error']=qa_insert_login_links(qa_lang_html('question/ask_must_login'), qa_request(), isset($followpostid) ? array('follow' => $followpostid) : null);
+				$qa_content['http_status']=Q2A_Response::STATUS_UNAUTHORIZED;
 				break;
 
 			case 'confirm':
 				$qa_content['error']=qa_insert_login_links(qa_lang_html('question/ask_must_confirm'), qa_request(), isset($followpostid) ? array('follow' => $followpostid) : null);
+				$qa_content['http_status']=Q2A_Response::STATUS_FORBIDDEN;
 				break;
 
 			case 'limit':
 				$qa_content['error']=qa_lang_html('question/ask_limit');
+				$qa_content['http_status']=Q2A_Response::STATUS_TOO_MANY_REQUESTS;
 				break;
 
 			case 'approve':
 				$qa_content['error']=qa_lang_html('question/ask_must_be_approved');
+				$qa_content['http_status']=Q2A_Response::STATUS_FORBIDDEN;
 				break;
 
 			default:
 				$qa_content['error']=qa_lang_html('users/no_permission');
+				$qa_content['http_status']=Q2A_Response::STATUS_FORBIDDEN;
 				break;
 		}
 

@@ -103,8 +103,8 @@ class qa_user_activity
 			// show 404 if no such user
 			if ( $userid === null || $userid < 1 )
 			{
-				header('HTTP/1.0 404 Not Found');
 				$qa_content['error'] = qa_lang_html('useractivity/no_user');
+				$qa_content['http_status'] = Q2A_Response::STATUS_NOT_FOUND;
 				return $qa_content;
 			}
 
@@ -146,8 +146,8 @@ class qa_user_activity
 			// show 404 if no such user
 			if ( $userid === null || $userid < 1 )
 			{
-				header('HTTP/1.0 404 Not Found');
 				$qa_content['error'] = qa_lang_html('useractivity/no_user');
+				$qa_content['http_status'] = Q2A_Response::STATUS_NOT_FOUND;
 				return $qa_content;
 			}
 

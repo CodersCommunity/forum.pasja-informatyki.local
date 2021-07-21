@@ -79,8 +79,10 @@
 				);
 			}
 
-		} else
-			$qa_content['error']=qa_lang_html('users/no_permission');
+		} else {
+			$qa_content['error'] = qa_lang_html('users/no_permission');
+			$qa_content['http_status'] = Q2A_Response::STATUS_FORBIDDEN;
+		}
 
 		return $qa_content;
 	}
