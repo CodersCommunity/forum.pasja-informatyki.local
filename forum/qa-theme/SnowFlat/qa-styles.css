@@ -4783,6 +4783,57 @@ pre[class*="brush:"]::after
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
 }
 
+.features-drawer {
+	position: absolute;
+	top: 26px;
+	right: 8px;
+	display: flex;
+	z-index: 1;
+	background: #2c3e50;
+	border-radius: 10px;
+}
+
+.features-drawer__button {
+	height: 22px;
+	margin-right: 8px;
+	padding: 2px 15px;
+	border: none;
+	border-radius: 0px 40px;
+	background: #2c3e50;
+}
+
+.features-drawer .features-drawer__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	min-width: 62px;
+}
+
+.features-drawer .features-drawer__list .features-drawer__list-item {
+	margin: 0;
+	padding: 10px;
+	display: flex;
+	justify-content: center;
+}
+
+.features-drawer .features-drawer__list .features-drawer__list-item:not(:last-child) {
+	border-bottom: 1px dashed white;
+}
+
+.features-drawer .features-drawer__list button {
+	color: white;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	background: inherit;
+	border: none;
+}
+
+.features-drawer__button:hover,
+.features-drawer__list button:hover {
+	transform: scale(1.1);
+}
+
 .syntaxhighlighter-parent--center-full-screen {
 	display: flex;
 	flex-direction: column;
@@ -4805,24 +4856,6 @@ pre[class*="brush:"]::after
 	width: 100%;
 }
 
-.syntaxhighlighter-block-bar-item--hidden {
-	display: none;
-}
-
-.syntaxhighlighter-block-bar-item__full-screen-btn {
-	background: none;
-	border: none;
-}
-
-.syntaxhighlighter-block-bar-item__full-screen-btn svg {
-	fill: white;
-}
-
-.syntaxhighlighter-block-bar-item__full-screen-btn:hover {
-	transform: scale(1.25);
-}
-
-
 .syntaxhighlighter-block-bar-item:first-child {
 	min-width: 25%;
 	max-width: 33.3%;
@@ -4830,13 +4863,19 @@ pre[class*="brush:"]::after
 
 .syntaxhighlighter-block-bar-item:last-child
 {
-	display: inline-flex;
-	justify-content: flex-end;
+	position: relative;
 }
+
+.syntaxhighlighter-block-bar-item--hidden,
+.features-drawer--hidden
+{
+	display: none;
+}
+
 
 .syntaxhighlighter-language,
 .syntaxhighlighter-collapsible-button,
-.content-copy-btn
+.features-drawer__button
 {
 	font-size: 12px;
 	font-weight: bold;
@@ -4943,18 +4982,7 @@ pre[class*="brush:"]::after
 
 .content-copy-btn
 {
-	height: 22px;
-	margin-right: 8px;
-	padding: 2px 15px;
-	border: none;
-	border-radius: 0px 40px;
-	outline: none;
-	background: #2c3e50;
 	position: relative;
-}
-
-.content-copy-btn:hover {
-	background: #476481;
 }
 
 .content-copy-btn[disabled]

@@ -533,36 +533,53 @@ const codeBlockInteractiveBar = () => {
         }
         
         class FeaturesDrawer {
-            constructor() {
+            constructor(codeBlock) {
                 this.domElement = null;
                 this.featuresDrawerBtn = null;
                 this.featureDrawerOffClickListener = this.getFeatureDrawerOffClickListener();
                 this.FEATURES_DRAWER_CLASSES = {
                     MAIN: 'features-drawer',
                     HIDDEN: 'features-drawer--hidden',
+                    BUTTON: 'features-drawer__button',
+                    LIST: 'features-drawer__list',
+                    LIST_ITEM: 'features-drawer__list-item',
                 };
                 
                 this.initButton();
-                this.initDOM();
+                this.initDOM(codeBlock);
             }
     
-            initDOM() {
+            initDOM(codeBlock) {
                 this.domElement = document.createElement('div');
+                this.domElement.innerHTML = `<ul class="${ this.FEATURES_DRAWER_CLASSES.LIST }"></ul>`;
                 this.domElement.classList.add(this.FEATURES_DRAWER_CLASSES.MAIN, this.FEATURES_DRAWER_CLASSES.HIDDEN);
+    
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    console.log('??? processedCodeBlock:',processedCodeBlock)
+                    
+                    const insertionRef =
+                      processedCodeBlock.previousElementSibling.querySelector(`.${ this.FEATURES_DRAWER_CLASSES.BUTTON }`);
+    
+                    insertionRef.parentNode.insertBefore(this.domElement, insertionRef);
+                });
             }
             
             initButton() {
                 this.featuresDrawerBtn = document.createElement('button');
                 this.featuresDrawerBtn.type = 'button';
-                this.featuresDrawerBtn.textContent = '...';
-                this.featuresDrawerBtn.title = 'Dodatkowe funkcje';
-                this.featuresDrawerBtn.addEventListener('click', () => {
+                this.featuresDrawerBtn.textContent = 'Opcje';
+                this.featuresDrawerBtn.classList.add(this.FEATURES_DRAWER_CLASSES.BUTTON);
+                this.featuresDrawerBtn.addEventListener('click', (event) => {
                     this.domElement.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
                     
                     if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
-                        document.removeEventListener('click', this.featureDrawerOffClickListener.bind(this), { once: true });
+                        document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
                     } else {
-                        document.addEventListener('click', this.featureDrawerOffClickListener.bind(this), { once: true });
+                        // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
+                        event.stopPropagation();
+                        
+                        document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
                     }
                 });
             }
@@ -580,7 +597,13 @@ const codeBlockInteractiveBar = () => {
             }
             
             addFeatures(featureDOMs) {
-                this.domElement.append(...featureDOMs);
+                featureDOMs.forEach((element) => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add(this.FEATURES_DRAWER_CLASSES.LIST_ITEM);
+                    listItem.appendChild(element);
+    
+                    this.domElement.firstElementChild.appendChild(listItem);
+                });
             }
         }
 
@@ -644,17 +667,8 @@ const codeBlockInteractiveBar = () => {
                 }
 
                 this.fullScreenBtn = document.createElement('button');
-                // modified SVG from https://stackoverflow.com/a/61253588/4983840
-                this.fullScreenBtn.innerHTML = `
-                    <svg version="1.1" width="30px" height="30px">
-                        <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z"></path>
-                        <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z"></path>
-                        <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z"></path>
-                        <path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z"></path>
-                    </svg>
-                `;
                 this.fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn');
-                this.fullScreenBtn.title = 'Pełny ekran';
+                this.fullScreenBtn.textContent = 'Pełny ekran';
                 this.fullScreenBtn.type = 'button';
                 this.fullScreenBtn.addEventListener('click', this.fullScreenOnClick.bind(this));
 
@@ -773,11 +787,11 @@ const codeBlockInteractiveBar = () => {
         return function getCodeBlockBarFeatureItems(codeBlock) {
             const codeBlockFullScreen = new CodeBlockFullScreen();
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
-            const featuresDrawer = new FeaturesDrawer();
+            const featuresDrawer = new FeaturesDrawer(codeBlock);
             featuresDrawer.addFeatures([
                 codeBlockFullScreen.getFullScreenBtn(),
                 codeCopy.getCopyToClipboardBtn()
-            ]);
+            ].filter(Boolean));
 
             return [
                 languageLabel.getLanguageLabel(codeBlock),
