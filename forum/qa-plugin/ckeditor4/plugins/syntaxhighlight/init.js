@@ -531,6 +531,58 @@ const codeBlockInteractiveBar = () => {
                 return copyCodeBtn;
             }
         }
+        
+        class FeaturesDrawer {
+            constructor() {
+                this.domElement = null;
+                this.featuresDrawerBtn = null;
+                this.featureDrawerOffClickListener = this.getFeatureDrawerOffClickListener();
+                this.FEATURES_DRAWER_CLASSES = {
+                    MAIN: 'features-drawer',
+                    HIDDEN: 'features-drawer--hidden',
+                };
+                
+                this.initButton();
+                this.initDOM();
+            }
+    
+            initDOM() {
+                this.domElement = document.createElement('div');
+                this.domElement.classList.add(this.FEATURES_DRAWER_CLASSES.MAIN, this.FEATURES_DRAWER_CLASSES.HIDDEN);
+            }
+            
+            initButton() {
+                this.featuresDrawerBtn = document.createElement('button');
+                this.featuresDrawerBtn.type = 'button';
+                this.featuresDrawerBtn.textContent = '...';
+                this.featuresDrawerBtn.title = 'Dodatkowe funkcje';
+                this.featuresDrawerBtn.addEventListener('click', () => {
+                    this.domElement.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                    
+                    if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
+                        document.removeEventListener('click', this.featureDrawerOffClickListener.bind(this), { once: true });
+                    } else {
+                        document.addEventListener('click', this.featureDrawerOffClickListener.bind(this), { once: true });
+                    }
+                });
+            }
+            
+            getFeatureDrawerOffClickListener() {
+                return ({ target }) => {
+                    if (!target.closest(`.${ this.FEATURES_DRAWER_CLASSES.MAIN }`)) {
+                        this.domElement.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                    }
+                }
+            }
+            
+            getFeaturesDrawerBtn() {
+                return this.featuresDrawerBtn;
+            }
+            
+            addFeatures(featureDOMs) {
+                this.domElement.append(...featureDOMs);
+            }
+        }
 
         class CodeBlockFullScreen {
             constructor() {
@@ -623,12 +675,12 @@ const codeBlockInteractiveBar = () => {
                             .catch(console.error);
                     } else {
                         /*
-                            User might exit full screen via ESC or native browser button, instead of 
+                            User might exit full screen via ESC or native browser button, instead of
                             re-using fullScreenBtn, which won't trigger it's click event.
                             Thus, optional post processing is needed in such case.
 
                             await is not used with Promise to prevent code from stoppping it's execution.
-                            Full screen event listener needs to be attached before entering full screen 
+                            Full screen event listener needs to be attached before entering full screen
                             and it needs to run in background, because it waits for user to exit the full screen.
                         */
                         this.listenToFullScreenExitEvent().then(() => {
@@ -717,16 +769,20 @@ const codeBlockInteractiveBar = () => {
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
         const languageLabel = new LanguageLabel();
         const codeCopy = new CodeCopy();
-
+        
         return function getCodeBlockBarFeatureItems(codeBlock) {
             const codeBlockFullScreen = new CodeBlockFullScreen();
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
+            const featuresDrawer = new FeaturesDrawer();
+            featuresDrawer.addFeatures([
+                codeBlockFullScreen.getFullScreenBtn(),
+                codeCopy.getCopyToClipboardBtn()
+            ]);
 
             return [
                 languageLabel.getLanguageLabel(codeBlock),
                 collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
-                codeBlockFullScreen.getFullScreenBtn(),
-                codeCopy.getCopyToClipboardBtn()
+                featuresDrawer.getFeaturesDrawerBtn(),
             ].filter(Boolean).map(wrapCodeBlockBarFeatureItem);
         }
 
