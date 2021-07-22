@@ -1,14 +1,5 @@
 'use strict';
 
-const getCodeBlockMeta = (codeBlock) => {
-    return {
-        postId: codeBlock.closest('.post-preview') ? 'post-preview' : codeBlock.closest('[id]').id.match(/\d*/g).join(''),
-        numberInPost: [
-            ...codeBlock.parentNode.querySelectorAll('[data-code-lang-name], .syntaxhighlighter-parent')
-        ].findIndex(item => item === codeBlock) + 1,
-    };
-};
-
 const fixSpaces = (() => {
     const NBSP_CHAR_UNICODE_REG_EXP = /\u00a0/g;
 
@@ -287,26 +278,6 @@ const postSnippets = () => {
 };
 
 const codeBlockInteractiveBar = () => {
-    const codeHighlightingPostProcessHandler = (() => {
-        const listeners = {};
-        
-        return {
-            subscribe(postId, codeBlockNumber, callback) {
-                if (!listeners[`${postId}_${codeBlockNumber}`]) {
-                    listeners[`${postId}_${codeBlockNumber}`] = [];
-                }
-
-                listeners[`${postId}_${codeBlockNumber}`].push(callback);
-            },
-            notifyAll(postId, codeBlockNumber, processedCodeBlock) {
-                if (listeners[`${postId}_${codeBlockNumber}`]) {
-                    listeners[`${postId}_${codeBlockNumber}`]
-                        .forEach((fn) => fn(processedCodeBlock));
-                    listeners[`${postId}_${codeBlockNumber}`] = null;
-                }
-            },
-        };
-    })();
     const codeLanguages = getPreparedLanguages();
     const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 20;
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
@@ -333,9 +304,6 @@ const codeBlockInteractiveBar = () => {
             if (codeBlockBar.classList.contains('is-collapsible')) {
                 processedCodeBlock.classList.add('collapsed-block');
             }
-
-            const { postId, numberInPost } = getCodeBlockMeta(processedCodeBlock.parentNode);
-            codeHighlightingPostProcessHandler.notifyAll(postId, numberInPost, processedCodeBlock);
         };
     }
 
@@ -532,200 +500,14 @@ const codeBlockInteractiveBar = () => {
             }
         }
 
-        class CodeBlockFullScreen {
-            constructor() {
-                this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH = 30;
-                this.MINIMUM_WIDTH_FOR_FULL_SCREEN = 400;
-                this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME = 'syntaxhighlighter-fallback-full-screen-container';
-                this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME = 'syntaxhighlighter-parent--center-full-screen';
-                this.enableFullScreen = true;
-                this.isFullScreen = false;
-                this.isModernFullScreenFeatureSupported = !!(Element.prototype.requestFullscreen && document.exitFullscreen);
-                this.fullScreenBtn = null;
-            }
-
-            setupCodeBlockResizeWatcher(codeBlock) {
-                const codeBlockMaxLineLength = Math.max(
-                    ...codeBlock.childNodes[0].textContent.split('\n').map(line => line.length)
-                );
-                this.enableFullScreen = codeBlockMaxLineLength >= this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH;
-
-                if (!this.enableFullScreen) {
-                    return;
-                }
-
-                if (!window.ResizeObserver) {
-                    return;
-                }
-
-                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
-
-                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
-                    let hideFullScreenButton = false;
-                    
-                    const resizeObserver = new ResizeObserver((entries) => {
-                        entries.forEach((entry) => {
-                            if (entry.contentBoxSize) {
-                                if (Array.isArray(entry.contentBoxSize)) {
-                                    entry.contentBoxSize.forEach((size) => {
-                                        hideFullScreenButton = size.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
-                                    });
-                                } else {
-                                    /*
-                                        Firefox deviation:
-                                        https://caniuse.com/?search=contentboxsize#:~:text=Implemented%20as%20a%20single%20object
-                                    */
-                                    hideFullScreenButton = entry.contentBoxSize.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
-                                }
-                            }
-                        });
-
-                        this.fullScreenBtn.parentNode.classList.toggle('syntaxhighlighter-block-bar-item--hidden', hideFullScreenButton);
-                    });
-                    resizeObserver.observe(processedCodeBlock);
-                });
-            }
-
-            getFullScreenBtn() {
-                if (!this.enableFullScreen) {
-                    return null;
-                }
-
-                this.fullScreenBtn = document.createElement('button');
-                // modified SVG from https://stackoverflow.com/a/61253588/4983840
-                this.fullScreenBtn.innerHTML = `
-                    <svg version="1.1" width="30px" height="30px">
-                        <path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z"></path>
-                        <path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z"></path>
-                        <path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z"></path>
-                        <path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z"></path>
-                    </svg>
-                `;
-                this.fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn');
-                this.fullScreenBtn.title = 'Pełny ekran';
-                this.fullScreenBtn.type = 'button';
-                this.fullScreenBtn.addEventListener('click', this.fullScreenOnClick.bind(this));
-
-                return this.fullScreenBtn;
-            }
-
-            async fullScreenOnClick({ target }) {
-                const codeBlock = target.closest('.syntaxhighlighter-parent').querySelector('.syntaxhighlighter');
-                const fullScreenTarget = codeBlock.parentNode;
-                
-                if (this.isModernFullScreenFeatureSupported) {
-                    if (this.isFullScreen) {
-                        await document.exitFullscreen()
-                            .then(() => {
-                                fullScreenTarget.classList.remove(this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME);
-                                this.postProcessFullScreenToggle(codeBlock);
-                            })
-                            .catch(console.error);
-                    } else {
-                        /*
-                            User might exit full screen via ESC or native browser button, instead of 
-                            re-using fullScreenBtn, which won't trigger it's click event.
-                            Thus, optional post processing is needed in such case.
-
-                            await is not used with Promise to prevent code from stoppping it's execution.
-                            Full screen event listener needs to be attached before entering full screen 
-                            and it needs to run in background, because it waits for user to exit the full screen.
-                        */
-                        this.listenToFullScreenExitEvent().then(() => {
-                            if (this.isFullScreen) {
-                                this.postProcessFullScreenToggle(codeBlock);
-                            }
-                        });
-
-                        await fullScreenTarget.requestFullscreen()
-                            .then(() => fullScreenTarget.classList.add(this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME))
-                            .catch(() => this.fallbackFullScreenToggle(fullScreenTarget))
-                            .finally(() => this.postProcessFullScreenToggle(codeBlock));
-                    }
-                } else {
-                    this.fallbackFullScreenToggle(fullScreenTarget);
-                    document.body.classList.toggle('qa-disable-scroll', !this.isFullScreen);
-                    this.postProcessFullScreenToggle(codeBlock);
-                }
-            }
-
-            fallbackFullScreenToggle(fullScreenTarget) {
-                if (this.isFullScreen) {
-                    const fullScreenContainer = document.querySelector(`.${this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME}`);
-                    const markerElement = document.getElementById('syntaxhighlighterFullScreenMarker');
-
-                    markerElement.parentNode.insertBefore(fullScreenTarget, markerElement);
-                    markerElement.remove();
-                    fullScreenContainer.remove();
-                } else {
-                    const fullScreenContainer = document.createElement('aside');
-                    fullScreenContainer.classList.add(this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME);
-                    
-                    const { width, height } = window.getComputedStyle(fullScreenTarget);
-                    const markerElement = document.createElement('div');
-                    markerElement.id = 'syntaxhighlighterFullScreenMarker';
-                    markerElement.style.width = width;
-                    markerElement.style.height = height;
-                    
-                    fullScreenTarget.parentNode.insertBefore(markerElement, fullScreenTarget);
-                    document.body.appendChild(fullScreenContainer);
-                    fullScreenContainer.appendChild(fullScreenTarget);
-                }
-                
-
-                fullScreenTarget.classList.toggle('syntaxhighlighter-block--full-screen');
-            }
-
-            listenToFullScreenExitEvent() {
-                return new Promise((resolve) => {
-                    document.addEventListener('fullscreenchange', function listener() {
-                        if (!document.fullscreenElement) {
-                            document.removeEventListener('fullscreenchange', listener);
-                            resolve();
-                        }
-                    });
-                });
-            }
-
-            postProcessFullScreenToggle(codeBlock) {
-                const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
-                const isCodeBlockCollapsible = codeBlock.previousElementSibling.classList.contains('is-collapsible');
-
-                if (isCodeBlockCollapsible) {
-                    const collapsibleCodeBlockBtn = codeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
-
-                    if ((!this.isFullScreen && isCodeBlockCollapsed) || (this.isFullScreen && !isCodeBlockCollapsed)) {
-                        // this breaks SOLID and should be done along with extending CollapsibleCodeBlocks class API... but i was lazy here :(
-                        const codeBlockRawHeight = '--code-block-raw-height';
-                        if (this.isFullScreen) {
-                            codeBlock.style.removeProperty(codeBlockRawHeight);
-                        } else {
-                            const heightValue = codeBlock.scrollHeight + (codeBlock.scrollHeight - codeBlock.clientHeight);
-                            codeBlock.style.setProperty(codeBlockRawHeight, `${heightValue}px`);
-                        }
-
-                        collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
-                    }
-
-                    collapsibleCodeBlockBtn.disabled = !this.isFullScreen;
-                }
-
-                this.isFullScreen = !this.isFullScreen;
-            }
-        }
-
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
         const languageLabel = new LanguageLabel();
         const codeCopy = new CodeCopy();
 
         return function getCodeBlockBarFeatureItems(codeBlock) {
-            const codeBlockFullScreen = new CodeBlockFullScreen();
-            codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
-
             return [
                 languageLabel.getLanguageLabel(codeBlock),
                 collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
-                codeBlockFullScreen.getFullScreenBtn(),
                 codeCopy.getCopyToClipboardBtn()
             ].filter(Boolean).map(wrapCodeBlockBarFeatureItem);
         }
