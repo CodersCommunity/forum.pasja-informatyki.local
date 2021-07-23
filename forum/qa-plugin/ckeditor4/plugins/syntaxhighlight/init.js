@@ -542,10 +542,11 @@ const codeBlockInteractiveBar = () => {
         }
         
         class FeaturesDrawer {
-            constructor(codeBlock) {
+            constructor(codeBlock, clearAndExitSearch) {
                 this.domElement = null;
                 this.featuresDrawerBtn = null;
                 this.featureDrawerOffClickListener = this.getFeatureDrawerOffClickListener();
+                this.clearAndExitSearch = clearAndExitSearch;
                 this.FEATURES_DRAWER_CLASSES = {
                     MAIN: 'features-drawer',
                     HIDDEN: 'features-drawer--hidden',
@@ -586,6 +587,7 @@ const codeBlockInteractiveBar = () => {
                 this.featuresDrawerBtn.classList.toggle(this.FEATURES_DRAWER_CLASSES.OPENED);
             
                 if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
+                    this.clearAndExitSearch();
                     document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
                 } else {
                     // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
@@ -624,6 +626,8 @@ const codeBlockInteractiveBar = () => {
                 this.searchBtn = null;
                 this.searchField = null;
                 this.codeContainer = null;
+                this.choosePrevOccurrence = null;
+                this.chooseNextOccurrence = null;
                 this.chosenOccurence = null;
                 this.foundOccurrences = null;
                 this.defaultOccurrenceValue = '-';
@@ -661,33 +665,29 @@ const codeBlockInteractiveBar = () => {
             }
             
             createSearchField() {
-                this.hideSearchBtn = document.createElement('button');
-                this.hideSearchBtn.type = 'button';
-                this.hideSearchBtn.textContent = 'X';
-                this.hideSearchBtn.title = 'Zamknij';
-                this.hideSearchBtn.addEventListener('click', () => this.toggleSearchFeature(false));
-    
                 this.searchInput = document.createElement('input');
                 this.searchInput.type = 'search';
                 this.searchInput.addEventListener('input', this.doSearch.bind(this));
     
                 const actionContainer = document.createElement('div');
                 actionContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
-                actionContainer.append(this.hideSearchBtn, this.searchInput);
+                actionContainer.append(this.searchInput);
 
                 const navContainer = document.createElement('div');
                 navContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
                 navContainer.innerHTML = `
-                    <button data-search-nav="left" title="poprzedni" type="button">&larr;</button>
+                    <button data-search-nav="left" title="poprzedni" disabled="true" type="button">&larr;</button>
                     <output>
                         <span data-search-nav="chosenOccurrence">${ this.defaultOccurrenceValue }</span>
                         /
                         <span data-search-nav="foundOccurrences">${ this.defaultOccurrenceValue }</span>
                     </output>
-                    <button data-search-nav="right" title="następny" type="button">&rarr;</button>
+                    <button data-search-nav="right" title="następny" disabled="true" type="button">&rarr;</button>
                 `.trim();
                 navContainer.addEventListener('click', this.handleSearchNav.bind(this));
     
+                this.choosePrevOccurrence = navContainer.querySelector('[data-search-nav="left"]');
+                this.chooseNextOccurrence = navContainer.querySelector('[data-search-nav="right"]');
                 this.chosenOccurence = navContainer.querySelector('[data-search-nav="chosenOccurrence"]');
                 this.foundOccurrences = navContainer.querySelector('[data-search-nav="foundOccurrences"]');
                 
@@ -706,12 +706,19 @@ const codeBlockInteractiveBar = () => {
                     this.searchInput.focus();
                 }
             }
+            
+            clearAndExit() {
+                this.toggleSearchFeature(false);
+                this.searchInput.value = '';
+                this.searchInput.dispatchEvent(new InputEvent('input'));
+            }
     
             doSearch({ target: { value } }) {
                 console.log('codeBlock:', this.codeContainer, ' /value:',value);
     
+                this.currentOccurrenceIndex = 0
+                this.updateChosenOccurrence(this.currentOccurrenceIndex);
                 this.numberOfOccurrences = 0;
-                this.updateChosenOccurrence(this.numberOfOccurrences);
                 this.updateFoundOccurrences(this.numberOfOccurrences);
                 
                 // TODO: adjust regex to handle slashes and similar characters
@@ -735,13 +742,13 @@ const codeBlockInteractiveBar = () => {
                 const navDirection = target.dataset.searchNav;
                 
                 if (navDirection) {
-                    if (navDirection === 'right') {
+                    if (target === this.chooseNextOccurrence) {
                         if (this.currentOccurrenceIndex < this.numberOfOccurrences - 1) {
                             this.currentOccurrenceIndex++;
                         } else {
                             this.currentOccurrenceIndex = 0;
                         }
-                    } else {
+                    } else if (target === this.choosePrevOccurrence) {
                         if (this.currentOccurrenceIndex > 0) {
                             this.currentOccurrenceIndex--;
                         } else {
@@ -756,6 +763,11 @@ const codeBlockInteractiveBar = () => {
             updateChosenOccurrence(value) {
                 if (!value) {
                     value = this.defaultOccurrenceValue;
+                    this.choosePrevOccurrence.disabled = true;
+                    this.chooseNextOccurrence.disabled = true;
+                } else {
+                    this.choosePrevOccurrence.disabled = false;
+                    this.chooseNextOccurrence.disabled = false;
                 }
                 
                 this.chosenOccurence.textContent = value;
@@ -950,8 +962,8 @@ const codeBlockInteractiveBar = () => {
         const codeCopy = new CodeCopy();
         
         return function getCodeBlockBarFeatureItems(codeBlock) {
-            const featuresDrawer = new FeaturesDrawer(codeBlock);
             const searchThroughCode = new SearchThroughCode(codeBlock);
+            const featuresDrawer = new FeaturesDrawer(codeBlock, searchThroughCode.clearAndExit.bind(searchThroughCode));
             const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawer.toggleDrawer.bind(featuresDrawer));
             
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);

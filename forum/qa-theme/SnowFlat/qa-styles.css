@@ -4884,9 +4884,9 @@ search-through-code__wrapper button {
 }
 
 .search-through-code__wrapper input {
-	margin: 0;
+	width: 100%;
+	margin: 5px;
 	padding: 2px;
-	width: 90px;
 }
 
 .search-through-code__fields-container {
@@ -4898,6 +4898,7 @@ search-through-code__wrapper button {
 
 .search-through-code__fields-container output {
 	color: white;
+	font-size: 0.75em;
 	flex-grow: 1;
 	text-align: center;
 }
