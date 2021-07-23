@@ -4856,14 +4856,14 @@ pre[class*="brush:"]::after
 	width: 100%;
 }
 
-.syntaxhighlighter-block-bar-item:first-child {
-	min-width: 25%;
-	max-width: 33.3%;
+.syntaxhighlighter-block-bar-item {
+	flex-basis: 30%;
 }
 
 .syntaxhighlighter-block-bar-item:last-child
 {
 	position: relative;
+	display: inline-flex;
 }
 
 .syntaxhighlighter-block-bar-item--hidden,
@@ -4880,6 +4880,7 @@ pre[class*="brush:"]::after
 	font-size: 12px;
 	font-weight: bold;
 	color: white;
+	margin-left: auto;
 }
 
 .syntaxhighlighter-language
@@ -5076,17 +5077,17 @@ pre[class*="brush:"]::after
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .syntaxhighlighter-collapsible-button,
-	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
+	.syntaxhighlighter-block-bar.is-collapsible .features-drawer__button {
 		margin: 0 auto 3px;
 	}
 
-	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn {
+	.syntaxhighlighter-block-bar.is-collapsible .features-drawer__button {
 		border-radius: 0 10px 0 10px;
 		padding-left: 6px;
 		padding-right: 6px;
 	}
 
-	.syntaxhighlighter-block-bar.is-collapsible .content-copy-btn:hover {
+	.syntaxhighlighter-block-bar.is-collapsible .features-drawer__button:hover {
 		background: #476481;
 	}
 }
@@ -5104,15 +5105,19 @@ pre[class*="brush:"]::after
 	}
 
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .syntaxhighlighter-language,
-	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer__button {
 		margin: 0;
 		line-height: 1;
 	}
 
-	.syntaxhighlighter-block-bar:not(.is-collapsible) .content-copy-btn {
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer__button {
 		border-radius: 5px;
 		padding-left: 6px;
 		padding-right: 6px;
+	}
+
+	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer {
+		right: -22px;
 	}
 }
 

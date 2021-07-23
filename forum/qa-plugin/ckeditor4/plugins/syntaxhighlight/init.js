@@ -565,8 +565,6 @@ const codeBlockInteractiveBar = () => {
     
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
-                    console.log('??? processedCodeBlock:',processedCodeBlock)
-                    
                     const insertionRef =
                       processedCodeBlock.previousElementSibling.querySelector(`.${ this.FEATURES_DRAWER_CLASSES.BUTTON }`);
     
