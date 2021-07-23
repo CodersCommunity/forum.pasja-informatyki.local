@@ -4985,6 +4985,12 @@ pre[class*="brush:"]::after
 	position: relative;
 }
 
+.features-drawer__list-item .content-copy-btn.content-copy-btn--done
+{
+	color: lightgreen;
+	transition: color 0.75s;
+}
+
 .content-copy-btn[disabled]
 {
 	background: lightgray;
@@ -4999,13 +5005,13 @@ pre[class*="brush:"]::after
 .content-copy-tooltip::before
 {
 	position: absolute;
-	background: black;
+	background: red;
 	color: white;
-	font-size: 10px;
-	top: -20px;
+	font-size: 12px;
+	top: -22px;
 	right: -7px;
 	width: 125px;
-	height: 15px;
+	height: 17px;
 	line-height: 15px;
 	font-weight: normal;
 	border-radius: 5px;
@@ -5029,7 +5035,7 @@ pre[class*="brush:"]::after
 	height: 0;
 	top: -5px;
 	right: 30px;
-	border-top: 8px solid black;
+	border-top: 8px solid red;
 	border-right: 8px solid transparent;
 	border-left: 8px solid transparent;
 	position: absolute;

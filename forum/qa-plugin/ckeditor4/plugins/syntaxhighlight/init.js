@@ -463,7 +463,7 @@ const codeBlockInteractiveBar = () => {
             }
 
             getContentToCopy(target) {
-                const blockOfCodeParent = target.parentNode.parentNode.parentNode;
+                const blockOfCodeParent = target.closest('.syntaxhighlighter-parent');
                 const linesOfCode = [...blockOfCodeParent.querySelector('.code .container').children];
                 const contentToCopy = linesOfCode
                 .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
@@ -476,12 +476,14 @@ const codeBlockInteractiveBar = () => {
             copyByClipboardAPI({ target }) {
                 window.navigator.clipboard
                     .writeText(this.getContentToCopy(target))
+                    .then(() => this.showSuccess(target))
                     .catch(() => this.tryFallbackToOlderCopyMethod(target));
             }
 
             tryFallbackToOlderCopyMethod(target) {
                 if (this.isCopyByQueryCommand) {
                     this.copyByQueryCommand({ target });
+                    this.showSuccess(target);
                 } else {
                     target.classList.add('content-copy-tooltip', 'content-copy-error');
 
@@ -489,6 +491,13 @@ const codeBlockInteractiveBar = () => {
                         target.classList.remove('content-copy-tooltip', 'content-copy-error');
                     }, 3000);
                 }
+            }
+            
+            showSuccess(target) {
+                target.addEventListener('transitionend', () => {
+                    target.classList.remove('content-copy-btn--done');
+                },{ once: true });
+                target.classList.add('content-copy-btn--done');
             }
 
             copyByQueryCommand({ target }) {
@@ -570,18 +579,20 @@ const codeBlockInteractiveBar = () => {
                 this.featuresDrawerBtn.type = 'button';
                 this.featuresDrawerBtn.textContent = 'Opcje';
                 this.featuresDrawerBtn.classList.add(this.FEATURES_DRAWER_CLASSES.BUTTON);
-                this.featuresDrawerBtn.addEventListener('click', (event) => {
-                    this.domElement.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
-                    
-                    if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
-                        document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
-                    } else {
-                        // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
-                        event.stopPropagation();
-                        
-                        document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
-                    }
-                });
+                this.featuresDrawerBtn.addEventListener('click', this.toggleDrawer.bind(this));
+            }
+            
+            toggleDrawer(event) {
+                this.domElement.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+            
+                if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
+                    document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
+                } else {
+                    // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
+                    event.stopPropagation();
+                
+                    document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
+                }
             }
             
             getFeatureDrawerOffClickListener() {
@@ -608,7 +619,8 @@ const codeBlockInteractiveBar = () => {
         }
 
         class CodeBlockFullScreen {
-            constructor() {
+            constructor(toggleDrawer) {
+                this.toggleDrawer = toggleDrawer;
                 this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH = 30;
                 this.MINIMUM_WIDTH_FOR_FULL_SCREEN = 400;
                 this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME = 'syntaxhighlighter-fallback-full-screen-container';
@@ -769,10 +781,11 @@ const codeBlockInteractiveBar = () => {
                             const heightValue = codeBlock.scrollHeight + (codeBlock.scrollHeight - codeBlock.clientHeight);
                             codeBlock.style.setProperty(codeBlockRawHeight, `${heightValue}px`);
                         }
-
+                        
                         collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
+                        this.toggleDrawer(new MouseEvent('click'));
                     }
-
+                    
                     collapsibleCodeBlockBtn.disabled = !this.isFullScreen;
                 }
 
@@ -785,9 +798,10 @@ const codeBlockInteractiveBar = () => {
         const codeCopy = new CodeCopy();
         
         return function getCodeBlockBarFeatureItems(codeBlock) {
-            const codeBlockFullScreen = new CodeBlockFullScreen();
-            codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
             const featuresDrawer = new FeaturesDrawer(codeBlock);
+            const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawer.toggleDrawer.bind(featuresDrawer));
+            
+            codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
             featuresDrawer.addFeatures([
                 codeBlockFullScreen.getFullScreenBtn(),
                 codeCopy.getCopyToClipboardBtn()
