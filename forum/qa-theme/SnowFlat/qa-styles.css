@@ -4796,10 +4796,25 @@ pre[class*="brush:"]::after
 .features-drawer__button {
 	height: 22px;
 	margin-right: 8px;
-	padding: 2px 15px;
+	padding: 2px 30px 2px 15px;
 	border: none;
 	border-radius: 0px 40px;
 	background: #2c3e50;
+	position: relative;
+}
+
+.features-drawer__button::after {
+	content: '';
+	position: absolute;
+	top: 6.7px;
+	right: 12px;
+	border-top: 9px solid white;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+}
+
+.features-drawer__button--opened::after {
+	transform: rotate(180deg);
 }
 
 .features-drawer .features-drawer__list {
@@ -5083,8 +5098,6 @@ pre[class*="brush:"]::after
 
 	.syntaxhighlighter-block-bar.is-collapsible .features-drawer__button {
 		border-radius: 0 10px 0 10px;
-		padding-left: 6px;
-		padding-right: 6px;
 	}
 
 	.syntaxhighlighter-block-bar.is-collapsible .features-drawer__button:hover {
@@ -5112,8 +5125,6 @@ pre[class*="brush:"]::after
 
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer__button {
 		border-radius: 5px;
-		padding-left: 6px;
-		padding-right: 6px;
 	}
 
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer {

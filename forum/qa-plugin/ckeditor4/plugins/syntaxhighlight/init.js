@@ -550,6 +550,7 @@ const codeBlockInteractiveBar = () => {
                     MAIN: 'features-drawer',
                     HIDDEN: 'features-drawer--hidden',
                     BUTTON: 'features-drawer__button',
+                    OPENED: 'features-drawer__button--opened',
                     LIST: 'features-drawer__list',
                     LIST_ITEM: 'features-drawer__list-item',
                 };
@@ -582,6 +583,7 @@ const codeBlockInteractiveBar = () => {
             
             toggleDrawer(event) {
                 this.domElement.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerBtn.classList.toggle(this.FEATURES_DRAWER_CLASSES.OPENED);
             
                 if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
                     document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
@@ -597,6 +599,7 @@ const codeBlockInteractiveBar = () => {
                 return ({ target }) => {
                     if (!target.closest(`.${ this.FEATURES_DRAWER_CLASSES.MAIN }`)) {
                         this.domElement.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                        this.featuresDrawerBtn.classList.remove(this.FEATURES_DRAWER_CLASSES.OPENED);
                     }
                 }
             }
