@@ -4871,6 +4871,14 @@ pre[class*="brush:"]::after
 	width: 100%;
 }
 
+.found-phrase {
+	border: 2px solid red;
+}
+
+.found-phrase--highlighted {
+	border-style: dashed;
+}
+
 .syntaxhighlighter-block-bar-item {
 	flex-basis: 30%;
 }

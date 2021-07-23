@@ -618,6 +618,53 @@ const codeBlockInteractiveBar = () => {
                 });
             }
         }
+        
+        class SearchThroughCode {
+            constructor(codeBlock) {
+                this.searchBtn = null;
+                this.codeContainer = null;
+                this.codeContainerOriginalHTML = '';
+    
+                // TODO: do it when search feature (button) is clicked
+                this.initCodeContainer(codeBlock);
+            }
+            
+            initCodeContainer(codeBlock) {
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    this.codeContainer = processedCodeBlock.querySelector('.container');
+                    this.codeContainerOriginalHTML = this.codeContainer.innerHTML;
+                });
+            }
+    
+            getSearchBtn() {
+                // this.searchBtn = document.createElement('button');
+                // this.searchBtn.type = 'button';
+                // this.searchBtn.textContent = 'Szukaj';
+                // this.searchBtn.addEventListener('click', this.doSearch);
+                //
+                // return this.searchBtn;
+                
+                this.searchBtn = document.createElement('input');
+                this.searchBtn.type = 'text';
+                
+                this.searchBtn.addEventListener('input', this.doSearch.bind(this))
+                
+                return this.searchBtn;
+            }
+    
+            doSearch({ target: { value } }) {
+                console.log('codeBlock:', this.codeContainer, ' /value:',value);
+                
+                const searchRegExp = new RegExp(`(${ value })`, 'gi');
+                this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
+                this.codeContainer.querySelectorAll('code').forEach((codeLine) => {
+                    if (value && searchRegExp.test(codeLine.textContent)) {
+                        codeLine.innerHTML = codeLine.innerHTML.replace(searchRegExp, `<span class="found-phrase">$1</span>`);
+                    }
+                });
+            }
+        }
 
         class CodeBlockFullScreen {
             constructor(toggleDrawer) {
@@ -800,12 +847,14 @@ const codeBlockInteractiveBar = () => {
         
         return function getCodeBlockBarFeatureItems(codeBlock) {
             const featuresDrawer = new FeaturesDrawer(codeBlock);
+            const searchThroughCode = new SearchThroughCode(codeBlock);
             const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawer.toggleDrawer.bind(featuresDrawer));
             
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
             featuresDrawer.addFeatures([
+                codeCopy.getCopyToClipboardBtn(),
+                searchThroughCode.getSearchBtn(),
                 codeBlockFullScreen.getFullScreenBtn(),
-                codeCopy.getCopyToClipboardBtn()
             ].filter(Boolean));
 
             return [
