@@ -634,14 +634,15 @@ const codeBlockInteractiveBar = () => {
                 this.codeContainerOriginalHTML = '';
                 this.currentOccurrenceIndex = -1;
                 this.numberOfOccurrences = 0;
+                this.foundPhrases = [];
                 this.CLASSES = {
                     SEARCH_WRAPPER: 'search-through-code__wrapper',
                     FIELDS_CONTAINER: 'search-through-code__fields-container',
                     FOUND: 'search-through-code__found-phrase',
+                    HIGHLIGHTED: 'search-through-code__found-phrase--highlighted',
                     HIDDEN: 'search-through-code--hidden',
                 }
     
-                // TODO: do it when search feature (button) is clicked
                 this.initCodeContainer(codeBlock);
             }
             
@@ -714,12 +715,12 @@ const codeBlockInteractiveBar = () => {
             }
     
             doSearch({ target: { value } }) {
-                console.log('codeBlock:', this.codeContainer, ' /value:',value);
-    
                 this.currentOccurrenceIndex = 0
                 this.updateChosenOccurrence(this.currentOccurrenceIndex);
                 this.numberOfOccurrences = 0;
                 this.updateFoundOccurrences(this.numberOfOccurrences);
+    
+                this.foundPhrases = [];
                 
                 // TODO: adjust regex to handle slashes and similar characters
                 const searchRegExp = new RegExp(`(${ value })`, 'gi');
@@ -730,12 +731,16 @@ const codeBlockInteractiveBar = () => {
                     
                     if (value && matched) {
                         this.numberOfOccurrences += matched.length;
-                        this.updateChosenOccurrence(1);
-                        this.updateFoundOccurrences(this.numberOfOccurrences);
-                        
                         codeLine.innerHTML = codeLine.innerHTML.replace(searchRegExp, `<span class="${ this.CLASSES.FOUND }">$1</span>`);
                     }
                 });
+                
+                this.foundPhrases = this.codeContainer.querySelectorAll(`.${ this.CLASSES.FOUND }`);
+                
+                if (this.foundPhrases.length) {
+                    this.updateChosenOccurrence(1);
+                    this.updateFoundOccurrences(this.numberOfOccurrences);
+                }
             }
     
             handleSearchNav({ target }) {
@@ -768,6 +773,9 @@ const codeBlockInteractiveBar = () => {
                 } else {
                     this.choosePrevOccurrence.disabled = false;
                     this.chooseNextOccurrence.disabled = false;
+    
+                    this.foundPhrases.forEach((phrase) => phrase.classList.remove(this.CLASSES.HIGHLIGHTED));
+                    this.foundPhrases[this.currentOccurrenceIndex].classList.add(this.CLASSES.HIGHLIGHTED);
                 }
                 
                 this.chosenOccurence.textContent = value;

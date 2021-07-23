@@ -4909,11 +4909,22 @@ search-through-code__wrapper button {
 }
 
 .search-through-code__found-phrase {
-	border: 2px solid red;
+	background: red;
 }
 
 .search-through-code__found-phrase--highlighted {
-	border-style: dashed;
+	position: relative;
+	background: none;
+}
+
+.search-through-code__found-phrase--highlighted::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -2px;
+	right: -2px;
+	bottom: 0;
+	border: 2px dotted red;
 }
 
 .search-through-code--hidden {
