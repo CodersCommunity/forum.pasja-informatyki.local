@@ -4898,6 +4898,8 @@ search-through-code__wrapper button {
 
 .search-through-code__fields-container output {
 	color: white;
+	flex-grow: 1;
+	text-align: center;
 }
 
 .search-through-code__fields-container .next-found-occurrence,

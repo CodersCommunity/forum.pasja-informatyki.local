@@ -624,7 +624,12 @@ const codeBlockInteractiveBar = () => {
                 this.searchBtn = null;
                 this.searchField = null;
                 this.codeContainer = null;
+                this.chosenOccurence = null;
+                this.foundOccurrences = null;
+                this.defaultOccurrenceValue = '-';
                 this.codeContainerOriginalHTML = '';
+                this.currentOccurrenceIndex = -1;
+                this.numberOfOccurrences = 0;
                 this.CLASSES = {
                     SEARCH_WRAPPER: 'search-through-code__wrapper',
                     FIELDS_CONTAINER: 'search-through-code__fields-container',
@@ -674,10 +679,17 @@ const codeBlockInteractiveBar = () => {
                 navContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
                 navContainer.innerHTML = `
                     <button data-search-nav="left" title="poprzedni" type="button">&larr;</button>
-                    <output>-/-</output>
+                    <output>
+                        <span data-search-nav="chosenOccurrence">${ this.defaultOccurrenceValue }</span>
+                        /
+                        <span data-search-nav="foundOccurrences">${ this.defaultOccurrenceValue }</span>
+                    </output>
                     <button data-search-nav="right" title="następny" type="button">&rarr;</button>
                 `.trim();
                 navContainer.addEventListener('click', this.handleSearchNav.bind(this));
+    
+                this.chosenOccurence = navContainer.querySelector('[data-search-nav="chosenOccurrence"]');
+                this.foundOccurrences = navContainer.querySelector('[data-search-nav="foundOccurrences"]');
                 
                 this.searchField = document.createElement('div');
                 this.searchField.classList.add(this.CLASSES.SEARCH_WRAPPER, this.CLASSES.HIDDEN);
@@ -689,15 +701,31 @@ const codeBlockInteractiveBar = () => {
             toggleSearchFeature(show) {
                 this.searchBtn.classList.toggle(this.CLASSES.HIDDEN, show);
                 this.searchField.classList.toggle(this.CLASSES.HIDDEN, !show);
+    
+                if (show) {
+                    this.searchInput.focus();
+                }
             }
     
             doSearch({ target: { value } }) {
                 console.log('codeBlock:', this.codeContainer, ' /value:',value);
+    
+                this.numberOfOccurrences = 0;
+                this.updateChosenOccurrence(this.numberOfOccurrences);
+                this.updateFoundOccurrences(this.numberOfOccurrences);
                 
+                // TODO: adjust regex to handle slashes and similar characters
                 const searchRegExp = new RegExp(`(${ value })`, 'gi');
+                
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
                 this.codeContainer.querySelectorAll('code').forEach((codeLine) => {
-                    if (value && searchRegExp.test(codeLine.textContent)) {
+                    const matched = codeLine.textContent.match(searchRegExp);
+                    
+                    if (value && matched) {
+                        this.numberOfOccurrences += matched.length;
+                        this.updateChosenOccurrence(1);
+                        this.updateFoundOccurrences(this.numberOfOccurrences);
+                        
                         codeLine.innerHTML = codeLine.innerHTML.replace(searchRegExp, `<span class="${ this.CLASSES.FOUND }">$1</span>`);
                     }
                 });
@@ -707,8 +735,38 @@ const codeBlockInteractiveBar = () => {
                 const navDirection = target.dataset.searchNav;
                 
                 if (navDirection) {
-                    // this.goToOccurrence =
+                    if (navDirection === 'right') {
+                        if (this.currentOccurrenceIndex < this.numberOfOccurrences - 1) {
+                            this.currentOccurrenceIndex++;
+                        } else {
+                            this.currentOccurrenceIndex = 0;
+                        }
+                    } else {
+                        if (this.currentOccurrenceIndex > 0) {
+                            this.currentOccurrenceIndex--;
+                        } else {
+                            this.currentOccurrenceIndex = this.numberOfOccurrences - 1;
+                        }
+                    }
+                    
+                    this.updateChosenOccurrence(this.currentOccurrenceIndex + 1);
                 }
+            }
+            
+            updateChosenOccurrence(value) {
+                if (!value) {
+                    value = this.defaultOccurrenceValue;
+                }
+                
+                this.chosenOccurence.textContent = value;
+            }
+    
+            updateFoundOccurrences(value) {
+                if (!value) {
+                    value = this.defaultOccurrenceValue;
+                }
+                
+                this.foundOccurrences.textContent = value;
             }
         }
 
