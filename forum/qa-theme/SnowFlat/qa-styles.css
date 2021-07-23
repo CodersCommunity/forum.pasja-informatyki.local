@@ -4821,12 +4821,12 @@ pre[class*="brush:"]::after
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	min-width: 62px;
+	width: 125px;
 }
 
 .features-drawer .features-drawer__list .features-drawer__list-item {
 	margin: 0;
-	padding: 10px;
+	padding: 0;
 	display: flex;
 	justify-content: center;
 }
@@ -4838,7 +4838,7 @@ pre[class*="brush:"]::after
 .features-drawer .features-drawer__list button {
 	color: white;
 	margin: 0;
-	padding: 0;
+	padding: 10px;
 	white-space: nowrap;
 	background: inherit;
 	border: none;
@@ -4871,12 +4871,50 @@ pre[class*="brush:"]::after
 	width: 100%;
 }
 
-.found-phrase {
+.search-through-code__wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+search-through-code__wrapper button {
+	padding: 0;
+}
+
+.search-through-code__wrapper input {
+	margin: 0;
+	padding: 2px;
+	width: 90px;
+}
+
+.search-through-code__fields-container {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 100%;
+}
+
+.search-through-code__fields-container output {
+	color: white;
+}
+
+.search-through-code__fields-container .next-found-occurrence,
+.search-through-code__fields-container .previous-found-occurrence {
+	padding: 0;
+}
+
+.search-through-code__found-phrase {
 	border: 2px solid red;
 }
 
-.found-phrase--highlighted {
+.search-through-code__found-phrase--highlighted {
 	border-style: dashed;
+}
+
+.search-through-code--hidden {
+	display: none;
 }
 
 .syntaxhighlighter-block-bar-item {

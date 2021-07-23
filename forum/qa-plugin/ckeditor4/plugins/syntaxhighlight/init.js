@@ -622,8 +622,15 @@ const codeBlockInteractiveBar = () => {
         class SearchThroughCode {
             constructor(codeBlock) {
                 this.searchBtn = null;
+                this.searchField = null;
                 this.codeContainer = null;
                 this.codeContainerOriginalHTML = '';
+                this.CLASSES = {
+                    SEARCH_WRAPPER: 'search-through-code__wrapper',
+                    FIELDS_CONTAINER: 'search-through-code__fields-container',
+                    FOUND: 'search-through-code__found-phrase',
+                    HIDDEN: 'search-through-code--hidden',
+                }
     
                 // TODO: do it when search feature (button) is clicked
                 this.initCodeContainer(codeBlock);
@@ -634,23 +641,54 @@ const codeBlockInteractiveBar = () => {
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
                     this.codeContainer = processedCodeBlock.querySelector('.container');
                     this.codeContainerOriginalHTML = this.codeContainer.innerHTML;
+    
+                    this.createSearchField();
                 });
             }
     
             getSearchBtn() {
-                // this.searchBtn = document.createElement('button');
-                // this.searchBtn.type = 'button';
-                // this.searchBtn.textContent = 'Szukaj';
-                // this.searchBtn.addEventListener('click', this.doSearch);
-                //
-                // return this.searchBtn;
-                
-                this.searchBtn = document.createElement('input');
-                this.searchBtn.type = 'text';
-                
-                this.searchBtn.addEventListener('input', this.doSearch.bind(this))
+                this.searchBtn = document.createElement('button');
+                this.searchBtn.type = 'button';
+                this.searchBtn.textContent = 'Szukaj';
+                this.searchBtn.addEventListener('click', () => this.toggleSearchFeature(true));
                 
                 return this.searchBtn;
+            }
+            
+            createSearchField() {
+                this.hideSearchBtn = document.createElement('button');
+                this.hideSearchBtn.type = 'button';
+                this.hideSearchBtn.textContent = 'X';
+                this.hideSearchBtn.title = 'Zamknij';
+                this.hideSearchBtn.addEventListener('click', () => this.toggleSearchFeature(false));
+    
+                this.searchInput = document.createElement('input');
+                this.searchInput.type = 'search';
+                this.searchInput.addEventListener('input', this.doSearch.bind(this));
+    
+                const actionContainer = document.createElement('div');
+                actionContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
+                actionContainer.append(this.hideSearchBtn, this.searchInput);
+
+                const navContainer = document.createElement('div');
+                navContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
+                navContainer.innerHTML = `
+                    <button data-search-nav="left" title="poprzedni" type="button">&larr;</button>
+                    <output>-/-</output>
+                    <button data-search-nav="right" title="następny" type="button">&rarr;</button>
+                `.trim();
+                navContainer.addEventListener('click', this.handleSearchNav.bind(this));
+                
+                this.searchField = document.createElement('div');
+                this.searchField.classList.add(this.CLASSES.SEARCH_WRAPPER, this.CLASSES.HIDDEN);
+                this.searchField.append(actionContainer, navContainer);
+                
+                this.searchBtn.parentNode.insertBefore(this.searchField, this.searchBtn);
+            }
+    
+            toggleSearchFeature(show) {
+                this.searchBtn.classList.toggle(this.CLASSES.HIDDEN, show);
+                this.searchField.classList.toggle(this.CLASSES.HIDDEN, !show);
             }
     
             doSearch({ target: { value } }) {
@@ -660,9 +698,17 @@ const codeBlockInteractiveBar = () => {
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
                 this.codeContainer.querySelectorAll('code').forEach((codeLine) => {
                     if (value && searchRegExp.test(codeLine.textContent)) {
-                        codeLine.innerHTML = codeLine.innerHTML.replace(searchRegExp, `<span class="found-phrase">$1</span>`);
+                        codeLine.innerHTML = codeLine.innerHTML.replace(searchRegExp, `<span class="${ this.CLASSES.FOUND }">$1</span>`);
                     }
                 });
+            }
+    
+            handleSearchNav({ target }) {
+                const navDirection = target.dataset.searchNav;
+                
+                if (navDirection) {
+                    // this.goToOccurrence =
+                }
             }
         }
 
