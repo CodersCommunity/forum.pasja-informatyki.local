@@ -542,11 +542,11 @@ const codeBlockInteractiveBar = () => {
         }
         
         class FeaturesDrawer {
-            constructor(codeBlock, clearAndExitSearch) {
+            constructor(codeBlock) {
                 this.domElement = null;
                 this.featuresDrawerBtn = null;
+                this.clearAndExitSearch = null;
                 this.featureDrawerOffClickListener = this.getFeatureDrawerOffClickListener();
-                this.clearAndExitSearch = clearAndExitSearch;
                 this.FEATURES_DRAWER_CLASSES = {
                     MAIN: 'features-drawer',
                     HIDDEN: 'features-drawer--hidden',
@@ -619,10 +619,14 @@ const codeBlockInteractiveBar = () => {
                     this.domElement.firstElementChild.appendChild(listItem);
                 });
             }
+            
+            assignClearAndExitSearch(clearAndExitSearch) {
+                this.clearAndExitSearch = clearAndExitSearch;
+            }
         }
         
         class SearchThroughCode {
-            constructor(codeBlock) {
+            constructor(codeBlock, toggleDrawer) {
                 this.searchBtn = null;
                 this.searchField = null;
                 this.codeContainer = null;
@@ -642,17 +646,24 @@ const codeBlockInteractiveBar = () => {
                     HIGHLIGHTED: 'search-through-code__found-phrase--highlighted',
                     HIDDEN: 'search-through-code--hidden',
                 }
+                this.KEYS = {
+                    ENTER: 'Enter',
+                    ARROW_UP: 'ArrowUp',
+                    ARROW_DOWN: 'ArrowDown',
+                    F: 'f',
+                };
     
-                this.initCodeContainer(codeBlock);
+                this.initCodeContainer(codeBlock, toggleDrawer);
             }
             
-            initCodeContainer(codeBlock) {
+            initCodeContainer(codeBlock, toggleDrawer) {
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
                     this.codeContainer = processedCodeBlock.querySelector('.container');
                     this.codeContainerOriginalHTML = this.codeContainer.innerHTML;
     
                     this.createSearchField();
+                    this.prepareSearchToBeOpenedByKeyboardShortcut(toggleDrawer);
                 });
             }
     
@@ -669,6 +680,7 @@ const codeBlockInteractiveBar = () => {
                 this.searchInput = document.createElement('input');
                 this.searchInput.type = 'search';
                 this.searchInput.addEventListener('input', this.doSearch.bind(this));
+                this.searchInput.addEventListener('keydown', this.handleSearchNavByKeyboard.bind(this));
     
                 const actionContainer = document.createElement('div');
                 actionContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
@@ -697,6 +709,24 @@ const codeBlockInteractiveBar = () => {
                 this.searchField.append(actionContainer, navContainer);
                 
                 this.searchBtn.parentNode.insertBefore(this.searchField, this.searchBtn);
+            }
+            
+            prepareSearchToBeOpenedByKeyboardShortcut(toggleDrawer) {
+                // Make code block container focusable, so it can receive 'keydown' event
+                this.codeContainer.addEventListener('click', () => {
+                    this.codeContainer.tabIndex = 0;
+                    this.codeContainer.focus();
+                });
+                this.codeContainer.addEventListener('keydown', (event) => {
+                    if (event.key === this.KEYS.F && event.ctrlKey) {
+                        event.preventDefault();
+                        toggleDrawer();
+                        this.toggleSearchFeature(true);
+                        
+                        // turn off code block focusability until it will be clicked by mouse
+                        this.codeContainer.tabIndex = -1;
+                    }
+                });
             }
     
             toggleSearchFeature(show) {
@@ -762,6 +792,24 @@ const codeBlockInteractiveBar = () => {
                     }
                     
                     this.updateChosenOccurrence(this.currentOccurrenceIndex + 1);
+                }
+            }
+
+            handleSearchNavByKeyboard(event) {
+                const clickEvent = new Event('click', { bubbles: true });
+            
+                if (event.key === this.KEYS.ENTER) {
+                    event.preventDefault();
+            
+                    if (event.shiftKey) {
+                        this.choosePrevOccurrence.dispatchEvent(clickEvent);
+                    } else {
+                        this.chooseNextOccurrence.dispatchEvent(clickEvent);
+                    }
+                } else if (event.key === this.KEYS.ARROW_UP) {
+                    this.choosePrevOccurrence.dispatchEvent(clickEvent);
+                } else if (event.key === this.KEYS.ARROW_DOWN) {
+                    this.chooseNextOccurrence.dispatchEvent(clickEvent);
                 }
             }
             
@@ -970,8 +1018,10 @@ const codeBlockInteractiveBar = () => {
         const codeCopy = new CodeCopy();
         
         return function getCodeBlockBarFeatureItems(codeBlock) {
-            const searchThroughCode = new SearchThroughCode(codeBlock);
-            const featuresDrawer = new FeaturesDrawer(codeBlock, searchThroughCode.clearAndExit.bind(searchThroughCode));
+            const featuresDrawer = new FeaturesDrawer(codeBlock);
+            const searchThroughCode = new SearchThroughCode(
+              codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click'))
+            );
             const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawer.toggleDrawer.bind(featuresDrawer));
             
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
@@ -980,6 +1030,7 @@ const codeBlockInteractiveBar = () => {
                 searchThroughCode.getSearchBtn(),
                 codeBlockFullScreen.getFullScreenBtn(),
             ].filter(Boolean));
+            featuresDrawer.assignClearAndExitSearch(searchThroughCode.clearAndExit.bind(searchThroughCode));
 
             return [
                 languageLabel.getLanguageLabel(codeBlock),
