@@ -20,4 +20,10 @@ if (!defined('QA_VERSION')) {
 
 qa_register_plugin_layer('layer.php', 'Socket integration layer');
 qa_register_plugin_module('event', 'event.php', 'socket_integration_event', 'Socket integration event');
-qa_register_plugin_module('page', 'page.php', 'socket_integration_page', 'Socket integration page');
+qa_register_plugin_module('page', 'page-user.php', 'socket_integration_user_page', 'Socket integration user');
+qa_register_plugin_module(
+    'page',
+    'page-comments.php',
+    'socket_integration_comments_page',
+    'Socket integration comments'
+);

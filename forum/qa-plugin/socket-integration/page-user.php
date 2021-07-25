@@ -1,10 +1,10 @@
 <?php
 
-class socket_integration_page
+class socket_integration_user_page
 {
     public function match_request($request)
     {
-        return $request === 'user-id';
+        return $request === 'socket/user-id';
     }
 
     public function process_request()
