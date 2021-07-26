@@ -4927,6 +4927,19 @@ search-through-code__wrapper button {
 	border: 2px dotted red;
 }
 
+.search-through-code__found-phrase--highlighted.matched-first::before {
+	border-right: none;
+}
+
+.search-through-code__found-phrase--highlighted.matched-middle::before {
+	border-left: none;
+	border-right: none;
+}
+
+.search-through-code__found-phrase--highlighted.matched-last::before {
+	border-left: none;
+}
+
 .search-through-code--hidden {
 	display: none;
 }

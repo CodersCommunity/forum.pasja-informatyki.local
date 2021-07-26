@@ -752,20 +752,142 @@ const codeBlockInteractiveBar = () => {
     
                 this.foundPhrases = [];
                 
-                // TODO: adjust regex to handle slashes and similar characters
-                const searchRegExp = new RegExp(`(${ value })`, 'gi');
+                const escapedValue = value.replace(/\W/g, (match) => `\\${ match }`);
+                
+                console.log('escapedValue:', escapedValue)
+                
+                const searchRegExp = new RegExp(escapedValue, 'gdi');
                 
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
-                this.codeContainer.querySelectorAll('code').forEach((codeLine) => {
-                    const matched = codeLine.textContent.match(searchRegExp);
+                
+                if (!value) {
+                    return;
+                }
+                
+                let occurrenceCounter = 0;
+                let prevLineIndex = 0;
+                
+                this.codeContainer.querySelectorAll('.line').forEach((codeLine, lineIndex, allLines) => {
+                    const nextLineAvailable = allLines[lineIndex + 1];
+                    let lineMatches = null;
+                    const uniqueIndexes = new Set();
+                    const matchedIndexes = [];
                     
-                    if (value && matched) {
-                        this.numberOfOccurrences += matched.length;
-                        codeLine.innerHTML = codeLine.innerHTML.replace(searchRegExp, `<span class="${ this.CLASSES.FOUND }">$1</span>`);
+                    while (lineMatches = searchRegExp.exec(codeLine.textContent)) {
+                        // console.warn('lineMatches:', lineMatches);
+                        
+                        const [start, end] = lineMatches.indices[0];
+                        const decrementedEnd = end - 1;
+                        
+                        if (!uniqueIndexes.has(start) && !uniqueIndexes.has(decrementedEnd)) {
+                            matchedIndexes.push([start, decrementedEnd]);
+                        }
+                        
+                        uniqueIndexes.add(start).add(decrementedEnd);
                     }
+                    
+                    if (matchedIndexes.length === 0) {
+                        return;
+                    }
+                    
+                    const densifiedIndexes = matchedIndexes.map(([start, end]) => {
+                        const densifiedArray = [
+                            start,
+                            ...new Array(end - start).fill(start).map((num, i) => num + i),
+                            end
+                        ];
+                        
+                        return [...new Set(densifiedArray)];
+                    });
+                    const targetIndexes = [];
+    
+                    const FOUND_PAIRS_CLASS_NAMES_MAP = Object.freeze({
+                        WHOLE: 'matched-whole',
+                        FIRST: 'matched-first',
+                        LAST: 'matched-last',
+                        MIDDLE: 'matched-middle',
+                    });
+                    function mapIndexToClassName (numOfIndexes, index) {
+                        if (numOfIndexes === 0) {
+                            throw Error('numOfIndexes cannot be 0!');
+                        } else if (numOfIndexes === 1) {
+                            return FOUND_PAIRS_CLASS_NAMES_MAP.WHOLE;
+                        } else if (numOfIndexes === 2) {
+                            return index === 0 ? FOUND_PAIRS_CLASS_NAMES_MAP.FIRST : FOUND_PAIRS_CLASS_NAMES_MAP.LAST;
+                        } else {
+                            if (index === 0) {
+                                return FOUND_PAIRS_CLASS_NAMES_MAP.FIRST;
+                            } else if (index === numOfIndexes - 1) {
+                                return FOUND_PAIRS_CLASS_NAMES_MAP.LAST;
+                            } else {
+                                return FOUND_PAIRS_CLASS_NAMES_MAP.MIDDLE;
+                            }
+                        }
+                    }
+                    
+                    for (let i = 0; i < densifiedIndexes.length; i++) {
+                        const densifiedIndexesGroup = densifiedIndexes[i];
+    
+                        densifiedIndexesGroup.forEach((matchedCharIndex, indexInMatchedGroup) => {
+                            targetIndexes[matchedCharIndex] = mapIndexToClassName(
+                              densifiedIndexesGroup.length, indexInMatchedGroup
+                            );
+                        });
+                    }
+                    
+                    console.warn('matchedIndexes:', matchedIndexes, ' /densifiedIndexes:', densifiedIndexes, ' /targetIndexes:', targetIndexes);
+    
+                    let charCounter = 0;
+                    const codeFragments = codeLine.querySelectorAll('code');
+                    codeFragments.forEach((codeFragment) => {
+                        let outputChars = '';
+                        const chars = codeFragment.textContent.split('');
+                        
+                        chars.forEach((char) => {
+                            if (charCounter in targetIndexes) {
+                                let goingToNextFragment = false;
+                                let lastCharInFragment = false;
+                                
+                                for (let fragmentIdx = 0; fragmentIdx < densifiedIndexes.length; fragmentIdx++) {
+                                    const indexesGroup = densifiedIndexes[fragmentIdx];
+                                    
+                                    lastCharInFragment = indexesGroup[indexesGroup.length - 1] === charCounter;
+                                    const nextFragmentExists = (fragmentIdx + 1) in densifiedIndexes;
+    
+                                    if (lastCharInFragment && nextFragmentExists) {
+                                        goingToNextFragment = true;
+                                        break;
+                                    }
+                                }
+                                
+                                const classNames = `${ this.CLASSES.FOUND } ${ targetIndexes[charCounter] }`;
+                                
+                                outputChars += `
+                                    <span class="${ classNames }" data-found-occurence="${ occurrenceCounter }">${ char }</span>
+                                `.trim();
+                                
+                                if (goingToNextFragment) {
+                                    occurrenceCounter++;
+                                } else if (lastCharInFragment && nextLineAvailable) {
+                                    occurrenceCounter++;
+                                    prevLineIndex = lineIndex;
+                                }
+                            } else {
+                                outputChars += char;
+                            }
+                            
+                            charCounter++;
+                        });
+                        
+                        codeFragment.innerHTML = outputChars;
+                    });
+    
+                    this.numberOfOccurrences += densifiedIndexes.length;
                 });
                 
-                this.foundPhrases = this.codeContainer.querySelectorAll(`.${ this.CLASSES.FOUND }`);
+                console.log('occurrenceCounter:', occurrenceCounter)
+                
+                this.foundPhrases = [...this.codeContainer.querySelectorAll(`.${ this.CLASSES.FOUND }`)];
                 
                 if (this.foundPhrases.length) {
                     this.updateChosenOccurrence(1);
@@ -821,9 +943,15 @@ const codeBlockInteractiveBar = () => {
                 } else {
                     this.choosePrevOccurrence.disabled = false;
                     this.chooseNextOccurrence.disabled = false;
-    
-                    this.foundPhrases.forEach((phrase) => phrase.classList.remove(this.CLASSES.HIGHLIGHTED));
-                    this.foundPhrases[this.currentOccurrenceIndex].classList.add(this.CLASSES.HIGHLIGHTED);
+                    
+                    this.foundPhrases.forEach((phraseElement) => {
+                        phraseElement.classList.remove(this.CLASSES.HIGHLIGHTED);
+                        
+                        const elementMatchesWithCurrentOccurrence = Number(phraseElement.dataset.foundOccurence) === this.currentOccurrenceIndex;
+                        if (elementMatchesWithCurrentOccurrence) {
+                            phraseElement.classList.add(this.CLASSES.HIGHLIGHTED);
+                        }
+                    });
                 }
                 
                 this.chosenOccurence.textContent = value;
