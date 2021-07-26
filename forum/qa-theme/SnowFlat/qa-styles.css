@@ -4927,7 +4927,7 @@ search-through-code__wrapper button {
 	border: 2px dotted red;
 }
 
-.search-through-code__found-phrase--highlighted.matched-first::before {
+.search-through-code__found-phrase--highlighted.matched-begin::before {
 	border-right: none;
 }
 
@@ -4936,7 +4936,7 @@ search-through-code__wrapper button {
 	border-right: none;
 }
 
-.search-through-code__found-phrase--highlighted.matched-last::before {
+.search-through-code__found-phrase--highlighted.matched-end::before {
 	border-left: none;
 }
 

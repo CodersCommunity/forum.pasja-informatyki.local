@@ -645,7 +645,11 @@ const codeBlockInteractiveBar = () => {
                     FOUND: 'search-through-code__found-phrase',
                     HIGHLIGHTED: 'search-through-code__found-phrase--highlighted',
                     HIDDEN: 'search-through-code--hidden',
-                }
+                    FOUND_PAIR_WHOLE: 'matched-whole',
+                    FOUND_PAIR_BEGIN: 'matched-begin',
+                    FOUND_PAIR_MIDDLE: 'matched-middle',
+                    FOUND_PAIR_END: 'matched-end',
+                };
                 this.KEYS = {
                     ENTER: 'Enter',
                     ARROW_UP: 'ArrowUp',
@@ -751,141 +755,60 @@ const codeBlockInteractiveBar = () => {
                 this.updateFoundOccurrences(this.numberOfOccurrences);
     
                 this.foundPhrases = [];
-                
-                const escapedValue = value.replace(/\W/g, (match) => `\\${ match }`);
-                
-                console.log('escapedValue:', escapedValue)
-                
-                const searchRegExp = new RegExp(escapedValue, 'gdi');
-                
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
                 
                 if (!value) {
                     return;
                 }
-                
+    
+                const escapedValue = value.replace(/\W/g, (match) => `\\${ match }`);
                 let occurrenceCounter = 0;
-                let prevLineIndex = 0;
                 
                 this.codeContainer.querySelectorAll('.line').forEach((codeLine, lineIndex, allLines) => {
                     const nextLineAvailable = allLines[lineIndex + 1];
-                    let lineMatches = null;
-                    const uniqueIndexes = new Set();
-                    const matchedIndexes = [];
-                    
-                    while (lineMatches = searchRegExp.exec(codeLine.textContent)) {
-                        // console.warn('lineMatches:', lineMatches);
-                        
-                        const [start, end] = lineMatches.indices[0];
-                        const decrementedEnd = end - 1;
-                        
-                        if (!uniqueIndexes.has(start) && !uniqueIndexes.has(decrementedEnd)) {
-                            matchedIndexes.push([start, decrementedEnd]);
-                        }
-                        
-                        uniqueIndexes.add(start).add(decrementedEnd);
-                    }
+                    const matchedIndexes = this._getMatchedIndexes(escapedValue, codeLine.textContent);
                     
                     if (matchedIndexes.length === 0) {
                         return;
                     }
                     
-                    const densifiedIndexes = matchedIndexes.map(([start, end]) => {
-                        const densifiedArray = [
-                            start,
-                            ...new Array(end - start).fill(start).map((num, i) => num + i),
-                            end
-                        ];
-                        
-                        return [...new Set(densifiedArray)];
-                    });
-                    const targetIndexes = [];
-    
-                    const FOUND_PAIRS_CLASS_NAMES_MAP = Object.freeze({
-                        WHOLE: 'matched-whole',
-                        FIRST: 'matched-first',
-                        LAST: 'matched-last',
-                        MIDDLE: 'matched-middle',
-                    });
-                    function mapIndexToClassName (numOfIndexes, index) {
-                        if (numOfIndexes === 0) {
-                            throw Error('numOfIndexes cannot be 0!');
-                        } else if (numOfIndexes === 1) {
-                            return FOUND_PAIRS_CLASS_NAMES_MAP.WHOLE;
-                        } else if (numOfIndexes === 2) {
-                            return index === 0 ? FOUND_PAIRS_CLASS_NAMES_MAP.FIRST : FOUND_PAIRS_CLASS_NAMES_MAP.LAST;
-                        } else {
-                            if (index === 0) {
-                                return FOUND_PAIRS_CLASS_NAMES_MAP.FIRST;
-                            } else if (index === numOfIndexes - 1) {
-                                return FOUND_PAIRS_CLASS_NAMES_MAP.LAST;
-                            } else {
-                                return FOUND_PAIRS_CLASS_NAMES_MAP.MIDDLE;
-                            }
-                        }
-                    }
-                    
-                    for (let i = 0; i < densifiedIndexes.length; i++) {
-                        const densifiedIndexesGroup = densifiedIndexes[i];
-    
-                        densifiedIndexesGroup.forEach((matchedCharIndex, indexInMatchedGroup) => {
-                            targetIndexes[matchedCharIndex] = mapIndexToClassName(
-                              densifiedIndexesGroup.length, indexInMatchedGroup
-                            );
-                        });
-                    }
-                    
-                    console.warn('matchedIndexes:', matchedIndexes, ' /densifiedIndexes:', densifiedIndexes, ' /targetIndexes:', targetIndexes);
-    
+                    const denseIndexes = this._densifyIndexes(matchedIndexes);
+                    const targetIndexes = this._getTargetIndexes(denseIndexes);
                     let charCounter = 0;
-                    const codeFragments = codeLine.querySelectorAll('code');
-                    codeFragments.forEach((codeFragment) => {
-                        let outputChars = '';
+                    
+                    codeLine.querySelectorAll('code').forEach((codeFragment) => {
                         const chars = codeFragment.textContent.split('');
-                        
-                        chars.forEach((char) => {
+                        const outputChars = chars.reduce((result, char) => {
                             if (charCounter in targetIndexes) {
-                                let goingToNextFragment = false;
-                                let lastCharInFragment = false;
-                                
-                                for (let fragmentIdx = 0; fragmentIdx < densifiedIndexes.length; fragmentIdx++) {
-                                    const indexesGroup = densifiedIndexes[fragmentIdx];
-                                    
-                                    lastCharInFragment = indexesGroup[indexesGroup.length - 1] === charCounter;
-                                    const nextFragmentExists = (fragmentIdx + 1) in densifiedIndexes;
-    
-                                    if (lastCharInFragment && nextFragmentExists) {
-                                        goingToNextFragment = true;
-                                        break;
-                                    }
-                                }
-                                
+                                const {
+                                    goingToNextFragment, lastCharInFragment
+                                } = this._getFragmentNavMetadata(denseIndexes, charCounter);
                                 const classNames = `${ this.CLASSES.FOUND } ${ targetIndexes[charCounter] }`;
-                                
-                                outputChars += `
-                                    <span class="${ classNames }" data-found-occurence="${ occurrenceCounter }">${ char }</span>
+    
+                                result += `
+                                    <span
+                                        class="${ classNames }"
+                                        data-found-occurence="${ occurrenceCounter }"
+                                    >${ char }</span>
                                 `.trim();
                                 
-                                if (goingToNextFragment) {
+                                if (goingToNextFragment || (lastCharInFragment && nextLineAvailable)) {
                                     occurrenceCounter++;
-                                } else if (lastCharInFragment && nextLineAvailable) {
-                                    occurrenceCounter++;
-                                    prevLineIndex = lineIndex;
                                 }
                             } else {
-                                outputChars += char;
+                                result += char;
                             }
                             
                             charCounter++;
-                        });
+                            
+                            return result;
+                        }, '');
                         
                         codeFragment.innerHTML = outputChars;
                     });
     
-                    this.numberOfOccurrences += densifiedIndexes.length;
+                    this.numberOfOccurrences += denseIndexes.length;
                 });
-                
-                console.log('occurrenceCounter:', occurrenceCounter)
                 
                 this.foundPhrases = [...this.codeContainer.querySelectorAll(`.${ this.CLASSES.FOUND }`)];
                 
@@ -894,7 +817,92 @@ const codeBlockInteractiveBar = () => {
                     this.updateFoundOccurrences(this.numberOfOccurrences);
                 }
             }
+            
+            _getMatchedIndexes(escapedValue, codeLineContent) {
+                const matchedIndexes = [];
+                const uniqueIndexes = new Set();
+                const searchRegExp = new RegExp(escapedValue, 'gdi');
+                let lineMatches = null;
     
+                while (lineMatches = searchRegExp.exec(codeLineContent)) {
+                    const [start, end] = lineMatches.indices[0];
+                    const decrementedEnd = end - 1;
+        
+                    if (!uniqueIndexes.has(start) && !uniqueIndexes.has(decrementedEnd)) {
+                        matchedIndexes.push([start, decrementedEnd]);
+                    }
+        
+                    uniqueIndexes.add(start).add(decrementedEnd);
+                }
+                
+                return matchedIndexes;
+            }
+            
+            _densifyIndexes(matchedIndexes) {
+                return matchedIndexes.map(([start, end]) => {
+                    const denseArray = [
+                        start,
+                        ...new Array(end - start).fill(start).map((num, i) => num + i),
+                        end
+                    ];
+        
+                    return [...new Set(denseArray)];
+                });
+            }
+    
+            _getTargetIndexes(denseIndexes) {
+                const _targetIndexes = [];
+                
+                for (let i = 0; i < denseIndexes.length; i++) {
+                    const denseIndexesGroup = denseIndexes[i];
+        
+                    denseIndexesGroup.forEach((matchedCharIndex, indexInMatchedGroup) => {
+                        _targetIndexes[matchedCharIndex] = this._mapIndexToClassName(
+                          denseIndexesGroup.length, indexInMatchedGroup
+                        );
+                    });
+                }
+                
+                return _targetIndexes;
+            }
+            
+            _mapIndexToClassName(numOfIndexes, index) {
+                if (numOfIndexes === 0) {
+                    throw Error('numOfIndexes cannot be 0!');
+                } else if (numOfIndexes === 1) {
+                    return this.CLASSES.FOUND_PAIR_WHOLE;
+                } else if (numOfIndexes === 2) {
+                    return index === 0 ? this.CLASSES.FOUND_PAIR_BEGIN : this.CLASSES.FOUND_PAIR_END;
+                } else {
+                    if (index === 0) {
+                        return this.CLASSES.FOUND_PAIR_BEGIN;
+                    } else if (index === numOfIndexes - 1) {
+                        return this.CLASSES.FOUND_PAIR_END;
+                    } else {
+                        return this.CLASSES.FOUND_PAIR_MIDDLE;
+                    }
+                }
+            }
+            
+            _getFragmentNavMetadata(denseIndexes, charCounter) {
+                let goingToNextFragment = false;
+                let lastCharInFragment = false;
+                
+                for (let fragmentIdx = 0; fragmentIdx < denseIndexes.length; fragmentIdx++) {
+                    const indexesGroup = denseIndexes[fragmentIdx];
+        
+                    lastCharInFragment = indexesGroup[indexesGroup.length - 1] === charCounter;
+                    const nextFragmentExists = (fragmentIdx + 1) in denseIndexes;
+        
+                    if (lastCharInFragment && nextFragmentExists) {
+                        goingToNextFragment = true;
+                        break;
+                    }
+                }
+    
+                return { goingToNextFragment, lastCharInFragment };
+            }
+            
             handleSearchNav({ target }) {
                 const navDirection = target.dataset.searchNav;
                 
