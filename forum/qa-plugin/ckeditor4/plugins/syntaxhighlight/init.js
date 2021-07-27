@@ -629,6 +629,7 @@ const codeBlockInteractiveBar = () => {
             constructor(codeBlock, toggleDrawer) {
                 this.searchBtn = null;
                 this.searchField = null;
+                this.processedCodeBlock = null;
                 this.codeContainer = null;
                 this.choosePrevOccurrence = null;
                 this.chooseNextOccurrence = null;
@@ -639,6 +640,7 @@ const codeBlockInteractiveBar = () => {
                 this.currentOccurrenceIndex = -1;
                 this.numberOfOccurrences = 0;
                 this.foundPhrases = [];
+                this.codeLineHeight = 0;
                 this.CLASSES = {
                     SEARCH_WRAPPER: 'search-through-code__wrapper',
                     FIELDS_CONTAINER: 'search-through-code__fields-container',
@@ -663,8 +665,10 @@ const codeBlockInteractiveBar = () => {
             initCodeContainer(codeBlock, toggleDrawer) {
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    this.processedCodeBlock = processedCodeBlock;
                     this.codeContainer = processedCodeBlock.querySelector('.container');
                     this.codeContainerOriginalHTML = this.codeContainer.innerHTML;
+                    this.codeLineHeight = processedCodeBlock.querySelector('.line').getBoundingClientRect().height;
     
                     this.createSearchField();
                     this.prepareSearchToBeOpenedByKeyboardShortcut(toggleDrawer);
@@ -952,19 +956,51 @@ const codeBlockInteractiveBar = () => {
                     this.choosePrevOccurrence.disabled = false;
                     this.chooseNextOccurrence.disabled = false;
                     
+                    let phraseInRow = null;
                     this.foundPhrases.forEach((phraseElement) => {
                         phraseElement.classList.remove(this.CLASSES.HIGHLIGHTED);
                         
                         const elementMatchesWithCurrentOccurrence = Number(phraseElement.dataset.foundOccurence) === this.currentOccurrenceIndex;
                         if (elementMatchesWithCurrentOccurrence) {
                             phraseElement.classList.add(this.CLASSES.HIGHLIGHTED);
+                            
+                            if (!phraseInRow) {
+                                phraseInRow = phraseElement;
+                            }
                         }
                     });
+                    
+                    this.scrollToCodeLine(phraseInRow.parentNode.parentNode);
                 }
                 
                 this.chosenOccurence.textContent = value;
             }
     
+            scrollToCodeLine(codeLine) {
+                const isBlockScrollable =
+                  this.processedCodeBlock.previousElementSibling.classList.contains('is-collapsible') &&
+                  this.processedCodeBlock.classList.contains('collapsed-block');
+                
+                if (!isBlockScrollable) {
+                    return;
+                }
+                
+                const codeLineNumber = [
+                  ...codeLine.parentNode.children
+                ].findIndex((line) => line === codeLine);
+                const blockScrollPositionStart = Math.ceil(this.processedCodeBlock.scrollTop / this.codeLineHeight);
+                const blockScrollPositionEnd = blockScrollPositionStart +
+                  (Math.floor(this.processedCodeBlock.getBoundingClientRect().height / this.codeLineHeight) - 1);
+                const shouldScroll = blockScrollPositionStart > codeLineNumber || blockScrollPositionEnd <= codeLineNumber;
+                
+                if (shouldScroll) {
+                    this.processedCodeBlock.scroll({
+                        top: codeLineNumber * this.codeLineHeight,
+                        behavior: 'smooth',
+                    });
+                }
+            }
+            
             updateFoundOccurrences(value) {
                 if (!value) {
                     value = this.defaultOccurrenceValue;
