@@ -633,7 +633,7 @@ const codeBlockInteractiveBar = () => {
                 this.codeContainer = null;
                 this.choosePrevOccurrence = null;
                 this.chooseNextOccurrence = null;
-                this.chosenOccurence = null;
+                this.chosenOccurrence = null;
                 this.foundOccurrences = null;
                 this.defaultOccurrenceValue = '-';
                 this.codeContainerOriginalHTML = '';
@@ -709,7 +709,7 @@ const codeBlockInteractiveBar = () => {
     
                 this.choosePrevOccurrence = navContainer.querySelector('[data-search-nav="left"]');
                 this.chooseNextOccurrence = navContainer.querySelector('[data-search-nav="right"]');
-                this.chosenOccurence = navContainer.querySelector('[data-search-nav="chosenOccurrence"]');
+                this.chosenOccurrence = navContainer.querySelector('[data-search-nav="chosenOccurrence"]');
                 this.foundOccurrences = navContainer.querySelector('[data-search-nav="foundOccurrences"]');
                 
                 this.searchField = document.createElement('div');
@@ -792,7 +792,7 @@ const codeBlockInteractiveBar = () => {
                                 result += `
                                     <span
                                         class="${ classNames }"
-                                        data-found-occurence="${ occurrenceCounter }"
+                                        data-found-occurrence="${ occurrenceCounter }"
                                     >${ char }</span>
                                 `.trim();
                                 
@@ -923,6 +923,8 @@ const codeBlockInteractiveBar = () => {
                         } else {
                             this.currentOccurrenceIndex = this.numberOfOccurrences - 1;
                         }
+                    } else {
+                        throw TypeError(`Unknown search navigation target: ${ target.outerHTML }`);
                     }
                     
                     this.updateChosenOccurrence(this.currentOccurrenceIndex + 1);
@@ -956,27 +958,29 @@ const codeBlockInteractiveBar = () => {
                     this.choosePrevOccurrence.disabled = false;
                     this.chooseNextOccurrence.disabled = false;
                     
-                    let phraseInRow = null;
-                    this.foundPhrases.forEach((phraseElement) => {
-                        phraseElement.classList.remove(this.CLASSES.HIGHLIGHTED);
+                    const matchedOccurrences = this.foundPhrases.filter((phraseElement) => {
+                        const elementMatchesWithCurrentOccurrence =
+                          Number(phraseElement.dataset.foundOccurrence) === this.currentOccurrenceIndex;
+                        phraseElement.classList.toggle(this.CLASSES.HIGHLIGHTED, elementMatchesWithCurrentOccurrence);
                         
-                        const elementMatchesWithCurrentOccurrence = Number(phraseElement.dataset.foundOccurence) === this.currentOccurrenceIndex;
-                        if (elementMatchesWithCurrentOccurrence) {
-                            phraseElement.classList.add(this.CLASSES.HIGHLIGHTED);
-                            
-                            if (!phraseInRow) {
-                                phraseInRow = phraseElement;
-                            }
-                        }
+                        return elementMatchesWithCurrentOccurrence;
                     });
+    
+                    const phrasePartsInRow = {
+                        firstPart: matchedOccurrences[0],
+                        lastPart: matchedOccurrences.length === 1 ?
+                          matchedOccurrences[0] : matchedOccurrences[matchedOccurrences.length - 1],
+                    };
                     
-                    this.scrollToCodeLine(phraseInRow.parentNode.parentNode);
+                    // adjust search container not to cover up current occurrence
+                    
+                    this.scrollToOccurrence(phrasePartsInRow);
                 }
                 
-                this.chosenOccurence.textContent = value;
+                this.chosenOccurrence.textContent = value;
             }
     
-            scrollToCodeLine(codeLine) {
+            scrollToOccurrence(phrasePartsInRow) {
                 const isBlockScrollable =
                   this.processedCodeBlock.previousElementSibling.classList.contains('is-collapsible') &&
                   this.processedCodeBlock.classList.contains('collapsed-block');
@@ -985,20 +989,59 @@ const codeBlockInteractiveBar = () => {
                     return;
                 }
                 
+                const codeLine = phrasePartsInRow.firstPart.parentNode.parentNode;
+                const { shouldScrollVertically, codeLineNumber } = this._handleVerticalScroll(codeLine);
+                const { shouldScrollHorizontally, horizontalScrollValue, codeBlockScrollLeft } = this._handleHorizontalScroll(phrasePartsInRow);
+                
+                if (shouldScrollVertically || shouldScrollHorizontally) {
+                    this.processedCodeBlock.scroll({
+                        top: codeLineNumber * this.codeLineHeight,
+                        left: shouldScrollHorizontally ? horizontalScrollValue : codeBlockScrollLeft,
+                        behavior: 'smooth',
+                    });
+                }
+            }
+            
+            _handleVerticalScroll(codeLine) {
                 const codeLineNumber = [
-                  ...codeLine.parentNode.children
+                    ...codeLine.parentNode.children
                 ].findIndex((line) => line === codeLine);
                 const blockScrollPositionStart = Math.ceil(this.processedCodeBlock.scrollTop / this.codeLineHeight);
                 const blockScrollPositionEnd = blockScrollPositionStart +
                   (Math.floor(this.processedCodeBlock.getBoundingClientRect().height / this.codeLineHeight) - 1);
-                const shouldScroll = blockScrollPositionStart > codeLineNumber || blockScrollPositionEnd <= codeLineNumber;
+                const shouldScrollVertically = blockScrollPositionStart > codeLineNumber || blockScrollPositionEnd <= codeLineNumber;
                 
-                if (shouldScroll) {
-                    this.processedCodeBlock.scroll({
-                        top: codeLineNumber * this.codeLineHeight,
-                        behavior: 'smooth',
-                    });
+                return { shouldScrollVertically, codeLineNumber };
+            }
+            
+            _handleHorizontalScroll({ firstPart, lastPart }) {
+                const isOccurrencePartDescendantOfCodeBlock = this.processedCodeBlock.contains(firstPart);
+                if (!isOccurrencePartDescendantOfCodeBlock) {
+                    throw Error('Found occurrence parts are not descendants of code block!');
                 }
+    
+                const currentPartsParentOffset = firstPart.offsetParent;
+    
+                if (!currentPartsParentOffset.matches('.container') || currentPartsParentOffset.offsetParent !== this.processedCodeBlock) {
+                    throw Error('Invalid offset parents to setup searched occurrences for scrolling properly!');
+                }
+    
+                const codeBlockScrollLeft = this.processedCodeBlock.scrollLeft;
+                const codeBlockClientWidth = this.processedCodeBlock.clientWidth;
+                const rowOffsetLeft = currentPartsParentOffset.offsetLeft;
+                const occurrenceStartOffset = rowOffsetLeft + firstPart.offsetLeft - 1;
+                const occurrenceEndOffset = rowOffsetLeft + lastPart.offsetLeft + Math.ceil(lastPart.getBoundingClientRect().width) + 1;
+                const shouldScrollLeft = codeBlockScrollLeft > occurrenceStartOffset;
+                const shouldScrollRight = codeBlockClientWidth + codeBlockScrollLeft < occurrenceEndOffset;
+                const shouldScrollHorizontally = shouldScrollLeft || shouldScrollRight;
+    
+                let horizontalScrollValue = 0;
+    
+                if (shouldScrollHorizontally) {
+                    horizontalScrollValue = shouldScrollLeft ? occurrenceStartOffset : (occurrenceEndOffset - codeBlockClientWidth);
+                }
+    
+                return { shouldScrollHorizontally, horizontalScrollValue, codeBlockScrollLeft };
             }
             
             updateFoundOccurrences(value) {
