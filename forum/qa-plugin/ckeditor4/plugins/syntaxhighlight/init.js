@@ -623,14 +623,19 @@ const codeBlockInteractiveBar = () => {
             assignClearAndExitSearch(clearAndExitSearch) {
                 this.clearAndExitSearch = clearAndExitSearch;
             }
+    
+            getContainer() {
+                return this.domElement;
+            }
         }
         
         class SearchThroughCode {
-            constructor(codeBlock, toggleDrawer) {
+            constructor(codeBlock, toggleDrawer, drawerContainer) {
                 this.searchBtn = null;
                 this.searchField = null;
                 this.processedCodeBlock = null;
                 this.codeContainer = null;
+                this.drawerContainer = drawerContainer;
                 this.choosePrevOccurrence = null;
                 this.chooseNextOccurrence = null;
                 this.chosenOccurrence = null;
@@ -657,6 +662,10 @@ const codeBlockInteractiveBar = () => {
                     ARROW_UP: 'ArrowUp',
                     ARROW_DOWN: 'ArrowDown',
                     F: 'f',
+                };
+                this.DRAWER_ADJUSTMENT_KEYS = {
+                    HORIZONTAL_VALUE: '--horizontal-adjustment-value',
+                    VERTICAL_VALUE: '--vertical-adjustment-value',
                 };
     
                 this.initCodeContainer(codeBlock, toggleDrawer);
@@ -750,6 +759,7 @@ const codeBlockInteractiveBar = () => {
                 this.toggleSearchFeature(false);
                 this.searchInput.value = '';
                 this.searchInput.dispatchEvent(new InputEvent('input'));
+                this.setDrawerContainerPosition();
             }
     
             doSearch({ target: { value } }) {
@@ -762,6 +772,7 @@ const codeBlockInteractiveBar = () => {
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
                 
                 if (!value) {
+                    this.setDrawerContainerPosition();
                     return;
                 }
     
@@ -819,6 +830,8 @@ const codeBlockInteractiveBar = () => {
                 if (this.foundPhrases.length) {
                     this.updateChosenOccurrence(1);
                     this.updateFoundOccurrences(this.numberOfOccurrences);
+                } else {
+                    this.setDrawerContainerPosition();
                 }
             }
             
@@ -972,9 +985,8 @@ const codeBlockInteractiveBar = () => {
                           matchedOccurrences[0] : matchedOccurrences[matchedOccurrences.length - 1],
                     };
                     
-                    // adjust search container not to cover up current occurrence
-                    
-                    this.scrollToOccurrence(phrasePartsInRow);
+                    const scrollData = this.scrollToOccurrence(phrasePartsInRow);
+                    this.adjustSearchContainerPosition(scrollData);
                 }
                 
                 this.chosenOccurrence.textContent = value;
@@ -990,16 +1002,24 @@ const codeBlockInteractiveBar = () => {
                 }
                 
                 const codeLine = phrasePartsInRow.firstPart.parentNode.parentNode;
-                const { shouldScrollVertically, codeLineNumber } = this._handleVerticalScroll(codeLine);
-                const { shouldScrollHorizontally, horizontalScrollValue, codeBlockScrollLeft } = this._handleHorizontalScroll(phrasePartsInRow);
+                const { shouldScrollVertically, topScroll } = this._handleVerticalScroll(codeLine);
+                const {
+                    shouldScrollHorizontally, leftScroll, currentLeftOffset, currentRightOffset
+                } = this._handleHorizontalScroll(phrasePartsInRow);
                 
                 if (shouldScrollVertically || shouldScrollHorizontally) {
                     this.processedCodeBlock.scroll({
-                        top: codeLineNumber * this.codeLineHeight,
-                        left: shouldScrollHorizontally ? horizontalScrollValue : codeBlockScrollLeft,
+                        top: topScroll,
+                        left: leftScroll,
                         behavior: 'smooth',
                     });
                 }
+                
+                return {
+                    top: topScroll,
+                    left: currentLeftOffset,
+                    right: currentRightOffset,
+                };
             }
             
             _handleVerticalScroll(codeLine) {
@@ -1010,8 +1030,9 @@ const codeBlockInteractiveBar = () => {
                 const blockScrollPositionEnd = blockScrollPositionStart +
                   (Math.floor(this.processedCodeBlock.getBoundingClientRect().height / this.codeLineHeight) - 1);
                 const shouldScrollVertically = blockScrollPositionStart > codeLineNumber || blockScrollPositionEnd <= codeLineNumber;
+                const topScroll = codeLineNumber * this.codeLineHeight;
                 
-                return { shouldScrollVertically, codeLineNumber };
+                return { shouldScrollVertically, topScroll };
             }
             
             _handleHorizontalScroll({ firstPart, lastPart }) {
@@ -1029,19 +1050,69 @@ const codeBlockInteractiveBar = () => {
                 const codeBlockScrollLeft = this.processedCodeBlock.scrollLeft;
                 const codeBlockClientWidth = this.processedCodeBlock.clientWidth;
                 const rowOffsetLeft = currentPartsParentOffset.offsetLeft;
-                const occurrenceStartOffset = rowOffsetLeft + firstPart.offsetLeft - 1;
-                const occurrenceEndOffset = rowOffsetLeft + lastPart.offsetLeft + Math.ceil(lastPart.getBoundingClientRect().width) + 1;
+                const [ leftSpace, rightSpace ] = [
+                  this.__getOccurrencePartExtraSpace(firstPart), this.__getOccurrencePartExtraSpace(lastPart)
+                ];
+                const occurrenceStartOffset = rowOffsetLeft + firstPart.offsetLeft - leftSpace;
+                const occurrenceEndOffset = rowOffsetLeft + lastPart.offsetLeft + Math.ceil(lastPart.getBoundingClientRect().width) + rightSpace;
                 const shouldScrollLeft = codeBlockScrollLeft > occurrenceStartOffset;
                 const shouldScrollRight = codeBlockClientWidth + codeBlockScrollLeft < occurrenceEndOffset;
                 const shouldScrollHorizontally = shouldScrollLeft || shouldScrollRight;
-    
-                let horizontalScrollValue = 0;
+                const scrollRight = occurrenceEndOffset - codeBlockClientWidth;
+                
+                let leftScroll = codeBlockScrollLeft;
     
                 if (shouldScrollHorizontally) {
-                    horizontalScrollValue = shouldScrollLeft ? occurrenceStartOffset : (occurrenceEndOffset - codeBlockClientWidth);
+                    leftScroll = shouldScrollLeft ? occurrenceStartOffset : scrollRight;
                 }
     
-                return { shouldScrollHorizontally, horizontalScrollValue, codeBlockScrollLeft };
+                return {
+                    currentLeftOffset: occurrenceStartOffset - leftScroll,
+                    currentRightOffset: occurrenceEndOffset - leftScroll,
+                    shouldScrollHorizontally, leftScroll,
+                };
+            }
+            
+            __getOccurrencePartExtraSpace(part) {
+                let { borderLeft, paddingLeft, left } = window.getComputedStyle(part, '::before');
+                borderLeft = Math.abs(Number.parseInt(borderLeft)) || 0;
+                paddingLeft = Math.abs(Number.parseInt(paddingLeft)) || 0;
+                left = Math.abs(Number.parseInt(left)) || 0;
+                
+                return borderLeft + paddingLeft + left;
+            }
+    
+            adjustSearchContainerPosition(scrollData) {
+                const drawerOffsetParent = this.drawerContainer.offsetParent;
+                
+                if (drawerOffsetParent !== this.drawerContainer.parentNode) {
+                    throw TypeError(`drawerOffsetParent is not drawer's parent! drawerOffsetParent: ${ drawerOffsetParent.outerHTML }`);
+                }
+                
+                const drawerOffsetLeft = this.drawerContainer.offsetLeft + drawerOffsetParent.offsetLeft;
+                const drawerOffsetRight = this.drawerContainer.offsetWidth + drawerOffsetLeft;
+                const drawerOffsetTop = this.drawerContainer.offsetTop /* TODO: add diff between parent and grandparent height divided by 2 */;
+                const drawerOffsetBottom = this.drawerContainer.offsetHeight + drawerOffsetTop;
+                const shouldAdjustHorizontally = scrollData.right > drawerOffsetLeft;
+                const shouldAdjustVertically = shouldAdjustHorizontally && scrollData.left < this.drawerContainer.offsetWidth;
+    
+                if (shouldAdjustVertically) {
+                    const verticalAdjustValue = drawerOffsetTop - scrollData.top;
+                    this.setDrawerContainerPosition({ verticalValue: verticalAdjustValue });
+                } else if (shouldAdjustHorizontally) {
+                    const horizontalAdjustValue = (drawerOffsetRight - scrollData.left + 1) * -1;
+                    this.setDrawerContainerPosition({ horizontalValue: horizontalAdjustValue });
+                } else {
+                    this.setDrawerContainerPosition();
+                }
+            }
+            
+            setDrawerContainerPosition(position = {}) {
+                const horizontalValue = Math.min(0, position.horizontalValue || 0);
+                const verticalValue = Math.max(0, position.verticalValue || 0);
+                
+                this.drawerContainer.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.HORIZONTAL_VALUE, horizontalValue);
+                this.drawerContainer.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.VERTICAL_VALUE, verticalValue);
             }
             
             updateFoundOccurrences(value) {
@@ -1235,7 +1306,8 @@ const codeBlockInteractiveBar = () => {
         return function getCodeBlockBarFeatureItems(codeBlock) {
             const featuresDrawer = new FeaturesDrawer(codeBlock);
             const searchThroughCode = new SearchThroughCode(
-              codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click'))
+              codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click')),
+              featuresDrawer.getContainer(),
             );
             const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawer.toggleDrawer.bind(featuresDrawer));
             

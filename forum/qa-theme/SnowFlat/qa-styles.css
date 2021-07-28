@@ -4791,6 +4791,14 @@ pre[class*="brush:"]::after
 	z-index: 1;
 	background: #2c3e50;
 	border-radius: 10px;
+
+	--horizontal-adjustment-value: 0;
+	--vertical-adjustment-value: 0;
+	transform: translate(
+		calc(var(--horizontal-adjustment-value) * 1px),
+		calc(var(--vertical-adjustment-value) * 1px)
+	);
+	transition: transform 0.15s ease-in-out;
 }
 
 .features-drawer__button {
