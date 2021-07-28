@@ -986,7 +986,10 @@ const codeBlockInteractiveBar = () => {
                     };
                     
                     const scrollData = this.scrollToOccurrence(phrasePartsInRow);
-                    this.adjustSearchContainerPosition(scrollData);
+                    
+                    if (scrollData) {
+                        this.adjustSearchContainerPosition(scrollData);
+                    }
                 }
                 
                 this.chosenOccurrence.textContent = value;
@@ -994,8 +997,10 @@ const codeBlockInteractiveBar = () => {
     
             scrollToOccurrence(phrasePartsInRow) {
                 const isBlockScrollable =
-                  this.processedCodeBlock.previousElementSibling.classList.contains('is-collapsible') &&
-                  this.processedCodeBlock.classList.contains('collapsed-block');
+                  (
+                    this.processedCodeBlock.previousElementSibling.classList.contains('is-collapsible') &&
+                    this.processedCodeBlock.classList.contains('collapsed-block')
+                  ) || (this.processedCodeBlock.clientWidth !== this.processedCodeBlock.scrollWidth);
                 
                 if (!isBlockScrollable) {
                     return;
@@ -1092,7 +1097,6 @@ const codeBlockInteractiveBar = () => {
                 const drawerOffsetLeft = this.drawerContainer.offsetLeft + drawerOffsetParent.offsetLeft;
                 const drawerOffsetRight = this.drawerContainer.offsetWidth + drawerOffsetLeft;
                 const drawerOffsetTop = this.drawerContainer.offsetTop /* TODO: add diff between parent and grandparent height divided by 2 */;
-                const drawerOffsetBottom = this.drawerContainer.offsetHeight + drawerOffsetTop;
                 const shouldAdjustHorizontally = scrollData.right > drawerOffsetLeft;
                 const shouldAdjustVertically = shouldAdjustHorizontally && scrollData.left < this.drawerContainer.offsetWidth;
     
@@ -1100,7 +1104,7 @@ const codeBlockInteractiveBar = () => {
                     const verticalAdjustValue = drawerOffsetTop - scrollData.top;
                     this.setDrawerContainerPosition({ verticalValue: verticalAdjustValue });
                 } else if (shouldAdjustHorizontally) {
-                    const horizontalAdjustValue = (drawerOffsetRight - scrollData.left + 1) * -1;
+                    const horizontalAdjustValue = (drawerOffsetRight - scrollData.left) * -1;
                     this.setDrawerContainerPosition({ horizontalValue: horizontalAdjustValue });
                 } else {
                     this.setDrawerContainerPosition();
