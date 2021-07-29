@@ -438,11 +438,43 @@ const codeBlockInteractiveBar = () => {
         }
 
         class CodeCopy {
-            constructor() {
+            constructor(codeBlock, toggleDrawer) {
                 this.NEW_LINE = '\r\n';
+                this.isCopyingSupported = false;
+                this.COPY_BTN_STATE = Object.freeze({
+                    INITIAL: {
+                        TEXT: 'Kopiuj',
+                    },
+                    SUCCESS: {
+                        TEXT: 'Skopiowano!',
+                        CLASS_NAME: 'content-copy-btn--success',
+                        action: toggleDrawer,
+                    },
+                    ERROR: {
+                        TEXT: 'Błąd kopiowania!',
+                        CLASS_NAME: 'content-copy-btn--error',
+                        action: toggleDrawer,
+                    },
+                    UNAVAILABLE: {
+                        CLASS_NAME: 'content-copy-btn--unavailable',
+                    }
+                });
+    
                 this.initCopyingMethod();
+    
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    if (this.isCopyingSupported) {
+                        return;
+                    }
+                    
+                    const copyBtn = processedCodeBlock.previousElementSibling.querySelector('.content-copy-btn');
+                    copyBtn.disabled = true;
+                    copyBtn.textContent = this.COPY_BTN_STATE.INITIAL.TEXT;
+                    copyBtn.classList.add(this.COPY_BTN_STATE.UNAVAILABLE.CLASS_NAME);
+                });
             }
-
+            
             initCopyingMethod() {
                 this.isCopyByQueryCommand =
                     !!window.getSelection && document.queryCommandSupported('copy');
@@ -456,9 +488,9 @@ const codeBlockInteractiveBar = () => {
                     this.copyToClipboard = this.copyByQueryCommand;
                 } else {
                     this.isCopyingSupported = false;
-                    this.copyToClipboard = function() {
+                    this.copyToClipboard = () => {
                         console.error('Copy to clipboard is not available!');
-                    }
+                    };
                 }
             }
 
@@ -476,28 +508,40 @@ const codeBlockInteractiveBar = () => {
             copyByClipboardAPI({ target }) {
                 window.navigator.clipboard
                     .writeText(this.getContentToCopy(target))
-                    .then(() => this.showSuccess(target))
+                    .then(() => this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.SUCCESS))
                     .catch(() => this.tryFallbackToOlderCopyMethod(target));
             }
 
             tryFallbackToOlderCopyMethod(target) {
                 if (this.isCopyByQueryCommand) {
-                    this.copyByQueryCommand({ target });
-                    this.showSuccess(target);
+                    const copyingProbableSuccess = this.copyByQueryCommand({ target });
+                    
+                    if (copyingProbableSuccess) {
+                        this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.SUCCESS);
+                    } else {
+                        this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.ERROR);
+                    }
                 } else {
-                    target.classList.add('content-copy-tooltip', 'content-copy-error');
-
-                    setTimeout(() => {
-                        target.classList.remove('content-copy-tooltip', 'content-copy-error');
-                    }, 3000);
+                    this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.ERROR);
                 }
             }
             
-            showSuccess(target) {
+            notifyAboutCopyResult(target, state) {
                 target.addEventListener('transitionend', () => {
-                    target.classList.remove('content-copy-btn--done');
+                    setTimeout(() => {
+                        if (state.action) {
+                            state.action();
+                        }
+                        
+                        target.classList.remove(state.CLASS_NAME);
+                        target.textContent = this.COPY_BTN_STATE.INITIAL.TEXT;
+                        target.disabled = false;
+                    }, 1000);
                 },{ once: true });
-                target.classList.add('content-copy-btn--done');
+                
+                target.classList.add(state.CLASS_NAME);
+                target.textContent = state.TEXT;
+                target.disabled = true;
             }
 
             copyByQueryCommand({ target }) {
@@ -515,9 +559,20 @@ const codeBlockInteractiveBar = () => {
                 const range = document.createRange();
                 range.selectNode(textArea);
                 selection.addRange(range);
-
-                document.execCommand('copy');
+    
+                /*
+                    document.execCommand(..) method returns boolean indicating whether requested command is supported by browser or not,
+                    rather than informing whether that command was performed successfully or not.
+                    Therefore, relying on that returned value does not give certainty of command effect.
+                    However, as there is no simple way to determine the result, checking that boolean is done
+                    in order to know the possible result in any way.
+                
+                    https://developer.mozilla.org/en-US/docs/Web/API/document/execCommand#return_value
+                 */
+                const copyingProbableSuccess = document.execCommand('copy');
                 document.body.removeChild(textArea);
+                
+                return copyingProbableSuccess;
             }
 
             addClickListener(copyCodeBtn) {
@@ -526,7 +581,7 @@ const codeBlockInteractiveBar = () => {
 
             getCopyToClipboardBtn() {
                 const copyCodeBtn = document.createElement('button');
-                copyCodeBtn.textContent = 'Kopiuj';
+                copyCodeBtn.textContent = this.COPY_BTN_STATE.INITIAL.TEXT;
                 copyCodeBtn.classList.add('content-copy-btn');
                 copyCodeBtn.type = 'button';
 
@@ -1190,17 +1245,22 @@ const codeBlockInteractiveBar = () => {
                     resizeObserver.observe(processedCodeBlock);
                 });
             }
-
+            
             getFullScreenBtn() {
-                if (!this.enableFullScreen) {
-                    return null;
-                }
-
                 this.fullScreenBtn = document.createElement('button');
                 this.fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn');
+                if (!this.enableFullScreen) {
+                    this.fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn--unavailable');
+                }
                 this.fullScreenBtn.textContent = 'Pełny ekran';
                 this.fullScreenBtn.type = 'button';
-                this.fullScreenBtn.addEventListener('click', this.fullScreenOnClick.bind(this));
+                
+                if (this.enableFullScreen) {
+                    this.fullScreenBtn.addEventListener('click', this.fullScreenOnClick.bind(this));
+                } else {
+                    this.fullScreenBtn.disabled = true;
+                    this.fullScreenBtn.addEventListener('click', () => console.error('Full screen is not available!'));
+                }
 
                 return this.fullScreenBtn;
             }
@@ -1313,10 +1373,12 @@ const codeBlockInteractiveBar = () => {
 
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
         const languageLabel = new LanguageLabel();
-        const codeCopy = new CodeCopy();
         
         return function getCodeBlockBarFeatureItems(codeBlock) {
             const featuresDrawer = new FeaturesDrawer(codeBlock);
+            const codeCopy = new CodeCopy(
+              codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click')),
+            );
             const searchThroughCode = new SearchThroughCode(
               codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click')),
               featuresDrawer.getContainer(),

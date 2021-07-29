@@ -5186,48 +5186,26 @@ ul.features-drawer-list--hidden
 	color: gray;
 }
 
-.content-copy-btn[disabled]:hover
-{
-	cursor: not-allowed;
-}
-
-.content-copy-tooltip::before
-{
-	position: absolute;
-	background: red;
+.features-drawer-list__item .content-copy-btn.content-copy-btn--success {
+	background: #2ecc71;
+	transition: background 0.25s;
 	color: white;
-	font-size: 12px;
-	top: -22px;
-	right: -7px;
-	width: 125px;
-	height: 17px;
-	line-height: 15px;
-	font-weight: normal;
-	border-radius: 5px;
 }
 
-.content-copy-tooltip.content-copy-error::before
-{
-	content: 'Błąd kopiowania!';
+.features-drawer-list__item .content-copy-btn.content-copy-btn--error {
+	background: #e74c3c;
+	transition: background 0.25s;
+	color: white;
 }
 
-.content-copy-btn[disabled].content-copy-tooltip:hover::before
-{
-	content: "Kopiowanie niedostępne";
+.features-drawer-list__item > button[class$="--unavailable"] {
+	background: grey;
+	color: black;
 }
 
-.content-copy-btn[disabled]:hover::after,
-.content-copy-error::after
-{
-	content: "";
-	width: 0;
-	height: 0;
-	top: -5px;
-	right: 30px;
-	border-top: 8px solid red;
-	border-right: 8px solid transparent;
-	border-left: 8px solid transparent;
-	position: absolute;
+.features-drawer-list__item > button[disabled]:hover,
+.features-drawer-list__item > button[class$="--unavailable"]:hover {
+	cursor: not-allowed;
 }
 
 .content-copy-placeholder
