@@ -543,17 +543,16 @@ const codeBlockInteractiveBar = () => {
         
         class FeaturesDrawer {
             constructor(codeBlock) {
-                this.domElement = null;
+                this.featuresDrawerList = null;
                 this.featuresDrawerBtn = null;
                 this.clearAndExitSearch = null;
                 this.featureDrawerOffClickListener = this.getFeatureDrawerOffClickListener();
                 this.FEATURES_DRAWER_CLASSES = {
-                    MAIN: 'features-drawer',
-                    HIDDEN: 'features-drawer--hidden',
+                    LIST: 'features-drawer-list',
+                    LIST_ITEM: 'features-drawer-list__item',
                     BUTTON: 'features-drawer__button',
+                    HIDDEN: 'features-drawer-list--hidden',
                     OPENED: 'features-drawer__button--opened',
-                    LIST: 'features-drawer__list',
-                    LIST_ITEM: 'features-drawer__list-item',
                 };
                 
                 this.initButton();
@@ -561,16 +560,15 @@ const codeBlockInteractiveBar = () => {
             }
     
             initDOM(codeBlock) {
-                this.domElement = document.createElement('div');
-                this.domElement.innerHTML = `<ul class="${ this.FEATURES_DRAWER_CLASSES.LIST }"></ul>`;
-                this.domElement.classList.add(this.FEATURES_DRAWER_CLASSES.MAIN, this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerList = document.createElement('ul');
+                this.featuresDrawerList.classList.add(this.FEATURES_DRAWER_CLASSES.LIST, this.FEATURES_DRAWER_CLASSES.HIDDEN);
     
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
                     const insertionRef =
                       processedCodeBlock.previousElementSibling.querySelector(`.${ this.FEATURES_DRAWER_CLASSES.BUTTON }`);
     
-                    insertionRef.parentNode.insertBefore(this.domElement, insertionRef);
+                    insertionRef.parentNode.insertBefore(this.featuresDrawerList, insertionRef);
                 });
             }
             
@@ -583,24 +581,24 @@ const codeBlockInteractiveBar = () => {
             }
             
             toggleDrawer(event) {
-                this.domElement.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerList.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
                 this.featuresDrawerBtn.classList.toggle(this.FEATURES_DRAWER_CLASSES.OPENED);
             
-                if (this.domElement.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
-                    this.clearAndExitSearch();
+                if (this.featuresDrawerList.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
                     document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
                 } else {
                     // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
                     event.stopPropagation();
-                
+                    this.clearAndExitSearch();
+                    
                     document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
                 }
             }
             
             getFeatureDrawerOffClickListener() {
                 return ({ target }) => {
-                    if (!target.closest(`.${ this.FEATURES_DRAWER_CLASSES.MAIN }`)) {
-                        this.domElement.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                    if (!target.closest(`.${ this.FEATURES_DRAWER_CLASSES.LIST }`)) {
+                        this.featuresDrawerList.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
                         this.featuresDrawerBtn.classList.remove(this.FEATURES_DRAWER_CLASSES.OPENED);
                     }
                 }
@@ -616,7 +614,7 @@ const codeBlockInteractiveBar = () => {
                     listItem.classList.add(this.FEATURES_DRAWER_CLASSES.LIST_ITEM);
                     listItem.appendChild(element);
     
-                    this.domElement.firstElementChild.appendChild(listItem);
+                    this.featuresDrawerList.appendChild(listItem);
                 });
             }
             
@@ -625,7 +623,7 @@ const codeBlockInteractiveBar = () => {
             }
     
             getContainer() {
-                return this.domElement;
+                return this.featuresDrawerList;
             }
         }
         
@@ -636,6 +634,7 @@ const codeBlockInteractiveBar = () => {
                 this.processedCodeBlock = null;
                 this.codeContainer = null;
                 this.drawerContainer = drawerContainer;
+                this.toggleDrawer = toggleDrawer;
                 this.choosePrevOccurrence = null;
                 this.chooseNextOccurrence = null;
                 this.chosenOccurrence = null;
@@ -661,6 +660,7 @@ const codeBlockInteractiveBar = () => {
                     ENTER: 'Enter',
                     ARROW_UP: 'ArrowUp',
                     ARROW_DOWN: 'ArrowDown',
+                    ESCAPE: 'Escape',
                     F: 'f',
                 };
                 this.DRAWER_ADJUSTMENT_KEYS = {
@@ -668,10 +668,10 @@ const codeBlockInteractiveBar = () => {
                     VERTICAL_VALUE: '--vertical-adjustment-value',
                 };
     
-                this.initCodeContainer(codeBlock, toggleDrawer);
+                this.initCodeContainer(codeBlock);
             }
             
-            initCodeContainer(codeBlock, toggleDrawer) {
+            initCodeContainer(codeBlock) {
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
                     this.processedCodeBlock = processedCodeBlock;
@@ -680,7 +680,7 @@ const codeBlockInteractiveBar = () => {
                     this.codeLineHeight = processedCodeBlock.querySelector('.line').getBoundingClientRect().height;
     
                     this.createSearchField();
-                    this.prepareSearchToBeOpenedByKeyboardShortcut(toggleDrawer);
+                    this.prepareSearchToBeOpenedByKeyboardShortcut();
                 });
             }
     
@@ -706,18 +706,20 @@ const codeBlockInteractiveBar = () => {
                 const navContainer = document.createElement('div');
                 navContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
                 navContainer.innerHTML = `
-                    <button data-search-nav="left" title="poprzedni" disabled="true" type="button">&larr;</button>
                     <output>
                         <span data-search-nav="chosenOccurrence">${ this.defaultOccurrenceValue }</span>
                         /
                         <span data-search-nav="foundOccurrences">${ this.defaultOccurrenceValue }</span>
                     </output>
-                    <button data-search-nav="right" title="następny" disabled="true" type="button">&rarr;</button>
+                    <button class="search-through-code__button" data-search-nav="prev" title="Poprzedni" disabled="true" type="button">&uarr;</button>
+                    <button class="search-through-code__button" data-search-nav="next" title="Następny" disabled="true" type="button">&darr;</button>
+                    <button class="search-through-code__button" data-search-close title="Zamknij" type="button">&#120;</button>
                 `.trim();
                 navContainer.addEventListener('click', this.handleSearchNav.bind(this));
+                navContainer.querySelector('[data-search-close]').addEventListener('click', this.clearAndExit.bind(this));
     
-                this.choosePrevOccurrence = navContainer.querySelector('[data-search-nav="left"]');
-                this.chooseNextOccurrence = navContainer.querySelector('[data-search-nav="right"]');
+                this.choosePrevOccurrence = navContainer.querySelector('[data-search-nav="prev"]');
+                this.chooseNextOccurrence = navContainer.querySelector('[data-search-nav="next"]');
                 this.chosenOccurrence = navContainer.querySelector('[data-search-nav="chosenOccurrence"]');
                 this.foundOccurrences = navContainer.querySelector('[data-search-nav="foundOccurrences"]');
                 
@@ -725,10 +727,10 @@ const codeBlockInteractiveBar = () => {
                 this.searchField.classList.add(this.CLASSES.SEARCH_WRAPPER, this.CLASSES.HIDDEN);
                 this.searchField.append(actionContainer, navContainer);
                 
-                this.searchBtn.parentNode.insertBefore(this.searchField, this.searchBtn);
+                this.drawerContainer.parentNode.insertBefore(this.searchField, this.drawerContainer);
             }
             
-            prepareSearchToBeOpenedByKeyboardShortcut(toggleDrawer) {
+            prepareSearchToBeOpenedByKeyboardShortcut() {
                 // Make code block container focusable, so it can receive 'keydown' event
                 this.codeContainer.addEventListener('click', () => {
                     this.codeContainer.tabIndex = 0;
@@ -737,7 +739,7 @@ const codeBlockInteractiveBar = () => {
                 this.codeContainer.addEventListener('keydown', (event) => {
                     if (event.key === this.KEYS.F && event.ctrlKey) {
                         event.preventDefault();
-                        toggleDrawer();
+                        this.toggleDrawer();
                         this.toggleSearchFeature(true);
                         
                         // turn off code block focusability until it will be clicked by mouse
@@ -747,7 +749,7 @@ const codeBlockInteractiveBar = () => {
             }
     
             toggleSearchFeature(show) {
-                this.searchBtn.classList.toggle(this.CLASSES.HIDDEN, show);
+                this.toggleDrawer();
                 this.searchField.classList.toggle(this.CLASSES.HIDDEN, !show);
     
                 if (show) {
@@ -756,6 +758,10 @@ const codeBlockInteractiveBar = () => {
             }
             
             clearAndExit() {
+                if (this.searchField.classList.contains(this.CLASSES.HIDDEN)) {
+                    return;
+                }
+                
                 this.toggleSearchFeature(false);
                 this.searchInput.value = '';
                 this.searchInput.dispatchEvent(new InputEvent('input'));
@@ -959,6 +965,8 @@ const codeBlockInteractiveBar = () => {
                     this.choosePrevOccurrence.dispatchEvent(clickEvent);
                 } else if (event.key === this.KEYS.ARROW_DOWN) {
                     this.chooseNextOccurrence.dispatchEvent(clickEvent);
+                } else if (event.key === this.KEYS.ESCAPE) {
+                    this.clearAndExit();
                 }
             }
             
@@ -1088,23 +1096,23 @@ const codeBlockInteractiveBar = () => {
             }
     
             adjustSearchContainerPosition(scrollData) {
-                const drawerOffsetParent = this.drawerContainer.offsetParent;
+                const searchFieldOffsetParent = this.searchField.offsetParent;
                 
-                if (drawerOffsetParent !== this.drawerContainer.parentNode) {
-                    throw TypeError(`drawerOffsetParent is not drawer's parent! drawerOffsetParent: ${ drawerOffsetParent.outerHTML }`);
+                if (searchFieldOffsetParent !== this.searchField.parentNode) {
+                    throw TypeError(`searchFieldOffsetParent is not the proper parent! searchFieldOffsetParent: ${ searchFieldOffsetParent.outerHTML }`);
                 }
                 
-                const drawerOffsetLeft = this.drawerContainer.offsetLeft + drawerOffsetParent.offsetLeft;
-                const drawerOffsetRight = this.drawerContainer.offsetWidth + drawerOffsetLeft;
-                const drawerOffsetTop = this.drawerContainer.offsetTop /* TODO: add diff between parent and grandparent height divided by 2 */;
-                const shouldAdjustHorizontally = scrollData.right > drawerOffsetLeft;
-                const shouldAdjustVertically = shouldAdjustHorizontally && scrollData.left < this.drawerContainer.offsetWidth;
+                const searchFieldOffsetLeft = this.searchField.offsetLeft + searchFieldOffsetParent.offsetLeft;
+                const searchFieldOffsetRight = this.searchField.offsetWidth + searchFieldOffsetLeft;
+                const searchFieldOffsetTop = this.searchField.offsetTop /* TODO: add diff between parent and grandparent height divided by 2 */;
+                const shouldAdjustHorizontally = scrollData.right > searchFieldOffsetLeft;
+                const shouldAdjustVertically = shouldAdjustHorizontally && scrollData.left < this.searchField.offsetWidth;
     
                 if (shouldAdjustVertically) {
-                    const verticalAdjustValue = drawerOffsetTop - scrollData.top;
+                    const verticalAdjustValue = searchFieldOffsetTop - scrollData.top;
                     this.setDrawerContainerPosition({ verticalValue: verticalAdjustValue });
                 } else if (shouldAdjustHorizontally) {
-                    const horizontalAdjustValue = (drawerOffsetRight - scrollData.left) * -1;
+                    const horizontalAdjustValue = (searchFieldOffsetRight - scrollData.left) * -1;
                     this.setDrawerContainerPosition({ horizontalValue: horizontalAdjustValue });
                 } else {
                     this.setDrawerContainerPosition();
@@ -1115,8 +1123,8 @@ const codeBlockInteractiveBar = () => {
                 const horizontalValue = Math.min(0, position.horizontalValue || 0);
                 const verticalValue = Math.max(0, position.verticalValue || 0);
                 
-                this.drawerContainer.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.HORIZONTAL_VALUE, horizontalValue);
-                this.drawerContainer.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.VERTICAL_VALUE, verticalValue);
+                this.searchField.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.HORIZONTAL_VALUE, horizontalValue);
+                this.searchField.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.VERTICAL_VALUE, verticalValue);
             }
             
             updateFoundOccurrences(value) {
@@ -1317,8 +1325,8 @@ const codeBlockInteractiveBar = () => {
             
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
             featuresDrawer.addFeatures([
-                codeCopy.getCopyToClipboardBtn(),
                 searchThroughCode.getSearchBtn(),
+                codeCopy.getCopyToClipboardBtn(),
                 codeBlockFullScreen.getFullScreenBtn(),
             ].filter(Boolean));
             featuresDrawer.assignClearAndExitSearch(searchThroughCode.clearAndExit.bind(searchThroughCode));
