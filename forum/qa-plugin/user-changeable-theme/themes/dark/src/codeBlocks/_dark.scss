@@ -112,17 +112,36 @@
   color: #ffaa3e !important;
 }
 
-.syntaxhighlighter-block-bar-item__full-screen-btn svg {
-  fill: $color;
-}
+.syntaxhighlighter-block-bar-item {
+  & > button {
+    color: $color;
+  }
 
-.syntaxhighlighter-collapsible-button, .content-copy-btn {
-  background: #3a404b;
-  color: $color;
-}
+  .features-drawer__button:hover,
+  .features-drawer-list__item > button:hover {
+    background: $blue;
+    color: white;
+  }
 
-.syntaxhighlighter-collapsible-button {
-  background: transparent;
+  .search-through-code__button:hover {
+    background: $blue;
+    color: $blue;
+  }
+
+  .features-drawer__button {
+    background: none;
+    border: 1px solid $color;
+
+    &:hover {
+      background: none;
+      color: $blue;
+      border-color: $blue;
+
+      &::after {
+        border-top-color: $blue;
+      }
+    }
+  }
 }
 
 .syntaxhighlighter-collapsible-button:hover {
@@ -139,7 +158,6 @@
 .syntaxhighlighter-collapsible-button.expanded-state:hover::before,
 .syntaxhighlighter-collapsible-button.expanded-state:hover::after,
 .syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
-.syntaxhighlighter-collapsible-button.collapsed-state:hover::after,
-.content-copy-btn:hover {
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::after {
   background: $blue;
 }

@@ -4991,8 +4991,12 @@ button.search-through-code__button:hover,
 	width: 21px;
 	height: 100%;
 	border: none;
-	background: inherit;
-	color: inherit;
+	background: #2c3e50;
+	/*
+		Same font color as background to cover HTML text with custom CSS icon.
+		If this CSS file won't load somehow then text will naturally appear (as a fallback) without being covered by CSS icon.
+	*/
+	color: #2c3e50;
 }
 
 .search-through-code__fields-container .search-through-code__button[data-search-close] {
