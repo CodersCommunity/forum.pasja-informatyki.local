@@ -4911,8 +4911,10 @@ button.search-through-code__button:hover,
 
 .search-through-code__wrapper input {
 	width: 100%;
+	height: 100%;
 	margin: 0;
 	padding: 2px;
+	font-size: 14px;
 }
 
 .search-through-code__fields-container {
@@ -4927,6 +4929,11 @@ button.search-through-code__button:hover,
 
 .search-through-code__fields-container:first-of-type {
 	padding-top: 8px;
+	padding-bottom: 1px;
+}
+
+.search-through-code__fields-container:last-of-type {
+	padding-top: 1px;
 	padding-bottom: 8px;
 }
 
@@ -4938,7 +4945,7 @@ button.search-through-code__button:hover,
 	flex-wrap: wrap;
 	height: 100%;
 	color: white;
-	font-size: 0.75em;
+	font-size: 11px;
 	text-align: center;
 	padding-right: 4px;
 	margin-right: 4px;
