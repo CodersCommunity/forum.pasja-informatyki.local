@@ -4951,22 +4951,12 @@ button.search-through-code__button:hover,
 }
 
 .search-through-code__found-phrase {
-	background: red;
+	background: yellow;
+	color: black;
 }
 
 .search-through-code__found-phrase--highlighted {
-	position: relative;
-	background: none;
-}
-
-.search-through-code__found-phrase--highlighted::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -2px;
-	right: -2px;
-	bottom: 0;
-	border: 2px dotted red;
+	background: orange;
 }
 
 .search-through-code__found-phrase--highlighted.matched-begin::before {
