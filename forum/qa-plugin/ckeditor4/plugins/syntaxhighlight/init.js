@@ -694,7 +694,7 @@ const codeBlockInteractiveBar = () => {
                 this.chooseNextOccurrence = null;
                 this.chosenOccurrence = null;
                 this.foundOccurrences = null;
-                this.defaultOccurrenceValue = '-';
+                this.DEFAULT_OCCURRENCE_VALUE = '-';
                 this.codeContainerOriginalHTML = '';
                 this.currentOccurrenceIndex = -1;
                 this.numberOfOccurrences = 0;
@@ -762,9 +762,9 @@ const codeBlockInteractiveBar = () => {
                 navContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
                 navContainer.innerHTML = `
                     <output>
-                        <span data-search-nav="chosenOccurrence">${ this.defaultOccurrenceValue }</span>
+                        <span data-search-nav="chosenOccurrence">${ this.DEFAULT_OCCURRENCE_VALUE }</span>
                         /
-                        <span data-search-nav="foundOccurrences">${ this.defaultOccurrenceValue }</span>
+                        <span data-search-nav="foundOccurrences">${ this.DEFAULT_OCCURRENCE_VALUE }</span>
                     </output>
                     <button class="search-through-code__button" data-search-nav="prev" title="Poprzedni" disabled="true" type="button">&uarr;</button>
                     <button class="search-through-code__button" data-search-nav="next" title="Następny" disabled="true" type="button">&darr;</button>
@@ -824,18 +824,21 @@ const codeBlockInteractiveBar = () => {
             }
     
             doSearch({ target: { value } }) {
-                this.currentOccurrenceIndex = 0
-                this.updateChosenOccurrence(this.currentOccurrenceIndex);
-                this.numberOfOccurrences = 0;
-                this.updateFoundOccurrences(this.numberOfOccurrences);
-    
-                this.foundPhrases = [];
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
                 
                 if (!value) {
+                    this.foundPhrases = [];
+                    this.updateChosenOccurrence(this.DEFAULT_OCCURRENCE_VALUE);
+                    this.updateFoundOccurrences(this.DEFAULT_OCCURRENCE_VALUE);
                     this.setDrawerContainerPosition();
+                    
                     return;
                 }
+    
+                this.currentOccurrenceIndex = 0;
+                this.updateChosenOccurrence(this.currentOccurrenceIndex);
+                this.numberOfOccurrences = 0;
+                this.updateFoundOccurrences(this.numberOfOccurrences);
     
                 const escapedValue = value.replace(/\W/g, (match) => `\\${ match }`);
                 let occurrenceCounter = 0;
@@ -892,6 +895,8 @@ const codeBlockInteractiveBar = () => {
                     this.updateChosenOccurrence(1);
                     this.updateFoundOccurrences(this.numberOfOccurrences);
                 } else {
+                    this.updateChosenOccurrence(0);
+                    this.updateFoundOccurrences(0);
                     this.setDrawerContainerPosition();
                 }
             }
@@ -982,6 +987,10 @@ const codeBlockInteractiveBar = () => {
             }
             
             handleSearchNav({ target }) {
+                if (this.foundPhrases.length === 0) {
+                    return;
+                }
+                
                 const navDirection = target.dataset.searchNav;
                 
                 if (navDirection) {
@@ -1007,10 +1016,10 @@ const codeBlockInteractiveBar = () => {
 
             handleSearchNavByKeyboard(event) {
                 const clickEvent = new Event('click', { bubbles: true });
-            
+                
                 if (event.key === this.KEYS.ENTER) {
                     event.preventDefault();
-            
+    
                     if (event.shiftKey) {
                         this.choosePrevOccurrence.dispatchEvent(clickEvent);
                     } else {
@@ -1026,8 +1035,7 @@ const codeBlockInteractiveBar = () => {
             }
             
             updateChosenOccurrence(value) {
-                if (!value) {
-                    value = this.defaultOccurrenceValue;
+                if (!value || value === this.DEFAULT_OCCURRENCE_VALUE) {
                     this.choosePrevOccurrence.disabled = true;
                     this.chooseNextOccurrence.disabled = true;
                 } else {
@@ -1183,10 +1191,6 @@ const codeBlockInteractiveBar = () => {
             }
             
             updateFoundOccurrences(value) {
-                if (!value) {
-                    value = this.defaultOccurrenceValue;
-                }
-                
                 this.foundOccurrences.textContent = value;
             }
         }
