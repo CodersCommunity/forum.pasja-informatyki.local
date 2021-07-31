@@ -448,12 +448,12 @@ const codeBlockInteractiveBar = () => {
                     SUCCESS: {
                         TEXT: 'Skopiowano!',
                         CLASS_NAME: 'content-copy-btn--success',
-                        action: toggleDrawer,
+                        action: toggleDrawer.hide,
                     },
                     ERROR: {
                         TEXT: 'Błąd kopiowania!',
                         CLASS_NAME: 'content-copy-btn--error',
-                        action: toggleDrawer,
+                        action: toggleDrawer.hide,
                     },
                     UNAVAILABLE: {
                         CLASS_NAME: 'content-copy-btn--unavailable',
@@ -632,22 +632,35 @@ const codeBlockInteractiveBar = () => {
                 this.featuresDrawerBtn.type = 'button';
                 this.featuresDrawerBtn.textContent = 'Opcje';
                 this.featuresDrawerBtn.classList.add(this.FEATURES_DRAWER_CLASSES.BUTTON);
-                this.featuresDrawerBtn.addEventListener('click', this.toggleDrawer.bind(this));
+                this.featuresDrawerBtn.addEventListener('click', (event) => {
+                    if (this.featuresDrawerList.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
+                        this.showDrawer(event);
+                    } else {
+                        this.hideDrawer();
+                    }
+                });
             }
             
-            toggleDrawer(event) {
-                this.featuresDrawerList.classList.toggle(this.FEATURES_DRAWER_CLASSES.HIDDEN);
-                this.featuresDrawerBtn.classList.toggle(this.FEATURES_DRAWER_CLASSES.OPENED);
-            
-                if (this.featuresDrawerList.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
-                    document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
-                } else {
-                    // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
-                    event.stopPropagation();
-                    this.clearAndExitSearch();
-                    
-                    document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
+            showDrawer(event) {
+                if (!(event instanceof Event)) {
+                    throw TypeError(`event argument should be instance of Event! Received: ${ event }`);
                 }
+    
+                this.clearAndExitSearch();
+                this.featuresDrawerList.classList.remove(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerBtn.classList.add(this.FEATURES_DRAWER_CLASSES.OPENED);
+    
+                // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
+                event.stopPropagation();
+    
+                document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
+            }
+            
+            hideDrawer() {
+                this.featuresDrawerList.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerBtn.classList.remove(this.FEATURES_DRAWER_CLASSES.OPENED);
+    
+                document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
             }
             
             getFeatureDrawerOffClickListener() {
@@ -683,13 +696,13 @@ const codeBlockInteractiveBar = () => {
         }
         
         class SearchThroughCode {
-            constructor(codeBlock, toggleDrawer, drawerContainer) {
+            constructor(codeBlock, featuresDrawerToggler, drawerContainer) {
                 this.searchBtn = null;
                 this.searchField = null;
                 this.processedCodeBlock = null;
                 this.codeContainer = null;
                 this.drawerContainer = drawerContainer;
-                this.toggleDrawer = toggleDrawer;
+                this.featuresDrawerToggler = featuresDrawerToggler;
                 this.choosePrevOccurrence = null;
                 this.chooseNextOccurrence = null;
                 this.chosenOccurrence = null;
@@ -793,52 +806,56 @@ const codeBlockInteractiveBar = () => {
                 });
                 this.codeContainer.addEventListener('keydown', (event) => {
                     if (event.key === this.KEYS.F && event.ctrlKey) {
+                        if (!this.searchField.classList.contains(this.CLASSES.HIDDEN)) {
+                            return;
+                        }
+                        
                         event.preventDefault();
-                        this.toggleDrawer();
                         this.toggleSearchFeature(true);
                         
-                        // turn off code block focusability until it will be clicked by mouse
+                        // turn off code block focus-ability until it will be clicked by mouse
                         this.codeContainer.tabIndex = -1;
                     }
                 });
             }
     
             toggleSearchFeature(show) {
-                this.toggleDrawer();
+                this.featuresDrawerToggler.hide();
                 this.searchField.classList.toggle(this.CLASSES.HIDDEN, !show);
     
                 if (show) {
+                    if (this.searchInput.value) {
+                        this.doSearch({ target: this.searchInput }, true);
+                    }
+                    
                     this.searchInput.focus();
                 }
             }
             
             clearAndExit() {
+                this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
+                this.searchField.classList.add(this.CLASSES.HIDDEN);
+            }
+    
+            doSearch({ target: { value } }, preserveLastOccurrenceIndex) {
                 if (this.searchField.classList.contains(this.CLASSES.HIDDEN)) {
                     return;
                 }
                 
-                this.toggleSearchFeature(false);
-                this.searchInput.value = '';
-                this.searchInput.dispatchEvent(new InputEvent('input'));
-                this.setDrawerContainerPosition();
-            }
-    
-            doSearch({ target: { value } }) {
                 this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
                 
                 if (!value) {
                     this.foundPhrases = [];
+                    this.currentOccurrenceIndex = -1;
+                    
                     this.updateChosenOccurrence(this.DEFAULT_OCCURRENCE_VALUE);
                     this.updateFoundOccurrences(this.DEFAULT_OCCURRENCE_VALUE);
                     this.setDrawerContainerPosition();
                     
                     return;
                 }
-    
-                this.currentOccurrenceIndex = 0;
-                this.updateChosenOccurrence(this.currentOccurrenceIndex);
+                
                 this.numberOfOccurrences = 0;
-                this.updateFoundOccurrences(this.numberOfOccurrences);
     
                 const escapedValue = value.replace(/\W/g, (match) => `\\${ match }`);
                 let occurrenceCounter = 0;
@@ -888,15 +905,21 @@ const codeBlockInteractiveBar = () => {
     
                     this.numberOfOccurrences += denseIndexes.length;
                 });
-                
+    
                 this.foundPhrases = [...this.codeContainer.querySelectorAll(`.${ this.CLASSES.FOUND }`)];
                 
                 if (this.foundPhrases.length) {
-                    this.updateChosenOccurrence(1);
+                    if (!preserveLastOccurrenceIndex) {
+                        this.currentOccurrenceIndex = 0;
+                    }
+                    
+                    this.updateChosenOccurrence(this.currentOccurrenceIndex + 1);
                     this.updateFoundOccurrences(this.numberOfOccurrences);
                 } else {
-                    this.updateChosenOccurrence(0);
-                    this.updateFoundOccurrences(0);
+                    this.currentOccurrenceIndex = 0;
+                    this.updateChosenOccurrence(this.currentOccurrenceIndex);
+                    this.numberOfOccurrences = 0;
+                    this.updateFoundOccurrences(this.numberOfOccurrences);
                     this.setDrawerContainerPosition();
                 }
             }
@@ -1030,6 +1053,7 @@ const codeBlockInteractiveBar = () => {
                 } else if (event.key === this.KEYS.ARROW_DOWN) {
                     this.chooseNextOccurrence.dispatchEvent(clickEvent);
                 } else if (event.key === this.KEYS.ESCAPE) {
+                    event.preventDefault();
                     this.clearAndExit();
                 }
             }
@@ -1196,8 +1220,8 @@ const codeBlockInteractiveBar = () => {
         }
 
         class CodeBlockFullScreen {
-            constructor(toggleDrawer) {
-                this.toggleDrawer = toggleDrawer;
+            constructor(featuresDrawerToggler) {
+                this.featuresDrawerToggler = featuresDrawerToggler;
                 this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH = 30;
                 this.MINIMUM_WIDTH_FOR_FULL_SCREEN = 400;
                 this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME = 'syntaxhighlighter-fallback-full-screen-container';
@@ -1244,7 +1268,8 @@ const codeBlockInteractiveBar = () => {
                             }
                         });
 
-                        this.fullScreenBtn.parentNode.classList.toggle('syntaxhighlighter-block-bar-item--hidden', hideFullScreenButton);
+                        this.fullScreenBtn.classList.toggle('syntaxhighlighter-block-bar-item__full-screen-btn--unavailable', hideFullScreenButton);
+                        this.fullScreenBtn.disabled = hideFullScreenButton;
                     });
                     resizeObserver.observe(processedCodeBlock);
                 });
@@ -1365,7 +1390,7 @@ const codeBlockInteractiveBar = () => {
                         }
                         
                         collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
-                        this.toggleDrawer(new MouseEvent('click'));
+                        this.featuresDrawerToggler.hide();
                     }
                     
                     collapsibleCodeBlockBtn.disabled = !this.isFullScreen;
@@ -1380,14 +1405,19 @@ const codeBlockInteractiveBar = () => {
         
         return function getCodeBlockBarFeatureItems(codeBlock) {
             const featuresDrawer = new FeaturesDrawer(codeBlock);
-            const codeCopy = new CodeCopy(
-              codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click')),
-            );
+            const featuresDrawerToggler = Object.freeze({
+                show: () => {
+                    featuresDrawer.showDrawer(new MouseEvent('click'));
+                },
+                hide: () => {
+                    featuresDrawer.hideDrawer();
+                },
+            });
+            const codeCopy = new CodeCopy(codeBlock, featuresDrawerToggler);
             const searchThroughCode = new SearchThroughCode(
-              codeBlock, featuresDrawer.toggleDrawer.bind(featuresDrawer, new MouseEvent('click')),
-              featuresDrawer.getContainer(),
+              codeBlock, featuresDrawerToggler, featuresDrawer.getContainer(),
             );
-            const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawer.toggleDrawer.bind(featuresDrawer));
+            const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawerToggler);
             
             codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
             featuresDrawer.addFeatures([

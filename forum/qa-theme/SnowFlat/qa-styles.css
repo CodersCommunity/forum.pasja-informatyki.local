@@ -5051,7 +5051,6 @@ button.search-through-code__button:hover,
 	display: inline-flex;
 }
 
-.syntaxhighlighter-block-bar-item--hidden,
 ul.features-drawer-list--hidden
 {
 	display: none;
@@ -5164,17 +5163,6 @@ ul.features-drawer-list--hidden
 {
 	display: flex;
 	align-self: baseline;
-}
-
-.content-copy-btn
-{
-	position: relative;
-}
-
-.features-drawer-list__item .content-copy-btn.content-copy-btn--done
-{
-	color: lightgreen;
-	transition: color 0.75s;
 }
 
 .content-copy-btn[disabled]
