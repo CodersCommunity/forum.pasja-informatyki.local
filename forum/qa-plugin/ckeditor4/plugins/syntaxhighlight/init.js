@@ -872,27 +872,32 @@ const codeBlockInteractiveBar = () => {
                     const targetIndexes = this._getTargetIndexes(denseIndexes);
                     let charCounter = 0;
                     
-                    codeLine.querySelectorAll('code').forEach((codeFragment) => {
+                    // looping over childNodes, because some characters are inserted as text nodes, not HTML elements
+                    codeLine.childNodes.forEach((codeFragment) => {
                         const chars = codeFragment.textContent.split('');
                         const outputChars = chars.reduce((result, char) => {
                             if (charCounter in targetIndexes) {
                                 const {
                                     goingToNextFragment, lastCharInFragment
                                 } = this._getFragmentNavMetadata(denseIndexes, charCounter);
-                                const classNames = `${ this.CLASSES.FOUND } ${ targetIndexes[charCounter] }`;
+                                
+                                const occurrenceElement = document.createElement('span');
+                                occurrenceElement.classList.add(this.CLASSES.FOUND, targetIndexes[charCounter]);
+                                occurrenceElement.dataset.foundOccurrence = occurrenceCounter;
+                                // browser will automatically escape weird/reserved characters
+                                occurrenceElement.textContent = char;
     
-                                result += `
-                                    <span
-                                        class="${ classNames }"
-                                        data-found-occurrence="${ occurrenceCounter }"
-                                    >${ char }</span>
-                                `.trim();
+                                result += occurrenceElement.outerHTML;
                                 
                                 if (goingToNextFragment || (lastCharInFragment && nextLineAvailable)) {
                                     occurrenceCounter++;
                                 }
                             } else {
-                                result += char;
+                                const charElement = document.createElement('span');
+                                // browser will automatically escape weird/reserved characters
+                                charElement.textContent = char;
+                                
+                                result += charElement.innerHTML;
                             }
                             
                             charCounter++;
@@ -900,7 +905,7 @@ const codeBlockInteractiveBar = () => {
                             return result;
                         }, '');
                         
-                        codeFragment.innerHTML = outputChars;
+                        this._updateCodeFragmentContent(codeFragment, outputChars);
                     });
     
                     this.numberOfOccurrences += denseIndexes.length;
@@ -1007,6 +1012,19 @@ const codeBlockInteractiveBar = () => {
                 }
     
                 return { goingToNextFragment, lastCharInFragment };
+            }
+    
+            _updateCodeFragmentContent(codeFragment, outputChars) {
+                if (codeFragment.nodeType === Node.ELEMENT_NODE) {
+                    codeFragment.innerHTML = outputChars;
+                } else {
+                    // HTML code cannot be inserted in non Element type of Node, so it need to be swapped for one
+                    const codeFragmentAsElement = document.createElement('code');
+                    codeFragmentAsElement.innerHTML = outputChars;
+    
+                    codeFragment.parentNode.insertBefore(codeFragmentAsElement, codeFragment);
+                    codeFragment.parentNode.removeChild(codeFragment);
+                }
             }
             
             handleSearchNav({ target }) {
