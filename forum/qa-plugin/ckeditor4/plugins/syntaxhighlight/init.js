@@ -1120,7 +1120,7 @@ const codeBlockInteractiveBar = () => {
                 }
                 
                 const codeLine = phrasePartsInRow.firstPart.parentNode.parentNode;
-                const { shouldScrollVertically, topScroll } = this._handleVerticalScroll(codeLine);
+                const { shouldScrollVertically, topScroll, bottomScroll } = this._handleVerticalScroll(codeLine);
                 const {
                     shouldScrollHorizontally, leftScroll, currentLeftOffset, currentRightOffset
                 } = this._handleHorizontalScroll(phrasePartsInRow);
@@ -1129,7 +1129,6 @@ const codeBlockInteractiveBar = () => {
                     this.processedCodeBlock.scroll({
                         top: topScroll,
                         left: leftScroll,
-                        behavior: 'smooth',
                     });
                 }
                 
@@ -1137,6 +1136,7 @@ const codeBlockInteractiveBar = () => {
                     top: topScroll,
                     left: currentLeftOffset,
                     right: currentRightOffset,
+                    bottom: bottomScroll,
                 };
             }
             
@@ -1149,8 +1149,9 @@ const codeBlockInteractiveBar = () => {
                   (Math.floor(this.processedCodeBlock.getBoundingClientRect().height / this.codeLineHeight) - 1);
                 const shouldScrollVertically = blockScrollPositionStart > codeLineNumber || blockScrollPositionEnd <= codeLineNumber;
                 const topScroll = codeLineNumber * this.codeLineHeight;
+                const bottomScroll = (codeLineNumber + 1) * this.codeLineHeight;
                 
-                return { shouldScrollVertically, topScroll };
+                return { shouldScrollVertically, topScroll, bottomScroll };
             }
             
             _handleHorizontalScroll({ firstPart, lastPart }) {
@@ -1204,17 +1205,30 @@ const codeBlockInteractiveBar = () => {
                 const searchFieldOffsetParent = this.searchField.offsetParent;
                 
                 if (searchFieldOffsetParent !== this.searchField.parentNode) {
-                    throw TypeError(`searchFieldOffsetParent is not the proper parent! searchFieldOffsetParent: ${ searchFieldOffsetParent.outerHTML }`);
+                    throw TypeError(
+                      `searchFieldOffsetParent is not the proper parent! searchFieldOffsetParent: ${ searchFieldOffsetParent.outerHTML }`
+                    );
                 }
                 
                 const searchFieldOffsetLeft = this.searchField.offsetLeft + searchFieldOffsetParent.offsetLeft;
                 const searchFieldOffsetRight = this.searchField.offsetWidth + searchFieldOffsetLeft;
-                const searchFieldOffsetTop = this.searchField.offsetTop /* TODO: add diff between parent and grandparent height divided by 2 */;
-                const shouldAdjustHorizontally = scrollData.right > searchFieldOffsetLeft;
+                const searchFieldOffsetTop =
+                  searchFieldOffsetParent.parentNode.offsetHeight - (
+                    (
+                      (searchFieldOffsetParent.parentNode.offsetHeight - searchFieldOffsetParent.offsetHeight) / 2
+                    ) + this.searchField.offsetTop
+                  );
+                const searchFieldOffsetBottom = searchFieldOffsetTop + this.searchField.offsetHeight;
+                const searchFieldHorizontallyCoversOccurrence =
+                  scrollData.right > searchFieldOffsetLeft && scrollData.left < searchFieldOffsetRight;
+                const searchFieldVerticallyCoversOccurrence =
+                  searchFieldOffsetTop + this.processedCodeBlock.scrollTop <= scrollData.top &&
+                  searchFieldOffsetBottom + this.processedCodeBlock.scrollTop >= scrollData.bottom;
+                const shouldAdjustHorizontally = searchFieldHorizontallyCoversOccurrence && searchFieldVerticallyCoversOccurrence;
                 const shouldAdjustVertically = shouldAdjustHorizontally && scrollData.left < this.searchField.offsetWidth;
     
                 if (shouldAdjustVertically) {
-                    const verticalAdjustValue = searchFieldOffsetTop - scrollData.top;
+                    const verticalAdjustValue = scrollData.bottom - this.processedCodeBlock.scrollTop;
                     this.setDrawerContainerPosition({ verticalValue: verticalAdjustValue });
                 } else if (shouldAdjustHorizontally) {
                     const horizontalAdjustValue = (searchFieldOffsetRight - scrollData.left) * -1;
