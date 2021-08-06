@@ -474,7 +474,7 @@ const codeBlockInteractiveBar = () => {
                     copyBtn.classList.add(this.COPY_BTN_STATE.UNAVAILABLE.CLASS_NAME);
                 });
             }
-            
+
             initCopyingMethod() {
                 this.isCopyByQueryCommand =
                     !!window.getSelection && document.queryCommandSupported('copy');
