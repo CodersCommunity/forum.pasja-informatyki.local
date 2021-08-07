@@ -1,5 +1,14 @@
 'use strict';
 
+const getCodeBlockMeta = (codeBlock) => {
+    return {
+        postId: codeBlock.closest('.post-preview') ? 'post-preview' : codeBlock.closest('[id]').id.match(/\d*/g).join(''),
+        numberInPost: [
+            ...codeBlock.parentNode.querySelectorAll('[data-code-lang-name], .syntaxhighlighter-parent')
+        ].findIndex(item => item === codeBlock) + 1,
+    };
+};
+
 const fixSpaces = (() => {
     const NBSP_CHAR_UNICODE_REG_EXP = /\u00a0/g;
 
@@ -278,6 +287,26 @@ const postSnippets = () => {
 };
 
 const codeBlockInteractiveBar = () => {
+    const codeHighlightingPostProcessHandler = (() => {
+        const listeners = {};
+        
+        return {
+            subscribe(postId, codeBlockNumber, callback) {
+                if (!listeners[`${postId}_${codeBlockNumber}`]) {
+                    listeners[`${postId}_${codeBlockNumber}`] = [];
+                }
+
+                listeners[`${postId}_${codeBlockNumber}`].push(callback);
+            },
+            notifyAll(postId, codeBlockNumber, processedCodeBlock) {
+                if (listeners[`${postId}_${codeBlockNumber}`]) {
+                    listeners[`${postId}_${codeBlockNumber}`]
+                        .forEach((fn) => fn(processedCodeBlock));
+                    listeners[`${postId}_${codeBlockNumber}`] = null;
+                }
+            },
+        };
+    })();
     const codeLanguages = getPreparedLanguages();
     const MIN_LINES_NUMBER_TO_COLLAPSE_CODE = 20;
     const getCodeBlockBarFeatureItems = initInteractiveFeatures();
@@ -304,6 +333,9 @@ const codeBlockInteractiveBar = () => {
             if (codeBlockBar.classList.contains('is-collapsible')) {
                 processedCodeBlock.classList.add('collapsed-block');
             }
+
+            const { postId, numberInPost } = getCodeBlockMeta(processedCodeBlock.parentNode);
+            codeHighlightingPostProcessHandler.notifyAll(postId, numberInPost, processedCodeBlock);
         };
     }
 
@@ -406,9 +438,41 @@ const codeBlockInteractiveBar = () => {
         }
 
         class CodeCopy {
-            constructor() {
+            constructor(codeBlock, toggleDrawer) {
                 this.NEW_LINE = '\r\n';
+                this.isCopyingSupported = false;
+                this.COPY_BTN_STATE = Object.freeze({
+                    INITIAL: {
+                        TEXT: 'Kopiuj',
+                    },
+                    SUCCESS: {
+                        TEXT: 'Skopiowano!',
+                        CLASS_NAME: 'content-copy-btn--success',
+                        action: toggleDrawer.hide,
+                    },
+                    ERROR: {
+                        TEXT: 'Błąd kopiowania!',
+                        CLASS_NAME: 'content-copy-btn--error',
+                        action: toggleDrawer.hide,
+                    },
+                    UNAVAILABLE: {
+                        CLASS_NAME: 'content-copy-btn--unavailable',
+                    }
+                });
+    
                 this.initCopyingMethod();
+    
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    if (this.isCopyingSupported) {
+                        return;
+                    }
+                    
+                    const copyBtn = processedCodeBlock.previousElementSibling.querySelector('.content-copy-btn');
+                    copyBtn.disabled = true;
+                    copyBtn.textContent = this.COPY_BTN_STATE.INITIAL.TEXT;
+                    copyBtn.classList.add(this.COPY_BTN_STATE.UNAVAILABLE.CLASS_NAME);
+                });
             }
 
             initCopyingMethod() {
@@ -424,14 +488,14 @@ const codeBlockInteractiveBar = () => {
                     this.copyToClipboard = this.copyByQueryCommand;
                 } else {
                     this.isCopyingSupported = false;
-                    this.copyToClipboard = function() {
+                    this.copyToClipboard = () => {
                         console.error('Copy to clipboard is not available!');
-                    }
+                    };
                 }
             }
 
             getContentToCopy(target) {
-                const blockOfCodeParent = target.parentNode.parentNode.parentNode;
+                const blockOfCodeParent = target.closest('.syntaxhighlighter-parent');
                 const linesOfCode = [...blockOfCodeParent.querySelector('.code .container').children];
                 const contentToCopy = linesOfCode
                 .reduce((concatenatedCode, { textContent: singleLineOfCode }) => {
@@ -444,19 +508,40 @@ const codeBlockInteractiveBar = () => {
             copyByClipboardAPI({ target }) {
                 window.navigator.clipboard
                     .writeText(this.getContentToCopy(target))
+                    .then(() => this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.SUCCESS))
                     .catch(() => this.tryFallbackToOlderCopyMethod(target));
             }
 
             tryFallbackToOlderCopyMethod(target) {
                 if (this.isCopyByQueryCommand) {
-                    this.copyByQueryCommand({ target });
+                    const copyingProbableSuccess = this.copyByQueryCommand({ target });
+                    
+                    if (copyingProbableSuccess) {
+                        this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.SUCCESS);
+                    } else {
+                        this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.ERROR);
+                    }
                 } else {
-                    target.classList.add('content-copy-tooltip', 'content-copy-error');
-
-                    setTimeout(() => {
-                        target.classList.remove('content-copy-tooltip', 'content-copy-error');
-                    }, 3000);
+                    this.notifyAboutCopyResult(target, this.COPY_BTN_STATE.ERROR);
                 }
+            }
+            
+            notifyAboutCopyResult(target, state) {
+                target.addEventListener('transitionend', () => {
+                    setTimeout(() => {
+                        if (state.action) {
+                            state.action();
+                        }
+                        
+                        target.classList.remove(state.CLASS_NAME);
+                        target.textContent = this.COPY_BTN_STATE.INITIAL.TEXT;
+                        target.disabled = false;
+                    }, 1000);
+                },{ once: true });
+                
+                target.classList.add(state.CLASS_NAME);
+                target.textContent = state.TEXT;
+                target.disabled = true;
             }
 
             copyByQueryCommand({ target }) {
@@ -474,9 +559,20 @@ const codeBlockInteractiveBar = () => {
                 const range = document.createRange();
                 range.selectNode(textArea);
                 selection.addRange(range);
-
-                document.execCommand('copy');
+    
+                /*
+                    document.execCommand(..) method returns boolean indicating whether requested command is supported by browser or not,
+                    rather than informing whether that command was performed successfully or not.
+                    Therefore, relying on that returned value does not give certainty of command effect.
+                    However, as there is no simple way to determine the result, checking that boolean is done
+                    in order to know the possible result in any way.
+                
+                    https://developer.mozilla.org/en-US/docs/Web/API/document/execCommand#return_value
+                 */
+                const copyingProbableSuccess = document.execCommand('copy');
                 document.body.removeChild(textArea);
+                
+                return copyingProbableSuccess;
             }
 
             addClickListener(copyCodeBtn) {
@@ -485,7 +581,7 @@ const codeBlockInteractiveBar = () => {
 
             getCopyToClipboardBtn() {
                 const copyCodeBtn = document.createElement('button');
-                copyCodeBtn.textContent = 'Kopiuj';
+                copyCodeBtn.textContent = this.COPY_BTN_STATE.INITIAL.TEXT;
                 copyCodeBtn.classList.add('content-copy-btn');
                 copyCodeBtn.type = 'button';
 
@@ -499,16 +595,874 @@ const codeBlockInteractiveBar = () => {
                 return copyCodeBtn;
             }
         }
+        
+        class FeaturesDrawer {
+            constructor(codeBlock) {
+                this.featuresDrawerList = null;
+                this.featuresDrawerBtn = null;
+                this.clearAndExitSearch = null;
+                this.featureDrawerOffClickListener = this.getFeatureDrawerOffClickListener();
+                this.FEATURES_DRAWER_CLASSES = {
+                    LIST: 'features-drawer-list',
+                    LIST_ITEM: 'features-drawer-list__item',
+                    BUTTON: 'features-drawer__button',
+                    HIDDEN: 'features-drawer-list--hidden',
+                    OPENED: 'features-drawer__button--opened',
+                };
+                
+                this.initButton();
+                this.initDOM(codeBlock);
+            }
+    
+            initDOM(codeBlock) {
+                this.featuresDrawerList = document.createElement('ul');
+                this.featuresDrawerList.classList.add(this.FEATURES_DRAWER_CLASSES.LIST, this.FEATURES_DRAWER_CLASSES.HIDDEN);
+    
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    const insertionRef =
+                      processedCodeBlock.previousElementSibling.querySelector(`.${ this.FEATURES_DRAWER_CLASSES.BUTTON }`);
+    
+                    insertionRef.parentNode.insertBefore(this.featuresDrawerList, insertionRef);
+                });
+            }
+            
+            initButton() {
+                this.featuresDrawerBtn = document.createElement('button');
+                this.featuresDrawerBtn.type = 'button';
+                this.featuresDrawerBtn.textContent = 'Opcje';
+                this.featuresDrawerBtn.classList.add(this.FEATURES_DRAWER_CLASSES.BUTTON);
+                this.featuresDrawerBtn.addEventListener('click', (event) => {
+                    if (this.featuresDrawerList.classList.contains(this.FEATURES_DRAWER_CLASSES.HIDDEN)) {
+                        this.showDrawer(event);
+                    } else {
+                        this.hideDrawer();
+                    }
+                });
+            }
+            
+            showDrawer(event) {
+                if (!(event instanceof Event)) {
+                    throw TypeError(`event argument should be instance of Event! Received: ${ event }`);
+                }
+    
+                this.clearAndExitSearch();
+                this.featuresDrawerList.classList.remove(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerBtn.classList.add(this.FEATURES_DRAWER_CLASSES.OPENED);
+    
+                // This event will also trigger document click listener attached below, because it is in bubbling (so the same) phase.
+                event.stopPropagation();
+    
+                document.addEventListener('click', this.featureDrawerOffClickListener, { once: true });
+            }
+            
+            hideDrawer() {
+                this.featuresDrawerList.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                this.featuresDrawerBtn.classList.remove(this.FEATURES_DRAWER_CLASSES.OPENED);
+    
+                document.removeEventListener('click', this.featureDrawerOffClickListener, { once: true });
+            }
+            
+            getFeatureDrawerOffClickListener() {
+                return ({ target }) => {
+                    if (!target.closest(`.${ this.FEATURES_DRAWER_CLASSES.LIST }`)) {
+                        this.featuresDrawerList.classList.add(this.FEATURES_DRAWER_CLASSES.HIDDEN);
+                        this.featuresDrawerBtn.classList.remove(this.FEATURES_DRAWER_CLASSES.OPENED);
+                    }
+                }
+            }
+            
+            getFeaturesDrawerBtn() {
+                return this.featuresDrawerBtn;
+            }
+            
+            addFeatures(featureDOMs) {
+                featureDOMs.forEach((element) => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add(this.FEATURES_DRAWER_CLASSES.LIST_ITEM);
+                    listItem.appendChild(element);
+    
+                    this.featuresDrawerList.appendChild(listItem);
+                });
+            }
+            
+            assignClearAndExitSearch(clearAndExitSearch) {
+                this.clearAndExitSearch = clearAndExitSearch;
+            }
+    
+            getContainer() {
+                return this.featuresDrawerList;
+            }
+        }
+        
+        class SearchThroughCode {
+            constructor(codeBlock, featuresDrawerToggler, drawerContainer) {
+                this.searchBtn = null;
+                this.searchField = null;
+                this.processedCodeBlock = null;
+                this.codeContainer = null;
+                this.drawerContainer = drawerContainer;
+                this.featuresDrawerToggler = featuresDrawerToggler;
+                this.choosePrevOccurrence = null;
+                this.chooseNextOccurrence = null;
+                this.chosenOccurrence = null;
+                this.foundOccurrences = null;
+                this.DEFAULT_OCCURRENCE_VALUE = '-';
+                this.codeContainerOriginalHTML = '';
+                this.currentOccurrenceIndex = -1;
+                this.numberOfOccurrences = 0;
+                this.foundPhrases = [];
+                this.codeLineHeight = 0;
+                this.CLASSES = {
+                    SEARCH_WRAPPER: 'search-through-code__wrapper',
+                    FIELDS_CONTAINER: 'search-through-code__fields-container',
+                    FOUND: 'search-through-code__found-phrase',
+                    HIGHLIGHTED: 'search-through-code__found-phrase--highlighted',
+                    HIDDEN: 'search-through-code--hidden',
+                    FOUND_PAIR_WHOLE: 'matched-whole',
+                    FOUND_PAIR_BEGIN: 'matched-begin',
+                    FOUND_PAIR_MIDDLE: 'matched-middle',
+                    FOUND_PAIR_END: 'matched-end',
+                };
+                this.KEYS = {
+                    ENTER: 'Enter',
+                    ARROW_UP: 'ArrowUp',
+                    ARROW_DOWN: 'ArrowDown',
+                    ESCAPE: 'Escape',
+                    F: 'f',
+                };
+                this.DRAWER_ADJUSTMENT_KEYS = {
+                    HORIZONTAL_VALUE: '--horizontal-adjustment-value',
+                    VERTICAL_VALUE: '--vertical-adjustment-value',
+                };
+    
+                this.initCodeContainer(codeBlock);
+            }
+            
+            initCodeContainer(codeBlock) {
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    this.processedCodeBlock = processedCodeBlock;
+                    this.codeContainer = processedCodeBlock.querySelector('.container');
+                    this.codeContainerOriginalHTML = this.codeContainer.innerHTML;
+                    this.codeLineHeight = processedCodeBlock.querySelector('.line').getBoundingClientRect().height;
+    
+                    this.createSearchField();
+                    this.prepareSearchToBeOpenedByKeyboardShortcut();
+                });
+            }
+    
+            getSearchBtn() {
+                this.searchBtn = document.createElement('button');
+                this.searchBtn.type = 'button';
+                this.searchBtn.textContent = 'Szukaj';
+                this.searchBtn.addEventListener('click', () => this.toggleSearchFeature(true));
+                
+                return this.searchBtn;
+            }
+            
+            createSearchField() {
+                this.searchInput = document.createElement('input');
+                this.searchInput.type = 'search';
+                this.searchInput.addEventListener('input', this.doSearch.bind(this));
+                this.searchInput.addEventListener('keydown', this.handleSearchNavByKeyboard.bind(this));
+    
+                const actionContainer = document.createElement('div');
+                actionContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
+                actionContainer.append(this.searchInput);
+
+                const navContainer = document.createElement('div');
+                navContainer.classList.add(this.CLASSES.FIELDS_CONTAINER);
+                navContainer.innerHTML = `
+                    <output>
+                        <span data-search-nav="chosenOccurrence">${ this.DEFAULT_OCCURRENCE_VALUE }</span>
+                        /
+                        <span data-search-nav="foundOccurrences">${ this.DEFAULT_OCCURRENCE_VALUE }</span>
+                    </output>
+                    <button class="search-through-code__button" data-search-nav="prev" title="Poprzedni" disabled="true" type="button">&uarr;</button>
+                    <button class="search-through-code__button" data-search-nav="next" title="Następny" disabled="true" type="button">&darr;</button>
+                    <button class="search-through-code__button" data-search-close title="Zamknij" type="button">&#120;</button>
+                `.trim();
+                navContainer.addEventListener('click', this.handleSearchNav.bind(this));
+                navContainer.querySelector('[data-search-close]').addEventListener('click', this.clearAndExit.bind(this));
+    
+                this.choosePrevOccurrence = navContainer.querySelector('[data-search-nav="prev"]');
+                this.chooseNextOccurrence = navContainer.querySelector('[data-search-nav="next"]');
+                this.chosenOccurrence = navContainer.querySelector('[data-search-nav="chosenOccurrence"]');
+                this.foundOccurrences = navContainer.querySelector('[data-search-nav="foundOccurrences"]');
+                
+                this.searchField = document.createElement('div');
+                this.searchField.classList.add(this.CLASSES.SEARCH_WRAPPER, this.CLASSES.HIDDEN);
+                this.searchField.append(actionContainer, navContainer);
+                
+                this.drawerContainer.parentNode.insertBefore(this.searchField, this.drawerContainer);
+            }
+            
+            prepareSearchToBeOpenedByKeyboardShortcut() {
+                // Make code block container focusable, so it can receive 'keydown' event
+                this.codeContainer.addEventListener('click', () => {
+                    this.codeContainer.tabIndex = 0;
+                    this.codeContainer.focus();
+                });
+                this.codeContainer.addEventListener('keydown', (event) => {
+                    if (event.key === this.KEYS.F && event.ctrlKey) {
+                        if (!this.searchField.classList.contains(this.CLASSES.HIDDEN)) {
+                            return;
+                        }
+                        
+                        event.preventDefault();
+                        this.toggleSearchFeature(true);
+                        
+                        // turn off code block focus-ability until it will be clicked by mouse
+                        this.codeContainer.tabIndex = -1;
+                    }
+                });
+            }
+    
+            toggleSearchFeature(show) {
+                this.featuresDrawerToggler.hide();
+                this.searchField.classList.toggle(this.CLASSES.HIDDEN, !show);
+    
+                if (show) {
+                    if (this.searchInput.value) {
+                        this.doSearch({ target: this.searchInput }, true);
+                    }
+                    
+                    this.searchInput.focus();
+                }
+            }
+            
+            clearAndExit() {
+                this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
+                this.searchField.classList.add(this.CLASSES.HIDDEN);
+            }
+    
+            doSearch({ target: { value } }, preserveLastOccurrenceIndex) {
+                if (this.searchField.classList.contains(this.CLASSES.HIDDEN)) {
+                    return;
+                }
+                
+                this.codeContainer.innerHTML = this.codeContainerOriginalHTML;
+                
+                if (!value) {
+                    this.foundPhrases = [];
+                    this.currentOccurrenceIndex = -1;
+                    
+                    this.updateChosenOccurrence(this.DEFAULT_OCCURRENCE_VALUE);
+                    this.updateFoundOccurrences(this.DEFAULT_OCCURRENCE_VALUE);
+                    this.setDrawerContainerPosition();
+                    
+                    return;
+                }
+                
+                this.numberOfOccurrences = 0;
+    
+                const escapedValue = value.replace(/\W/g, (match) => `\\${ match }`);
+                let occurrenceCounter = 0;
+                
+                this.codeContainer.querySelectorAll('.line').forEach((codeLine, lineIndex, allLines) => {
+                    const nextLineAvailable = allLines[lineIndex + 1];
+                    const matchedIndexes = this._getMatchedIndexes(escapedValue, codeLine.textContent);
+                    
+                    if (matchedIndexes.length === 0) {
+                        return;
+                    }
+                    
+                    const denseIndexes = this._densifyIndexes(matchedIndexes);
+                    const targetIndexes = this._getTargetIndexes(denseIndexes);
+                    let charCounter = 0;
+                    
+                    // looping over childNodes, because some characters are inserted as text nodes, not HTML elements
+                    codeLine.childNodes.forEach((codeFragment) => {
+                        const chars = codeFragment.textContent.split('');
+                        const outputChars = chars.reduce((result, char) => {
+                            if (charCounter in targetIndexes) {
+                                const {
+                                    goingToNextFragment, lastCharInFragment
+                                } = this._getFragmentNavMetadata(denseIndexes, charCounter);
+                                
+                                const occurrenceElement = document.createElement('span');
+                                occurrenceElement.classList.add(this.CLASSES.FOUND, targetIndexes[charCounter]);
+                                occurrenceElement.dataset.foundOccurrence = occurrenceCounter;
+                                // browser will automatically escape weird/reserved characters
+                                occurrenceElement.textContent = char;
+    
+                                result += occurrenceElement.outerHTML;
+                                
+                                if (goingToNextFragment || (lastCharInFragment && nextLineAvailable)) {
+                                    occurrenceCounter++;
+                                }
+                            } else {
+                                const charElement = document.createElement('span');
+                                // browser will automatically escape weird/reserved characters
+                                charElement.textContent = char;
+                                
+                                result += charElement.innerHTML;
+                            }
+                            
+                            charCounter++;
+                            
+                            return result;
+                        }, '');
+                        
+                        this._updateCodeFragmentContent(codeFragment, outputChars);
+                    });
+    
+                    this.numberOfOccurrences += denseIndexes.length;
+                });
+    
+                this.foundPhrases = [...this.codeContainer.querySelectorAll(`.${ this.CLASSES.FOUND }`)];
+                
+                if (this.foundPhrases.length) {
+                    if (!preserveLastOccurrenceIndex) {
+                        this.currentOccurrenceIndex = 0;
+                    }
+                    
+                    this.updateChosenOccurrence(this.currentOccurrenceIndex + 1);
+                    this.updateFoundOccurrences(this.numberOfOccurrences);
+                } else {
+                    this.currentOccurrenceIndex = 0;
+                    this.updateChosenOccurrence(this.currentOccurrenceIndex);
+                    this.numberOfOccurrences = 0;
+                    this.updateFoundOccurrences(this.numberOfOccurrences);
+                    this.setDrawerContainerPosition();
+                }
+            }
+            
+            _getMatchedIndexes(escapedValue, codeLineContent) {
+                const matchedIndexes = [];
+                const uniqueIndexes = new Set();
+                const searchRegExp = new RegExp(escapedValue, 'gdi');
+                let lineMatches = null;
+    
+                while (lineMatches = searchRegExp.exec(codeLineContent)) {
+                    const [start, end] = lineMatches.indices[0];
+                    const decrementedEnd = end - 1;
+        
+                    if (!uniqueIndexes.has(start) && !uniqueIndexes.has(decrementedEnd)) {
+                        matchedIndexes.push([start, decrementedEnd]);
+                    }
+        
+                    uniqueIndexes.add(start).add(decrementedEnd);
+                }
+                
+                return matchedIndexes;
+            }
+            
+            _densifyIndexes(matchedIndexes) {
+                return matchedIndexes.map(([start, end]) => {
+                    const denseArray = [
+                        start,
+                        ...new Array(end - start).fill(start).map((num, i) => num + i),
+                        end
+                    ];
+        
+                    return [...new Set(denseArray)];
+                });
+            }
+    
+            _getTargetIndexes(denseIndexes) {
+                const _targetIndexes = [];
+                
+                for (let i = 0; i < denseIndexes.length; i++) {
+                    const denseIndexesGroup = denseIndexes[i];
+        
+                    denseIndexesGroup.forEach((matchedCharIndex, indexInMatchedGroup) => {
+                        _targetIndexes[matchedCharIndex] = this._mapIndexToClassName(
+                          denseIndexesGroup.length, indexInMatchedGroup
+                        );
+                    });
+                }
+                
+                return _targetIndexes;
+            }
+            
+            _mapIndexToClassName(numOfIndexes, index) {
+                if (numOfIndexes === 0) {
+                    throw Error('numOfIndexes cannot be 0!');
+                } else if (numOfIndexes === 1) {
+                    return this.CLASSES.FOUND_PAIR_WHOLE;
+                } else if (numOfIndexes === 2) {
+                    return index === 0 ? this.CLASSES.FOUND_PAIR_BEGIN : this.CLASSES.FOUND_PAIR_END;
+                } else {
+                    if (index === 0) {
+                        return this.CLASSES.FOUND_PAIR_BEGIN;
+                    } else if (index === numOfIndexes - 1) {
+                        return this.CLASSES.FOUND_PAIR_END;
+                    } else {
+                        return this.CLASSES.FOUND_PAIR_MIDDLE;
+                    }
+                }
+            }
+            
+            _getFragmentNavMetadata(denseIndexes, charCounter) {
+                let goingToNextFragment = false;
+                let lastCharInFragment = false;
+                
+                for (let fragmentIdx = 0; fragmentIdx < denseIndexes.length; fragmentIdx++) {
+                    const indexesGroup = denseIndexes[fragmentIdx];
+        
+                    lastCharInFragment = indexesGroup[indexesGroup.length - 1] === charCounter;
+                    const nextFragmentExists = (fragmentIdx + 1) in denseIndexes;
+        
+                    if (lastCharInFragment && nextFragmentExists) {
+                        goingToNextFragment = true;
+                        break;
+                    }
+                }
+    
+                return { goingToNextFragment, lastCharInFragment };
+            }
+    
+            _updateCodeFragmentContent(codeFragment, outputChars) {
+                if (codeFragment.nodeType === Node.ELEMENT_NODE) {
+                    codeFragment.innerHTML = outputChars;
+                } else {
+                    // HTML code cannot be inserted in non Element type of Node, so it need to be swapped for one
+                    const codeFragmentAsElement = document.createElement('code');
+                    codeFragmentAsElement.innerHTML = outputChars;
+    
+                    codeFragment.parentNode.insertBefore(codeFragmentAsElement, codeFragment);
+                    codeFragment.parentNode.removeChild(codeFragment);
+                }
+            }
+            
+            handleSearchNav({ target }) {
+                if (this.foundPhrases.length === 0) {
+                    return;
+                }
+                
+                const navDirection = target.dataset.searchNav;
+                
+                if (navDirection) {
+                    if (target === this.chooseNextOccurrence) {
+                        if (this.currentOccurrenceIndex < this.numberOfOccurrences - 1) {
+                            this.currentOccurrenceIndex++;
+                        } else {
+                            this.currentOccurrenceIndex = 0;
+                        }
+                    } else if (target === this.choosePrevOccurrence) {
+                        if (this.currentOccurrenceIndex > 0) {
+                            this.currentOccurrenceIndex--;
+                        } else {
+                            this.currentOccurrenceIndex = this.numberOfOccurrences - 1;
+                        }
+                    } else {
+                        throw TypeError(`Unknown search navigation target: ${ target.outerHTML }`);
+                    }
+                    
+                    this.updateChosenOccurrence(this.currentOccurrenceIndex + 1);
+                }
+            }
+
+            handleSearchNavByKeyboard(event) {
+                const clickEvent = new Event('click', { bubbles: true });
+                
+                if (event.key === this.KEYS.ENTER) {
+                    event.preventDefault();
+    
+                    if (event.shiftKey) {
+                        this.choosePrevOccurrence.dispatchEvent(clickEvent);
+                    } else {
+                        this.chooseNextOccurrence.dispatchEvent(clickEvent);
+                    }
+                } else if (event.key === this.KEYS.ARROW_UP) {
+                    this.choosePrevOccurrence.dispatchEvent(clickEvent);
+                } else if (event.key === this.KEYS.ARROW_DOWN) {
+                    this.chooseNextOccurrence.dispatchEvent(clickEvent);
+                } else if (event.key === this.KEYS.ESCAPE) {
+                    event.preventDefault();
+                    this.clearAndExit();
+                }
+            }
+            
+            updateChosenOccurrence(value) {
+                if (!value || value === this.DEFAULT_OCCURRENCE_VALUE) {
+                    this.choosePrevOccurrence.disabled = true;
+                    this.chooseNextOccurrence.disabled = true;
+                } else {
+                    this.choosePrevOccurrence.disabled = false;
+                    this.chooseNextOccurrence.disabled = false;
+                    
+                    const matchedOccurrences = this.foundPhrases.filter((phraseElement) => {
+                        const elementMatchesWithCurrentOccurrence =
+                          Number(phraseElement.dataset.foundOccurrence) === this.currentOccurrenceIndex;
+                        phraseElement.classList.toggle(this.CLASSES.HIGHLIGHTED, elementMatchesWithCurrentOccurrence);
+                        
+                        return elementMatchesWithCurrentOccurrence;
+                    });
+    
+                    const phrasePartsInRow = {
+                        firstPart: matchedOccurrences[0],
+                        lastPart: matchedOccurrences.length === 1 ?
+                          matchedOccurrences[0] : matchedOccurrences[matchedOccurrences.length - 1],
+                    };
+                    
+                    const scrollData = this.scrollToOccurrence(phrasePartsInRow);
+                    
+                    if (scrollData) {
+                        this.adjustSearchContainerPosition(scrollData);
+                    }
+                }
+                
+                this.chosenOccurrence.textContent = value;
+            }
+    
+            scrollToOccurrence(phrasePartsInRow) {
+                const isBlockScrollable =
+                  (
+                    this.processedCodeBlock.previousElementSibling.classList.contains('is-collapsible') &&
+                    this.processedCodeBlock.classList.contains('collapsed-block')
+                  ) || (this.processedCodeBlock.clientWidth !== this.processedCodeBlock.scrollWidth);
+                
+                if (!isBlockScrollable) {
+                    return;
+                }
+                
+                const codeLine = phrasePartsInRow.firstPart.parentNode.parentNode;
+                const { shouldScrollVertically, topScroll, bottomScroll } = this._handleVerticalScroll(codeLine);
+                const {
+                    shouldScrollHorizontally, leftScroll, currentLeftOffset, currentRightOffset
+                } = this._handleHorizontalScroll(phrasePartsInRow);
+                
+                if (shouldScrollVertically || shouldScrollHorizontally) {
+                    this.processedCodeBlock.scroll({
+                        top: topScroll,
+                        left: leftScroll,
+                    });
+                }
+                
+                return {
+                    top: topScroll,
+                    left: currentLeftOffset,
+                    right: currentRightOffset,
+                    bottom: bottomScroll,
+                };
+            }
+            
+            _handleVerticalScroll(codeLine) {
+                const codeLineNumber = [
+                    ...codeLine.parentNode.children
+                ].findIndex((line) => line === codeLine);
+                const blockScrollPositionStart = Math.ceil(this.processedCodeBlock.scrollTop / this.codeLineHeight);
+                const blockScrollPositionEnd = blockScrollPositionStart +
+                  (Math.floor(this.processedCodeBlock.getBoundingClientRect().height / this.codeLineHeight) - 1);
+                const shouldScrollVertically = blockScrollPositionStart > codeLineNumber || blockScrollPositionEnd <= codeLineNumber;
+                const topScroll = codeLineNumber * this.codeLineHeight;
+                const bottomScroll = (codeLineNumber + 1) * this.codeLineHeight;
+                
+                return { shouldScrollVertically, topScroll, bottomScroll };
+            }
+            
+            _handleHorizontalScroll({ firstPart, lastPart }) {
+                const isOccurrencePartDescendantOfCodeBlock = this.processedCodeBlock.contains(firstPart);
+                if (!isOccurrencePartDescendantOfCodeBlock) {
+                    throw Error('Found occurrence parts are not descendants of code block!');
+                }
+    
+                const currentPartsParentOffset = firstPart.offsetParent;
+    
+                if (!currentPartsParentOffset.matches('.container') || currentPartsParentOffset.offsetParent !== this.processedCodeBlock) {
+                    throw Error('Invalid offset parents to setup searched occurrences for scrolling properly!');
+                }
+    
+                const codeBlockScrollLeft = this.processedCodeBlock.scrollLeft;
+                const codeBlockClientWidth = this.processedCodeBlock.clientWidth;
+                const rowOffsetLeft = currentPartsParentOffset.offsetLeft;
+                const [ leftSpace, rightSpace ] = [
+                  this.__getOccurrencePartExtraSpace(firstPart), this.__getOccurrencePartExtraSpace(lastPart)
+                ];
+                const occurrenceStartOffset = rowOffsetLeft + firstPart.offsetLeft - leftSpace;
+                const occurrenceEndOffset = rowOffsetLeft + lastPart.offsetLeft + Math.ceil(lastPart.getBoundingClientRect().width) + rightSpace;
+                const shouldScrollLeft = codeBlockScrollLeft > occurrenceStartOffset;
+                const shouldScrollRight = codeBlockClientWidth + codeBlockScrollLeft < occurrenceEndOffset;
+                const shouldScrollHorizontally = shouldScrollLeft || shouldScrollRight;
+                const scrollRight = occurrenceEndOffset - codeBlockClientWidth;
+                
+                let leftScroll = codeBlockScrollLeft;
+    
+                if (shouldScrollHorizontally) {
+                    leftScroll = shouldScrollLeft ? occurrenceStartOffset : scrollRight;
+                }
+    
+                return {
+                    currentLeftOffset: occurrenceStartOffset - leftScroll,
+                    currentRightOffset: occurrenceEndOffset - leftScroll,
+                    shouldScrollHorizontally, leftScroll,
+                };
+            }
+            
+            __getOccurrencePartExtraSpace(part) {
+                let { borderLeft, paddingLeft, left } = window.getComputedStyle(part, '::before');
+                borderLeft = Math.abs(Number.parseInt(borderLeft)) || 0;
+                paddingLeft = Math.abs(Number.parseInt(paddingLeft)) || 0;
+                left = Math.abs(Number.parseInt(left)) || 0;
+                
+                return borderLeft + paddingLeft + left;
+            }
+    
+            adjustSearchContainerPosition(scrollData) {
+                const searchFieldOffsetParent = this.searchField.offsetParent;
+                
+                if (searchFieldOffsetParent !== this.searchField.parentNode) {
+                    throw TypeError(
+                      `searchFieldOffsetParent is not the proper parent! searchFieldOffsetParent: ${ searchFieldOffsetParent.outerHTML }`
+                    );
+                }
+                
+                const searchFieldOffsetLeft = this.searchField.offsetLeft + searchFieldOffsetParent.offsetLeft;
+                const searchFieldOffsetRight = this.searchField.offsetWidth + searchFieldOffsetLeft;
+                const searchFieldOffsetTop =
+                  searchFieldOffsetParent.parentNode.offsetHeight - (
+                    (
+                      (searchFieldOffsetParent.parentNode.offsetHeight - searchFieldOffsetParent.offsetHeight) / 2
+                    ) + this.searchField.offsetTop
+                  );
+                const searchFieldOffsetBottom = searchFieldOffsetTop + this.searchField.offsetHeight;
+                const searchFieldHorizontallyCoversOccurrence =
+                  scrollData.right > searchFieldOffsetLeft && scrollData.left < searchFieldOffsetRight;
+                const searchFieldVerticallyCoversOccurrence =
+                  searchFieldOffsetTop + this.processedCodeBlock.scrollTop <= scrollData.top &&
+                  searchFieldOffsetBottom + this.processedCodeBlock.scrollTop >= scrollData.bottom;
+                const shouldAdjustHorizontally = searchFieldHorizontallyCoversOccurrence && searchFieldVerticallyCoversOccurrence;
+                const shouldAdjustVertically = shouldAdjustHorizontally && scrollData.left < this.searchField.offsetWidth;
+    
+                if (shouldAdjustVertically) {
+                    const verticalAdjustValue = scrollData.bottom - this.processedCodeBlock.scrollTop;
+                    this.setDrawerContainerPosition({ verticalValue: verticalAdjustValue });
+                } else if (shouldAdjustHorizontally) {
+                    const horizontalAdjustValue = (searchFieldOffsetRight - scrollData.left) * -1;
+                    this.setDrawerContainerPosition({ horizontalValue: horizontalAdjustValue });
+                } else {
+                    this.setDrawerContainerPosition();
+                }
+            }
+            
+            setDrawerContainerPosition(position = {}) {
+                const horizontalValue = Math.min(0, position.horizontalValue || 0);
+                const verticalValue = Math.max(0, position.verticalValue || 0);
+                
+                this.searchField.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.HORIZONTAL_VALUE, horizontalValue);
+                this.searchField.style.setProperty(this.DRAWER_ADJUSTMENT_KEYS.VERTICAL_VALUE, verticalValue);
+            }
+            
+            updateFoundOccurrences(value) {
+                this.foundOccurrences.textContent = value;
+            }
+        }
+
+        class CodeBlockFullScreen {
+            constructor(featuresDrawerToggler) {
+                this.featuresDrawerToggler = featuresDrawerToggler;
+                this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH = 30;
+                this.MINIMUM_WIDTH_FOR_FULL_SCREEN = 400;
+                this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME = 'syntaxhighlighter-fallback-full-screen-container';
+                this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME = 'syntaxhighlighter-parent--center-full-screen';
+                this.enableFullScreen = true;
+                this.isFullScreen = false;
+                this.isModernFullScreenFeatureSupported = !!(Element.prototype.requestFullscreen && document.exitFullscreen);
+                this.fullScreenBtn = null;
+            }
+
+            setupCodeBlockResizeWatcher(codeBlock) {
+                const codeBlockMaxLineLength = Math.max(
+                    ...codeBlock.childNodes[0].textContent.split('\n').map(line => line.length)
+                );
+                this.enableFullScreen = codeBlockMaxLineLength >= this.MINIMUM_CODE_BLOCK_LONGEST_LINE_LENGTH;
+
+                if (!this.enableFullScreen) {
+                    return;
+                }
+
+                if (!window.ResizeObserver) {
+                    return;
+                }
+
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    let hideFullScreenButton = false;
+                    
+                    const resizeObserver = new ResizeObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.contentBoxSize) {
+                                if (Array.isArray(entry.contentBoxSize)) {
+                                    entry.contentBoxSize.forEach((size) => {
+                                        hideFullScreenButton = size.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
+                                    });
+                                } else {
+                                    /*
+                                        Firefox deviation:
+                                        https://caniuse.com/?search=contentboxsize#:~:text=Implemented%20as%20a%20single%20object
+                                    */
+                                    hideFullScreenButton = entry.contentBoxSize.inlineSize <= this.MINIMUM_WIDTH_FOR_FULL_SCREEN;
+                                }
+                            }
+                        });
+
+                        this.fullScreenBtn.classList.toggle('syntaxhighlighter-block-bar-item__full-screen-btn--unavailable', hideFullScreenButton);
+                        this.fullScreenBtn.disabled = hideFullScreenButton;
+                    });
+                    resizeObserver.observe(processedCodeBlock);
+                });
+            }
+            
+            getFullScreenBtn() {
+                this.fullScreenBtn = document.createElement('button');
+                this.fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn');
+                if (!this.enableFullScreen) {
+                    this.fullScreenBtn.classList.add('syntaxhighlighter-block-bar-item__full-screen-btn--unavailable');
+                }
+                this.fullScreenBtn.textContent = 'Pełny ekran';
+                this.fullScreenBtn.type = 'button';
+                
+                if (this.enableFullScreen) {
+                    this.fullScreenBtn.addEventListener('click', this.fullScreenOnClick.bind(this));
+                } else {
+                    this.fullScreenBtn.disabled = true;
+                    this.fullScreenBtn.addEventListener('click', () => console.error('Full screen is not available!'));
+                }
+
+                return this.fullScreenBtn;
+            }
+
+            async fullScreenOnClick({ target }) {
+                const codeBlock = target.closest('.syntaxhighlighter-parent').querySelector('.syntaxhighlighter');
+                const fullScreenTarget = codeBlock.parentNode;
+                
+                if (this.isModernFullScreenFeatureSupported) {
+                    if (this.isFullScreen) {
+                        await document.exitFullscreen()
+                            .then(() => {
+                                fullScreenTarget.classList.remove(this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME);
+                                this.postProcessFullScreenToggle(codeBlock);
+                            })
+                            .catch(console.error);
+                    } else {
+                        /*
+                            User might exit full screen via ESC or native browser button, instead of
+                            re-using fullScreenBtn, which won't trigger it's click event.
+                            Thus, optional post processing is needed in such case.
+
+                            await is not used with Promise to prevent code from stoppping it's execution.
+                            Full screen event listener needs to be attached before entering full screen
+                            and it needs to run in background, because it waits for user to exit the full screen.
+                        */
+                        this.listenToFullScreenExitEvent().then(() => {
+                            if (this.isFullScreen) {
+                                this.postProcessFullScreenToggle(codeBlock);
+                            }
+                        });
+
+                        await fullScreenTarget.requestFullscreen()
+                            .then(() => fullScreenTarget.classList.add(this.MODERN_FULL_SCREEN_CENTERING_CLASS_NAME))
+                            .catch(() => this.fallbackFullScreenToggle(fullScreenTarget))
+                            .finally(() => this.postProcessFullScreenToggle(codeBlock));
+                    }
+                } else {
+                    this.fallbackFullScreenToggle(fullScreenTarget);
+                    document.body.classList.toggle('qa-disable-scroll', !this.isFullScreen);
+                    this.postProcessFullScreenToggle(codeBlock);
+                }
+            }
+
+            fallbackFullScreenToggle(fullScreenTarget) {
+                if (this.isFullScreen) {
+                    const fullScreenContainer = document.querySelector(`.${this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME}`);
+                    const markerElement = document.getElementById('syntaxhighlighterFullScreenMarker');
+
+                    markerElement.parentNode.insertBefore(fullScreenTarget, markerElement);
+                    markerElement.remove();
+                    fullScreenContainer.remove();
+                } else {
+                    const fullScreenContainer = document.createElement('aside');
+                    fullScreenContainer.classList.add(this.FALLBACK_FULL_SCREEN_CONTAINER_CLASS_NAME);
+                    
+                    const { width, height } = window.getComputedStyle(fullScreenTarget);
+                    const markerElement = document.createElement('div');
+                    markerElement.id = 'syntaxhighlighterFullScreenMarker';
+                    markerElement.style.width = width;
+                    markerElement.style.height = height;
+                    
+                    fullScreenTarget.parentNode.insertBefore(markerElement, fullScreenTarget);
+                    document.body.appendChild(fullScreenContainer);
+                    fullScreenContainer.appendChild(fullScreenTarget);
+                }
+                
+
+                fullScreenTarget.classList.toggle('syntaxhighlighter-block--full-screen');
+            }
+
+            listenToFullScreenExitEvent() {
+                return new Promise((resolve) => {
+                    document.addEventListener('fullscreenchange', function listener() {
+                        if (!document.fullscreenElement) {
+                            document.removeEventListener('fullscreenchange', listener);
+                            resolve();
+                        }
+                    });
+                });
+            }
+
+            postProcessFullScreenToggle(codeBlock) {
+                const isCodeBlockCollapsed = codeBlock.classList.contains('collapsed-block');
+                const isCodeBlockCollapsible = codeBlock.previousElementSibling.classList.contains('is-collapsible');
+
+                if (isCodeBlockCollapsible) {
+                    const collapsibleCodeBlockBtn = codeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
+
+                    if ((!this.isFullScreen && isCodeBlockCollapsed) || (this.isFullScreen && !isCodeBlockCollapsed)) {
+                        // this breaks SOLID and should be done along with extending CollapsibleCodeBlocks class API... but i was lazy here :(
+                        const codeBlockRawHeight = '--code-block-raw-height';
+                        if (this.isFullScreen) {
+                            codeBlock.style.removeProperty(codeBlockRawHeight);
+                        } else {
+                            const heightValue = codeBlock.scrollHeight + (codeBlock.scrollHeight - codeBlock.clientHeight);
+                            codeBlock.style.setProperty(codeBlockRawHeight, `${heightValue}px`);
+                        }
+                        
+                        collapsibleCodeBlocks.toggleCodeBlockBtnCollapseState({ target: collapsibleCodeBlockBtn });
+                        this.featuresDrawerToggler.hide();
+                    }
+                    
+                    collapsibleCodeBlockBtn.disabled = !this.isFullScreen;
+                }
+
+                this.isFullScreen = !this.isFullScreen;
+            }
+        }
 
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
         const languageLabel = new LanguageLabel();
-        const codeCopy = new CodeCopy();
-
+        
         return function getCodeBlockBarFeatureItems(codeBlock) {
+            const featuresDrawer = new FeaturesDrawer(codeBlock);
+            const featuresDrawerToggler = Object.freeze({
+                show: () => {
+                    featuresDrawer.showDrawer(new MouseEvent('click'));
+                },
+                hide: () => {
+                    featuresDrawer.hideDrawer();
+                },
+            });
+            const codeCopy = new CodeCopy(codeBlock, featuresDrawerToggler);
+            const searchThroughCode = new SearchThroughCode(
+              codeBlock, featuresDrawerToggler, featuresDrawer.getContainer(),
+            );
+            const codeBlockFullScreen = new CodeBlockFullScreen(featuresDrawerToggler);
+            
+            codeBlockFullScreen.setupCodeBlockResizeWatcher(codeBlock);
+            featuresDrawer.addFeatures([
+                searchThroughCode.getSearchBtn(),
+                codeCopy.getCopyToClipboardBtn(),
+                codeBlockFullScreen.getFullScreenBtn(),
+            ].filter(Boolean));
+            featuresDrawer.assignClearAndExitSearch(searchThroughCode.clearAndExit.bind(searchThroughCode));
+
             return [
                 languageLabel.getLanguageLabel(codeBlock),
                 collapsibleCodeBlocks.getCodeBlockCollapsingBtn(codeBlock),
-                codeCopy.getCopyToClipboardBtn()
+                featuresDrawer.getFeaturesDrawerBtn(),
             ].filter(Boolean).map(wrapCodeBlockBarFeatureItem);
         }
 

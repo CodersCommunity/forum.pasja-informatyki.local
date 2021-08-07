@@ -112,13 +112,55 @@
   color: #ffaa3e !important;
 }
 
-.syntaxhighlighter-collapsible-button, .content-copy-btn {
-  background: #3a404b;
-  color: $color;
-}
+.syntaxhighlighter-block-bar-item {
+  & > button {
+    color: $color;
+  }
 
-.syntaxhighlighter-collapsible-button {
-  background: transparent;
+  .features-drawer-list {
+    border: 1px solid white;
+    border-radius: 10px;
+  }
+
+  .search-through-code__wrapper {
+    border: 1px solid white;
+  }
+
+  .search-through-code__wrapper input {
+    background: black;
+  }
+
+  .features-drawer__button:hover,
+  .features-drawer-list__item > button:hover {
+    background: $blue;
+    color: white;
+  }
+
+  .features-drawer-list__item > [class$="--unavailable"],
+  .features-drawer-list__item > [class$="--unavailable"]:hover {
+    background: black;
+    color: grey;
+  }
+
+  .search-through-code__button:hover {
+    background: $blue;
+    color: $blue;
+  }
+
+  .features-drawer__button {
+    background: none;
+    border: 1px solid $color;
+
+    &:hover {
+      background: none;
+      color: $blue;
+      border-color: $blue;
+
+      &::after {
+        border-top-color: $blue;
+      }
+    }
+  }
 }
 
 .syntaxhighlighter-collapsible-button:hover {
@@ -135,7 +177,6 @@
 .syntaxhighlighter-collapsible-button.expanded-state:hover::before,
 .syntaxhighlighter-collapsible-button.expanded-state:hover::after,
 .syntaxhighlighter-collapsible-button.collapsed-state:hover::before,
-.syntaxhighlighter-collapsible-button.collapsed-state:hover::after,
-.content-copy-btn:hover {
+.syntaxhighlighter-collapsible-button.collapsed-state:hover::after {
   background: $blue;
 }
