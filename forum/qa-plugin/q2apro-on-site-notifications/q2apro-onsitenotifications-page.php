@@ -53,9 +53,10 @@ class q2apro_onsitenotifications_page
             'SELECT e.event, e.userid, BINARY e.params as params, UNIX_TIMESTAMP(e.datetime) AS datetime
             FROM ^eventlog AS e
             WHERE FROM_UNIXTIME(#) <= datetime AND (e.userid=# AND e.event LIKE "in_%")
-            OR ((e.event LIKE "u_message" OR e.event LIKE "u_wall_post") AND e.params LIKE "userid=#\t%")
+            OR ((e.event LIKE "u_message" OR e.event LIKE "u_wall_post") AND e.params LIKE "userid=#\t%" AND e.userid != #)
             ORDER BY datetime DESC LIMIT #',
             qa_opt('q2apro_onsitenotifications_maxage'), // events of last x days
+            $userid,
             $userid,
             $userid,
             $maxEvents

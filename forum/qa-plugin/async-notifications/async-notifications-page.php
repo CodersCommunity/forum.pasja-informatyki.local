@@ -29,10 +29,11 @@ class async_notifications_page
                     AND DATE_SUB(CURDATE(),INTERVAL # DAY) <= datetime 
                     AND (
                     (userid=# AND event LIKE "in_%")
-                    OR ((event LIKE "u_message" OR event LIKE "u_wall_post") AND params LIKE "userid=#\t%")
+                    OR ((event LIKE "u_message" OR event LIKE "u_wall_post") AND params LIKE "userid=#\t%" AND userid != #)
                     )',
                     $last_visit,
                     qa_opt('q2apro_onsitenotifications_maxage'),
+                    $userid,
                     $userid,
                     $userid
                 )
