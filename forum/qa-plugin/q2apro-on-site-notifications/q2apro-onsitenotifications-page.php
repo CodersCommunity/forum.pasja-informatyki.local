@@ -83,10 +83,11 @@ class q2apro_onsitenotifications_page
 
                 // get message preview by cutting out the string
                 $length = $event['event'] === 'u_message' ? 8 : 5;
+                $key = $event['event'] === 'u_message' ? 'message=' : 'text=';
                 $event['message'] = substr(
                     $ustring,
-                    strpos($ustring, 'message=') + $length,
-                    strlen($ustring) - strpos($ustring, 'message=') + $length
+                    strpos($ustring, $key) + $length,
+                    strlen($ustring) - strpos($ustring, $key) + $length
                 );
 
                 $events[$matches[1] . '_' . $count++] = $event;
