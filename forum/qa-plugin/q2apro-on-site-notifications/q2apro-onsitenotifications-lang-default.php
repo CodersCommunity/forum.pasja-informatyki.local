@@ -48,8 +48,8 @@
 		'in_upvote' => 'Upvote dla',
 		'in_downvote' => 'Downvote dla',
 		'you_received' => 'Odebrano',
-		'message_from' => 'prywatną wiadomość',
-		'wallpost_from' => 'post na ścianie',
+		'message_from' => 'prywatną wiadomość od',
+		'wallpost_from' => 'post na ścianie od',
 	);
 
 
