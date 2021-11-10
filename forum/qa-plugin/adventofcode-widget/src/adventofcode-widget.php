@@ -84,7 +84,7 @@ class adventofcode_widget
         curl_setopt($curl, CURLOPT_URL, "https://adventofcode.com/{$year}/leaderboard/private/view/{$leaderboard}.json");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_COOKIE, 'session=' . $session);
-        $content = curl_exec($curl);
+        $aocResponse = curl_exec($curl);
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
@@ -92,9 +92,42 @@ class adventofcode_widget
             return false;
         }
 
+        $content = $this->parseAocResponse($aocResponse);
+        if ($content) {
         qa_opt('adventofcode_widget_content', $content); // TODO move to file?
+        }
+
         qa_opt('adventofcode_widget_update_date', (new DateTime())->format('Y-m-d H'));
 
         return true;
+    }
+
+    private function parseAocResponse($aocResponseData)
+    {
+        $data = json_decode($aocResponseData, true);
+        if (!$data) {
+            return null;
+        }
+        
+        $users = [];
+        foreach ($data['members'] as $member) {
+            $stars = [];
+            foreach ($member['completion_day_level'] as $day => $stars) {
+                $stars[$day] = count($stars);
+            }
+
+            $users[] = [
+                'id' => $member['id'],
+                'name' => $member['name'] ?? ('Anonim '.$member['id']),
+                'score' => $member['local_score'],
+                'stars' => $stars,
+            ];
+        }
+
+        usort($users, function($userA, $userB) {
+            return $userB['score'] <=> $userA['score'];
+        });
+
+        return json_encode($users);
     }
 }
