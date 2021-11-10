@@ -18,10 +18,19 @@ class adventofcode_widget
             $this->update_results();
         }
 
-        $content = json_decode(qa_opt('adventofcode_widget_content'), true);
+        $users = json_decode(qa_opt('adventofcode_widget_content'), true);
+        $year = qa_opt('adventofcode_widget_year');
 
-        print_r($content); // TODO testing
-        $themeobject->output('results…');
+        $themeobject->output('<div class="aoc-widget">');
+        $themeobject->output('<h2 class="aoc-widget__title">Advent of Code '.$year.'</h2>');
+        $themeobject->output('<p class="aoc-widget__top-users">Top 15 '.qa_lang_html('adventofcode_widget/top_users').'</p>');
+        $themeobject->output('<ol class="aoc-widget__ol">');
+        foreach(array_slice($users, 0, 15) as $index => $user) {
+            $themeobject->output('<li><b>'.$user['score'].'p.</b> - '.$user['name'].'</li>');
+        }
+        $themeobject->output('</ol>');
+        $themeobject->output('<a href="#"">'.qa_lang_html('adventofcode_widget/details_and_full_scores').'</a>');
+        $themeobject->output('</div>');
 
         return $qa_content;
     }
@@ -94,7 +103,7 @@ class adventofcode_widget
 
         $content = $this->parseAocResponse($aocResponse);
         if ($content) {
-        qa_opt('adventofcode_widget_content', $content); // TODO move to file?
+            qa_opt('adventofcode_widget_content', $content); // TODO move to file?
         }
 
         qa_opt('adventofcode_widget_update_date', (new DateTime())->format('Y-m-d H'));

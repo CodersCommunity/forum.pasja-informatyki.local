@@ -4,11 +4,22 @@ class qa_html_theme_layer extends qa_html_theme_base
 {
     function head_css()
     {
-        // TODO css file
-        $this->content['css_src'][] = QA_HTML_THEME_LAYER_URLTOROOT . 'css/style.css';
+        $this->output('<style>
+.aoc-widget {
+    text-align: center;
+    font-size: 14px;
+}
 
-        // TODO or inline CSS
-        $this->output('<style></style>');
+.aoc-widget__title {
+    margin-bottom: 0;
+}
+
+.aoc-widget__ol {
+    padding-left: 23px;
+    text-align: left;
+    font-size: 14px;
+}
+</style>');
 
         parent::head_css();
     }
