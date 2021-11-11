@@ -20,5 +20,6 @@ if (!defined('QA_VERSION')) {
 }
 
 qa_register_plugin_module('widget', 'src/adventofcode-widget.php', 'adventofcode_widget', 'Advent of Code');
+qa_register_plugin_module('page', 'src/adventofcode-page.php', 'adventofcode_page', 'Advent of Code');
 qa_register_plugin_layer('src/adventofcode-layer.php', 'Advent of Code layer');
 qa_register_plugin_phrases('lang/*.php', 'adventofcode_widget');

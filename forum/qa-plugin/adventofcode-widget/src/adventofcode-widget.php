@@ -29,7 +29,7 @@ class adventofcode_widget
             $themeobject->output('<li><b>'.$user['score'].'p.</b> - '.$user['name'].'</li>');
         }
         $themeobject->output('</ol>');
-        $themeobject->output('<a href="#"">'.qa_lang_html('adventofcode_widget/details_and_full_scores').'</a>');
+        $themeobject->output('<a href="/advent-of-code">'.qa_lang_html('adventofcode_widget/details_and_full_scores').'</a>');
         $themeobject->output('</div>');
 
         return $qa_content;
@@ -117,7 +117,7 @@ class adventofcode_widget
         if (!$data) {
             return null;
         }
-        
+
         $users = [];
         foreach ($data['members'] as $member) {
             $stars = [];
