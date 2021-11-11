@@ -121,8 +121,8 @@ class adventofcode_widget
         $users = [];
         foreach ($data['members'] as $member) {
             $stars = [];
-            foreach ($member['completion_day_level'] as $day => $stars) {
-                $stars[$day] = count($stars);
+            foreach ($member['completion_day_level'] as $day => $dayScore) {
+                $stars[$day] = count($dayScore);
             }
 
             $users[] = [
