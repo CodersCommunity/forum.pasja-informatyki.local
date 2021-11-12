@@ -107,4 +107,21 @@ class qa_html_theme_layer extends qa_html_theme_base
         }
         qa_html_theme_base::head_css();
     }
+
+    public function body_tags()
+    {
+        $class = 'qa-template-'.qa_html($this->template);
+
+        if (isset($this->content['categoryids'])) {
+            foreach ($this->content['categoryids'] as $categoryid)
+                $class .= ' qa-category-'.qa_html($categoryid);
+        }
+
+        if ($this->check_theme()) {
+            $class .= ' dark-theme';
+        }
+
+        $this->output('class="'.$class.' qa-body-js-off"');
+        qa_html_theme_base::body_tags();
+    }
 }
