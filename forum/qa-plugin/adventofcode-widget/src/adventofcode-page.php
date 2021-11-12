@@ -60,7 +60,7 @@ class adventofcode_page
         return '
             .aoc-page__days {
                 list-style-type: none;
-                margin-left: 64px;
+                margin-left: 60px;
                 margin-bottom: 5px;
                 line-height: 1.2em;
             }
