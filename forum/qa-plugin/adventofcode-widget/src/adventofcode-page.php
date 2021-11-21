@@ -143,7 +143,7 @@ class adventofcode_page
             }
 
             @media (max-width: 760px) {
-                .aoc-page__users {
+                .aoc-page__star, .aoc-page__days {
                     display: none;
                 }
             }
