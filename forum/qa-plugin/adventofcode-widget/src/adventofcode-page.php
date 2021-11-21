@@ -11,18 +11,32 @@ class adventofcode_page
     {
         $users = json_decode(qa_opt('adventofcode_widget_content'), true);
         $users = $this->fill_missing_days($users);
+        $year = qa_opt('adventofcode_widget_year');
 
         $qa_content = qa_content_prepare();
         $qa_content['title'] = 'Advent of Code '.qa_opt('adventofcode_widget_year');
         $qa_content['head_lines'][] = '<style>'.$this->get_css().'</style>';
-        $qa_content['custom'] = $this->get_html($users);
+        $qa_content['custom'] = $this->get_html($users, $year);
 
         return $qa_content;
     }
 
-    private function get_html($users)
+    private function get_html($users, $year)
     {
         $html = '';
+
+        $html .= '<h2>Zapraszamy do wspólnej rywalizacji!</h2>';
+        $html .= '<p><a href="https://adventofcode.com/'.$year.'/about">Advent of Code</a> to coroczne zadania programistyczne, które pojawiają się codziennie przez okres adwentu. Możesz rozwiązywać je w <strong>dowolnym języku programowania</strong>. Nie jest wymagana żadna specjalistyczna wiedza - wystarczą chęci i podstawowa znajomość języka angielskiego.</p>';
+        
+        $html .= '<p>Aby umilić rozgrywkę, przygotowaliśmy prywatną tablicę wyników dla naszej społeczności.</p>';
+
+        $html .= '<p class="aoc-page__join-info">';
+            $html .= '<a href="https://adventofcode.com/'.$year.'/leaderboard/private/view/1155718">Dołącz do tablicy</a>, używając kodu:<br>';
+            $html .= '<span class="aoc-page__lead-board-code">1155718-08565481</span>';
+        $html .= '</p>';
+
+        $html .= '<h2>Ranking</h2>';
+        $html .= 'Każdego dnia jest do zdobycia <b><span class="aoc-page__star aoc-page__star--1">*</span> gwiazdka</b> za rozwiązanie pierwszej części zadania,<br> oraz <b><span class="aoc-page__star aoc-page__star--2">*</span> gwiazdka</b> za rozwiązanie całości. Punkty w rankingu liczone są na podstawie liczby zdobytych gwiazdek i kolejności zgłoszeń.';
 
         // Users
         $html .= '<div class="aoc-page__users">';
@@ -51,6 +65,11 @@ class adventofcode_page
 
         $html .= '</div>';
         // e/o Users
+
+        $html .= '<h2>Discord</h2>';
+        $html .= '<p>Zajrzyj na <a href="/chat-discord">serwer Discorda</a>, gdzie posiadamy specjalny kanał do dyskusji o zadaniach. Prosimy jednak, aby nie wrzucać gotowych rozwiązań i nie oczekiwać, że takie zostaną podane - pozwólmy wszystkim dobrze się bawić, a w razie problemów nakierujmy na właściwy tok myślenia.</p>';
+
+        $html .= '<p>Powodzenia!</p>';
         
         return $html;
     }
@@ -58,6 +77,17 @@ class adventofcode_page
     private function get_css()
     {
         return '
+            .aoc-page__join-info {
+                text-align: center;
+                margin: 30px 0 20px;
+            }
+            .aoc-page__users {
+                margin: 40px 0;
+            }
+            .aoc-page__lead-board-code {
+                font-family: monospace;
+                font-size: 2rem;
+            }
             .aoc-page__days {
                 list-style-type: none;
                 margin-left: 60px;
