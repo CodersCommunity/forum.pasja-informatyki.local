@@ -41,6 +41,7 @@ class adventofcode_widget
         if ($saved) {
             qa_opt('adventofcode_widget_year', qa_post_text('adventofcode_widget_year'));
             qa_opt('adventofcode_widget_leaderboard_id', qa_post_text('adventofcode_widget_leaderboard_id'));
+            qa_opt('adventofcode_widget_leaderboard_code', qa_post_text('adventofcode_widget_leaderboard_code'));
             qa_opt('adventofcode_widget_session_id', qa_post_text('adventofcode_widget_session_id'));
         }
 
@@ -58,6 +59,12 @@ class adventofcode_widget
                     'type' => 'text',
                     'value' => qa_opt('adventofcode_widget_leaderboard_id'),
                     'tags' => 'name="adventofcode_widget_leaderboard_id"',
+                ],
+                [
+                    'label' => qa_lang_html('adventofcode_widget/admin_leaderboard_code'),
+                    'type' => 'text',
+                    'value' => qa_opt('adventofcode_widget_leaderboard_code'),
+                    'tags' => 'name="adventofcode_widget_leaderboard_code"',
                 ],
                 [
                     'label' => qa_lang_html('adventofcode_widget/admin_session_id'),
@@ -103,7 +110,7 @@ class adventofcode_widget
 
         $content = $this->parseAocResponse($aocResponse);
         if ($content) {
-            qa_opt('adventofcode_widget_content', $content); // TODO move to file?
+            qa_opt('adventofcode_widget_content', $content);
         }
 
         qa_opt('adventofcode_widget_update_date', (new DateTime())->format('Y-m-d H'));
