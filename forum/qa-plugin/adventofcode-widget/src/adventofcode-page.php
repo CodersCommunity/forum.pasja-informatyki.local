@@ -4,7 +4,7 @@ class adventofcode_page
 {
     public function match_request($request)
     {
-        return $request === 'advent-of-code';
+        return $request === 'advent-of-code' && qa_opt('adventofcode_widget_enabled') == 1;
     }
 
     public function process_request()

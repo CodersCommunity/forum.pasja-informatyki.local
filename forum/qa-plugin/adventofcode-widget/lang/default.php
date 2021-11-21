@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'admin_enabled' => 'Enabled',
     'admin_year' => 'Year',
     'admin_leaderboard_id' => 'Leaderboard id',
     'admin_leaderboard_code' => 'Leaderboard join code',

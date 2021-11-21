@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'admin_enabled' => 'Włączony',
     'admin_year' => 'Rok',
     'admin_leaderboard_id' => 'Identyfikator tablicy wyników',
     'admin_leaderboard_code' => 'Kod dołączenia do tablicy',

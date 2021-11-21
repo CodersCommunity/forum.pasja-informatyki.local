@@ -4,12 +4,12 @@ class adventofcode_widget
 {
     public function allow_template($template)
     {
-        return true;
+        return $this->is_enabled();
     }
 
     public function allow_region($region)
     {
-        return true;
+        return $this->is_enabled();
     }
 
     public function output_widget($region, $place, $themeobject, $template, $request, $qa_content)
@@ -39,15 +39,23 @@ class adventofcode_widget
     {
         $saved = qa_clicked('adventofcode_widget_save');
         if ($saved) {
+            qa_opt('adventofcode_widget_enabled', empty(qa_post_text('adventofcode_widget_enabled')) ? 0 : 1);
             qa_opt('adventofcode_widget_year', qa_post_text('adventofcode_widget_year'));
             qa_opt('adventofcode_widget_leaderboard_id', qa_post_text('adventofcode_widget_leaderboard_id'));
             qa_opt('adventofcode_widget_leaderboard_code', qa_post_text('adventofcode_widget_leaderboard_code'));
             qa_opt('adventofcode_widget_session_id', qa_post_text('adventofcode_widget_session_id'));
+            qa_opt('adventofcode_widget_update_date', ''); // reset last date to update results immediately
         }
 
         return [
             'ok' => $saved ? qa_lang_html('adventofcode_widget/admin_saved') : null,
             'fields' => [
+                [
+                    'label' => qa_lang_html('adventofcode_widget/admin_enabled'),
+                    'type' => 'checkbox',
+                    'value' => qa_opt('adventofcode_widget_enabled'),
+                    'tags' => 'name="adventofcode_widget_enabled"',
+                ],
                 [
                     'label' => qa_lang_html('adventofcode_widget/admin_year'),
                     'type' => 'number',
@@ -80,6 +88,11 @@ class adventofcode_widget
                 ],
             ]
         ];
+    }
+
+    private function is_enabled()
+    {
+        return qa_opt('adventofcode_widget_enabled') == 1;
     }
 
     private function should_update_results()
