@@ -53,13 +53,13 @@ class adventofcode_page
 
             // Ranking
             $html .= '<ol class="aoc-page__ranking">';
-            foreach($users as ['name' => $username, 'score' => $score, 'stars' => $stars]) {
+            foreach($users as ['name' => $username, 'score' => $score, 'stars' => $stars, 'link' => $userlink]) {
                 $html .= '<li>';
                 $html .= '    <span class="aoc-page__score">'.$score.'</span>';
                 foreach($stars as $day => $dayScore) {
                     $html .= '<span class="aoc-page__star aoc-page__star--'.$dayScore.'" title="'.$username.' - Dzień: '.$day.'">*</span>';
                 }
-                $html .= '    <span class="aoc-page__username">'.$username.'</span>';
+                $html .= '    <span class="aoc-page__username">'.$this->wrap_username_in_anchor($username, $userlink).'</span>';
                 $html .= '</li>';
             }
             $html .= '</ol>';
@@ -74,6 +74,10 @@ class adventofcode_page
         $html .= '<p>Powodzenia!</p>';
 
         return $html;
+    }
+
+    private function wrap_username_in_anchor($username, $userlink) {
+        return isset($userlink) ? '<a href="'.$userlink.'" target="_blank">'.$username.'</a>' : $username;
     }
 
     private function get_css()

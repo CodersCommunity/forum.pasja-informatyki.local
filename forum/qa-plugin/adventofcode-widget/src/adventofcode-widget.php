@@ -109,19 +109,10 @@ class adventofcode_widget
         $leaderboard = qa_opt('adventofcode_widget_leaderboard_id');
         $session = qa_opt('adventofcode_widget_session_id');
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, "https://adventofcode.com/{$year}/leaderboard/private/view/{$leaderboard}.json");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_COOKIE, 'session=' . $session);
-        $aocResponse = curl_exec($curl);
-        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $aocResponse = $this->getAoCResponse($year, $leaderboard, $session);
+        $userLinks = $this->getUserLinks($year, $leaderboard, $session);
 
-        if ($code !== 200) {
-            return false;
-        }
-
-        $content = $this->parseAocResponse($aocResponse);
+        $content = $this->parseAocResponse($aocResponse, $userLinks);
         if ($content) {
             qa_opt('adventofcode_widget_content', $content);
         }
@@ -131,7 +122,52 @@ class adventofcode_widget
         return true;
     }
 
-    private function parseAocResponse($aocResponseData)
+    private function getAoCResponse($year, $leaderboard, $session)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, "https://adventofcode.com/{$year}/leaderboard/private/view/{$leaderboard}.json");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_COOKIE, 'session=' . $session);
+        $aocResponse = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        if ($httpCode !== 200) {
+            return null;
+        }
+
+        return $aocResponse;
+    }
+
+    private function getUserLinks($year, $leaderboard, $session)
+    {
+        $linksCurl = curl_init();
+        curl_setopt($linksCurl, CURLOPT_URL, "https://adventofcode.com/{$year}/leaderboard/private/view/{$leaderboard}");
+        curl_setopt($linksCurl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($linksCurl, CURLOPT_COOKIE, 'session=' . $session);
+        $linksResponse = curl_exec($linksCurl);
+        $httpCode = curl_getinfo($linksCurl, CURLINFO_HTTP_CODE);
+        curl_close($linksCurl);
+
+        if ($httpCode !== 200) {
+            return null;
+        }
+
+        $dom = new DOMDocument;
+        $userLinks = [];
+
+        if($dom->loadHTML($linksResponse, LIBXML_NOWARNING)) {
+            foreach($dom->getElementsByTagName('a') as $anchor) {
+                $potenaitlUserLink = $anchor->getAttribute('href');
+                $potentialUserName = $anchor->textContent;
+                $userLinks[$potentialUserName] = $potenaitlUserLink;
+            }
+        }
+
+        return $userLinks;
+    }
+
+    private function parseAocResponse($aocResponseData, $userLinks)
     {
         $data = json_decode($aocResponseData, true);
         if (!$data) {
@@ -150,6 +186,7 @@ class adventofcode_widget
                 'name' => $member['name'] ?? ('Anonim '.$member['id']),
                 'score' => $member['local_score'],
                 'stars' => $stars,
+                'link' => $member['name'] && isset($userLinks) && isset($userLinks[$member['name']]) ? $userLinks[$member['name']] : null,
             ];
         }
 
