@@ -153,6 +153,7 @@ class adventofcode_widget
             return null;
         }
 
+        libxml_use_internal_errors(true);
         $dom = new DOMDocument;
         $userLinks = [];
 
