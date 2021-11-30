@@ -1,0 +1,13 @@
+{
+  "name": "Advent of Code widget",
+  "uri": "",
+  "description": "Widget to show results from Advent of Code leaderboard",
+  "version": "1.0.0",
+  "date": "2021-11-05",
+  "author": "Forum Pasja Informatyki",
+  "author_uri": "https://forum.pasja-informatyki.pl",
+  "license": "MIT",
+  "update_uri": "",
+  "min_q2a": "1.7",
+  "min_php": "7.0"
+}
