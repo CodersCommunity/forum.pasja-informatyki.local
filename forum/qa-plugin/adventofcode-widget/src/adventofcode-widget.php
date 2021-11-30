@@ -164,6 +164,7 @@ class adventofcode_widget
                 $userLinks[$potentialUserName] = $potentialUserLink;
             }
         }
+        libxml_use_internal_errors(false);
 
         return $userLinks;
     }
