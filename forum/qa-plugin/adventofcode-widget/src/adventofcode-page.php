@@ -76,7 +76,8 @@ class adventofcode_page
         return $html;
     }
 
-    private function wrap_username_in_anchor($username, $userlink) {
+    private function wrap_username_in_anchor($username, $userlink)
+    {
         return isset($userlink) ? '<a href="'.$userlink.'" target="_blank">'.$username.'</a>' : $username;
     }
 

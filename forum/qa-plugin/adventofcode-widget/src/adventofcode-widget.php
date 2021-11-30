@@ -159,9 +159,9 @@ class adventofcode_widget
 
         if($dom->loadHTML($linksResponse, LIBXML_NOWARNING)) {
             foreach($dom->getElementsByTagName('a') as $anchor) {
-                $potenaitlUserLink = $anchor->getAttribute('href');
+                $potentialUserLink = $anchor->getAttribute('href');
                 $potentialUserName = $anchor->textContent;
-                $userLinks[$potentialUserName] = $potenaitlUserLink;
+                $userLinks[$potentialUserName] = $potentialUserLink;
             }
         }
 
