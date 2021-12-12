@@ -27,7 +27,8 @@
 					$options=qa_post_html_defaults('Q');
 
 					$q_item = qa_any_to_q_html_fields($question[$id], $userid, qa_cookie_get(), $usershtml, null, $options);
-					
+					unset($q_item['what_2'], $q_item['when_2'], $q_item['who_2']);
+
 					array_unshift($this->content['q_list']['qs'],$q_item);
 				}
 				$this->featured_questions = count($featured);
