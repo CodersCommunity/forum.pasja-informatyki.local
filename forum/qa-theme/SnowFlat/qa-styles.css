@@ -1931,6 +1931,7 @@ input[type="submit"], button {
 
 .qa-form-tall-text {
 	width: 100%;
+	resize: vertical;
 }
 
 .qa-form-tall-number, .qa-form-wide-number {
