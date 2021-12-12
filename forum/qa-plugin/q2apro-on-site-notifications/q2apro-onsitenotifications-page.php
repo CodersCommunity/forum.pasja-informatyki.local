@@ -53,9 +53,10 @@ class q2apro_onsitenotifications_page
             'SELECT e.event, e.userid, BINARY e.params as params, UNIX_TIMESTAMP(e.datetime) AS datetime
             FROM ^eventlog AS e
             WHERE FROM_UNIXTIME(#) <= datetime AND (e.userid=# AND e.event LIKE "in_%")
-            OR ((e.event LIKE "u_message" OR e.event LIKE "u_wall_post") AND e.params LIKE "userid=#\t%")
+            OR ((e.event LIKE "u_message" OR e.event LIKE "u_wall_post") AND e.params LIKE "userid=#\t%" AND e.userid != #)
             ORDER BY datetime DESC LIMIT #',
             qa_opt('q2apro_onsitenotifications_maxage'), // events of last x days
+            $userid,
             $userid,
             $userid,
             $maxEvents
@@ -83,10 +84,11 @@ class q2apro_onsitenotifications_page
 
                 // get message preview by cutting out the string
                 $length = $event['event'] === 'u_message' ? 8 : 5;
+                $key = $event['event'] === 'u_message' ? 'message=' : 'text=';
                 $event['message'] = substr(
                     $ustring,
-                    strpos($ustring, 'message=') + $length,
-                    strlen($ustring) - strpos($ustring, 'message=') + $length
+                    strpos($ustring, $key) + $length,
+                    strlen($ustring) - strpos($ustring, $key) + $length
                 );
 
                 $events[$matches[1] . '_' . $count++] = $event;
