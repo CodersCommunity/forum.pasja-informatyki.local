@@ -10,8 +10,13 @@ return [
     'ipAdress' => "adres IP",
     'username' => "nazwa użytkownika",
     'eventType' => 'Typ aktywności',
-    'search' => 'Szukaj',
+    'search-label' => 'Szukaj',
     'searchResults' => 'Wyniki wyszukiwania: ',
+
+    'datetime'=>'Data',
+    'ipaddress' => 'Adres IP',
+    'handle' =>' Nazwa Użytkownika',
+    'event' => 'Rodzaj aktywności',
     
     //events
 
@@ -48,6 +53,7 @@ return [
     'q_vote_nil' => 'Usunięto głos na pytanie',
     'q_favorite' => 'Dodano pytanie do ulubionych',
     'q_unfavorite' => 'Usunięto pytanie z ulubionych',
+    'q_clearflags' => 'Usunięto wszystkie zgłoszenia ne pytanie',
 
 
     'c_post' => 'Dodano komentarz',
@@ -59,6 +65,7 @@ return [
     'c_vote_up' => 'Oddano głos w górę na komentarz',
     'c_vote_down' => 'Oddano głos w dół na komentarz',
     'c_vote_nil' => 'Usunięto głos na komentarz',
+    'c_clearflags' => 'Usunięto wszystkie zgłoszenia na komentarz',
 
     'a_post' => 'Dodano odpowiedź',
     'a_select' => 'Wybrano najlepszą odpowiedź',
@@ -71,6 +78,7 @@ return [
     'a_vote_up' => 'Oddano głos w górę na odpowiedź',
     'a_vote_down' => 'Oddano głos w dół na odpowiedź',
     'a_vote_nil' => 'Usunięto głos na odpowiedź',
+    'a_clearflags' => 'Usunięto wszystkie zgłoszenia na odpowiedź',
 
     'cat_new' => 'Utworzono nową kategorię',
     'cat_edit' => 'Edytowano kategorię',
@@ -84,8 +92,6 @@ return [
     'cat_favorite' => 'Dodano kategorię do ulubionych',
     'cat_unfavorite' => 'Usunięto kategorię z ulubionych',
     
-
-    'clearflags' => 'Usunięto wszystkie zgłoszenia',
     'a_to_c' => 'Zamieniono odpowiedź na komentarz',
     'feedback' => 'Dodano sugestię przez formularz na stronie',
     'search'=> 'Wyszukano coś na stronie'

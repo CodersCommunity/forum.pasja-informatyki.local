@@ -52,7 +52,7 @@
                 'buttons' => array(
                     'submit' => array(
                         'tags' => 'name="search"',
-                        'label' => qa_lang_html('user-activity-log/search'),
+                        'label' => qa_lang_html('user-activity-log/search-label'),
                         'value' => '1',
                     ),
                 ),
