@@ -3,6 +3,7 @@
 class user_activity_search{
     
     private $searchArr;
+    private $dbResult;
 
     public function match_request($request) 
     {
@@ -18,10 +19,15 @@ class user_activity_search{
     public function process_request($request)
     {
         $qa_content=qa_content_prepare();
-        $qa_content['title']= qa_lang_html('user-activity-log/title');
+        $qa_content['title']= qa_lang_html('user-activity-log/searchResults').$this->searchArr['request'];
         
-        
+        $qa_content['custom'] = "";
         $qa_content['navigation']['sub']=qa_admin_sub_navigation();
         return $qa_content;
+    }
+
+    private function dbSearch()
+    {
+        
     }
 }

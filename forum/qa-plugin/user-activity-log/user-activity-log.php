@@ -4,25 +4,19 @@
         exit;
     }
     require_once QA_INCLUDE_DIR.'app/admin.php';
+    require_once QA_INCLUDE_DIR.'qa-db-metas.php';
+
     class user_activity_log 
     {
         private $directory;
         private $urltoroot;
         private $userLevel;
 
-        public function load_module($directory, $urltoroot) 
-        {
-            $this->directory=$directory;
-            $this->urltoroot=$urltoroot;
-        }
+
+
         public function match_request($request) 
         {
-            $this->userLevel = qa_get_logged_in_level();
-            if($this->userLevel >= QA_USER_LEVEL_EDITOR){
-                return $request == 'admin/user-activity-log';
-            }else{
-                return false;
-            }
+            return $request == 'admin/user-activity-log';
         }
 
         public function process_request($request) 
@@ -43,9 +37,10 @@
                     
                     'filter' => array(
                         'type' => 'select',
+                        'tags'=>'name=condition',
                         'options' => [
-                            'ip' => $this->userLevel >= QA_USER_LEVEL_MODERATOR ? qa_lang_html('user-activity-log/ipAdress') : null,
                             'username' => qa_lang('user-activity-log/username'),
+                            'ip' => $this->userLevel >= QA_USER_LEVEL_MODERATOR ? qa_lang_html('user-activity-log/ipAdress') : null,
                             'type' => qa_lang('user-activity-log/eventType'),
                         ],
                         'label' => qa_lang_html('user-activity-log/filters'),
