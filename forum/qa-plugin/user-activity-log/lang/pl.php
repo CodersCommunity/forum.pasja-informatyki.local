@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'linkLabel' => 'Log aktywności',
+    'linkLabel' => 'Aktywności',
     'title' => 'Aktywności użytkowników',
     'formTitle' => 'Szukaj aktywności',
     'filters' => 'Filtry',
@@ -10,6 +10,7 @@ return [
     'ipAdress' => "adres IP",
     'username' => "nazwa użytkownika",
     'eventType' => 'Typ aktywności',
+    'date' => 'Data (opcjonalna)',
     'search-label' => 'Szukaj',
     'searchResults' => 'Wyniki wyszukiwania: ',
 
@@ -17,6 +18,7 @@ return [
     'ipaddress' => 'Adres IP',
     'handle' =>' Nazwa Użytkownika',
     'event' => 'Rodzaj aktywności',
+    'noResults'=> 'Nie znaleziono żadnych wyników',
     
     //events
 
@@ -66,6 +68,7 @@ return [
     'c_vote_down' => 'Oddano głos w dół na komentarz',
     'c_vote_nil' => 'Usunięto głos na komentarz',
     'c_clearflags' => 'Usunięto wszystkie zgłoszenia na komentarz',
+    'in_c_question' => 'Ktoś dodał komentarz do pytania',
 
     'a_post' => 'Dodano odpowiedź',
     'a_select' => 'Wybrano najlepszą odpowiedź',
@@ -79,6 +82,7 @@ return [
     'a_vote_down' => 'Oddano głos w dół na odpowiedź',
     'a_vote_nil' => 'Usunięto głos na odpowiedź',
     'a_clearflags' => 'Usunięto wszystkie zgłoszenia na odpowiedź',
+    'in_a_question' => 'Ktoś odpowiedział na pytanie',
 
     'cat_new' => 'Utworzono nową kategorię',
     'cat_edit' => 'Edytowano kategorię',

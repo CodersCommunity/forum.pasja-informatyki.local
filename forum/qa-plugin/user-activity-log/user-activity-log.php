@@ -40,11 +40,16 @@
                         'tags'=>'name=condition',
                         'options' => [
                             'username' => qa_lang('user-activity-log/username'),
-                            'ip' => $this->userLevel >= QA_USER_LEVEL_MODERATOR ? qa_lang_html('user-activity-log/ipAdress') : null,
+                            'ip' => qa_lang_html('user-activity-log/ipAdress'),
                             'type' => qa_lang('user-activity-log/eventType'),
                         ],
                         'label' => qa_lang_html('user-activity-log/filters'),
                     ),
+
+                    'date' => array(
+                        'label' => qa_lang_html('user-activity-log/date'),
+                        'tags' => 'placeholder=YYYY-MM-DD name=date value=""',
+                    )
                 ),
 
                 
@@ -58,7 +63,7 @@
                 ),
 
             );
-            $qa_content['navigation']['sub']=qa_admin_sub_navigation();
+            $qa_content['navigation']['sub']= qa_admin_sub_navigation();
             return $qa_content;
         }
     }
