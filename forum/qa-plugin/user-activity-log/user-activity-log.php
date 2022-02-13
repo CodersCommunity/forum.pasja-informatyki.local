@@ -10,13 +10,16 @@
     {
         private $directory;
         private $urltoroot;
-        private $userLevel;
 
 
 
         public function match_request($request) 
         {
-            return $request == 'admin/user-activity-log';
+            if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
+                return $request == 'user-activity-log';
+            }else{
+                return false;
+            }
         }
 
         public function process_request($request) 
@@ -32,17 +35,17 @@
                 'fields' => array(
                     'query' => array(
                         'label' => qa_lang_html('user-activity-log/condition'),
-                        'tags' => 'name="request"',
+                        'tags' => 'name="request" required',
                     ),
                     
                     'filter' => array(
                         'type' => 'select',
                         'tags'=>'name=condition',
                         'options' => [
-                            'username' => qa_lang('user-activity-log/username'),
-                            'ip' => qa_lang_html('user-activity-log/ipAdress'),
-                            'type' => qa_lang('user-activity-log/eventType'),
-                        ],
+                                'username' => qa_lang('user-activity-log/username'),
+                                'type' => qa_lang('user-activity-log/eventType'),
+                        ]
+                        ,
                         'label' => qa_lang_html('user-activity-log/filters'),
                     ),
 
@@ -63,6 +66,10 @@
                 ),
 
             );
+
+            if(qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR){
+                $qa_content['form']['fields']['filter']['options']['ip'] = qa_lang_html('user-activity-log/ipAdress');
+            }
             $qa_content['navigation']['sub']= qa_admin_sub_navigation();
             return $qa_content;
         }

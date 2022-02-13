@@ -19,9 +19,11 @@ class user_activity_search{
             if(isset($this->searchArr)){
                 $this->dbSearch();
                 if(isset($this->dbResult)){
-                    return $request == 'admin/user-activity-log-search';
+                    return $request == 'user-activity-log-search';
                 }
             }
+        }else{
+            return false;
         }
     }
 
@@ -53,13 +55,11 @@ class user_activity_search{
             $dateArr = explode('-', $this->searchArr['date']);
 
 
-            //print_r($dateArr);
-
             if(is_numeric($dateArr[0]) && is_numeric($dateArr[0])){
                 $date = $dateArr[0];
                 if(isset($dateArr[1]) && is_numeric($dateArr[1])){
                     $date = $date.'-'.$dateArr[1];
-                    if(is_numeric($dateArr[2]) && is_numeric($dateArr[2])){
+                    if(isset($dateArr[2]) && is_numeric($dateArr[2])){
                         if(strlen($dateArr[2]) > 2){
                             $time = explode(' ', $dateArr[2]);
                             $dateArr[2] = $time[0];
@@ -74,14 +74,12 @@ class user_activity_search{
                 $finalQuery = $finalQuery.'AND `datetime` LIKE $';
             }
 
-            //print_r($dateArr);
         }
         
         
         
         
         $finalQuery = $finalQuery.' ORDER BY `datetime` DESC LIMIT 30';
-        //print_r($finalQuery);
         if(strpos($finalQuery, 'LIKE')){
             $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['date']."%");
         }else{
@@ -105,14 +103,38 @@ class user_activity_search{
 
     private function generateResultsTable()
     {
-        $results = $this->dbResult;
+        $unfiltered = $this->dbResult;
+        if($this->userLevel < QA_USER_LEVEL_ADMIN){
+           $results = array_filter($unfiltered, function($field){
+                switch($field['event']){
+                    case 'q_vote_up': return ""; break;
+                    case 'q_vote_down': return ""; break;
+                    case 'q_vote_nil': return ""; break;
+                    case 'a_vote_up':return ""; break;
+                    case 'a_vote_down': return ""; break;
+                    case 'a_vote_nil': return ""; break;
+                    case 'c_vote_up': return ""; break;
+                    case 'c_vote_down': return ""; break;
+                    case 'c_vote_nil': return ""; break;
+                    case 'q_flag':
+                    case 'a_flag':
+                    case 'c_flag':
+                    case 'q_unflag':
+                    case 'a_unflag':
+                    case 'c_unflag': return ""; break;
+                }
+                    return $field; 
+            });
+        }else{
+            $results = $unfiltered;
+        }
         if($this->userLevel > QA_USER_LEVEL_EDITOR){
             $tableHeader = 
-            "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
-                '<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>'.
-                '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
-                '<th>'.qa_lang_html('user-activity-log/event').'</th>'.
-            "</tr>";
+                "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
+                    '<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>'.
+                    '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
+                    '<th>'.qa_lang_html('user-activity-log/event').'</th>'.
+                "</tr>";
 
             $tableContent = '';
 
@@ -124,12 +146,12 @@ class user_activity_search{
                     '<th>'.qa_lang_html('user-activity-log/'.$row['event']).'</th>'.
                     '</tr>';
             }
-        }else if($this->userLevel == QA_USER_LEVEL_EDITOR){
+        }else if($this->userLevel = QA_USER_LEVEL_EDITOR){
             $tableHeader = 
-            "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'
-                .'<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
-                '<th>'.qa_lang_html('user-activity-log/event').'</th>'.
-            "</tr></table>";
+                "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
+                    '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
+                    '<th>'.qa_lang_html('user-activity-log/event').'</th>'.
+                "</tr>";
 
             $tableContent = '';
 

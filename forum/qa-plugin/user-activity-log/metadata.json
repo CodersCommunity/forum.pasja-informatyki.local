@@ -1,10 +1,9 @@
 {
     "name": "User activity log",
     "description": "Admin panel page that shows user activity log",
-    "version": "0.4",
+    "version": "1.0",
     "date": "2017-03-22",
     "author": "wizarddos",
-    "author_uri": "http://www.powerqa.org",
     "license": "GPLv2",
     "min_q2a": "1.5"
 }
