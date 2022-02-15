@@ -52,6 +52,11 @@
                     'date' => array(
                         'label' => qa_lang_html('user-activity-log/date'),
                         'tags' => 'placeholder=YYYY-MM-DD name=date value=""',
+                    ),
+
+                    'resultsCount' => array(
+                        'label'=> qa_lang_html('user-activity-log/count'),
+                        'tags'=> 'name=resultsCount required',
                     )
                 ),
 

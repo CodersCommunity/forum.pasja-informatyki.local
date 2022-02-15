@@ -10,7 +10,7 @@ class user_activity_search{
     {
         $this->userLevel = qa_get_logged_in_level();
         $this->searchArr = $_POST;
-        if(!isset($_POST['condition'])){
+        if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
             header('Location: ../../');
             exit;
         }
@@ -77,17 +77,20 @@ class user_activity_search{
         }
         
         
+        if(!is_numeric($this->searchArr['resultsCount'])){
+            $this->dbResult = [];
+            return 0;
+        }
         
-        
-        $finalQuery = $finalQuery.' ORDER BY `datetime` DESC LIMIT 30';
+        $finalQuery = $finalQuery.' ORDER BY `datetime` DESC LIMIT #';
         if(strpos($finalQuery, 'LIKE')){
-            $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['date']."%");
+            $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['date']."%", $this->searchArr['resultsCount']);
         }else{
-            $result = qa_db_query_sub($finalQuery, $this->searchArr['request']);
+            $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['resultsCount']);
         }
        
         
-        if(mysqli_num_rows($result) <= 30){
+        if(mysqli_num_rows($result) <= $this->searchArr['resultsCount']){
             $fullResultsArray = [];
             while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
                 $fullResultsArray[] = $row;

@@ -11,6 +11,7 @@ return [
     'username' => "nazwa użytkownika",
     'eventType' => 'Typ aktywności',
     'date' => 'Data (opcjonalna)',
+    'count' => ' Maksymalna liczba wyników',
     'search-label' => 'Szukaj',
     'searchResults' => 'Wyniki wyszukiwania: ',
 
