@@ -44,7 +44,7 @@ class user_activity_search{
         }else if($this->searchArr['condition'] == 'type'){
             $finalQuery = $baseQuery.'WHERE event = $';
         }else if($this->searchArr['condition'] == 'ip'){
-            if($this->userLevel > QA_USER_LEVEL_EDITOR){
+            if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
                 $finalQuery = $baseQuery.'WHERE ipaddress = $';
             }   
         }
@@ -114,6 +114,9 @@ class user_activity_search{
                     case 'c_vote_up': return ""; break;
                     case 'c_vote_down': return ""; break;
                     case 'c_vote_nil': return ""; break;
+                    case 'in_q_vote_up' :
+                    case 'in_a_vote_up' :
+                    case 'in_c_vote_up' :
                     case 'q_flag':
                     case 'a_flag':
                     case 'c_flag':

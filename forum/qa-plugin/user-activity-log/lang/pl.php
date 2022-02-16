@@ -57,6 +57,7 @@ return [
     'q_favorite' => 'Dodano pytanie do ulubionych',
     'q_unfavorite' => 'Usunięto pytanie z ulubionych',
     'q_clearflags' => 'Usunięto wszystkie zgłoszenia ne pytanie',
+    'in_q_vote_up' => 'Ktoś oddał głos w górę na pytanie',
 
 
     'c_post' => 'Dodano komentarz',
@@ -70,6 +71,7 @@ return [
     'c_vote_nil' => 'Usunięto głos na komentarz',
     'c_clearflags' => 'Usunięto wszystkie zgłoszenia na komentarz',
     'in_c_question' => 'Ktoś dodał komentarz do pytania',
+    'in_c_vote_up' => 'Ktoś oddał głos w górę na komentarz',
 
     'a_post' => 'Dodano odpowiedź',
     'a_select' => 'Wybrano najlepszą odpowiedź',
@@ -84,6 +86,7 @@ return [
     'a_vote_nil' => 'Usunięto głos na odpowiedź',
     'a_clearflags' => 'Usunięto wszystkie zgłoszenia na odpowiedź',
     'in_a_question' => 'Ktoś odpowiedział na pytanie',
+    'in_a_vote_up' => 'Ktoś oddał głos w górę na odpowiedź',
 
     'cat_new' => 'Utworzono nową kategorię',
     'cat_edit' => 'Edytowano kategorię',
@@ -98,6 +101,7 @@ return [
     'cat_unfavorite' => 'Usunięto kategorię z ulubionych',
     
     'a_to_c' => 'Zamieniono odpowiedź na komentarz',
+    
     'feedback' => 'Dodano sugestię przez formularz na stronie',
     'search'=> 'Wyszukano coś na stronie'
 ];
