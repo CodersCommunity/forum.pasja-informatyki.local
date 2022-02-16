@@ -3,15 +3,13 @@
         header('Location: ../../');
         exit;
     }
+    
     require_once QA_INCLUDE_DIR.'app/admin.php';
-    require_once QA_INCLUDE_DIR.'qa-db-metas.php';
 
     class user_activity_log 
     {
         private $directory;
         private $urltoroot;
-
-
 
         public function match_request($request) 
         {

@@ -4,18 +4,16 @@ class user_activity_search{
     
     private $searchArr;
     private $dbResult;
-    private $userLevel;
 
     public function match_request($request) 
     {
-        $this->userLevel = qa_get_logged_in_level();
         $this->searchArr = $_POST;
         if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
             header('Location: ../../');
             exit;
         }
 
-        if($this->userLevel >= QA_USER_LEVEL_EDITOR){
+        if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
             if(isset($this->searchArr)){
                 $this->dbSearch();
                 if(isset($this->dbResult)){
@@ -64,11 +62,9 @@ class user_activity_search{
                             $time = explode(' ', $dateArr[2]);
                             $dateArr[2] = $time[0];
                             $dateArr[3] = $time[1];
-                            
                         }
                         
                         $date = $date.'-'.$dateArr[2];
-                        
                     }
                 }
                 $finalQuery = $finalQuery.'AND `datetime` LIKE $';
@@ -89,7 +85,6 @@ class user_activity_search{
             $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['resultsCount']);
         }
        
-        
         if(mysqli_num_rows($result) <= $this->searchArr['resultsCount']){
             $fullResultsArray = [];
             while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -107,7 +102,7 @@ class user_activity_search{
     private function generateResultsTable()
     {
         $unfiltered = $this->dbResult;
-        if($this->userLevel < QA_USER_LEVEL_ADMIN){
+        if(qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN){
            $results = array_filter($unfiltered, function($field){
                 switch($field['event']){
                     case 'q_vote_up': return ""; break;
@@ -131,7 +126,8 @@ class user_activity_search{
         }else{
             $results = $unfiltered;
         }
-        if($this->userLevel > QA_USER_LEVEL_EDITOR){
+
+        if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
             $tableHeader = 
                 "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
                     '<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>'.
@@ -149,7 +145,7 @@ class user_activity_search{
                     '<th>'.qa_lang_html('user-activity-log/'.$row['event']).'</th>'.
                     '</tr>';
             }
-        }else if($this->userLevel = QA_USER_LEVEL_EDITOR){
+        }else if(qa_get_logged_in_level() == QA_USER_LEVEL_EDITOR){
             $tableHeader = 
                 "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
                     '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
@@ -168,9 +164,11 @@ class user_activity_search{
         }
 
         $table = $tableHeader.$tableContent.'</table>';
+
         if(!isset($results[0])){
             $table = qa_lang_html('user-activity-log/noResults');
         }
+
         return $table;
     }
 }
