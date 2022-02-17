@@ -3,7 +3,7 @@
         header('Location: ../../');
         exit;
     }
-    
+
     require_once QA_INCLUDE_DIR.'app/admin.php';
 
     class user_activity_log 
@@ -13,11 +13,7 @@
 
         public function match_request($request) 
         {
-            if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
-                return $request == 'user-activity-log';
-            }else{
-                return false;
-            }
+            return qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR && $request === 'user-activity-log';
         }
 
         public function process_request($request) 

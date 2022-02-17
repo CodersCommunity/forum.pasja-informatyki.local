@@ -17,7 +17,7 @@ class user_activity_search{
             if(isset($this->searchArr)){
                 $this->dbSearch();
                 if(isset($this->dbResult)){
-                    return $request == 'user-activity-log-search';
+                    return $request === 'user-activity-log-search';
                 }
             }
         }else{
@@ -39,29 +39,28 @@ class user_activity_search{
     {
         $baseQuery = 'SELECT `datetime`, `ipaddress`, `handle`, `event` FROM qa_eventlog ';
 
-        if($this->searchArr['condition'] == 'username'){
+        if($this->searchArr['condition'] === 'username'){
             $finalQuery = $baseQuery.'WHERE  handle = $';
-        }else if($this->searchArr['condition'] == 'type'){
+        }else if($this->searchArr['condition'] === 'type'){
             $finalQuery = $baseQuery.'WHERE event = $';
-        }else if($this->searchArr['condition'] == 'ip'){
+        }else if($this->searchArr['condition'] === 'ip'){
             if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
                 $finalQuery = $baseQuery.'WHERE ipaddress = $';
             }   
         }
 
-        if($this->searchArr['date'] != ""){
+        if(!empty($this->searchArr['date'])){
             $dateArr = explode('-', $this->searchArr['date']);
 
-
-            if(is_numeric($dateArr[0]) && is_numeric($dateArr[0])){
+            if(isset($dateArr[0]) && is_numeric($dateArr[0])){
                 $date = $dateArr[0];
                 if(isset($dateArr[1]) && is_numeric($dateArr[1])){
                     $date = $date.'-'.$dateArr[1];
-                    if(isset($dateArr[2]) && is_numeric($dateArr[2])){
+                    if(isset($dateArr[2])){
                         if(strlen($dateArr[2]) > 2){
-                            $time = explode(' ', $dateArr[2]);
-                            $dateArr[2] = $time[0];
-                            $dateArr[3] = $time[1];
+                            [$day, $hours] = explode(' ', $dateArr[2]);
+                            $dateArr[2] = $day;
+                            $dateArr[3] = $hours;
                         }
                         
                         $date = $date.'-'.$dateArr[2];
@@ -105,15 +104,15 @@ class user_activity_search{
         if(qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN){
            $results = array_filter($unfiltered, function($field){
                 switch($field['event']){
-                    case 'q_vote_up': return ""; break;
-                    case 'q_vote_down': return ""; break;
-                    case 'q_vote_nil': return ""; break;
-                    case 'a_vote_up':return ""; break;
-                    case 'a_vote_down': return ""; break;
-                    case 'a_vote_nil': return ""; break;
-                    case 'c_vote_up': return ""; break;
-                    case 'c_vote_down': return ""; break;
-                    case 'c_vote_nil': return ""; break;
+                    case 'q_vote_up': 
+                    case 'q_vote_down': 
+                    case 'q_vote_nil':
+                    case 'a_vote_up':
+                    case 'a_vote_down': 
+                    case 'a_vote_nil': 
+                    case 'c_vote_up': 
+                    case 'c_vote_down': 
+                    case 'c_vote_nil': 
                     case 'in_q_vote_up' :
                     case 'in_a_vote_up' :
                     case 'in_c_vote_up' :
@@ -149,6 +148,7 @@ class user_activity_search{
                     '</tr>';
             }
         }else if(qa_get_logged_in_level() == QA_USER_LEVEL_EDITOR){
+            
             $tableHeader = 
                 "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
                     '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
