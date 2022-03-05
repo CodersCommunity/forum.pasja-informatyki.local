@@ -11,6 +11,9 @@ return [
     'username' => "nazwa użytkownika",
     'eventType' => 'Typ aktywności',
     'date' => 'Data (opcjonalna)',
+    'from' => 'Sortuj od:',
+    'oldest' => 'Najstarszych',
+    'newest' => 'Najnowszych',
     'count' => ' Maksymalna liczba wyników',
     'search-label' => 'Szukaj',
     'searchResults' => 'Wyniki wyszukiwania: ',
@@ -20,6 +23,13 @@ return [
     'handle' =>' Nazwa Użytkownika',
     'event' => 'Rodzaj aktywności',
     'noResults'=> 'Nie znaleziono żadnych wyników',
+
+    'EventModalHeader' => "Przykłady Eventów z bazy danych",
+    'users' => 'Użytkowników',
+    'comments' => 'Komentarzy',
+    'answers' => 'Odpowiedzi',
+    'questions' => 'Pytań',
+    'more' => 'Więcej o Eventach',
     
     //events
 

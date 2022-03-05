@@ -1,6 +1,7 @@
 <?php
 
-class user_activity_search{
+class user_activity_search
+{
     
     private $searchArr;
     private $dbResult;
@@ -37,7 +38,7 @@ class user_activity_search{
 
     private function dbSearch()
     {
-        $baseQuery = 'SELECT `datetime`, `ipaddress`, `handle`, `event` FROM qa_eventlog ';
+        $baseQuery = 'SELECT `datetime`, `ipaddress`, `handle`, `event`,`params` FROM qa_eventlog ';
 
         if($this->searchArr['condition'] === 'username'){
             $finalQuery = $baseQuery.'WHERE  handle = $';
@@ -73,11 +74,12 @@ class user_activity_search{
         
         
         if(!is_numeric($this->searchArr['resultsCount'])){
-            $this->dbResult = [];
-            return 0;
+            $this->searchArr['resultsCount'] = 45;
         }
+        $finalQuery = $finalQuery.' ORDER BY `datetime`';
+        $this->searchArr['fromOldest'] ? $finalQuery = $finalQuery.' DESC' : $finalQuery = $finalQuery.' ASC';
         
-        $finalQuery = $finalQuery.' ORDER BY `datetime` DESC LIMIT #';
+        $finalQuery = $finalQuery.' LIMIT #';
         if(strpos($finalQuery, 'LIKE')){
             $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['date']."%", $this->searchArr['resultsCount']);
         }else{
@@ -129,39 +131,32 @@ class user_activity_search{
             $results = $unfiltered;
         }
 
-        if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
-            $tableHeader = 
-                "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
-                    '<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>'.
-                    '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
-                    '<th>'.qa_lang_html('user-activity-log/event').'</th>'.
-                "</tr>";
+        $tableHeader = 
+        "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
+            '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
+            '<th>'.qa_lang_html('user-activity-log/event').'</th>';
 
-            $tableContent = '';
+        $tableContent = '';
+
+        if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
+            $tableHeader = $tableHeader.'<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>'.
+                "</tr>";
 
             foreach($results as $row){
                 $tableContent = $tableContent.'<tr>'.
-                    '<th>'.$row['datetime'].'</th>'.
-                    '<th> &nbsp;'.$row['ipaddress'].'</th>'.
-                    '<th>'.$row['handle'].'</th>'.
-                    '<th>'.qa_lang_html('user-activity-log/'.$row['event']).'</th>'.
+                    '<td>'.$row['datetime'].'</td>'.
+                    '<td>'.$row['handle'].'</td>'.
+                    '<td>'.qa_lang_html('user-activity-log/'.$row['event']).'</td>'.
+                    '<td> &nbsp;'.$row['ipaddress'].'</td>'.
                     '</tr>';
             }
         }else if(qa_get_logged_in_level() == QA_USER_LEVEL_EDITOR){
-            
-            $tableHeader = 
-                "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
-                    '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
-                    '<th>'.qa_lang_html('user-activity-log/event').'</th>'.
-                "</tr>";
-
-            $tableContent = '';
-
+            $tableHeader = $tableHeader.'</tr>';
             foreach($results as $row){
                 $tableContent = $tableContent.'<tr>'.
-                    '<th>'.$row['datetime'].'</th>'.
-                    '<th>'.$row['handle'].'</th>'.
-                    '<th>'.qa_lang_html('user-activity-log/'.$row['event']).'</th>'.
+                    '<td>'.$row['datetime'].'</td>'.
+                    '<td>'.$row['handle'].'</td>'.
+                    '<td>'.qa_lang_html('user-activity-log/'.$row['event']).'</td>'.
                     '</tr>';
             }
         }
