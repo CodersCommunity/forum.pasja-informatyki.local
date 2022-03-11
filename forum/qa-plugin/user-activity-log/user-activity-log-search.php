@@ -40,14 +40,18 @@ class user_activity_search
     {
         $baseQuery = 'SELECT `datetime`, `ipaddress`, `handle`, `event`,`params` FROM qa_eventlog ';
 
-        if($this->searchArr['condition'] === 'username'){
-            $finalQuery = $baseQuery.'WHERE  handle = $';
-        }else if($this->searchArr['condition'] === 'type'){
-            $finalQuery = $baseQuery.'WHERE event = $';
-        }else if($this->searchArr['condition'] === 'ip'){
-            if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
-                $finalQuery = $baseQuery.'WHERE ipaddress = $';
-            }   
+        if(!empty($this->searchArr['request'])){
+            if($this->searchArr['condition'] === 'username'){
+                $finalQuery = $baseQuery.'WHERE handle = $ ';
+            }else if($this->searchArr['condition'] === 'type'){
+                $finalQuery = $baseQuery.'WHERE event = $ ';
+            }else if($this->searchArr['condition'] === 'ip'){
+                if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
+                    $finalQuery = $baseQuery.'WHERE ipaddress = $ ';
+                }   
+            }
+        }else{
+            $finalQuery = $baseQuery;
         }
 
         if(!empty($this->searchArr['date'])){
@@ -73,7 +77,7 @@ class user_activity_search
         }
         
         
-        if(!is_numeric($this->searchArr['resultsCount'])){
+        if(!is_numeric($this->searchArr['resultsCount']) || empty($this->searchArr['resultsCount'])){
             $this->searchArr['resultsCount'] = 45;
         }
         $finalQuery = $finalQuery.' ORDER BY `datetime`';
@@ -81,9 +85,17 @@ class user_activity_search
         
         $finalQuery = $finalQuery.' LIMIT #';
         if(strpos($finalQuery, 'LIKE')){
-            $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['date']."%", $this->searchArr['resultsCount']);
+            if(empty($this->searchArr['request'])){
+                $result = qa_db_query_sub($finalQuery, $this->searchArr['date']."%", $this->searchArr['resultsCount']);
+            }else{
+                $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['date']."%", $this->searchArr['resultsCount']);
+            }
         }else{
-            $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['resultsCount']);
+            if(empty($this->searchArr['request'])){
+                $result = qa_db_query_sub($finalQuery, $this->searchArr['resultsCount']);
+            }else{
+                $result = qa_db_query_sub($finalQuery, $this->searchArr['request'], $this->searchArr['resultsCount']);
+            }
         }
        
         if(mysqli_num_rows($result) <= $this->searchArr['resultsCount']){

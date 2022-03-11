@@ -29,7 +29,7 @@
                 'fields' => array(
                     'query' => array(
                         'label' => qa_lang_html('user-activity-log/condition'),
-                        'tags' => 'name="request" required',
+                        'tags' => 'name="request" ',
                     ),
                     
                     'filter' => array(
