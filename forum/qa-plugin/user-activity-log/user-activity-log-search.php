@@ -9,6 +9,11 @@ class user_activity_search
     public function match_request($request) 
     {
         $this->searchArr = $_POST;
+        isset($_POST['request']) ? $_SESSION['query'] = $_POST['request'] : null;
+        isset($_POST['date']) ? $_SESSION['date'] = $_POST['date'] : null;
+        isset($_POST['resultsCount']) ? $_SESSION['resultsCount'] = $_POST['resultsCount'] : null;
+        isset($_POST['sortBy']) ? $_SESSION['sortBy'] = $_POST['fromOldest'] : null;
+
         if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
             header('Location: ../../');
             exit;
@@ -29,8 +34,10 @@ class user_activity_search
     public function process_request($request)
     {
         $qa_content=qa_content_prepare();
-        $qa_content['title']= qa_lang_html('user-activity-log/searchResults').$this->searchArr['request'];
-        
+        $qa_content['title']= '<a class = "to-right" href = "'.qa_path_to_root().'user-activity-log">'
+            .qa_lang_html('user-activity-log/searchResults')
+            .$this->searchArr['request'].'</a>';
+            
         $qa_content['custom'] = $this->generateResultsTable();
         $qa_content['navigation']['sub']=qa_admin_sub_navigation();
         return $qa_content;

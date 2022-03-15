@@ -10,9 +10,18 @@
     {
         private $directory;
         private $urltoroot;
+        private $request;
+        private $date;
+        private $resultsCount;
+        private $sortBy;
 
         public function match_request($request) 
         {
+            isset($_SESSION['query']) ? $this->request = $_SESSION['query'] : null;
+            isset($_SESSION['date']) ? $this->date = $_SESSION['date'] : null;
+            isset($_SESSION['resultsCount']) ? $this->resultsCount = $_SESSION['resultsCount'] : null;
+            isset($_SESSION['sortBy']) ? $this->sortBy = $_SESSION['sortBy'] : null;
+            
             return qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR && $request === 'user-activity-log';
         }
 
@@ -29,7 +38,7 @@
                 'fields' => array(
                     'query' => array(
                         'label' => qa_lang_html('user-activity-log/condition'),
-                        'tags' => 'name="request" ',
+                        'tags' => 'name="request" value="'.$this->request.'"',
                     ),
                     
                     'filter' => array(
@@ -45,12 +54,12 @@
 
                     'date' => array(
                         'label' => qa_lang_html('user-activity-log/date'),
-                        'tags' => 'placeholder=YYYY-MM-DD name=date value=""',
+                        'tags' => 'placeholder=YYYY-MM-DD name=date value="'.$this->date.'"',
                     ),
 
                     'fromOldest' => [
                         'type' => 'select',
-                        'tags'=>'name=fromOldest',
+                        'tags'=>'name=fromOldest value="'.$this->sortBy.'"',
                         'options' => [
                                 0 => qa_lang('user-activity-log/oldest'),
                                 1 => qa_lang('user-activity-log/newest'),
@@ -61,7 +70,7 @@
 
                     'resultsCount' => array(
                         'label'=> qa_lang_html('user-activity-log/count'),
-                        'tags'=> 'name=resultsCount',
+                        'tags'=> 'name=resultsCount value="'.$this->resultsCount.'"',
                     )
                 ),
 

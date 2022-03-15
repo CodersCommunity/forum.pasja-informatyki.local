@@ -23,6 +23,7 @@ return [
     'handle' =>' Nazwa Użytkownika',
     'event' => 'Rodzaj aktywności',
     'noResults'=> 'Nie znaleziono żadnych wyników',
+    'goBack' => 'Wróć do formularza',
 
     'EventModalHeader' => "Przykłady Eventów z bazy danych",
     'users' => 'Użytkowników',
