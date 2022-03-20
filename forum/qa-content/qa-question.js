@@ -339,7 +339,7 @@ function handleRefusedPost({ submitButton, postRefuseReason, parentId }) {
 
 	function showSubmissionError() {
 		const postSubmissionError = document.createElement('div');
-		postSubmissionError.innerHTML = postRefuseReason || 'Wystąpił problem - nie udało się dodać posta.';
+		postSubmissionError.textContent = postRefuseReason || 'Wystąpił problem - nie udało się dodać posta.';
 		postSubmissionError.classList.add('post-submission-alert');
 
 		submitButton.parentNode.insertBefore(postSubmissionError, submitButton);
