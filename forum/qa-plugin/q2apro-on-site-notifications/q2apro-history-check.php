@@ -67,7 +67,7 @@ class q2apro_history_check
 
     private function handle_standard_event($event, $loggedUserId, $cookieId, $params)
     {
-        if (strpos($event, 'u_') === 0) {
+        if (strpos($event, 'u_') === 0 && isset($params['userid'])) {
             $eventUserId = $params['userid'];
         } else {
             $eventUserId = qa_db_read_one_value(
@@ -162,7 +162,7 @@ class q2apro_history_check
     {
         if (is_array($value)) {
             $text = 'array(' . count($value) . ')';
-        } elseif (strlen($value) > 40) {
+        } elseif (is_string($value) && strlen($value) > 40) {
             $text = substr($value, 0, 38) . '...';
         } else {
             $text = $value;
