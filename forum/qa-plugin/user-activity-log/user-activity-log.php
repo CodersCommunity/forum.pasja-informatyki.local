@@ -10,17 +10,20 @@
     {
         private $directory;
         private $urltoroot;
+
         private $request;
+        private $condition;
         private $date;
         private $resultsCount;
         private $sortBy;
 
         public function match_request($request) 
         {
-            isset($_SESSION['query']) ? $this->request = $_SESSION['query'] : null;
-            isset($_SESSION['date']) ? $this->date = $_SESSION['date'] : null;
-            isset($_SESSION['resultsCount']) ? $this->resultsCount = $_SESSION['resultsCount'] : null;
-            isset($_SESSION['sortBy']) ? $this->sortBy = $_SESSION['sortBy'] : null;
+            $this->request = $_SESSION['query'] ?? null;
+            $this->condition = $_SESSION['condition'] ?? null;
+            $this->date = $_SESSION['date'] ?? null;
+            $this->resultsCount = $_SESSION['resultsCount'] ?? null;
+            $this->sortBy = $_SESSION['sortBy'] ?? null;
             
             return qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR && $request === 'user-activity-log';
         }
@@ -34,7 +37,6 @@
                 'style' => 'wide',
                 'title' => qa_lang_html('user-activity-log/formTitle'),
                 
-
                 'fields' => array(
                     'query' => array(
                         'label' => qa_lang_html('user-activity-log/condition'),
@@ -43,7 +45,7 @@
                     
                     'filter' => array(
                         'type' => 'select',
-                        'tags'=>'name=condition',
+                        'tags'=>'name=condition value="'.$this->condition.'"',
                         'options' => [
                                 'username' => qa_lang('user-activity-log/username'),
                                 'type' => qa_lang('user-activity-log/eventType'),
@@ -74,8 +76,6 @@
                     )
                 ),
 
-                
-
                 'buttons' => array(
                     'submit' => array(
                         'tags' => 'name="search"',
@@ -83,7 +83,6 @@
                         'value' => '1',
                     ),
                 ),
-
             );
 
             if(qa_get_logged_in_level() >= QA_USER_LEVEL_MODERATOR){

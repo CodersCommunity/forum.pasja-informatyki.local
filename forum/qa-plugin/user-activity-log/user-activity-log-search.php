@@ -6,14 +6,21 @@ class user_activity_search
     private $searchArr;
     private $dbResult;
 
-    public function match_request($request) 
+    public function match_request(string $request) 
     {
-        $this->searchArr = $_POST;
-        isset($_POST['request']) ? $_SESSION['query'] = $_POST['request'] : null;
-        isset($_POST['date']) ? $_SESSION['date'] = $_POST['date'] : null;
-        isset($_POST['resultsCount']) ? $_SESSION['resultsCount'] = $_POST['resultsCount'] : null;
-        isset($_POST['sortBy']) ? $_SESSION['sortBy'] = $_POST['fromOldest'] : null;
+        $_SESSION['query'] = qa_sanitize_html($_POST['request']) ?? null;
+        $_SESSION['condition'] = qa_sanitize_html($_POST['condition']) ?? null;
+        $_SESSION['date'] = qa_sanitize_html($_POST['date'])?? null;
+        $_SESSION['resultsCount'] = qa_sanitize_html($_POST['resultsCount']) ?? null;
+        $_SESSION['sortBy'] = qa_sanitize_html($_POST['fromOldest']) ?? null;
 
+        $this->searchArr = [
+            'request' => $_SESSION['query'],
+            'condition' => $_SESSION['condition'],
+            'date' => $_SESSION['date'], 
+            'resultsCount' => $_SESSION['resultsCount'], 
+            'fromOldest' => $_SESSION['sortBy']
+        ];
         if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
             header('Location: ../../');
             exit;
@@ -31,7 +38,7 @@ class user_activity_search
         }
     }
 
-    public function process_request($request)
+    public function process_request(string $request)
     {
         $qa_content=qa_content_prepare();
         $qa_content['title']= '<a class = "to-right" href = "'.qa_path_to_root().'user-activity-log">'
@@ -48,47 +55,45 @@ class user_activity_search
         $baseQuery = 'SELECT `datetime`, `ipaddress`, `handle`, `event`,`params` FROM qa_eventlog ';
 
         if(!empty($this->searchArr['request'])){
-            if($this->searchArr['condition'] === 'username'){
-                $finalQuery = $baseQuery.'WHERE handle = $ ';
-            }else if($this->searchArr['condition'] === 'type'){
-                $finalQuery = $baseQuery.'WHERE event = $ ';
-            }else if($this->searchArr['condition'] === 'ip'){
-                if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
-                    $finalQuery = $baseQuery.'WHERE ipaddress = $ ';
-                }   
+
+            switch ($this->searchArr['condition']) {
+                case 'username':
+                    $finalQuery = $baseQuery.'WHERE handle = $ ';
+                    break;
+                
+                case 'type':
+                    $finalQuery = $baseQuery.'WHERE event = $ ';
+                    break;
+                
+                case 'ip':
+                    if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
+                        $finalQuery = $baseQuery.'WHERE ipaddress = $ ';
+                    }   
+                break;
+                    
+                default:
+                    $finalQuery = $baseQuery;
+                break;
+            }
+            
+            if(!empty($this->searchArr['date'])){
+                $finalQuery = $finalQuery."AND";
             }
         }else{
-            $finalQuery = $baseQuery;
+            $finalQuery = $baseQuery." WHERE";
         }
 
         if(!empty($this->searchArr['date'])){
-            $dateArr = explode('-', $this->searchArr['date']);
-
-            if(isset($dateArr[0]) && is_numeric($dateArr[0])){
-                $date = $dateArr[0];
-                if(isset($dateArr[1]) && is_numeric($dateArr[1])){
-                    $date = $date.'-'.$dateArr[1];
-                    if(isset($dateArr[2])){
-                        if(strlen($dateArr[2]) > 2){
-                            [$day, $hours] = explode(' ', $dateArr[2]);
-                            $dateArr[2] = $day;
-                            $dateArr[3] = $hours;
-                        }
-                        
-                        $date = $date.'-'.$dateArr[2];
-                    }
-                }
-                $finalQuery = $finalQuery.'AND `datetime` LIKE $';
-            }
-
+            $finalQuery = $this->validateDate($finalQuery);
         }
+
         
         
         if(!is_numeric($this->searchArr['resultsCount']) || empty($this->searchArr['resultsCount'])){
             $this->searchArr['resultsCount'] = 45;
         }
         $finalQuery = $finalQuery.' ORDER BY `datetime`';
-        $this->searchArr['fromOldest'] ? $finalQuery = $finalQuery.' DESC' : $finalQuery = $finalQuery.' ASC';
+        $finalQuery .= $this->searchArr['fromOldest'] ? ' DESC' : ' ASC';
         
         $finalQuery = $finalQuery.' LIMIT #';
         if(strpos($finalQuery, 'LIKE')){
@@ -111,10 +116,10 @@ class user_activity_search
                 $fullResultsArray[] = $row;
             }
             $this->dbResult = $fullResultsArray;
-            return 1;
+            return true;
         }else{
             $this->dbResult = $result;
-            return 0;
+            return false;
         }
 
     }
@@ -182,10 +187,39 @@ class user_activity_search
 
         $table = $tableHeader.$tableContent.'</table>';
 
-        if(!isset($results[0])){
+        if(empty($results[0])){
             $table = qa_lang_html('user-activity-log/noResults');
         }
 
         return $table;
+    }
+
+    private function validateDate($finalQuery){
+        $isValid = true;
+
+        if(!empty($this->searchArr['date'])){
+            $dateArr = explode('-', $this->searchArr['date']);
+            if(isset($dateArr[0]) && is_numeric($dateArr[0])){
+                $date = $dateArr[0];
+                if(isset($dateArr[1]) && is_numeric($dateArr[1])){
+                    $date = $date.'-'.$dateArr[1];
+                    if(isset($dateArr[2])){
+                        if(strlen($dateArr[2]) > 2){
+                            [$day, $hours] = explode(' ', $dateArr[2]);
+                            $dateArr[2] = $day;
+                            $dateArr[3] = $hours;
+                        }
+
+                        $date = $date.'-'.$dateArr[2];
+                    }
+                }
+            }else{
+                $isValid = false;
+            } 
+        }else{
+            $isValid = false;
+        } 
+        
+        return $isValid ? $finalQuery.' `datetime` LIKE $' : $finalQuery;
     }
 }
