@@ -85,6 +85,7 @@ return [
     'in_c_vote_up' => 'Ktoś oddał głos w górę na komentarz',
 
     'a_post' => 'Dodano odpowiedź',
+    'a_edit' => 'Edytowano odpowiedź', 
     'a_select' => 'Wybrano najlepszą odpowiedź',
     'a_unselect'=> 'Odznaczono najlepszą odpowiedź',
     'a_flag' => 'Zgłoszono odpowiedź',
