@@ -43,7 +43,7 @@ class user_activity_search
         $qa_content=qa_content_prepare();
         $qa_content['title']= '<a class = "to-right" href = "'.qa_path_to_root().'user-activity-log">'
             .qa_lang_html('user-activity-log/searchResults')
-            .$this->searchArr['request'].'</a>';
+            .$this->searchArr['username'].'</a>';
             
         $qa_content['custom'] = $this->generateResultsTable();
         $qa_content['navigation']['sub']=qa_admin_sub_navigation();
@@ -55,10 +55,12 @@ class user_activity_search
         $baseQuery = 'SELECT `datetime`, `ipaddress`, `handle`, `event`,`params` FROM qa_eventlog ';
 
         if(!empty($this->searchArr['request'])){
+            $this->searchArr['username'] = $this->searchArr['request'];
 
             switch ($this->searchArr['condition']) {
                 case 'username':
-                    $finalQuery = $baseQuery.'WHERE handle = $ ';
+                    $this->searchArr['request'] = $this->findUsersID($this->searchArr['request']);
+                    $finalQuery = $baseQuery.'WHERE userid = $ ';
                     break;
                 
                 case 'type':
@@ -111,11 +113,7 @@ class user_activity_search
         }
        
         if(mysqli_num_rows($result) <= $this->searchArr['resultsCount']){
-            $fullResultsArray = [];
-            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-                $fullResultsArray[] = $row;
-            }
-            $this->dbResult = $fullResultsArray;
+            $this->dbResult = qa_db_read_all_assoc($result);
             return true;
         }else{
             $this->dbResult = $result;
@@ -194,7 +192,8 @@ class user_activity_search
         return $table;
     }
 
-    private function validateDate($finalQuery){
+    private function validateDate($finalQuery)
+    {
         $isValid = true;
 
         if(!empty($this->searchArr['date'])){
@@ -221,5 +220,14 @@ class user_activity_search
         } 
         
         return $isValid ? $finalQuery.' `datetime` LIKE $' : $finalQuery;
+    }
+
+    private function findUsersID($user)
+    {
+        $query = "SELECT `handle`, `userid` FROM `qa_users` WHERE `handle` = $";
+
+        $stmt= qa_db_query_sub($query, $user);
+        $result = qa_db_read_one_assoc($stmt);
+        return $result['userid'];
     }
 }

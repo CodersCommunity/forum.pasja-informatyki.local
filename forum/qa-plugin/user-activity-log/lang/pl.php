@@ -82,6 +82,7 @@ return [
     'c_vote_nil' => 'Usunięto głos na komentarz',
     'c_clearflags' => 'Usunięto wszystkie zgłoszenia na komentarz',
     'in_c_question' => 'Ktoś dodał komentarz do pytania',
+    'in_c_answer' => 'Ktoś dodał komentarz do odpowiedzi',
     'in_c_vote_up' => 'Ktoś oddał głos w górę na komentarz',
 
     'a_post' => 'Dodano odpowiedź',
