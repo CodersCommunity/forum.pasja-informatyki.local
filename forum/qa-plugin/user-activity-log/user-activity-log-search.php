@@ -200,7 +200,7 @@ class user_activity_search
         return $table;
     }
 
-    private function validateDate($finalQuery)
+    private function validateDate(string $finalQuery)
     {
         $isValid = true;
 
@@ -230,7 +230,7 @@ class user_activity_search
         return $isValid ? $finalQuery.' `datetime` LIKE $' : $finalQuery;
     }
 
-    private function findUsersID($user)
+    private function findUsersID(string $user)
     {
         $query = "SELECT `handle`, `userid` FROM `qa_users` WHERE `handle` = $";
 
@@ -239,7 +239,7 @@ class user_activity_search
         return $result['userid'];
     }
 
-    private function findUsersPostsLinks($event, $params)
+    private function findUsersPostsLinks(string $event,string $params)
     {
         $first = substr($event, 0, 1);
         if($first != 'q' && $first != 'a' && $first != 'c'){
@@ -287,7 +287,7 @@ class user_activity_search
         }
     }
 
-    private function findParentPost($parentsid)
+    private function findParentPost(int $parentsid)
     {
         $query = "SELECT `title`, `type`, `parentid` FROM `qa_posts` WHERE `postid` = $";
         $stmt = qa_db_query_sub($query, $parentsid);
