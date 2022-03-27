@@ -1,6 +1,7 @@
 <?php
 
-function qa_admin_sub_navigation(){
+function qa_admin_sub_navigation()
+{
     $nav = qa_admin_sub_navigation_base();
     if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
         $nav['user-activity-log'] = [
