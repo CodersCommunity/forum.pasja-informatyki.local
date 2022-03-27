@@ -88,8 +88,6 @@ class user_activity_search
         if(!empty($this->searchArr['date'])){
             $finalQuery = $this->validateDate($finalQuery);
         }
-
-        
         
         if(!is_numeric($this->searchArr['resultsCount']) || empty($this->searchArr['resultsCount'])){
             $this->searchArr['resultsCount'] = 45;
@@ -126,28 +124,36 @@ class user_activity_search
     {
         $unfiltered = $this->dbResult;
         if(qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN){
-           $results = array_filter($unfiltered, function($field){
-                switch($field['event']){
-                    case 'q_vote_up': 
-                    case 'q_vote_down': 
-                    case 'q_vote_nil':
-                    case 'a_vote_up':
-                    case 'a_vote_down': 
-                    case 'a_vote_nil': 
-                    case 'c_vote_up': 
-                    case 'c_vote_down': 
-                    case 'c_vote_nil': 
-                    case 'in_q_vote_up' :
-                    case 'in_a_vote_up' :
-                    case 'in_c_vote_up' :
-                    case 'q_flag':
-                    case 'a_flag':
-                    case 'c_flag':
-                    case 'q_unflag':
-                    case 'a_unflag':
-                    case 'c_unflag': return ""; break;
+            $results = array_filter($unfiltered, function($field){
+                $toExclude = [
+                    'q_vote_up',
+                    'q_vote_down', 
+                    'q_vote_nil',
+                    'a_vote_up',
+                    'a_vote_down', 
+                    'a_vote_nil', 
+                    'c_vote_up',
+                    'c_vote_down', 
+                    'c_vote_nil',
+                    'in_q_vote_up' ,
+                    'in_a_vote_up' ,
+                    'in_c_vote_up' ,
+                    'q_flag',
+                    'a_flag',
+                    'c_flag',
+                    'q_unflag',
+                    'a_unflag',
+                    'c_unflag',
+                    'q_clearflags',
+                    'a_clearflags',
+                    'c_clearflags',
+                ];
+                $isToExclude = false;
+                if(in_array($field['event'], $toExclude)){
+                    $isToExclude = true;
                 }
-                    return $field; 
+
+                return $isToExclude ? "" : $field;
             });
         }else{
             $results = $unfiltered;
@@ -168,7 +174,7 @@ class user_activity_search
                 $tableContent = $tableContent.'<tr>'.
                     '<td>'.$row['datetime'].'</td>'.
                     '<td>'.$row['handle'].'</td>'.
-                    '<td>'.qa_lang_html('user-activity-log/'.$row['event']).'</td>'.
+                    '<td>'.$this->findUsersPostsLinks($row['event'], $row['params']).'</td>'.
                     '<td> &nbsp;'.$row['ipaddress'].'</td>'.
                     '</tr>';
             }
@@ -178,7 +184,9 @@ class user_activity_search
                 $tableContent = $tableContent.'<tr>'.
                     '<td>'.$row['datetime'].'</td>'.
                     '<td>'.$row['handle'].'</td>'.
-                    '<td>'.qa_lang_html('user-activity-log/'.$row['event']).'</td>'.
+                    '<td>'.
+                        $this->findUsersPostsLinks($row['event'], $row['params'])
+                    .'</td>'.
                     '</tr>';
             }
         }
@@ -229,5 +237,61 @@ class user_activity_search
         $stmt= qa_db_query_sub($query, $user);
         $result = qa_db_read_one_assoc($stmt);
         return $result['userid'];
+    }
+
+    private function findUsersPostsLinks($event, $params)
+    {
+        $first = substr($event, 0, 1);
+        if($first != 'q' && $first != 'a' && $first != 'c'){
+            return qa_lang_html('user-activity-log/'.$event);
+        }else{
+            $paramsArray = qa_string_to_words($params);
+            $postID = $paramsArray[1];
+            $query = "SELECT `title`, `type`, `parentid` FROM `qa_posts` WHERE `postid` = $";
+            $stmt = qa_db_query_sub($query, $postID);
+            $result = qa_db_read_one_assoc($stmt);
+            $postTitle = $result['title'] ?? null;
+            $postType = $result['type'] ?? null;
+            $postsParentId = $result['parentid'] ?? null;
+            
+            switch($postType){
+                case 'Q':
+                    return '<a href = "'.qa_q_path_html($postID, $postTitle, true).'">'.
+                                qa_lang_html('user-activity-log/'.$event)
+                                .'</a>';
+                case 'C':
+                    $result = $this->findParentPost($postsParentId);
+                    $parentTitle = $result['title'] ?? null;
+                    $parentsType = $result['type'] ?? null;
+                    $commentsParentId = $result['parentid'] ?? null;
+                    if($parentsType == 'A'){
+                        $result = $this->findParentPost($commentsParentId);
+                        $parentTitle = $result['title'] ?? null;
+                        $postsParentId = $commentsParentId;
+                    }
+                        return '<a href = "'.qa_q_path_html($postsParentId, $parentTitle, true, 'C', $postID).'">'.
+                                    qa_lang_html('user-activity-log/'.$event)
+                                    .'</a>';
+                    
+                case 'A':
+                    $result = $this->findParentPost($postsParentId);
+                    $parentTitle = $result['title'] ?? null;
+                    return '<a href = "'.qa_q_path_html($postsParentId, $parentTitle, true, 'A', $postID).'">'.
+                                qa_lang_html('user-activity-log/'.$event)
+                                .'</a>';
+                default:
+                    return qa_lang_html('user-activity-log/'.$event);
+                
+    
+            }
+        }
+    }
+
+    private function findParentPost($parentsid)
+    {
+        $query = "SELECT `title`, `type`, `parentid` FROM `qa_posts` WHERE `postid` = $";
+        $stmt = qa_db_query_sub($query, $parentsid);
+        $result = qa_db_read_one_assoc($stmt);
+        return $result;
     }
 }
