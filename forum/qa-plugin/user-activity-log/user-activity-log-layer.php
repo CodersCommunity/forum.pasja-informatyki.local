@@ -7,7 +7,7 @@ class qa_html_theme_layer extends qa_html_theme_base
         parent::head_script();
         $this->output(
             '<link rel = "stylesheet" type = "text/css" href = "'. QA_HTML_THEME_LAYER_URLTOROOT .'events-window/css/styles.css" />
-            <script src = "'. QA_HTML_THEME_LAYER_URLTOROOT .'events-window/events-info-scripts.js"></script>
+            <script src = "'. QA_HTML_THEME_LAYER_URLTOROOT .'events-window/events-info-scripts.js" defer></script>
         ');
     }
 }

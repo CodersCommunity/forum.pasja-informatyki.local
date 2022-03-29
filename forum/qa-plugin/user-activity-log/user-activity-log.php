@@ -90,28 +90,26 @@
             }
             $qa_content['navigation']['sub']= qa_admin_sub_navigation();
             $qa_content['custom_2'] = 
-            '<div class = "modal-content">
-                <h1>'.qa_lang_html('user-activity-log/EventModalHeader').'</h1>
-                <p>
+            '<section class = "modal-content">
+                <h2>'.qa_lang_html('user-activity-log/EventModalHeader').'</h2>
                     <table>
                         <tr>
                             <th>'.qa_lang_html('user-activity-log/users').'</th>
                             <th>'.qa_lang_html('user-activity-log/questions').'</th>
                             <th>'.qa_lang_html('user-activity-log/answers').'</th>
                         </tr>
-                        '.$this->genereateEventsTable().'
+                        '.$this->generateEventsTable().'
                         </table>
-                </p>
                 <a href = "https://docs.question2answer.org/plugins/modules-event/">'.qa_lang_html('user-activity-log/more').'</a>
                 <br/>
                 <button class = "qa-form-wide-button close-modal">Zamknij</button>
-            </div>
+            </section>
             <button class = "open-modal qa-form-wide-button">Otwórz informację o Eventach</button>';
         
             return $qa_content;
         }
 
-        private function genereateEventsTable()
+        private function generateEventsTable()
         {
             return '
                 <tr>

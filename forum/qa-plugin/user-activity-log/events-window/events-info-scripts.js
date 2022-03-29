@@ -1,15 +1,11 @@
-const ModalWindow = ()=>{
-    const modal = document.querySelector('.modal-content');
-    const closeWindow = document.querySelector('.close-modal');
-    const openWindow = document.querySelector('.open-modal');
+const modal = document.querySelector('.modal-content');
+const closeWindow = document.querySelector('.close-modal');
+const openWindow = document.querySelector('.open-modal');
 
-    openWindow.addEventListener('click', ()=>{
-        modal.style.display = 'block';
-    }, false);
+openWindow.addEventListener('click', ()=>{
+    modal.style.display = 'block';
+}, false);
 
-    closeWindow.addEventListener('click', ()=>{
-        modal.style.display = 'none';
-    }, false);
-}
-
-window.onload = ModalWindow
+closeWindow.addEventListener('click', ()=>{
+    modal.style.display = 'none';
+}, false);

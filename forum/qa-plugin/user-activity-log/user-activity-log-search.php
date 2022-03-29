@@ -60,6 +60,10 @@ class user_activity_search
             switch ($this->searchArr['condition']) {
                 case 'username':
                     $this->searchArr['request'] = $this->findUsersID($this->searchArr['request']);
+                    if(!$this->searchArr['request']){
+                        $finalQuery = $baseQuery;
+                        break;
+                    }
                     $finalQuery = $baseQuery.'WHERE userid = $ ';
                     break;
                 
@@ -82,7 +86,8 @@ class user_activity_search
                 $finalQuery = $finalQuery."AND";
             }
         }else{
-            $finalQuery = $baseQuery." WHERE";
+            $this->searchArr['username'] = " ";
+            $finalQuery = $baseQuery;
         }
 
         if(!empty($this->searchArr['date'])){
@@ -159,39 +164,7 @@ class user_activity_search
             $results = $unfiltered;
         }
 
-        $tableHeader = 
-        "<table><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
-            '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
-            '<th>'.qa_lang_html('user-activity-log/event').'</th>';
-
-        $tableContent = '';
-
-        if(qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR){
-            $tableHeader = $tableHeader.'<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>'.
-                "</tr>";
-
-            foreach($results as $row){
-                $tableContent = $tableContent.'<tr>'.
-                    '<td>'.$row['datetime'].'</td>'.
-                    '<td>'.$row['handle'].'</td>'.
-                    '<td>'.$this->findUsersPostsLinks($row['event'], $row['params']).'</td>'.
-                    '<td> &nbsp;'.$row['ipaddress'].'</td>'.
-                    '</tr>';
-            }
-        }else if(qa_get_logged_in_level() == QA_USER_LEVEL_EDITOR){
-            $tableHeader = $tableHeader.'</tr>';
-            foreach($results as $row){
-                $tableContent = $tableContent.'<tr>'.
-                    '<td>'.$row['datetime'].'</td>'.
-                    '<td>'.$row['handle'].'</td>'.
-                    '<td>'.
-                        $this->findUsersPostsLinks($row['event'], $row['params'])
-                    .'</td>'.
-                    '</tr>';
-            }
-        }
-
-        $table = $tableHeader.$tableContent.'</table>';
+        $table = $this->displayResultsTable($results);
 
         if(empty($results[0])){
             $table = qa_lang_html('user-activity-log/noResults');
@@ -227,7 +200,7 @@ class user_activity_search
             $isValid = false;
         } 
         
-        return $isValid ? $finalQuery.' `datetime` LIKE $' : $finalQuery;
+        return $isValid ? $finalQuery.' WHERE `datetime` LIKE $' : $finalQuery;
     }
 
     private function findUsersID(string $user)
@@ -235,8 +208,13 @@ class user_activity_search
         $query = "SELECT `handle`, `userid` FROM `qa_users` WHERE `handle` = $";
 
         $stmt= qa_db_query_sub($query, $user);
-        $result = qa_db_read_one_assoc($stmt);
-        return $result['userid'];
+        if(mysqli_num_rows($stmt) > 0){
+            $result = qa_db_read_one_assoc($stmt);
+            return $result['userid'];
+        }else{
+            return false;
+        }
+      
     }
 
     private function findUsersPostsLinks(string $event,string $params)
@@ -293,5 +271,34 @@ class user_activity_search
         $stmt = qa_db_query_sub($query, $parentsid);
         $result = qa_db_read_one_assoc($stmt);
         return $result;
+    }
+
+    private function displayResultsTable($data){
+        $tableHeader = 
+        "<table><thead><tr><th>".qa_lang_html('user-activity-log/datetime').' </th>'.
+            '<th>'.qa_lang_html('user-activity-log/handle').'</th>'.
+            '<th>'.qa_lang_html('user-activity-log/event').'</th>';
+
+        qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR ?
+            $tableHeader = $tableHeader.'<th> '.qa_lang_html('user-activity-log/ipaddress').'</th>' : 
+            $tableHeader = $tableHeader;
+
+        $tableHeader = $tableHeader.'</tr></thead><tbody>';
+        $tableContent = '';
+
+            foreach($data as $row){
+                $tableContent = $tableContent.'<tr>'.
+                    '<td>'.$row['datetime'].'</td>'.
+                    '<td>'.$row['handle'].'</td>'.
+                    '<td>'.$this->findUsersPostsLinks($row['event'], $row['params']).'</td>';
+                
+                qa_get_logged_in_level() > QA_USER_LEVEL_EDITOR ? 
+                    $tableContent = $tableContent.'<td>'.$row['ipaddress'].'</td>' : 
+                    $tableContent = $tableContent;
+            }
+        
+        $tableContent = $tableHeader.$tableContent.'</tbody></table>';
+
+        return $tableContent.'</tbody></table>';
     }
 }
