@@ -101,7 +101,6 @@
                         '.$this->generateEventsTable().'
                         </table>
                 <a href = "https://docs.question2answer.org/plugins/modules-event/">'.qa_lang_html('user-activity-log/more').'</a>
-                <br/>
                 <button class = "qa-form-wide-button close-modal">Zamknij</button>
             </section>
             <button class = "open-modal qa-form-wide-button">Otwórz informację o Eventach</button>';

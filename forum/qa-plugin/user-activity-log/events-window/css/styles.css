@@ -5,3 +5,7 @@
 .open-modal{
     margin-top: 2%;
 }
+
+.close-modal{
+    display: block;
+}
