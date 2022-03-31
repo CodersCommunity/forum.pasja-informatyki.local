@@ -93,12 +93,16 @@
             '<section class = "modal-content">
                 <h2>'.qa_lang_html('user-activity-log/EventModalHeader').'</h2>
                     <table>
-                        <tr>
-                            <th>'.qa_lang_html('user-activity-log/users').'</th>
-                            <th>'.qa_lang_html('user-activity-log/questions').'</th>
-                            <th>'.qa_lang_html('user-activity-log/answers').'</th>
-                        </tr>
-                        '.$this->generateEventsTable().'
+                        <thead>
+                            <tr>
+                                <th>'.qa_lang_html('user-activity-log/users').'</th>
+                                <th>'.qa_lang_html('user-activity-log/questions').'</th>
+                                <th>'.qa_lang_html('user-activity-log/answers').'</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            '.$this->generateEventsTable().'
+                        </tbody>
                         </table>
                 <a href = "https://docs.question2answer.org/plugins/modules-event/">'.qa_lang_html('user-activity-log/more').'</a>
                 <button class = "qa-form-wide-button close-modal">Zamknij</button>

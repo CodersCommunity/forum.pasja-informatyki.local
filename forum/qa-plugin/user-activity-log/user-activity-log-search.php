@@ -15,11 +15,11 @@ class user_activity_search
         $_SESSION['sortBy'] = qa_sanitize_html($_POST['fromOldest']) ?? null;
 
         $this->searchArr = [
-            'request' => $_SESSION['query'],
-            'condition' => $_SESSION['condition'],
-            'date' => $_SESSION['date'], 
-            'resultsCount' => $_SESSION['resultsCount'], 
-            'fromOldest' => $_SESSION['sortBy']
+            'request' => qa_sanitize_html($_SESSION['query']),
+            'condition' => qa_sanitize_html($_SESSION['condition']),
+            'date' => qa_sanitize_html($_SESSION['date']), 
+            'resultsCount' => qa_sanitize_html($_SESSION['resultsCount']), 
+            'fromOldest' => qa_sanitize_html($_SESSION['sortBy'])
         ];
         if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
             header('Location: ../../');
