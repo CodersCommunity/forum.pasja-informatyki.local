@@ -81,14 +81,22 @@ class user_activity_search
                     $finalQuery = $baseQuery;
                 break;
             }
+
             
-            if(!empty($this->searchArr['date'])){
-                $finalQuery = $finalQuery."AND";
-            }
         }else{
             $this->searchArr['username'] = " ";
             $finalQuery = $baseQuery;
         }
+
+
+        $finalQuery .= empty($this->searchArr['request']) ? 'WHERE' : 'AND';
+        $finalQuery .= ' event NOT LIKE \'in_%\'';
+
+        if(qa_get_logged_in_level() < QA_USER_LEVEL_MODERATOR){
+            $finalQuery .= 'AND event NOT LIKE \'%vote%\'';
+            $finalQuery .= 'AND event NOT LIKE \'%flag%\'';
+        }
+
 
         if(!empty($this->searchArr['date'])){
             $finalQuery = $this->validateDate($finalQuery);
@@ -101,7 +109,7 @@ class user_activity_search
         $finalQuery .= $this->searchArr['fromOldest'] ? ' DESC' : ' ASC';
         
         $finalQuery = $finalQuery.' LIMIT #';
-        if(strpos($finalQuery, 'LIKE')){
+        if(strpos($finalQuery, '`datetime` LIKE')){
             if(empty($this->searchArr['request'])){
                 $result = qa_db_query_sub($finalQuery, $this->searchArr['date']."%", $this->searchArr['resultsCount']);
             }else{
@@ -127,42 +135,7 @@ class user_activity_search
 
     private function generateResultsTable()
     {
-        $unfiltered = $this->dbResult;
-        if(qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN){
-            $results = array_filter($unfiltered, function($field){
-                $toExclude = [
-                    'q_vote_up',
-                    'q_vote_down', 
-                    'q_vote_nil',
-                    'a_vote_up',
-                    'a_vote_down', 
-                    'a_vote_nil', 
-                    'c_vote_up',
-                    'c_vote_down', 
-                    'c_vote_nil',
-                    'in_q_vote_up' ,
-                    'in_a_vote_up' ,
-                    'in_c_vote_up' ,
-                    'q_flag',
-                    'a_flag',
-                    'c_flag',
-                    'q_unflag',
-                    'a_unflag',
-                    'c_unflag',
-                    'q_clearflags',
-                    'a_clearflags',
-                    'c_clearflags',
-                ];
-                $isToExclude = false;
-                if(in_array($field['event'], $toExclude)){
-                    $isToExclude = true;
-                }
-
-                return $isToExclude ? "" : $field;
-            });
-        }else{
-            $results = $unfiltered;
-        }
+        $results = $this->dbResult;
 
         $table = $this->displayResultsTable($results);
 
@@ -200,7 +173,7 @@ class user_activity_search
             $isValid = false;
         } 
         
-        return $isValid ? $finalQuery.' WHERE `datetime` LIKE $' : $finalQuery;
+        return $isValid ? $finalQuery.' AND `datetime` LIKE $' : $finalQuery;
     }
 
     private function findUsersID(string $user)
