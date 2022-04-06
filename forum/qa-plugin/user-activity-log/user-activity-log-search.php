@@ -92,7 +92,7 @@ class user_activity_search
         $finalQuery .= empty($this->searchArr['request']) ? 'WHERE' : 'AND';
         $finalQuery .= ' event NOT LIKE \'in_%\'';
 
-        if(qa_get_logged_in_level() < QA_USER_LEVEL_MODERATOR){
+        if(qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN){
             $finalQuery .= 'AND event NOT LIKE \'%vote%\'';
             $finalQuery .= 'AND event NOT LIKE \'%flag%\'';
         }
