@@ -103,16 +103,10 @@ function qa_submit_answer(questionid, elem)
 				qa_reveal(answerItem, 'answer', () => tryHighlightAndDecorateCodeBlocks(answerItem));
 			} else if (lines[0]=='0') {
 				const [, answerRefuseReason ] = lines;
-
-				if (answerRefuseReason === 'ALREADY_CLOSED' || answerRefuseReason === 'UNAVAILABLE') {
-					window.handleRefusedPost({
-						postType: 'answer',
-						postRefuseReason: answerRefuseReason,
-						submitButton: elem
-					});
-				} else {
-					document.forms['a_form'].submit();
-				}
+				window.handleRefusedPost({
+					postRefuseReason: answerRefuseReason,
+					submitButton: elem
+				});
 			} else {
 				qa_ajax_error();
 			}
@@ -141,18 +135,11 @@ function qa_submit_comment(questionid, parentid, elem) {
 				.then(() => tryHighlightAndDecorateCodeBlocks(updatedCommentsList));
 		} else if (lines[0] == '0') {
 			const [, commentRefuseReason] = lines;
-
-			if (commentRefuseReason === 'UNAVAILABLE') {
-				window.handleRefusedPost({
-					postType: 'comment',
-					postRefuseReason: commentRefuseReason,
-					parentId: parentid,
-					parentPostIsQuestion: questionid === parentid,
-					submitButton: elem
-				});
-			} else {
-				document.forms['c_form_' + parentid].submit();
-			}
+			window.handleRefusedPost({
+				postRefuseReason: commentRefuseReason,
+				parentId: parentid,
+				submitButton: elem
+			});
 		} else {
 			qa_ajax_error();
 		}
@@ -343,7 +330,7 @@ function tryHighlightAndDecorateCodeBlocks(target, targetId, includeCommentsList
 	}
 }
 
-function handleRefusedPost({ submitButton, postRefuseReason, postType, parentId, parentPostIsQuestion }) {
+function handleRefusedPost({ submitButton, postRefuseReason, parentId }) {
 	submitButton.disabled = true;
 
 	hideEmailNotificationOption();
@@ -352,7 +339,7 @@ function handleRefusedPost({ submitButton, postRefuseReason, postType, parentId,
 
 	function showSubmissionError() {
 		const postSubmissionError = document.createElement('div');
-		postSubmissionError.innerHTML = getSubmissionErrorContent();
+		postSubmissionError.textContent = postRefuseReason || 'Wystąpił problem - nie udało się dodać posta.';
 		postSubmissionError.classList.add('post-submission-alert');
 
 		submitButton.parentNode.insertBefore(postSubmissionError, submitButton);
@@ -362,25 +349,5 @@ function handleRefusedPost({ submitButton, postRefuseReason, postType, parentId,
 		const formNotifyElementName = parentId ? `c${ parentId }_notify` : 'a_notify';
 		const emailNotificationOption = submitButton.form.elements[formNotifyElementName].parentNode.parentNode;
 		emailNotificationOption.remove();
-	}
-
-	function getSubmissionErrorContent() {
-		const postErrorDescription = postType === 'comment' ?
-			'Nie można dodać komentarza.' :
-			'Nie można dodać odpowiedzi.';
-		const submissionErrorContent = {
-			ALREADY_CLOSED: 'Nie można dodać odpowiedzi, ponieważ pytanie zostało zamknięte.<br>Jeśli chcesz, to dodaj swój post w formie komentarza.',
-			UNAVAILABLE: `${ postErrorDescription } ${ getPostRelationDescription() }`
-		};
-
-		return submissionErrorContent[postRefuseReason];
-	}
-
-	function getPostRelationDescription() {
-		if (postType === 'comment') {
-			return parentPostIsQuestion ? 'Pytanie nie jest już dostępne.' : 'Odpowiedź nie jest już dostępna.';
-		} else {
-			return 'Temat nie jest już dostępny.';
-		}
 	}
 }
