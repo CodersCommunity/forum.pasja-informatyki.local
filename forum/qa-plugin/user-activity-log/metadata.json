@@ -1,0 +1,8 @@
+{
+    "name": "User activity log",
+    "description": "Admin panel page that shows user activity log",
+    "version": "1.0",
+    "author": "wizarddos",
+    "license": "GPLv2",
+    "min_q2a": "1.5"
+}
