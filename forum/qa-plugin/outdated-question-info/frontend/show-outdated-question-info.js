@@ -1,30 +1,27 @@
-const showInfoAboutOutdatedQuestion = (placeOfOutdatedQuestionInfo) => {
-    const publishDateSpan = document.querySelectorAll('.value-title')[2];
+const showInfoAboutOutdatedQuestion = () => {
+    const publishDateSpan = document.querySelector('.published > .value-title');
+    const placeOfOutdatedQuestionInfo = document.querySelector('.qa-a-form');
 
     const now = new Date();
     const publishDate = new Date(publishDateSpan.title);
 
-    if(publishDate.getFullYear() < now.getFullYear()) {
-        if(publishDate.getMonth()-1 >= now.getMonth()){
-            if(!document.querySelector('.qa-outdated-question')) {
-                placeOfOutdatedQuestionInfo.insertAdjacentHTML('beforebegin', 
-                        `<div class = "qa-outdated-question-container">
-                                <span class = "qa-outdated-question-info">
-                                        To pytanie zostało zadane ponad 2 miesiące temu i może być już nie aktualne.<br/>
-                                        Zastanów się, czy na pewno chcesz "odkopać" to pytanie.
-                                </span>
-                        </div>`);
-            }
-        }
+    const publishYearOlderThanNow = publishDate.getFullYear() < now.getFullYear();
+    const publishMonthNewerThanNow = publishDate.getMonth() - 1 >= now.getMonth();
+    const doesQuestionElemExist = document.querySelector('.qa-outdated-question-container');
+
+    if (publishYearOlderThanNow && publishMonthNewerThanNow && !doesQuestionElemExist) {
+        placeOfOutdatedQuestionInfo.insertAdjacentHTML('beforebegin', 
+                `<p class = "qa-outdated-question-container">
+                        To pytanie zostało zadane ponad 2 miesiące temu i może być już nieaktualne.<br/>
+                        Zastanów się, czy na pewno chcesz "odkopać" to pytanie.
+                </p>`);
     }
 }
-if(document.querySelector('.qa-a-form')!== null){
-    const placeOfOutdatedQuestionInfo = document.querySelector('.qa-a-form')
+if(document.querySelector('.qa-a-form')){
+    const placeOfOutdatedQuestionInfo = document.querySelector('.qa-a-form');
     if(placeOfOutdatedQuestionInfo.getAttribute('style') === "display:none;"){
-        document.querySelector('#q_doanswer').addEventListener('click', ()=>{
-            showInfoAboutOutdatedQuestion(placeOfOutdatedQuestionInfo)
-        });
+        document.querySelector('#q_doanswer').addEventListener('click', showInfoAboutOutdatedQuestion);
     }else{
-        showInfoAboutOutdatedQuestion(placeOfOutdatedQuestionInfo);
+        showInfoAboutOutdatedQuestion();
     }
 }
