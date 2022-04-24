@@ -8,33 +8,36 @@ class user_activity_search
 
     public function match_request(string $request) 
     {
-        $_SESSION['query'] = qa_sanitize_html($_POST['request']) ?? null;
-        $_SESSION['condition'] = qa_sanitize_html($_POST['condition']) ?? null;
-        $_SESSION['date'] = qa_sanitize_html($_POST['date'])?? null;
-        $_SESSION['resultsCount'] = qa_sanitize_html($_POST['resultsCount']) ?? null;
-        $_SESSION['sortBy'] = qa_sanitize_html($_POST['fromOldest']) ?? null;
-
-        $this->searchArr = [
-            'request' => qa_sanitize_html($_SESSION['query']),
-            'condition' => qa_sanitize_html($_SESSION['condition']),
-            'date' => qa_sanitize_html($_SESSION['date']), 
-            'resultsCount' => qa_sanitize_html($_SESSION['resultsCount']), 
-            'fromOldest' => qa_sanitize_html($_SESSION['sortBy'])
-        ];
-        if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
-            header('Location: ../../');
-            exit;
-        }
-
-        if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
-            if(isset($this->searchArr)){
-                $this->dbSearch();
-                if(isset($this->dbResult)){
-                    return $request === 'user-activity-log-search';
-                }
+        if($request === 'user-activity-log-search'){
+            if(!isset($_POST['condition']) || !isset($_POST['resultsCount'])){
+                header('Location: ../../');
+                exit;
             }
-        }else{
-            return false;
+
+            $_SESSION['query'] = qa_sanitize_html($_POST['request']) ?? null;
+            $_SESSION['condition'] = qa_sanitize_html($_POST['condition']) ?? null;
+            $_SESSION['date'] = qa_sanitize_html($_POST['date'])?? null;
+            $_SESSION['resultsCount'] = qa_sanitize_html($_POST['resultsCount']) ?? null;
+            $_SESSION['sortBy'] = qa_sanitize_html($_POST['fromOldest']) ?? null;
+
+            $this->searchArr = [
+                'request' => qa_sanitize_html($_SESSION['query']),
+                'condition' => qa_sanitize_html($_SESSION['condition']),
+                'date' => qa_sanitize_html($_SESSION['date']), 
+                'resultsCount' => qa_sanitize_html($_SESSION['resultsCount']), 
+                'fromOldest' => qa_sanitize_html($_SESSION['sortBy'])
+            ];
+
+            if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
+                if(isset($this->searchArr)){
+                    $this->dbSearch();
+                    if(isset($this->dbResult)){
+                        return $request === 'user-activity-log-search';
+                    }
+                }
+            }else{
+                return false;
+            }
         }
     }
 
@@ -61,7 +64,8 @@ class user_activity_search
                 case 'username':
                     $this->searchArr['request'] = $this->findUsersID($this->searchArr['request']);
                     if(!$this->searchArr['request']){
-                        $finalQuery = $baseQuery;
+                        $this->dbResult = [];
+                        return false;
                         break;
                     }
                     $finalQuery = $baseQuery.'WHERE userid = $ ';
@@ -192,8 +196,8 @@ class user_activity_search
 
     private function findUsersPostsLinks(string $event,string $params)
     {
-        $first = substr($event, 0, 1);
-        if($first != 'q' && $first != 'a' && $first != 'c'){
+        $first = substr($event, 0, 2);
+        if($first != 'q_' && $first != 'a_' && $first != 'c_'){
             return qa_lang_html('user-activity-log/'.$event);
         }else{
             $paramsArray = qa_string_to_words($params);
