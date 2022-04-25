@@ -1,14 +1,7 @@
-.modal-content{
-    display: none;
-}
-
 .open-modal{
     margin-top: 2%;
 }
 
-.shown{
-    display: block;
-}
 
 .hidden{
     display: none;

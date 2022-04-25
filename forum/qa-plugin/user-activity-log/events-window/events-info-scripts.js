@@ -1,22 +1,16 @@
 const openWindow = document.querySelector('.open-modal');
 if(openWindow) {
-    const modal = document.querySelector('.modal-content').classList;
+    const modalClassName = document.querySelector('.modal-content').classList;
     const closeWindow = document.querySelector('.close-modal');
 
     openWindow.addEventListener('click', ()=>{
-        modal.remove('hidden');
-        modal.add('shown');
-
-        openWindow.classList.remove('shown');
+        modalClassName.remove('hidden');
         openWindow.classList.add('hidden');
         
     }, false);
 
     closeWindow.addEventListener('click', ()=>{
-        modal.remove('shown');
-        modal.add('hidden');
-
+        modalClassName.add('hidden');
         openWindow.classList.remove('hidden');
-        openWindow.classList.add('shown');
     }, false);
 }

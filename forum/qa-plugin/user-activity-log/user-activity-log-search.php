@@ -150,13 +150,9 @@ class user_activity_search
 
     private function validateDate(string $finalQuery)
     {
-        $isValid = true;
-
-        if(!preg_match("/^(?<year>\d{4})(?:-(?<month>\d{2})(?:-(?<day>\d{2})(?:[ T](?<hour>\d{2})(?::(?<min>\d{2})?)(?::(?<sec>\d{2}))?)?)?)?$/", $this->searchArr['date'])){
-            $isValid = false;
-        }
+        $isDateValid = preg_match("/^(?<year>\d{4})(?:-(?<month>\d{2})(?:-(?<day>\d{2})(?:[ T](?<hour>\d{2})(?:(?<min>\d{2})?)(?::(?<sec>\d{2}))?)?)?)?$/", $this->searchArr['date']);
         
-        return $isValid ? $finalQuery.' AND `datetime` LIKE $' : $finalQuery;
+        return $isDateValid ? $finalQuery.' AND `datetime` LIKE $' : $finalQuery;
     }
 
     private function findUsersID(string $user)
