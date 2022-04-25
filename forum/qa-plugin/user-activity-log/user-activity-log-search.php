@@ -28,12 +28,10 @@ class user_activity_search
                 'fromOldest' => qa_sanitize_html($_SESSION['sortBy'])
             ];
 
-            if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
-                if(isset($this->searchArr)){
-                    $this->dbSearch();
-                    if(isset($this->dbResult)){
-                        return $request === 'user-activity-log-search';
-                    }
+            if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR && isset($this->searchArr)){
+                $this->dbSearch();
+                if(isset($this->dbResult)){
+                    return $request === 'user-activity-log-search';
                 }
             }else{
                 return false;
@@ -106,7 +104,7 @@ class user_activity_search
             $finalQuery = $this->validateDate($finalQuery);
         }
         
-        if(!is_numeric($this->searchArr['resultsCount']) || empty($this->searchArr['resultsCount'])){
+        if(!is_numeric($this->searchArr['resultsCount']) || empty($this->searchArr['resultsCount']) || $this->searchArr['resultsCount'] < 0){
             $this->searchArr['resultsCount'] = 45;
         }
         $finalQuery = $finalQuery.' ORDER BY `datetime`';
@@ -154,28 +152,9 @@ class user_activity_search
     {
         $isValid = true;
 
-        if(!empty($this->searchArr['date'])){
-            $dateArr = explode('-', $this->searchArr['date']);
-            if(isset($dateArr[0]) && is_numeric($dateArr[0])){
-                $date = $dateArr[0];
-                if(isset($dateArr[1]) && is_numeric($dateArr[1])){
-                    $date = $date.'-'.$dateArr[1];
-                    if(isset($dateArr[2])){
-                        if(strlen($dateArr[2]) > 2){
-                            [$day, $hours] = explode(' ', $dateArr[2]);
-                            $dateArr[2] = $day;
-                            $dateArr[3] = $hours;
-                        }
-
-                        $date = $date.'-'.$dateArr[2];
-                    }
-                }
-            }else{
-                $isValid = false;
-            } 
-        }else{
+        if(!preg_match("/^(?<year>\d{4})(?:-(?<month>\d{2})(?:-(?<day>\d{2})(?:[ T](?<hour>\d{2})(?::(?<min>\d{2})?)(?::(?<sec>\d{2}))?)?)?)?$/", $this->searchArr['date'])){
             $isValid = false;
-        } 
+        }
         
         return $isValid ? $finalQuery.' AND `datetime` LIKE $' : $finalQuery;
     }
@@ -196,14 +175,18 @@ class user_activity_search
 
     private function findUsersPostsLinks(string $event,string $params)
     {
-        $first = substr($event, 0, 2);
-        if($first != 'q_' && $first != 'a_' && $first != 'c_'){
+        $eventPrefix = substr($event, 0, 2);
+        $wantedEventPrefixes = ['q_', 'a_', 'c_'];
+        if(!in_array($eventPrefix, $wantedEventPrefixes)){
             return qa_lang_html('user-activity-log/'.$event);
         }else{
             $paramsArray = qa_string_to_words($params);
             $postID = $paramsArray[1];
-            $query = "SELECT `title`, `type`, `parentid` FROM `qa_posts` WHERE `postid` = $";
+            $query = "SELECT `title`, `type`, `parentid` FROM `^posts` WHERE `postid` = $";
             $stmt = qa_db_query_sub($query, $postID);
+            if($stmt->num_rows < 1){
+                return qa_lang_html('user-activity-log/'.$event);
+            }
             $result = qa_db_read_one_assoc($stmt);
             $postTitle = $result['title'] ?? null;
             $postType = $result['type'] ?? null;

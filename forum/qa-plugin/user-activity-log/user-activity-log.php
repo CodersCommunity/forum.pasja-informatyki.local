@@ -74,7 +74,7 @@
                     'resultsCount' => array(
                         'type' => 'number',
                         'label'=> qa_lang_html('user-activity-log/count'),
-                        'tags'=> 'name=resultsCount value="'.$this->resultsCount.'"',
+                        'tags'=> 'name=resultsCount value="'.$this->resultsCount.'" min=1 max=100',
                     )
                 ),
 
@@ -92,8 +92,8 @@
             }
             $qa_content['navigation']['sub']= qa_admin_sub_navigation();
             $qa_content['custom_2'] = 
-            '<button class = "open-modal qa-form-wide-button">Otwórz informację o Eventach</button>
-            <section class = "modal-content">
+            '<button class = "open-modal qa-form-wide-button shown">Otwórz informację o Eventach</button>
+            <section class = "modal-content hidden">
                 <button class = "qa-form-wide-button close-modal">Zamknij</button>
                 <h2>'.qa_lang_html('user-activity-log/EventModalHeader').'</h2>
                     <table>

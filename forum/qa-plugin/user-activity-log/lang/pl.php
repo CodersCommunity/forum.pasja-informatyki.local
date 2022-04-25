@@ -81,7 +81,7 @@ return [
     'c_vote_down' => 'Oddano głos w dół na komentarz',
     'c_vote_nil' => 'Usunięto głos na komentarz',
     'c_clearflags' => 'Usunięto wszystkie zgłoszenia na komentarz',
-    'c_edit' => 'Edytowano komentarza',
+    'c_edit' => 'Edytowano komentarz',
 
     'a_post' => 'Dodano odpowiedź',
     'a_edit' => 'Edytowano odpowiedź', 

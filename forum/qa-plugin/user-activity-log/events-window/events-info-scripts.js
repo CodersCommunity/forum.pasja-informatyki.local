@@ -1,15 +1,22 @@
 const openWindow = document.querySelector('.open-modal');
 if(openWindow) {
-    const modal = document.querySelector('.modal-content');
+    const modal = document.querySelector('.modal-content').classList;
     const closeWindow = document.querySelector('.close-modal');
 
     openWindow.addEventListener('click', ()=>{
-        modal.style.display = 'block';
-        openWindow.style.display = 'none';
+        modal.remove('hidden');
+        modal.add('shown');
+
+        openWindow.classList.remove('shown');
+        openWindow.classList.add('hidden');
+        
     }, false);
 
     closeWindow.addEventListener('click', ()=>{
-        modal.style.display = 'none';
-        openWindow.style.display = 'block';
+        modal.remove('shown');
+        modal.add('hidden');
+
+        openWindow.classList.remove('hidden');
+        openWindow.classList.add('shown');
     }, false);
 }

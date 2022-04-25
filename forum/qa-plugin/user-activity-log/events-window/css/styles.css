@@ -6,6 +6,10 @@
     margin-top: 2%;
 }
 
-.close-modal{
+.shown{
     display: block;
+}
+
+.hidden{
+    display: none;
 }
