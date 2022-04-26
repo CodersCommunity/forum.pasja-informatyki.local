@@ -7,14 +7,12 @@ if(placeOfOutdatedQuestionInfo){
     const publishMonthNewerThanNow = publishDate.getMonth() - 1 >= now.getMonth();
 
     if (publishYearOlderThanNow && publishMonthNewerThanNow) {
-        let infoDisplay = "";
-        if(placeOfOutdatedQuestionInfo.style.display !== 'none'){
-            infoDisplay = "display:block;";
-        }else{
-            infoDisplay = "display:none;";
+        let shouldBeDisplayed = "";
+        if(placeOfOutdatedQuestionInfo.style.display === 'none'){
+            shouldBeDisplayed = "hidden";
         }
         placeOfOutdatedQuestionInfo.insertAdjacentHTML('beforebegin', 
-                `<p class = "qa-outdated-question-container" style = "${infoDisplay}">
+                `<p class = "qa-outdated-question-container ${shouldBeDisplayed}">
                     To pytanie zostało zadane już dawno temu i może być nieaktualne.<br/>
                     Upewnij się, że Twoja odpowiedź nadal będzie pomocna.
                 </p>`);
@@ -22,8 +20,15 @@ if(placeOfOutdatedQuestionInfo){
     const QuestionElemExist = document.querySelector('.qa-outdated-question-container');
 
     if(QuestionElemExist){
+        const cancelAnswer = document.querySelectorAll('input[name=docancel]')[1];
+        const outdatedInfoContainerClassList = QuestionElemExist.classList;
+
+        cancelAnswer.addEventListener('click', ()=>{
+            outdatedInfoContainerClassList.toggle('hidden');
+        }, false)
+
         document.querySelector('#q_doanswer').addEventListener('click', ()=>{
-            QuestionElemExist.style.display = (QuestionElemExist.style.display === 'block') ? 'none' : 'block';
+            outdatedInfoContainerClassList.toggle('hidden');
         })
     }
 }

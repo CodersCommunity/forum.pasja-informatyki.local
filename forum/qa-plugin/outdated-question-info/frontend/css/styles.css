@@ -2,10 +2,13 @@
     width: 100%;
 
     text-align: center;
-    padding: 2%;
-    display: none;
+    padding: 1%;
 
     border: 6px solid #f74040;
     margin-bottom: 2.5%;
     font-size: 1.5rem;
+}
+
+.hidden{
+    display: none;
 }
