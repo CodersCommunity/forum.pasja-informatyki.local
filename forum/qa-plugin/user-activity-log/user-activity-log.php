@@ -55,8 +55,9 @@
                     ),
 
                     'date' => array(
+                        'type' => 'date',
                         'label' => qa_lang_html('user-activity-log/date'),
-                        'tags' => 'placeholder=YYYY-MM-DD name=date value="'.$this->date.'"',
+                        'tags' => 'placeholder=RRRR-MM-DD name=date value="'.$this->date.'"',
                     ),
 
                     'fromOldest' => [
@@ -71,8 +72,9 @@
                     ],
 
                     'resultsCount' => array(
+                        'type' => 'number',
                         'label'=> qa_lang_html('user-activity-log/count'),
-                        'tags'=> 'name=resultsCount value="'.$this->resultsCount.'"',
+                        'tags'=> 'name=resultsCount value="'.$this->resultsCount.'" min=1 max=100',
                     )
                 ),
 
@@ -90,7 +92,9 @@
             }
             $qa_content['navigation']['sub']= qa_admin_sub_navigation();
             $qa_content['custom_2'] = 
-            '<section class = "modal-content">
+            '<button class = "open-modal qa-form-wide-button shown">Otwórz informację o Eventach</button>
+            <section class = "modal-content hidden">
+                <button class = "qa-form-wide-button close-modal">Zamknij</button>
                 <h2>'.qa_lang_html('user-activity-log/EventModalHeader').'</h2>
                     <table>
                         <thead>
@@ -105,9 +109,8 @@
                         </tbody>
                         </table>
                 <a href = "https://docs.question2answer.org/plugins/modules-event/">'.qa_lang_html('user-activity-log/more').'</a>
-                <button class = "qa-form-wide-button close-modal">Zamknij</button>
-            </section>
-            <button class = "open-modal qa-form-wide-button">Otwórz informację o Eventach</button>';
+            </section>';
+            
         
             return $qa_content;
         }
@@ -128,7 +131,7 @@
                 <tr>
                     <td>u_edit - '.qa_lang_html("user-activity-log/u_edit").'</td>
                     <td>q_close - '.qa_lang_html("user-activity-log/q_close").'</td>
-                    <td>in_a_question - '.qa_lang_html('user-activity-log/in_a_question').'</td>
+                    <td>a_hide - '.qa_lang_html('user-activity-log/a_hide').'</td>
                 </tr>
                 <tr>
                     <td>u_message - '.qa_lang_html("user-activity-log/u_message").'</td>
