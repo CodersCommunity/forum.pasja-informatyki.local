@@ -6,29 +6,30 @@ if(placeOfOutdatedQuestionInfo){
     const publishYearOlderThanNow = publishDate.getFullYear() < now.getFullYear();
     const publishMonthNewerThanNow = publishDate.getMonth() - 1 >= now.getMonth();
 
-    if (publishYearOlderThanNow && publishMonthNewerThanNow) {
-        let shouldBeDisplayed = "";
-        if(placeOfOutdatedQuestionInfo.style.display === 'none'){
-            shouldBeDisplayed = "hidden";
-        }
+    if (publishYearOlderThanNow || publishMonthNewerThanNow) {
+        const outdatedQuestionInfoVisibility = placeOfOutdatedQuestionInfo.style.display === 'none' ? 'hidden' : '';
         placeOfOutdatedQuestionInfo.insertAdjacentHTML('beforebegin', 
-                `<p class = "qa-outdated-question-container ${shouldBeDisplayed}">
+                `<p class = "qa-outdated-question-container ${outdatedQuestionInfoVisibility}">
                     To pytanie zostało zadane już dawno temu i może być nieaktualne.<br/>
                     Upewnij się, że Twoja odpowiedź nadal będzie pomocna.
                 </p>`);
     }
-    const QuestionElemExist = document.querySelector('.qa-outdated-question-container');
+    const questionElemExist = document.querySelector('.qa-outdated-question-container');
+    if(questionElemExist){
+        const outdatedInfoContainerClassList = questionElemExist.classList;
+    
+        const areThereAnswersForQuestion = !CKEDITOR.instances.a_content ? true : false;
+        
 
-    if(QuestionElemExist){
-        const cancelAnswer = document.querySelectorAll('input[name=docancel]')[1];
-        const outdatedInfoContainerClassList = QuestionElemExist.classList;
-
-        cancelAnswer.addEventListener('click', ()=>{
-            outdatedInfoContainerClassList.toggle('hidden');
-        }, false)
 
         document.querySelector('#q_doanswer').addEventListener('click', ()=>{
-            outdatedInfoContainerClassList.toggle('hidden');
+            outdatedInfoContainerClassList.contains('hidden') ? outdatedInfoContainerClassList.remove('hidden') : outdatedInfoContainerClassList.add('hidden');
+            if(areThereAnswersForQuestion){
+                const cancelAnswer = CKEDITOR.instances.a_content.element.$.form.docancel;
+                cancelAnswer.addEventListener('click', ()=>{
+                    outdatedInfoContainerClassList.contains('hidden') ? outdatedInfoContainerClassList.remove('hidden') : outdatedInfoContainerClassList.add('hidden');
+                }, {once: true});
+            }
         })
     }
 }
