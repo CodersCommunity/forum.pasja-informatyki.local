@@ -18,16 +18,16 @@ if(placeOfOutdatedQuestionInfo){
     if(questionElemExist){
         const outdatedInfoContainerClassList = questionElemExist.classList;
     
-        const areThereAnswersForQuestion = !CKEDITOR.instances.a_content ? true : false;
+        const areThereAnswersForQuestion = !CKEDITOR.instances.a_content;
         
 
 
         document.querySelector('#q_doanswer').addEventListener('click', ()=>{
-            outdatedInfoContainerClassList.contains('hidden') ? outdatedInfoContainerClassList.remove('hidden') : outdatedInfoContainerClassList.add('hidden');
+            outdatedInfoContainerClassList.toggle('hidden');
             if(areThereAnswersForQuestion){
                 const cancelAnswer = CKEDITOR.instances.a_content.element.$.form.docancel;
                 cancelAnswer.addEventListener('click', ()=>{
-                    outdatedInfoContainerClassList.contains('hidden') ? outdatedInfoContainerClassList.remove('hidden') : outdatedInfoContainerClassList.add('hidden');
+                    outdatedInfoContainerClassList.toggle('hidden');
                 }, {once: true});
             }
         })
