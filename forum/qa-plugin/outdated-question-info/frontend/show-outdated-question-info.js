@@ -15,7 +15,7 @@ if(placeOfOutdatedQuestionInfo){
                 </p>`);
     }
     const questionElemExist = document.querySelector('.qa-outdated-question-container');
-    
+
     if(questionElemExist){
         const outdatedInfoContainerClassList = questionElemExist.classList;
         const doesCancelButtonExist = !CKEDITOR.instances.a_content;
@@ -23,12 +23,14 @@ if(placeOfOutdatedQuestionInfo){
         document.querySelector('#q_doanswer').addEventListener('click', ()=>{
             outdatedInfoContainerClassList.toggle('hidden');
             questionElemExist.scrollIntoView({ behavior: "smooth"})
+
             if(doesCancelButtonExist){
                 const cancelAnswer = CKEDITOR.instances.a_content.element.$.form.docancel;
                 cancelAnswer.addEventListener('click', ()=>{
                     outdatedInfoContainerClassList.toggle('hidden');
                 }, {once: true});
             }
+            
         })
     }
 }
