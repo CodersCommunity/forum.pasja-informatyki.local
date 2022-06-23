@@ -6,9 +6,13 @@
 
     border: 6px solid #f74040;
     margin-bottom: 2.5%;
-    font-size: 1.45rem;
+    font-size: 1.30rem;
+    scroll-behavior: smooth;
 }
 
 .hidden{
     display: none;
 }
+
+
+

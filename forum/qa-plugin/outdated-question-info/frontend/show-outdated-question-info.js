@@ -15,16 +15,15 @@ if(placeOfOutdatedQuestionInfo){
                 </p>`);
     }
     const questionElemExist = document.querySelector('.qa-outdated-question-container');
+    
     if(questionElemExist){
         const outdatedInfoContainerClassList = questionElemExist.classList;
-    
-        const areThereAnswersForQuestion = !CKEDITOR.instances.a_content;
+        const doesCancelButtonExist = !CKEDITOR.instances.a_content;
         
-
-
         document.querySelector('#q_doanswer').addEventListener('click', ()=>{
             outdatedInfoContainerClassList.toggle('hidden');
-            if(areThereAnswersForQuestion){
+            questionElemExist.scrollIntoView({ behavior: "smooth"})
+            if(doesCancelButtonExist){
                 const cancelAnswer = CKEDITOR.instances.a_content.element.$.form.docancel;
                 cancelAnswer.addEventListener('click', ()=>{
                     outdatedInfoContainerClassList.toggle('hidden');
