@@ -13,8 +13,8 @@ class qa_users_hidden_posts
     public function match_request( string $request)
     {
         if(qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR){
-            $this->userHandle = qa_request_part(1);
-            return qa_request_part(0)  == 'hidden-posts' && isset($request[1]);
+            $this->userHandle = $_GET['user'];
+            return qa_request_part(0)  == 'hidden-posts';
         }
     }
 
@@ -26,11 +26,37 @@ class qa_users_hidden_posts
         $qa_content['title'] = qa_lang_html('users-hidden-posts/title');
         $qa_content['form'] = [
             'tags' => 'method="post" action="' . qa_self_html() . '"',
+            'style' => 'wide',
             'title' => qa_lang_html('users-hidden-posts/form-title'),
-            'hidden' => [
-                'code' => qa_get_form_security_code('user_hidden_posts'),
-                'qa_1' => qa_request_part(1),
-            ] 
+            //TODO: Skończyć ten formularz w formie radio buttonów
+            'fields' => [
+                'comments' => [
+                    'type' => 'checkbox',
+                    'label' => qa_lang_html('users-hidden-posts/comments'),
+                    'tags' => 'name=comments',
+                    'value' => isset($_POST['comments']) ? true : false,
+                ],
+                'answers' => [
+                    'type' => 'checkbox',
+                    'label' => qa_lang_html('users-hidden-posts/answers'),
+                    'tags' => 'name=answers',
+                    'value' => isset($_POST['answers']) ? true : false,
+
+                ],
+                'qusetions' => [
+                    'type' => 'checkbox',
+                    'label' => qa_lang_html('users-hidden-posts/questions'),
+                    'tags' => 'name=questions',
+                    'value' => isset($_POST['questions']) ? true : false,
+                ],
+            ],
+
+            'buttons' => array(
+                'submit' => array(
+                    'tags' => 'name="search"',
+                    'label' => qa_lang_html('user-activity-log/search-label'),
+                ),
+            ),
         ];
         
         $qa_content['custom'] = $this->showUsersHiddenPosts();
@@ -41,7 +67,13 @@ class qa_users_hidden_posts
 
     private function showUsersHiddenPosts()
     {
-        
+        if(isset($_POST['search'])){
+            $comments = isset($_POST['comments']) ? true : false;
+            $answers = isset($_POST['answers']) ? true : false;
+            $questions = isset($_POST['questions']) ? true : false;
+            $userId = qa_handle_to_userid($this->userHandle);
+            
+        }
     }
 
 }

@@ -14,7 +14,7 @@ class qa_html_theme_layer extends qa_html_theme_base
             if(preg_match('/user[\/]/', $qa_request) && qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR) {
                 $navigation['hidden-posts'] = [
                     'label' =>  qa_lang_html('users-hidden-posts/label'),
-                    'url' => qa_path_html('hidden-posts', ['qa_1' => qa_request_part(1)]),
+                    'url' => qa_path_html('hidden-posts', ['user' => qa_request_part(1)]),
                     
                 ];
             }
