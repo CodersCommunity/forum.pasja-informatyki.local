@@ -943,7 +943,21 @@ blockquote p {
 	font-size: 0.875em;
 	text-align: center;
 	font-family: "Ubuntu", "Helvetica", "Arial", "FreeSans", sans-serif;
+}
 
+.qa-nav-user-list .qa-nav-user-facebook {
+ border: 0 !important;
+	background-color: transparent !important;
+}
+
+.qa-nav-user-item.qa-nav-user-facebook {
+	padding: 0 !important;
+}
+
+.open-login-button.context-menu.action-login.facebook {
+	display: flex;
+	width: 100%;
+	justify-content: center
 }
 
 .action-login{
