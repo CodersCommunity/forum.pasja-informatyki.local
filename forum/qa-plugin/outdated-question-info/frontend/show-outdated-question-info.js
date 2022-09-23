@@ -22,7 +22,7 @@ if(placeOfOutdatedQuestionInfo){
         
         document.querySelector('#q_doanswer').addEventListener('click', ()=>{
             outdatedInfoContainerClassList.toggle('hidden');
-            questionElemExist.scrollIntoView({ behavior: "smooth"})
+            questionElemExist.scrollIntoView({ behavior: "smooth", block:'start', inline: 'start'})
 
             if(doesCancelButtonExist){
                 const cancelAnswer = CKEDITOR.instances.a_content.element.$.form.docancel;
