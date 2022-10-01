@@ -1430,6 +1430,72 @@ const codeBlockInteractiveBar = () => {
 
                 this.isFullScreen = !this.isFullScreen;
             }
+
+            checkIfFullScreenIsActive() {
+                return !!this.isFullScreen;
+            }
+        }
+
+        class HorizontalCodeBlockExtenderOnHover {
+            #overflowingRoots = document.querySelectorAll('.qa-main-wrapper, .qa-main');
+            #horizontallyExtendedCodeBlock = null;
+            // TODO: CollapsibleCodeBlocks class should expose method returning that button or toggling disable state by itself
+            #collapsibleToggleBtn = null;
+            #checkIfFullScreenIsActive;
+
+            constructor(codeBlock, checkIfFullScreenIsActive) {
+                this.#checkIfFullScreenIsActive = checkIfFullScreenIsActive;
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    this.#collapsibleToggleBtn = processedCodeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
+
+                    processedCodeBlock.addEventListener('mouseenter', this.#extendCodeBlock.bind(this));
+                    // attach `mouseout` to parent to let user use interactive bar while block is extended
+                    processedCodeBlock.parentNode.addEventListener('mouseleave', this.#collapseCodeBlock.bind(this));
+                });
+            }
+
+            #extendCodeBlock({ target }) {
+                const isCodeBlock = target.classList.contains('syntaxhighlighter');
+                const isCodeBlockCollapsed = target.classList.contains('collapsed-block');
+
+                if (isCodeBlock && !isCodeBlockCollapsed && !this.#checkIfFullScreenIsActive()) {
+                    this.#collapsibleToggleBtn.disabled = true;
+                    this.#horizontallyExtendedCodeBlock = target;
+                    this.#toggleRootsOverflowing(target, true);
+
+                    const qaMainWrapperWidth = window.getComputedStyle(this.#overflowingRoots[0]).width;
+                    target.style.setProperty('--extended-horizontal-width', qaMainWrapperWidth);
+                    target.classList.add('syntaxhighlighter--horizontally-extended');
+                }
+            }
+
+            #collapseCodeBlock({ target }) {
+                const isSyntaxHighlighterParent = target.classList.contains('syntaxhighlighter-parent');
+                const horizontallyExtendedCodeBlock = target.querySelector('.syntaxhighlighter--horizontally-extended');
+
+                if (isSyntaxHighlighterParent && horizontallyExtendedCodeBlock) {
+                    this.#horizontallyExtendedCodeBlock.classList.remove('syntaxhighlighter--horizontally-extended');
+
+                    target.addEventListener('transitionend', () => {
+                        this.#toggleRootsOverflowing(target, false);
+                        this.#collapsibleToggleBtn.disabled = false;
+                        this.#horizontallyExtendedCodeBlock = null;
+                    }, { once: true });
+                }
+            }
+
+            #toggleRootsOverflowing(target, shouldOverflow) {
+                const popupAsRoot = target.closest('.post-preview');
+                const overflowMaybeVisible = shouldOverflow ? 'visible' : null;
+
+                if (popupAsRoot) {
+                    popupAsRoot.style.overflow = overflowMaybeVisible;
+                } else {
+                    this.#overflowingRoots.forEach(root => root.style.overflow = overflowMaybeVisible);
+                }
+            }
         }
 
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
@@ -1458,6 +1524,8 @@ const codeBlockInteractiveBar = () => {
                 codeBlockFullScreen.getFullScreenBtn(),
             ].filter(Boolean));
             featuresDrawer.assignClearAndExitSearch(searchThroughCode.clearAndExit.bind(searchThroughCode));
+
+            new HorizontalCodeBlockExtenderOnHover(codeBlock, codeBlockFullScreen.checkIfFullScreenIsActive.bind(codeBlockFullScreen));
 
             return [
                 languageLabel.getLanguageLabel(codeBlock),

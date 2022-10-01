@@ -4690,7 +4690,12 @@ pre[class*="brush:"]
 {
 	max-height: var(--code-block-raw-height); /* provided by inline style from JavaScript */
 	--syntaxhighlighter-collapsible-transition: max-height 0.2s ease-in-out;
-	transition: var(--syntaxhighlighter-collapsible-transition);
+	transition: 
+		var(--syntaxhighlighter-collapsible-transition), 
+		left 0.2s ease-in-out, 
+		width 0.2s ease-in-out;
+	left: 0;
+	z-index: 1;
 }
 
 .syntaxhighlighter-parent .syntaxhighlighter .toolbar
@@ -4776,6 +4781,8 @@ pre[class*="brush:"]::after
 	opacity: 1;
 	transition: opacity 0.2s;
 	border-radius: 50px 50px 1px 1px;
+	position: relative;
+	z-index: 2;
 
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
 	background: -moz-linear-gradient(left,  rgba(52,152,219,0.45) 0%, rgba(52,152,219,0.75) 50%, rgba(52,152,219,0.45) 100%); /* FF3.6-15 */
@@ -5275,6 +5282,15 @@ ul.features-drawer-list--hidden
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer-list {
 		right: -22px;
 	}
+}
+
+.syntaxhighlighter.syntaxhighlighter--horizontally-extended {
+	/* override SyntaxHighlighter `!important` rule */
+	width: var(--extended-horizontal-width, max-content) !important;
+	--qa-body-wrapper-margin-side: 130;
+	/* restrict to `.qa-body-wrapper` margin */
+	max-width: calc(95vw - calc(var(--qa-body-wrapper-margin-side) * 2px));
+	left: calc(var(--qa-body-wrapper-margin-side) * -1px);
 }
 
 /* End of Interactive Code Block Bar */
