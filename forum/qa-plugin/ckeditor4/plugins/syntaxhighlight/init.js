@@ -1477,9 +1477,8 @@ const codeBlockInteractiveBar = () => {
 
             #collapseCodeBlock({ target }) {
                 const isSyntaxHighlighterParent = target.classList.contains('syntaxhighlighter-parent');
-                const horizontallyExtendedCodeBlock = target.querySelector('.syntaxhighlighter--horizontally-extended');
 
-                if (isSyntaxHighlighterParent && horizontallyExtendedCodeBlock) {
+                if (isSyntaxHighlighterParent && this.#horizontallyExtendedCodeBlock) {
                     this.#horizontallyExtendedCodeBlock.classList.remove('syntaxhighlighter--horizontally-extended');
 
                     target.addEventListener('transitionend', () => {
