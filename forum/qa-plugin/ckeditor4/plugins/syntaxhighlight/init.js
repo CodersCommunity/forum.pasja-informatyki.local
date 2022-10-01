@@ -1466,7 +1466,11 @@ const codeBlockInteractiveBar = () => {
                     this.#toggleRootsOverflowing(target, true);
 
                     const qaMainWrapperWidth = window.getComputedStyle(this.#overflowingRoots[0]).width;
+                    const qaMainWrapperOffsetLeft = this.#overflowingRoots[0].getBoundingClientRect().left;
+                    const offsetToQaBodyWrapper = Math.abs(qaMainWrapperOffsetLeft - target.getBoundingClientRect().left);
+
                     target.style.setProperty('--extended-horizontal-width', qaMainWrapperWidth);
+                    target.style.setProperty('--offset-to-qa-body-wrapper', offsetToQaBodyWrapper);
                     target.classList.add('syntaxhighlighter--horizontally-extended');
                 }
             }
