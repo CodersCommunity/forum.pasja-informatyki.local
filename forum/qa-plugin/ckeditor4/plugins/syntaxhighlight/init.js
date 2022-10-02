@@ -1439,6 +1439,7 @@ const codeBlockInteractiveBar = () => {
         class HorizontalCodeBlockExtenderOnHover {
             #overflowingRoots = document.querySelectorAll('.qa-main-wrapper, .qa-main');
             #horizontallyExtendedCodeBlock = null;
+            #abortController = null;
             // TODO: CollapsibleCodeBlocks class should expose method returning that button or toggling disable state by itself
             #collapsibleToggleBtn = null;
             #checkIfFullScreenIsActive;
@@ -1461,17 +1462,26 @@ const codeBlockInteractiveBar = () => {
                 const isCodeBlockCollapsed = target.classList.contains('collapsed-block');
 
                 if (isCodeBlock && !isCodeBlockCollapsed && !this.#checkIfFullScreenIsActive()) {
-                    this.#collapsibleToggleBtn.disabled = true;
-                    this.#horizontallyExtendedCodeBlock = target;
-                    this.#toggleRootsOverflowing(target, true);
+                    if (this.#horizontallyExtendedCodeBlock) {
+                        // prepare re-hover
+                        this.#abortController?.abort();
+                        this.#abortController = new AbortController();
+                        target.parentNode.addEventListener('transitionend', () => {
+                            this.#extendCodeBlock({ target });
+                        }, { once: true, signal: this.#abortController.signal });
+                    } else {
+                        this.#collapsibleToggleBtn.disabled = true;
+                        this.#horizontallyExtendedCodeBlock = target;
+                        this.#toggleRootsOverflowing(target, true);
 
-                    const qaMainWrapperWidth = window.getComputedStyle(this.#overflowingRoots[0]).width;
-                    const qaMainWrapperOffsetLeft = this.#overflowingRoots[0].getBoundingClientRect().left;
-                    const offsetToQaBodyWrapper = Math.abs(qaMainWrapperOffsetLeft - target.getBoundingClientRect().left);
+                        const qaMainWrapperWidth = window.getComputedStyle(this.#overflowingRoots[0]).width;
+                        const qaMainWrapperOffsetLeft = this.#overflowingRoots[0].getBoundingClientRect().left;
+                        const offsetToQaBodyWrapper = Math.abs(qaMainWrapperOffsetLeft - target.getBoundingClientRect().left);
 
-                    target.style.setProperty('--extended-horizontal-width', qaMainWrapperWidth);
-                    target.style.setProperty('--offset-to-qa-body-wrapper', offsetToQaBodyWrapper);
-                    target.classList.add('syntaxhighlighter--horizontally-extended');
+                        target.style.setProperty('--extended-horizontal-width', qaMainWrapperWidth);
+                        target.style.setProperty('--offset-to-qa-body-wrapper', offsetToQaBodyWrapper);
+                        target.classList.add('syntaxhighlighter--horizontally-extended');
+                    }
                 }
             }
 
@@ -1479,6 +1489,11 @@ const codeBlockInteractiveBar = () => {
                 const isSyntaxHighlighterParent = target.classList.contains('syntaxhighlighter-parent');
 
                 if (isSyntaxHighlighterParent && this.#horizontallyExtendedCodeBlock) {
+                    // abort possibly scheduled re-hover
+                    {
+                        this.#abortController?.abort();
+                        this.#abortController = null;
+                    }
                     this.#horizontallyExtendedCodeBlock.classList.remove('syntaxhighlighter--horizontally-extended');
 
                     target.addEventListener('transitionend', () => {

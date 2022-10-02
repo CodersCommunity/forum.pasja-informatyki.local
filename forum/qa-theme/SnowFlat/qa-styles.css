@@ -5286,15 +5286,13 @@ ul.features-drawer-list--hidden
 .syntaxhighlighter.syntaxhighlighter--horizontally-extended {
 	/* override SyntaxHighlighter `!important` rule */
 	width: var(--extended-horizontal-width, max-content) !important;
-	--qa-body-wrapper-margin-side: 130;
-	/* restrict to `.qa-body-wrapper` margin */
+	--qa-body-wrapper-margin-inline: 130;
 	max-width: var(--offset-to-qa-body-wrapper, 100%);
 	transform: translateX(
 		calc(
 			var(
 				--offset-to-qa-body-wrapper, 
-				/* fallback to `.qa-body-wrapper` margin */
-				var(--qa-body-wrapper-margin-side)
+				var(--qa-body-wrapper-margin-inline)
 			) * -1px
 		)
 	);
