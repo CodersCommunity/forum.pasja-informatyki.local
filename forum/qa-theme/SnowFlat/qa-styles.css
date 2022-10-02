@@ -4689,12 +4689,13 @@ pre[class*="brush:"]
 .syntaxhighlighter
 {
 	max-height: var(--code-block-raw-height); /* provided by inline style from JavaScript */
-	--syntaxhighlighter-collapsible-transition: max-height 0.2s ease-in-out;
+	--transition-timing-and-effect: 0.2s ease-in-out;
+	--syntaxhighlighter-collapsible-transition: max-height var(--transition-timing-and-effect);
 	transition: 
 		var(--syntaxhighlighter-collapsible-transition), 
-		transform 0.2s ease-in-out, 
-		width 0.2s ease-in-out;
-	z-index: 1;
+		transform var(--transition-timing-and-effect), 
+		width var(--transition-timing-and-effect),
+		border var(--transition-timing-and-effect);
 }
 
 .syntaxhighlighter-parent .syntaxhighlighter .toolbar
@@ -4780,14 +4781,61 @@ pre[class*="brush:"]::after
 	opacity: 1;
 	transition: opacity 0.2s;
 	border-radius: 50px 50px 1px 1px;
-	position: relative;
-	z-index: 2;
 
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3498db+0,3498db+50,3498db+100&0.75+0,1+50,0.75+100 */
 	background: -moz-linear-gradient(left,  rgba(52,152,219,0.45) 0%, rgba(52,152,219,0.75) 50%, rgba(52,152,219,0.45) 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(left,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to right,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
+}
+
+.syntaxhighlighter-block-bar--horizontally-extensible {
+	position: relative;
+	z-index: 2;
+}
+
+.syntaxhighlighter-block-bar--horizontally-extensible::before, 
+.syntaxhighlighter-block-bar--horizontally-extensible::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    background: inherit;
+    height: 5px;
+    width: 100%;
+}
+
+.syntaxhighlighter-block-bar--horizontally-extensible::before {
+	left: -100%;
+	animation: extendBlockBarLeftArm 0.5s ease-in-out;
+}
+
+.syntaxhighlighter-block-bar--horizontally-extensible::after {
+	right: -100%;
+	animation: extendBlockBarRightArm 0.3s ease-in-out;
+}
+
+@keyframes extendBlockBarLeftArm {
+	from {
+		width: 0;
+		left: 0;
+	}
+	
+	to {
+		width: 100%;
+		left: -100%;
+	}
+}
+
+@keyframes extendBlockBarRightArm {
+	from {
+		width: 0;
+		right: 0;
+	}
+	
+	to {
+		width: 100%;
+		right: -100%;
+	}
 }
 
 .features-drawer__button {
@@ -5296,6 +5344,9 @@ ul.features-drawer-list--hidden
 			) * -1px
 		)
 	);
+	border: 5px solid rgba(52,152,219,0.75);
+	border-top: none;
+	z-index: 1;
 }
 
 /* End of Interactive Code Block Bar */

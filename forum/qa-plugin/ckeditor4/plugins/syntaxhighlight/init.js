@@ -1486,6 +1486,7 @@ const codeBlockInteractiveBar = () => {
                         target.style.setProperty('--extended-horizontal-width', qaMainWrapperWidth);
                         target.style.setProperty('--offset-to-qa-body-wrapper', offsetToQaBodyWrapper);
                         target.classList.add('syntaxhighlighter--horizontally-extended');
+                        target.previousElementSibling.classList.add('syntaxhighlighter-block-bar--horizontally-extensible');
                     }
                 }
             }
@@ -1500,6 +1501,7 @@ const codeBlockInteractiveBar = () => {
                         this.#abortController = null;
                     }
                     this.#horizontallyExtendedCodeBlock.classList.remove('syntaxhighlighter--horizontally-extended');
+                    this.#horizontallyExtendedCodeBlock.previousElementSibling.classList.remove('syntaxhighlighter-block-bar--horizontally-extensible');
 
                     target.addEventListener('transitionend', () => {
                         this.#toggleRootsOverflowing(target, false);
