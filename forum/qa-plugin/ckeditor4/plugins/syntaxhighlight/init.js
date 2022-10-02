@@ -1473,6 +1473,11 @@ const codeBlockInteractiveBar = () => {
                         this.#collapsibleToggleBtn.disabled = true;
                         this.#horizontallyExtendedCodeBlock = target;
                         this.#toggleRootsOverflowing(target, true);
+                        /*
+                            make sure roots overflow is still "active" to avoid possible race condition 
+                            with other collapsing code block, which may turn roots overflow off
+                        */
+                        target.addEventListener('transitionend', () => this.#toggleRootsOverflowing(target, true), { once: true });
 
                         const qaMainWrapperWidth = window.getComputedStyle(this.#overflowingRoots[0]).width;
                         const qaMainWrapperOffsetLeft = this.#overflowingRoots[0].getBoundingClientRect().left;
