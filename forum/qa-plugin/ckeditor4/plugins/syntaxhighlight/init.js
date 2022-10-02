@@ -1460,8 +1460,12 @@ const codeBlockInteractiveBar = () => {
             #extendCodeBlock({ target }) {
                 const isCodeBlock = target.classList.contains('syntaxhighlighter');
                 const isCodeBlockCollapsed = target.classList.contains('collapsed-block');
+                const scrollOffset = target.clientWidth < target.scrollWidth ? (target.scrollWidth - target.clientWidth) : 0;
 
-                if (isCodeBlock && !isCodeBlockCollapsed && !this.#checkIfFullScreenIsActive()) {
+                if (
+                    isCodeBlock && scrollOffset && !isCodeBlockCollapsed && 
+                    this.#collapsibleToggleBtn && !this.#checkIfFullScreenIsActive()
+                ) {
                     if (this.#horizontallyExtendedCodeBlock) {
                         // prepare re-hover
                         this.#abortController?.abort();
@@ -1479,12 +1483,15 @@ const codeBlockInteractiveBar = () => {
                         */
                         target.addEventListener('transitionend', () => this.#toggleRootsOverflowing(target, true), { once: true });
 
-                        const qaMainWrapperWidth = window.getComputedStyle(this.#overflowingRoots[0]).width;
+                        const qaMainWrapperWidth = Number.parseInt(window.getComputedStyle(this.#overflowingRoots[0]).width);
                         const qaMainWrapperOffsetLeft = this.#overflowingRoots[0].getBoundingClientRect().left;
                         const offsetToQaBodyWrapper = Math.abs(qaMainWrapperOffsetLeft - target.getBoundingClientRect().left);
+                        const targetOutputWidth = Math.min(target.scrollWidth, qaMainWrapperWidth);
+                        const targetOutputLeft = Math.min(scrollOffset / 2, offsetToQaBodyWrapper);
 
-                        target.style.setProperty('--extended-horizontal-width', qaMainWrapperWidth);
-                        target.style.setProperty('--offset-to-qa-body-wrapper', offsetToQaBodyWrapper);
+                        target.style.setProperty('--extended-horizontal-width', `${targetOutputWidth}px`);
+                        target.style.setProperty('--max-extended-horizontal-width', `${qaMainWrapperWidth}px`);
+                        target.style.setProperty('--offset-to-qa-body-wrapper', targetOutputLeft);
                         target.classList.add('syntaxhighlighter--horizontally-extended');
                         target.previousElementSibling.classList.add('syntaxhighlighter-block-bar--horizontally-extensible');
                     }
