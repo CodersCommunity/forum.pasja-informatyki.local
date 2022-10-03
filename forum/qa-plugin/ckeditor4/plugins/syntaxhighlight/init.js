@@ -1437,7 +1437,9 @@ const codeBlockInteractiveBar = () => {
         }
 
         class HorizontalCodeBlockExtenderOnHover {
+            #extensionThreshold = 80;
             #overflowingRoots = document.querySelectorAll('.qa-main-wrapper, .qa-main');
+            #externalOverflowingRoot = this.#overflowingRoots[0];
             #horizontallyExtendedCodeBlock = null;
             #abortController = null;
             // TODO: CollapsibleCodeBlocks class should expose method returning that button or toggling disable state by itself
@@ -1445,11 +1447,20 @@ const codeBlockInteractiveBar = () => {
             #checkIfFullScreenIsActive;
 
             constructor(codeBlock, checkIfFullScreenIsActive) {
+                const isTouchDevice = window.matchMedia('(hover: none)').matches;
+                if (isTouchDevice) {
+                    return;
+                }
+
                 this.#checkIfFullScreenIsActive = checkIfFullScreenIsActive;
                 const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
 
                 codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
                     this.#collapsibleToggleBtn = processedCodeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
+
+                    if (!this.#collapsibleToggleBtn) {
+                        return;
+                    }
 
                     processedCodeBlock.addEventListener('mouseenter', this.#extendCodeBlock.bind(this));
                     // attach `mouseout` to parent to let user use interactive bar while block is extended
@@ -1460,12 +1471,18 @@ const codeBlockInteractiveBar = () => {
             #extendCodeBlock({ target }) {
                 const isCodeBlock = target.classList.contains('syntaxhighlighter');
                 const isCodeBlockCollapsed = target.classList.contains('collapsed-block');
-                const scrollOffset = target.clientWidth < target.scrollWidth ? (target.scrollWidth - target.clientWidth) : 0;
 
-                if (
-                    isCodeBlock && scrollOffset && !isCodeBlockCollapsed && 
-                    this.#collapsibleToggleBtn && !this.#checkIfFullScreenIsActive()
-                ) {
+                if (!isCodeBlock || isCodeBlockCollapsed || this.#checkIfFullScreenIsActive()) {
+                    return;
+                }
+
+                const scrollOffset = target.clientWidth < target.scrollWidth ? (target.scrollWidth - target.clientWidth) : 0;
+                const qaMainWrapperWidth = Number.parseInt(window.getComputedStyle(this.#externalOverflowingRoot).width);
+                const targetOutputWidth = Math.min(target.scrollWidth, qaMainWrapperWidth);
+                const diffBetweenWrapperAndClientWidth = Math.abs(qaMainWrapperWidth - target.clientWidth);
+                const extensionThresholdMatched = [scrollOffset, diffBetweenWrapperAndClientWidth].every(diff => diff > this.#extensionThreshold);
+
+                if (extensionThresholdMatched && scrollOffset) {
                     if (this.#horizontallyExtendedCodeBlock) {
                         // prepare re-hover
                         this.#abortController?.abort();
@@ -1483,10 +1500,8 @@ const codeBlockInteractiveBar = () => {
                         */
                         target.addEventListener('transitionend', () => this.#toggleRootsOverflowing(target, true), { once: true });
 
-                        const qaMainWrapperWidth = Number.parseInt(window.getComputedStyle(this.#overflowingRoots[0]).width);
-                        const qaMainWrapperOffsetLeft = this.#overflowingRoots[0].getBoundingClientRect().left;
+                        const qaMainWrapperOffsetLeft = this.#externalOverflowingRoot.getBoundingClientRect().left;
                         const offsetToQaBodyWrapper = Math.abs(qaMainWrapperOffsetLeft - target.getBoundingClientRect().left);
-                        const targetOutputWidth = Math.min(target.scrollWidth, qaMainWrapperWidth);
                         const targetOutputLeft = Math.min(scrollOffset / 2, offsetToQaBodyWrapper);
 
                         target.style.setProperty('--extended-horizontal-width', `${targetOutputWidth}px`);
