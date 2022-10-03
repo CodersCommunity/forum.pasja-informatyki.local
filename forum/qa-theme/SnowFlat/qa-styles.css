@@ -4689,8 +4689,14 @@ pre[class*="brush:"]
 .syntaxhighlighter
 {
 	max-height: var(--code-block-raw-height); /* provided by inline style from JavaScript */
-	--syntaxhighlighter-collapsible-transition: max-height 0.2s ease-in-out;
-	transition: var(--syntaxhighlighter-collapsible-transition);
+	--transition-timing-and-effect: 0.2s ease-in-out;
+	--syntaxhighlighter-collapsible-transition: max-height var(--transition-timing-and-effect);
+	transition: 
+		var(--syntaxhighlighter-collapsible-transition), 
+		transform var(--transition-timing-and-effect), 
+		width var(--transition-timing-and-effect);
+	position: relative;
+	z-index: 1;
 }
 
 .syntaxhighlighter-parent .syntaxhighlighter .toolbar
@@ -4782,6 +4788,9 @@ pre[class*="brush:"]::after
 	background: -webkit-linear-gradient(left,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to right,  rgba(52,152,219,0.45) 0%,rgba(52,152,219,0.75) 50%,rgba(52,152,219,0.45) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf3498db', endColorstr='#bf3498db',GradientType=1 ); /* IE6-9 */
+
+	position: relative;
+	z-index: 2;
 }
 
 .features-drawer__button {
@@ -5275,6 +5284,24 @@ ul.features-drawer-list--hidden
 	.syntaxhighlighter-block-bar:not(.is-collapsible) .features-drawer-list {
 		right: -22px;
 	}
+}
+
+.syntaxhighlighter.syntaxhighlighter--horizontally-extended {
+	/* override SyntaxHighlighter `!important` rule */
+	width: var(--extended-horizontal-width, max-content) !important;
+	--qa-body-wrapper-margin-inline: 130;
+	max-width: var(--max-extended-horizontal-width, 100%);
+	transform: translateX(
+		calc(
+			var(
+				--offset-to-qa-body-wrapper, 
+				var(--qa-body-wrapper-margin-inline)
+			) * -1px
+		)
+	);
+	outline: 2px solid rgba(52,152,219,0.75);
+	border-inline: 2px solid rgba(52,152,219,0.75);
+	border-top: none;
 }
 
 /* End of Interactive Code Block Bar */
