@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'added_reason' => 'Links verification after adding',
-    'edited_reason' => 'Links verification after editing',
+    'suspicious_link_added_reason' => 'Links verification after adding',
+    'suspicious_link_edited_reason' => 'Links verification after editing',
+    'removed_content_reason' => 'Content verification after edit',
 
     'admin_ok_info' => 'Saved',
     'admin_save_button' => 'Save',

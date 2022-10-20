@@ -4,51 +4,45 @@ class autoflag_event
 {
     const URL_REGEX = '/(http|ftp|https):\/\/([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])/';
 
+    const REMOVED_CHARS_PERCENT_LIMIT = 30;
+
     public function process_event($event, $userid, $handle, $cookieid, $params)
     {
         $pointsLimit = qa_opt('autoflag_points_limit');
-        if (empty($pointsLimit) || $this->get_user_points($userid) > $pointsLimit) {
+        if (empty($pointsLimit)) {
             return;
         }
 
         $postid = $params['postid'];
         $content = $params['content'];
 
-        if ($event === 'q_post' || $event === 'a_post' || $event === 'c_post') {
-            if ($this->is_added_suspicious($content)) {
-                $this->add_flag($postid, qa_lang('autoflag/added_reason'));
+        if (in_array($event, ['q_post', 'a_post', 'c_post']) && $this->get_user_points($userid) < $pointsLimit) {
+            if ($this->has_added_suspicious_link($content)) {
+                $this->add_flag($postid, qa_lang('autoflag/suspicious_link_added_reason'));
             }
             return;
         }
 
-        if ($event === 'q_edit') {
-            if ($this->is_edited_suspicious($content, $params['oldquestion']['content'])) {
-                $this->add_flag($postid, qa_lang('autoflag/edited_reason'));
+        if (in_array($event, ['q_edit', 'a_edit', 'c_edit'])) {
+            if ($this->has_removed_content($content, $params['oldcontent'])) {
+                $this->add_flag($postid, qa_lang('autoflag/removed_content_reason'));
+                return;
             }
-            return;
-        }
-        if ($event === 'a_edit') {
-            if ($this->is_edited_suspicious($content, $params['oldanswer']['content'])) {
-                $this->add_flag($postid, qa_lang('autoflag/edited_reason'));
-            }
-            return;
-        }
-        if ($event === 'c_edit') {
-            if ($this->is_edited_suspicious($content, $params['oldcomment']['content'])) {
-                $this->add_flag($postid, qa_lang('autoflag/edited_reason'));
+            if ($this->get_user_points($userid) < $pointsLimit && $this->has_edited_suspicious_link($content, $params['oldcontent'])) {
+                $this->add_flag($postid, qa_lang('autoflag/suspicious_link_edited_reason'));
             }
             return;
         }
     }
 
-    private function is_added_suspicious(string $content): bool
+    private function has_added_suspicious_link(string $content): bool
     {
         preg_match_all(self::URL_REGEX, $content, $matches);
 
         return $this->contains_suspicious_domain($matches[2] ?? []);
     }
 
-    private function is_edited_suspicious(string $content, string $oldContent): bool
+    private function has_edited_suspicious_link(string $content, string $oldContent): bool
     {
         preg_match_all(self::URL_REGEX, $content, $matches);
         preg_match_all(self::URL_REGEX, $oldContent, $oldMatches);
@@ -74,6 +68,15 @@ class autoflag_event
         }
 
         return false;
+    }
+
+    private function has_removed_content(string $content, string $oldContent): bool
+    {
+        $oldLength = mb_strlen($oldContent);
+        $newLength = mb_strlen($content);
+        $limit = $oldLength * (self::REMOVED_CHARS_PERCENT_LIMIT / 100);
+
+        return $oldLength - $limit > $newLength;
     }
 
     private function get_user_points(int $userid): int

@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'added_reason' => 'Weryfikacja linków po dodaniu',
-    'edited_reason' => 'Weryfikacja linków po edycji',
+    'suspicious_link_added_reason' => 'Weryfikacja linków po dodaniu',
+    'suspicious_link_edited_reason' => 'Weryfikacja linków po edycji',
+    'removed_content_reason' => 'Weryfikacja edycji treści',
 
     'admin_ok_info' => 'Zapisano',
     'admin_save_button' => 'Zapisz',
