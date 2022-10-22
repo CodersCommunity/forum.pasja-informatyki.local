@@ -266,7 +266,7 @@
 
 	} elseif (($formtype=='c_edit') && (@$commentsfollows[$formpostid]['parentid']==$questionid)) { // ...being edited
 		$qa_content['q_view']['c_form']=qa_page_q_edit_c_form($qa_content, 'c'.$formpostid, $commentsfollows[$formpostid],
-			@$ceditin[$formpostid], @$cediterrors[$formpostid]);
+			@$ceditin[$formpostid], @$cediterrors[$formpostid], $question);
 
 		$jumptoanchor='c'.$formpostid;
 		$commentsall=$questionid;
@@ -365,7 +365,7 @@
 
 			} elseif (($formtype=='c_edit') && (@$commentsfollows[$formpostid]['parentid']==$answerid)) { // ...being edited
 				$a_view['c_form']=qa_page_q_edit_c_form($qa_content, 'c'.$formpostid, $commentsfollows[$formpostid],
-					@$ceditin[$formpostid], @$cediterrors[$formpostid]);
+					@$ceditin[$formpostid], @$cediterrors[$formpostid], $question);
 
 				$jumptoanchor='c'.$formpostid;
 				$commentsall=$answerid;

@@ -890,7 +890,7 @@
 	}
 
 
-	function qa_page_q_edit_c_form(&$qa_content, $id, $comment, $in, $errors)
+	function qa_page_q_edit_c_form(&$qa_content, $id, $comment, $in, $errors, $question)
 /*
 	Returns a $qa_content form for editing a comment and sets up other parts of $qa_content accordingly
 */
@@ -959,7 +959,7 @@
 				'value' => qa_html(@$in['silent']),
 			);
 
-		if ($comment['closed'] === false || qa_user_level_for_post($comment) >= QA_USER_LEVEL_EXPERT) {
+		if ($question['closed'] === false || qa_user_level_for_post($comment) >= QA_USER_LEVEL_EXPERT) {
 		    $form['fields']['toanswer'] = [
                 'tags' => 'name="' . $prefix . 'dotoa" id="' . $prefix . 'dotoa"',
                 'label' => qa_lang_html('question/c_convert_to_a'),
