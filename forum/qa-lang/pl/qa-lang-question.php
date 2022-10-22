@@ -47,6 +47,7 @@
 		'ask_must_login' => '^1Zaloguj^2 lub ^3zarejestruj się^4, aby zadać pytanie.',
 		'ask_same_q' => 'Sprawdź jeszcze, czy ktoś nie zadał już podobnego pytania:',
 		'ask_title' => 'Zadaj pytanie',
+        'c_convert_to_a' => 'Zamień ten komentarz na odpowiedź',
 		'c_notify_email' => 'Powiadom mnie na ten adres email, jeśli ktoś jeszcze doda komentarz:',
 		'c_notify_label' => 'Powiadom mnie, jeśli ktoś jeszcze doda komentarz',
 		'c_notify_x_label' => 'Powiadom mnie (^), jeśli ktoś jeszcze doda komentarz',

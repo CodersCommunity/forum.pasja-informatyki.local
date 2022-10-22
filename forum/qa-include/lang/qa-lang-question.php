@@ -54,6 +54,7 @@
 		'ask_must_login' => 'Please ^1log in^2 or ^3register^4 to ask a question.',
 		'ask_same_q' => 'Before proceeding, please check your question was not asked already:',
 		'ask_title' => 'Ask a question',
+        'c_convert_to_a' => 'Convert this comment into a answer',
 		'c_notify_email' => 'Email me at this address if a comment is added after mine:',
 		'c_notify_label' => 'Email me if a comment is added after mine',
 		'c_notify_x_label' => 'Email me (^) if a comment is added after mine',

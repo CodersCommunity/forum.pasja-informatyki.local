@@ -899,6 +899,74 @@
 	}
 
 
+	function qa_comment_to_answer($oldcomment, $content, $format, $text, $notify, $userid, $handle, $cookieid, $question, $name = null, $remoderate = false, $silent = false)
+	{
+		require_once QA_INCLUDE_DIR.'db/votes.php';
+
+		qa_post_unindex($oldcomment['postid']);
+
+		$wasqueued = ($oldcomment['type'] === 'C_QUEUED');
+		$contentchanged = strcmp($oldcomment['content'], $content) || strcmp($oldcomment['format'], $format);
+		$setupdated = $contentchanged && (!$wasqueued) && !$silent;
+
+		if ($setupdated && $remoderate) {
+            $newtype = 'A_QUEUED';
+        } else {
+            $newtype = substr_replace($oldcomment['type'], 'A', 0, 1);
+        }
+
+		qa_db_post_set_type($oldcomment['postid'], $newtype, ($wasqueued || $silent) ? null : $userid,
+			($wasqueued || $silent) ? null : qa_remote_ip_address(), QA_UPDATE_TYPE);
+		qa_db_post_set_parent($oldcomment['postid'], $question['postid']);
+		qa_db_post_set_content($oldcomment['postid'], $oldcomment['title'], $content, $format, $oldcomment['tags'], $notify,
+			$setupdated ? $userid : null, $setupdated ? qa_remote_ip_address() : null, QA_UPDATE_CONTENT, $name);
+
+		qa_update_q_counts_for_a($question['postid']);
+		qa_db_ccount_update();
+		qa_db_points_update_ifuser($oldcomment['userid'], ['aposts', 'aselecteds', 'cposts', 'avoteds']);
+
+		$useridvotes = qa_db_uservote_post_get($oldcomment['postid']);
+		foreach ($useridvotes as $voteruserid => $vote) {
+            qa_db_points_update_ifuser($voteruserid, ($vote > 0) ? 'aupvotes' : 'adownvotes');
+        }
+
+		if ($setupdated && $remoderate) {
+			qa_db_queuedcount_update();
+
+			if ($oldcomment['flagcount']) {
+                qa_db_flaggedcount_update();
+            }
+		} elseif ($oldcomment['type'] === 'C' && $question['type'] === 'Q') {
+            qa_post_index($oldcomment['postid'], 'A', $question['postid'], $question['postid'], null, $content, $format, $text, null, $oldcomment['categoryid']);
+        }
+
+		$eventparams = [
+			'postid' => $oldcomment['postid'],
+			'parentid' => $question['parentid'],
+			'parenttype' => $question['basetype'],
+			'parent' => $question,
+			'questionid' => $question['postid'],
+			'question' => $question,
+			'content' => $content,
+			'format' => $format,
+			'text' => $text,
+			'name' => $name,
+			'oldcomment' => $oldcomment,
+        ];
+
+		qa_report_event('c_to_a', $userid, $handle, $cookieid, $eventparams + [
+			'silent' => $silent,
+			'oldcontent' => $oldcomment['content'],
+			'oldformat' => $oldcomment['format'],
+			'contentchanged' => $contentchanged,
+        ]);
+
+		if ($setupdated && $remoderate) {
+            qa_report_event('a_requeue', $userid, $handle, $cookieid, $eventparams);
+        }
+	}
+
+
 	function qa_comment_set_hidden($oldcomment, $hidden, $userid, $handle, $cookieid, $question, $parent)
 /*
 	Set $oldcomment to hidden if $hidden is true, visible/normal if otherwise. All other parameters are as for qa_comment_set_status(...)

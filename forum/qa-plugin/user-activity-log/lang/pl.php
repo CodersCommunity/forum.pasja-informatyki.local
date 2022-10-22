@@ -84,7 +84,7 @@ return [
     'c_edit' => 'Edytowano komentarz',
 
     'a_post' => 'Dodano odpowiedź',
-    'a_edit' => 'Edytowano odpowiedź', 
+    'a_edit' => 'Edytowano odpowiedź',
     'a_select' => 'Wybrano najlepszą odpowiedź',
     'a_unselect'=> 'Odznaczono najlepszą odpowiedź',
     'a_flag' => 'Zgłoszono odpowiedź',
@@ -111,7 +111,8 @@ return [
     'cat_unfavorite' => 'Usunięto kategorię z ulubionych',
     
     'a_to_c' => 'Zamieniono odpowiedź na komentarz',
-    
+    'c_to_a' => 'Zamieniono komentarz na odpowiedź',
+
     'feedback' => 'Dodano sugestię przez formularz na stronie',
     'search'=> 'Wyszukano coś na stronie'
 ];

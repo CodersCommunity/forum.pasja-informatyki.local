@@ -65,6 +65,7 @@
 
 					// when an answer is converted into a comment, with more details in $params.
 					case 'a_to_c':
+					case 'c_to_a':
 						break;
 
 					// when a question or answer is upvoted, downvoted or unvoted by a user. The ID of the post is in $params['postid'].

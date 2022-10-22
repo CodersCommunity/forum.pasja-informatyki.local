@@ -215,9 +215,11 @@
 						qa_page_q_refresh($pagestart, 'edit-'.$commentid, 'C', $commentid);
 				}
 				elseif (qa_clicked($prefix.'dosave') && qa_page_q_permit_edit($comment, 'permit_edit_c', $pageerror)) {
-					if (qa_page_q_edit_c_submit($comment, $question, $commentparent, $ceditin[$commentid], $cediterrors[$commentid]))
-						qa_page_q_refresh($pagestart, null, 'C', $commentid);
-					else {
+                    $editedtype = qa_page_q_edit_c_submit($comment, $question, $commentparent, $ceditin[$commentid], $cediterrors[$commentid]);
+
+                    if ($editedtype !== null) {
+                        qa_page_q_refresh($pagestart, null, $editedtype, $commentid);
+                    } else {
 						$formtype = 'c_edit';
 						$formpostid = $commentid; // keep editing if an error
 					}
@@ -957,6 +959,15 @@
 				'value' => qa_html(@$in['silent']),
 			);
 
+		if ($comment['closed'] === false || qa_user_level_for_post($comment) >= QA_USER_LEVEL_EXPERT) {
+		    $form['fields']['toanswer'] = [
+                'tags' => 'name="' . $prefix . 'dotoa" id="' . $prefix . 'dotoa"',
+                'label' => qa_lang_html('question/c_convert_to_a'),
+                'type' => 'checkbox',
+                'tight' => true,
+            ];
+        }
+
 		return $form;
 	}
 
@@ -969,7 +980,9 @@
 		$commentid=$comment['postid'];
 		$prefix='c'.$commentid.'_';
 
-		$in=array();
+		$in=array(
+            'dotoa' => qa_post_text($prefix.'dotoa'),
+        );
 
 		if ($comment['isbyuser']) {
 			$in['name']=qa_post_text($prefix.'name');
@@ -1009,14 +1022,26 @@
 
 				$setnotify=$comment['isbyuser'] ? qa_combine_notify_email($comment['userid'], $in['notify'], $in['email']) : $comment['notify'];
 
-				qa_comment_set_content($comment, $in['content'], $in['format'], $in['text'], $setnotify,
-					$userid, $handle, $cookieid, $question, $parent, @$in['name'], $in['queued'], $in['silent']);
+                if ($in['dotoa'] && ($question['closed'] === false || qa_user_level_for_post($question) >= QA_USER_LEVEL_EXPERT)) { // convert to an answer
+                    if (qa_user_limits_remaining(QA_LIMIT_ANSWERS)) {
+                        qa_comment_to_answer($comment, $in['content'], $in['format'], $in['text'], $setnotify,
+                            $userid, $handle, $cookieid, $question, $in['name'] ?? '', $in['queued'], $in['silent']);
 
-				return true;
+                        return 'A';
+
+                    } else {
+                        $errors['content'] = qa_lang_html('question/answer_limit');
+                    }
+                } else {
+                    qa_comment_set_content($comment, $in['content'], $in['format'], $in['text'], $setnotify,
+                        $userid, $handle, $cookieid, $question, $parent, $in['name'] ?? '', $in['queued'], $in['silent']);
+
+                    return 'C';
+                }
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 
