@@ -226,7 +226,7 @@ class q2apro_onsitenotifications_page
                         $itemIcon = '<div class="nicon nbestanswer"></div>';
                         break;
                     default:
-                        continue;
+                        continue 2;
                 }
             }
 
