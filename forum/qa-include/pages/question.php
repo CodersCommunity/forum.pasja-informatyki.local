@@ -86,6 +86,8 @@
 	if (qa_request() !== $validurl) {
 		$pagestart = qa_get_start();
 		$url = qa_path_html($validurl, !empty($pagestart) ? ['start' => $pagestart] : null, qa_opt('site_url'));
+
+		header('HTTP/1.1 301 Moved Permanently');
 		qa_redirect_raw($url);
 
 		return;
