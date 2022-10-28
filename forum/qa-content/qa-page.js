@@ -213,6 +213,10 @@ function qa_ajax_error()
 {
     'use strict';
 
+    if (typeof CKEDITOR === 'undefined') {
+        return;
+    }
+
     function destroyModal()
     {
         const modal = document.querySelector('.post-preview-parent');
@@ -277,7 +281,7 @@ function qa_ajax_error()
         const questionId = parseInt(location.pathname.split('/')[1]);
         const newQuestion = location.pathname.includes('ask');
 
-        if (typeof CKEDITOR !== 'undefined' && (questionId || newQuestion)) {
+        if (questionId || newQuestion) {
             CKEDITOR.on("instanceReady", function(event) {
                 const currentInstanceName = event.editor.name;
                 const contentTextarea = document.getElementsByName(currentInstanceName)[0];
