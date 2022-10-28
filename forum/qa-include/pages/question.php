@@ -82,6 +82,15 @@
 	if (!isset($question))
 		return include QA_INCLUDE_DIR.'qa-page-not-found.php';
 
+	$validurl = qa_q_request($question['postid'], $question['title']);
+	if (qa_request() !== $validurl) {
+		$pagestart = qa_get_start();
+		$url = qa_path_html($validurl, !empty($pagestart) ? ['start' => $pagestart] : null, qa_opt('site_url'));
+		qa_redirect_raw($url);
+
+		return;
+	}
+
 	if (!$question['viewable']) {
 		$qa_content=qa_content_prepare();
 
