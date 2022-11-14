@@ -724,7 +724,7 @@
 				'tags' => 'name="'.$prefix.'commenton"',
 				'id' => $prefix.'commenton',
 				'type' => 'select',
-				'note' => qa_lang_html($hascomments ? 'question/a_convert_warn_cs' : 'question/a_convert_warn'),
+				'note' => $hascomments ? qa_lang_html('question/a_convert_warn_cs') : '',
 				'options' => $commentonoptions,
 				'value' => @$commentonoptions[$lastbeforeid],
 			);
