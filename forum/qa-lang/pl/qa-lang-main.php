@@ -45,6 +45,7 @@
 		'all_categories' => 'Kategorie',
 		'anonymous' => 'niezalogowany',
 		'answer_edited' => 'odpowiedź edytowana',
+		'answer_moved' => 'odpowiedź przeniesiona',
 		'answer_reshown' => 'odpowiedź przywrócona',
 		'answer_selected' => 'odpowiedź wybrana',
 		'answered_qs_in_x' => 'Najwięcej pytań z odpowiedziami w ^',

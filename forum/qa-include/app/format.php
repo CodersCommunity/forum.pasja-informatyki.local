@@ -834,6 +834,10 @@
 				$langstring=@$question['opersonal'] ? 'misc/your_a_edited' : 'main/answer_edited';
 				break;
 
+            case 'A-'.QA_UPDATE_TYPE:
+                $langstring=@$question['opersonal'] ? 'misc/your_a_moved' : 'main/answer_moved';
+                break;
+
 			case 'Q-'.QA_UPDATE_FOLLOWS:
 				$langstring=@$question['opersonal'] ? 'misc/your_a_questioned' : 'main/asked_related_q';
 				break;

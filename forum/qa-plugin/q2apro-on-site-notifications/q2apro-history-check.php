@@ -62,6 +62,13 @@ class q2apro_history_check
                 $this->handle_answer_comment_create('c_post', $userid, $cookieid, $params);
                 $this->handle_comments_thread($cookieid, $params);
                 break;
+            case 'c_to_a':
+                qa_db_query_sub(
+                    'DELETE FROM ^eventlog WHERE (event="in_c_question" OR event="in_c_answer") AND params LIKE #',
+                    "postid={$params['postid']}	%"
+                );
+                $this->handle_answer_comment_create('a_post', $userid, $cookieid, $params);
+                break;
         }
     }
 
