@@ -13,6 +13,9 @@ class autoflag_event
             return;
         }
 
+        if (!isset($params['postid']) || !isset($params['content'])) {
+            return;
+        }
         $postid = $params['postid'];
         $content = $params['content'];
 
