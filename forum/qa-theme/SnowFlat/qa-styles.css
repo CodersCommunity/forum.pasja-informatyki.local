@@ -1061,6 +1061,9 @@ h1 a:hover, h1 a:focus, h1 a:visited {
 .entry-content ol > li > ol, .qa-c-item-content ol > li > ol {
 	margin: 0 0 0 20px;
 }
+.entry-content img { /* we need to override inline styles from CKEditor */
+	height: auto !important;
+}
 
 .qa-waiting {
 	background: url('images/spinner-icon-14x14.gif?1410117644') no-repeat center;
@@ -4691,9 +4694,9 @@ pre[class*="brush:"]
 	max-height: var(--code-block-raw-height); /* provided by inline style from JavaScript */
 	--transition-timing-and-effect: 0.2s ease-in-out;
 	--syntaxhighlighter-collapsible-transition: max-height var(--transition-timing-and-effect);
-	transition: 
-		var(--syntaxhighlighter-collapsible-transition), 
-		transform var(--transition-timing-and-effect), 
+	transition:
+		var(--syntaxhighlighter-collapsible-transition),
+		transform var(--transition-timing-and-effect),
 		width var(--transition-timing-and-effect);
 	position: relative;
 	z-index: 1;
@@ -5294,7 +5297,7 @@ ul.features-drawer-list--hidden
 	transform: translateX(
 		calc(
 			var(
-				--offset-to-qa-body-wrapper, 
+				--offset-to-qa-body-wrapper,
 				var(--qa-body-wrapper-margin-inline)
 			) * -1px
 		)
