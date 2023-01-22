@@ -154,6 +154,14 @@ class qa_event_updates
 				break;
 
 
+			case 'c_to_a':
+				if ($params['contentchanged'])
+					qa_create_event_for_q_user($params['questionid'], $params['postid'], QA_UPDATE_CONTENT, $userid, $params['oldcomment']['userid']);
+				else
+					qa_create_event_for_q_user($params['questionid'], $params['postid'], QA_UPDATE_TYPE, $userid, $params['oldcomment']['userid']);
+				break;
+
+
 			case 'c_hide':
 				if (isset($params['oldcomment']['userid']))
 					qa_db_event_create_not_entity($params['oldcomment']['userid'], $params['questionid'], $params['postid'], QA_UPDATE_VISIBLE, $userid);

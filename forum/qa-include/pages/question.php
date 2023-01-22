@@ -82,6 +82,17 @@
 	if (!isset($question))
 		return include QA_INCLUDE_DIR.'qa-page-not-found.php';
 
+	$validurl = qa_q_request($question['postid'], $question['title']);
+	if (qa_request() !== $validurl) {
+		$pagestart = qa_get_start();
+		$url = qa_path_html($validurl, !empty($pagestart) ? ['start' => $pagestart] : null, qa_opt('site_url'));
+
+		header('HTTP/1.1 301 Moved Permanently');
+		qa_redirect_raw($url);
+
+		return;
+	}
+
 	if (!$question['viewable']) {
 		$qa_content=qa_content_prepare();
 
@@ -266,7 +277,7 @@
 
 	} elseif (($formtype=='c_edit') && (@$commentsfollows[$formpostid]['parentid']==$questionid)) { // ...being edited
 		$qa_content['q_view']['c_form']=qa_page_q_edit_c_form($qa_content, 'c'.$formpostid, $commentsfollows[$formpostid],
-			@$ceditin[$formpostid], @$cediterrors[$formpostid]);
+			@$ceditin[$formpostid], @$cediterrors[$formpostid], $question);
 
 		$jumptoanchor='c'.$formpostid;
 		$commentsall=$questionid;
@@ -365,7 +376,7 @@
 
 			} elseif (($formtype=='c_edit') && (@$commentsfollows[$formpostid]['parentid']==$answerid)) { // ...being edited
 				$a_view['c_form']=qa_page_q_edit_c_form($qa_content, 'c'.$formpostid, $commentsfollows[$formpostid],
-					@$ceditin[$formpostid], @$cediterrors[$formpostid]);
+					@$ceditin[$formpostid], @$cediterrors[$formpostid], $question);
 
 				$jumptoanchor='c'.$formpostid;
 				$commentsall=$answerid;

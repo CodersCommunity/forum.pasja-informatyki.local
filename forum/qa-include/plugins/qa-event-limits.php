@@ -42,6 +42,7 @@ class qa_event_limits
 			case 'a_queue':
 			case 'a_post':
 			case 'a_claim':
+			case 'c_to_a':
 				qa_limits_increment($userid, QA_LIMIT_ANSWERS);
 				break;
 
@@ -79,7 +80,7 @@ class qa_event_limits
 		$writeactions=array(
 			'_approve', '_claim', '_clearflags', '_delete', '_edit', '_favorite', '_flag', '_hide',
 			'_post', '_queue', '_reject', '_reshow', '_unfavorite', '_unflag', '_vote_down', '_vote_nil', '_vote_up',
-			'a_select', 'a_to_c', 'a_unselect',
+			'a_select', 'a_to_c', 'c_to_a', 'a_unselect',
 			'q_close', 'q_move', 'q_reopen',
 			'u_block', 'u_edit', 'u_level', 'u_message', 'u_password', 'u_save', 'u_unblock',
 		);

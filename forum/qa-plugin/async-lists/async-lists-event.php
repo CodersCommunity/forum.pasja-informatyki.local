@@ -24,6 +24,7 @@ class async_lists_event
             case 'a_reshow':
             case 'a_select':
             case 'a_unselect':
+            case 'c_to_a':
                 $this->send_to_websocket($event, ['question_id' => (int)$params['parentid']]);
                 break;
             case 'c_post':
