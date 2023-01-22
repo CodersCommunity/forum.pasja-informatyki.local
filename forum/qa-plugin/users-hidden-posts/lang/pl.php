@@ -9,4 +9,6 @@ return [
     'answers' => 'Odpowiedzi',
     'questions' => 'Pytania',
     'search-label' => 'Szukaj',
+    'hide-label' => 'Ukryj',
+    'no-results' => "Brak ukrytych postów"
 ];

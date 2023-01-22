@@ -22,7 +22,7 @@ class qa_users_hidden_posts
         $qa_content['navigation']['sub'] = qa_user_sub_navigation($this->userHandle, '', false);
         $qa_content['title'] = qa_lang_html('users-hidden-posts/title');
         $qa_content['form'] = [
-            'tags' => 'method="post" action="' . qa_self_html() . '"',
+            'tags' => 'method="post" action="' . qa_self_html() . '" id="search-form"',
             'style' => 'wide',
             'title' => qa_lang_html('users-hidden-posts/form-title'),
             'fields' => [
@@ -47,29 +47,53 @@ class qa_users_hidden_posts
                 ],
             ],
 
-            'buttons' => array(
-                'submit' => array(
+            'buttons' => [
+                'submit' => [
                     'tags' => 'name="search"',
-                    'label' => qa_lang_html('user-activity-log/search-label'),
-                ),
-            ),
+                    'label' => qa_lang_html('users-hidden-posts/search-label'),
+                ],
+            ],
         ];
-        
         $qa_content['custom'] = $this->showUsersHiddenPosts();
 
 
         return $qa_content;
     }
 
-    private function showUsersHiddenPosts()
+    private function getUsersHiddenPosts()
     {
         if(isset($_POST['search'])){
-            $comments = isset($_POST['comments']) ? true : false;
-            $answers = isset($_POST['answers']) ? true : false;
-            $questions = isset($_POST['questions']) ? true : false;
-            $userId = qa_handle_to_userid($this->userHandle);
+            $comments = isset($_POST['comments']) ? 'C': false;
+            $answers = isset($_POST['answers']) ? 'A' : false;
+            $questions = isset($_POST['questions']) ? 'Q' : false;
+            $userID = is_numeric(qa_handle_to_userid($this->userHandle)) ? qa_handle_to_userid($this->userHandle) : 0;
+            $sufix = "_HIDDEN";
             
+            $sql = "SELECT * FROM `qa_posts` WHERE `userid` = ".$userID." AND `type`=";
+
+            if($comments){
+                $sql .=  "'".$comments.$sufix."'";
+            }
+
+            
+            if($answers){
+                $sql .= $comments ? 'OR':'';
+                $sql .= "'".$answers.$sufix."'";
+            }
+
+            if($questions){
+                $sql .= ($comments || $answers) ? 'OR':'';
+                $sql .= "'".$questions.$sufix."'";
+            }
+
+            $results = qa_db_read_all_assoc(qa_db_query_sub($sql));
+
+            return $results ? $results : qa_lang_html("users-hidden-posts/no-results");
         }
     }
 
+    private function showUsersHiddenPosts()
+    {
+        $hidden = $this->getUsersHiddenPosts();
+    }
 }
