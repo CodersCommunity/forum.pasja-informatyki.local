@@ -1430,6 +1430,119 @@ const codeBlockInteractiveBar = () => {
 
                 this.isFullScreen = !this.isFullScreen;
             }
+
+            checkIfFullScreenIsActive() {
+                return !!this.isFullScreen;
+            }
+        }
+
+        class HorizontalCodeBlockExtenderOnHover {
+            #extensionThreshold = 80;
+            #overflowingRoots = document.querySelectorAll('.qa-main-wrapper, .qa-main');
+            #externalOverflowingRoot = this.#overflowingRoots[0];
+            #horizontallyExtendedCodeBlock = null;
+            #abortController = null;
+            // TODO: CollapsibleCodeBlocks class should expose method returning that button or toggling disable state by itself
+            #collapsibleToggleBtn = null;
+            #checkIfFullScreenIsActive;
+
+            constructor(codeBlock, checkIfFullScreenIsActive) {
+                const isTouchDevice = window.matchMedia('(hover: none)').matches;
+                if (isTouchDevice) {
+                    return;
+                }
+
+                this.#checkIfFullScreenIsActive = checkIfFullScreenIsActive;
+                const { postId, numberInPost } = getCodeBlockMeta(codeBlock);
+
+                codeHighlightingPostProcessHandler.subscribe(postId, numberInPost, (processedCodeBlock) => {
+                    this.#collapsibleToggleBtn = processedCodeBlock.previousElementSibling.querySelector('.syntaxhighlighter-collapsible-button');
+
+                    if (!this.#collapsibleToggleBtn) {
+                        return;
+                    }
+
+                    processedCodeBlock.addEventListener('mouseenter', this.#extendCodeBlock.bind(this));
+                    // attach `mouseout` to parent to let user use interactive bar while block is extended
+                    processedCodeBlock.parentNode.addEventListener('mouseleave', this.#collapseCodeBlock.bind(this));
+                });
+            }
+
+            #extendCodeBlock({ target }) {
+                const isCodeBlock = target.classList.contains('syntaxhighlighter');
+                const isCodeBlockCollapsed = target.classList.contains('collapsed-block');
+
+                if (!isCodeBlock || isCodeBlockCollapsed || this.#checkIfFullScreenIsActive()) {
+                    return;
+                }
+
+                const scrollOffset = target.clientWidth < target.scrollWidth ? (target.scrollWidth - target.clientWidth) : 0;
+                const qaMainWrapperWidth = Number.parseInt(window.getComputedStyle(this.#externalOverflowingRoot).width);
+                const targetOutputWidth = Math.min(target.scrollWidth, qaMainWrapperWidth);
+                const diffBetweenWrapperAndClientWidth = Math.abs(qaMainWrapperWidth - target.clientWidth);
+                const extensionThresholdMatched = [scrollOffset, diffBetweenWrapperAndClientWidth].every(diff => diff > this.#extensionThreshold);
+
+                if (extensionThresholdMatched && scrollOffset) {
+                    if (this.#horizontallyExtendedCodeBlock) {
+                        // prepare re-hover
+                        this.#abortController?.abort();
+                        this.#abortController = new AbortController();
+                        target.parentNode.addEventListener('transitionend', () => {
+                            this.#extendCodeBlock({ target });
+                        }, { once: true, signal: this.#abortController.signal });
+                    } else {
+                        this.#collapsibleToggleBtn.disabled = true;
+                        this.#horizontallyExtendedCodeBlock = target;
+                        this.#toggleRootsOverflowing(target, true);
+                        /*
+                            make sure roots overflow is still "active" to avoid possible race condition 
+                            with other collapsing code block, which may turn roots overflow off
+                        */
+                        target.addEventListener('transitionend', () => this.#toggleRootsOverflowing(target, true), { once: true });
+
+                        const qaMainWrapperOffsetLeft = this.#externalOverflowingRoot.getBoundingClientRect().left;
+                        const offsetToQaBodyWrapper = Math.abs(qaMainWrapperOffsetLeft - target.getBoundingClientRect().left);
+                        const targetOutputLeft = Math.min(scrollOffset / 2, offsetToQaBodyWrapper);
+
+                        target.style.setProperty('--extended-horizontal-width', `${targetOutputWidth}px`);
+                        target.style.setProperty('--max-extended-horizontal-width', `${qaMainWrapperWidth}px`);
+                        target.style.setProperty('--offset-to-qa-body-wrapper', targetOutputLeft);
+                        target.classList.add('syntaxhighlighter--horizontally-extended');
+                        target.previousElementSibling.classList.add('syntaxhighlighter-block-bar--horizontally-extensible');
+                    }
+                }
+            }
+
+            #collapseCodeBlock({ target }) {
+                const isSyntaxHighlighterParent = target.classList.contains('syntaxhighlighter-parent');
+
+                if (isSyntaxHighlighterParent && this.#horizontallyExtendedCodeBlock) {
+                    // abort possibly scheduled re-hover
+                    {
+                        this.#abortController?.abort();
+                        this.#abortController = null;
+                    }
+                    this.#horizontallyExtendedCodeBlock.classList.remove('syntaxhighlighter--horizontally-extended');
+                    this.#horizontallyExtendedCodeBlock.previousElementSibling.classList.remove('syntaxhighlighter-block-bar--horizontally-extensible');
+
+                    target.addEventListener('transitionend', () => {
+                        this.#toggleRootsOverflowing(target, false);
+                        this.#collapsibleToggleBtn.disabled = false;
+                        this.#horizontallyExtendedCodeBlock = null;
+                    }, { once: true });
+                }
+            }
+
+            #toggleRootsOverflowing(target, shouldOverflow) {
+                const popupAsRoot = target.closest('.post-preview');
+                const overflowMaybeVisible = shouldOverflow ? 'visible' : null;
+
+                if (popupAsRoot) {
+                    popupAsRoot.style.overflow = overflowMaybeVisible;
+                } else {
+                    this.#overflowingRoots.forEach(root => root.style.overflow = overflowMaybeVisible);
+                }
+            }
         }
 
         const collapsibleCodeBlocks = new CollapsibleCodeBlocks();
@@ -1458,6 +1571,8 @@ const codeBlockInteractiveBar = () => {
                 codeBlockFullScreen.getFullScreenBtn(),
             ].filter(Boolean));
             featuresDrawer.assignClearAndExitSearch(searchThroughCode.clearAndExit.bind(searchThroughCode));
+
+            new HorizontalCodeBlockExtenderOnHover(codeBlock, codeBlockFullScreen.checkIfFullScreenIsActive.bind(codeBlockFullScreen));
 
             return [
                 languageLabel.getLanguageLabel(codeBlock),

@@ -334,7 +334,7 @@
 			if (@$options['categoryview'] && isset($post['categoryname']) && isset($post['categorybackpath'])) {
 				$favoriteclass='';
 
-				if (count(@$favoritemap['category'])) {
+				if (isset($favoritemap['category']) && count(@$favoritemap['category'])) {
 					if (@$favoritemap['category'][$post['categorybackpath']])
 						$favoriteclass=' qa-cat-favorited';
 
@@ -833,6 +833,10 @@
 			case 'A-'.QA_UPDATE_CONTENT:
 				$langstring=@$question['opersonal'] ? 'misc/your_a_edited' : 'main/answer_edited';
 				break;
+
+            case 'A-'.QA_UPDATE_TYPE:
+                $langstring=@$question['opersonal'] ? 'misc/your_a_moved' : 'main/answer_moved';
+                break;
 
 			case 'Q-'.QA_UPDATE_FOLLOWS:
 				$langstring=@$question['opersonal'] ? 'misc/your_a_questioned' : 'main/asked_related_q';
@@ -1507,7 +1511,7 @@
 	also combine multiple DOM IDs using JavaScript(=PHP) operators. This is twisted but rather convenient.
 */
 	{
-		$function='qa_display_rule_'.count(@$qa_content['script_lines']);
+		$function='qa_display_rule_'.count($qa_content['script_lines'] ?? []);
 
 		$keysourceids=array();
 

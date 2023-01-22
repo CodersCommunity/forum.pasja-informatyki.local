@@ -45,6 +45,7 @@
 		'all_categories' => 'All categories',
 		'anonymous' => 'anonymous',
 		'answer_edited' => 'answer edited',
+		'answer_moved' => 'answer moved',
 		'answer_reshown' => 'answer reshown',
 		'answer_selected' => 'answer selected',
 		'answered' => 'answered',

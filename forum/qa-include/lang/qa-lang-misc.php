@@ -99,6 +99,7 @@
 		'your_a_commented' => 'your answer commented',
 		'your_a_edited' => 'your answer edited',
 		'your_a_hidden' => 'your answer hidden',
+		'your_a_moved' => 'your answer moved',
 		'your_a_questioned' => 'asked on your answer',
 		'your_a_reshown' => 'your answer reshown',
 		'your_a_selected' => 'your answer selected',

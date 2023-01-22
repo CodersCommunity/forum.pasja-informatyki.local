@@ -1,0 +1,13 @@
+{
+  "name": "OG Metas",
+  "uri": "",
+  "description": "Add OG meta tags",
+  "version": "1.0.0",
+  "date": "2022-10-26",
+  "author": "Arkadiusz Waluk",
+  "author_uri": "https://waluk.pl",
+  "license": "",
+  "update_uri": "",
+  "min_q2a": "1.7",
+  "min_php": "7.0"
+}
