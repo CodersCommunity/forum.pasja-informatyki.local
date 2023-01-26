@@ -67,6 +67,10 @@ class qa_users_hidden_posts
             $questions = isset($_POST['questions']) ? 'Q' : false;
             $userID = is_numeric(qa_handle_to_userid($this->userHandle)) ? qa_handle_to_userid($this->userHandle) : 0;
             $sufix = "_HIDDEN";
+
+            if(!$comments && !$answers && !$questions){
+                return false;
+            }
             
             $sql = "SELECT * FROM `qa_posts` WHERE `userid` = ".$userID." AND (`type`=";
 
@@ -76,12 +80,12 @@ class qa_users_hidden_posts
 
             
             if($answers){
-                $sql .= $comments ? ' OR `type`=':'`type`=';
+                $sql .= $comments ? ' OR `type`=':'';
                 $sql .= "'".$answers.$sufix."'";
             }
 
             if($questions){
-                $sql .= ($comments || $answers) ? ' OR `type`=':'`type`=';
+                $sql .= ($comments || $answers) ? ' OR `type`=':'';
                 $sql .= "'".$questions.$sufix."'";
             }
 
