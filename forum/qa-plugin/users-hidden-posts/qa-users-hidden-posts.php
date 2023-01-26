@@ -19,7 +19,6 @@ class qa_users_hidden_posts
         $this->userHandle = explode("/", $request)[1];
         $qa_content = qa_content_prepare();
         
-        
         $qa_content['navigation']['sub'] = qa_user_sub_navigation($this->userHandle, '', false);
         $qa_content['title'] = qa_lang_html('users-hidden-posts/title');
         $qa_content['form'] = [
@@ -69,7 +68,7 @@ class qa_users_hidden_posts
             $userID = is_numeric(qa_handle_to_userid($this->userHandle)) ? qa_handle_to_userid($this->userHandle) : 0;
             $sufix = "_HIDDEN";
             
-            $sql = "SELECT * FROM `qa_posts` WHERE `userid` = ".$userID." AND `type`=";
+            $sql = "SELECT * FROM `qa_posts` WHERE `userid` = ".$userID." AND (`type`=";
 
             if($comments){
                 $sql .=  "'".$comments.$sufix."'";
@@ -85,6 +84,8 @@ class qa_users_hidden_posts
                 $sql .= ($comments || $answers) ? ' OR `type`=':'`type`=';
                 $sql .= "'".$questions.$sufix."'";
             }
+
+            $sql .= ")";
             $results = qa_db_read_all_assoc(qa_db_query_sub($sql));
 
             return $results ? $results : false;
@@ -125,6 +126,8 @@ class qa_users_hidden_posts
             qa_db_query_sub($sql, $id)
         );
         return $results ? $results['title'] : $title;
+
+        //TODO: Naprawić 
     }
 
 }
