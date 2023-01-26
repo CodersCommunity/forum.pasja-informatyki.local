@@ -6,7 +6,7 @@ class qa_html_theme_layer extends qa_html_theme_base
     
         qa_html_theme_base::doctype();
 
-        if($this->template === 'user') {
+        if($this->template === 'user' && qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR) {
             $this->content['navigation']['sub']['hidden'] = [
                 'url' => qa_path_html("hidden-posts/".explode("/", $this->request)[1], qa_opt('site_url')),
                 'label' => qa_lang_html('users-hidden-posts/label'),

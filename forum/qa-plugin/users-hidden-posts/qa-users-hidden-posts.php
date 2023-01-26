@@ -19,6 +19,7 @@ class qa_users_hidden_posts
         $this->userHandle = explode("/", $request)[1];
         $qa_content = qa_content_prepare();
         
+        
         $qa_content['navigation']['sub'] = qa_user_sub_navigation($this->userHandle, '', false);
         $qa_content['title'] = qa_lang_html('users-hidden-posts/title');
         $qa_content['form'] = [
@@ -54,9 +55,8 @@ class qa_users_hidden_posts
                 ],
             ],
         ];
+
         $qa_content['custom'] = $this->showUsersHiddenPosts();
-
-
         return $qa_content;
     }
 
@@ -77,23 +77,54 @@ class qa_users_hidden_posts
 
             
             if($answers){
-                $sql .= $comments ? 'OR':'';
+                $sql .= $comments ? ' OR `type`=':'`type`=';
                 $sql .= "'".$answers.$sufix."'";
             }
 
             if($questions){
-                $sql .= ($comments || $answers) ? 'OR':'';
+                $sql .= ($comments || $answers) ? ' OR `type`=':'`type`=';
                 $sql .= "'".$questions.$sufix."'";
             }
-
             $results = qa_db_read_all_assoc(qa_db_query_sub($sql));
 
-            return $results ? $results : qa_lang_html("users-hidden-posts/no-results");
+            return $results ? $results : false;
         }
     }
 
     private function showUsersHiddenPosts()
     {
         $hidden = $this->getUsersHiddenPosts();
+        $postsHtml ="";
+
+        if(!$hidden){
+            return qa_lang_html("users-hidden-posts/no-results");
+        }
+        
+
+        foreach($hidden as $post){
+            $title = $this->getParentsTitle($post['parentid'], $post['title']);
+            $id = !empty($post['parentid']) ? $post['parentid'] : $post['postid'];
+
+            $postsHtml .= '<div class = "post">
+                            <a class = "postsHeader" href="'.qa_q_path($id, $title, false, $post['type'][0], $post['postid']).'">'.$title.'</a>
+                            <p>Dodano: '.date("Y-m-d", strtotime($post['created'])).' </p>
+                        </div>';
+
+           
+        }
+
+        return $postsHtml;
     }
+
+    private function getParentsTitle($id, $title)
+    {
+        if(empty($id)){return $title;}
+
+        $sql = "SELECT `title` FROM `qa_posts` WHERE `postid` = $";
+        $results = qa_db_read_one_assoc(
+            qa_db_query_sub($sql, $id)
+        );
+        return $results ? $results['title'] : $title;
+    }
+
 }
