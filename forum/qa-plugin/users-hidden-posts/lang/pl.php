@@ -10,5 +10,9 @@ return [
     'questions' => 'Pytania',
     'search-label' => 'Szukaj',
     'hide-label' => 'Ukryj',
-    'no-results' => "Brak ukrytych postów"
+    'no-results' => "Brak ukrytych postów",
+    'question' => "Pytanie",
+    'comment' => "Komentarz",
+    'answer' => "Odpowiedź",
+    'bad-prefix' => "Nieznany - zły typ"
 ];

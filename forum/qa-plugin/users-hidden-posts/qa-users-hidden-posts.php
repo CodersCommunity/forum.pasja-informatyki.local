@@ -111,7 +111,9 @@ class qa_users_hidden_posts
             $id = !empty($post['parentid']) ? $post['parentid'] : $post['postid'];
 
             $postsHtml .= '<div class = "post">
-                            <a class = "postsHeader" href="'.qa_q_path($id, $title, false, $post['type'][0], $post['postid']).'">'.$title.'</a>
+                            <a class = "postsHeader" href="'.
+                                                    qa_q_path($id, $title, false, $post['type'][0], $post['postid']).'">'
+                                                    .$title.' ('.$this->matchPrefixToName($post['type'][0]).')</a>
                             <p>Dodano: '.date("Y-m-d", strtotime($post['created'])).' </p>
                         </div>';
 
@@ -130,8 +132,16 @@ class qa_users_hidden_posts
             qa_db_query_sub($sql, $id)
         );
         return $results ? $results['title'] : $title;
+ 
+    }
 
-        //TODO: Naprawić 
+    private function matchPrefixToName($prefix){
+        switch($prefix){
+            case "Q": return qa_lang_html("users-hidden-posts/question"); break;
+            case "C": return qa_lang_html("users-hidden-posts/comment"); break;
+            case "A": return qa_lang_html("users-hidden-posts/answer"); break;
+            default:  return qa_lang_html("users-hidden-posts/bad-prefix"); break;
+        }
     }
 
 }
