@@ -135,7 +135,8 @@ class qa_users_hidden_posts
  
     }
 
-    private function matchPrefixToName($prefix){
+    private function matchPrefixToName($prefix)
+    {
         switch($prefix){
             case "Q": return qa_lang_html("users-hidden-posts/question"); break;
             case "C": return qa_lang_html("users-hidden-posts/comment"); break;
