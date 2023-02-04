@@ -11,7 +11,9 @@ class qa_users_hidden_posts
 
     public function match_request(string $request)
     {
-        return qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR && qa_request_part(0)==='hidden-posts';
+        return qa_get_logged_in_level() >= QA_USER_LEVEL_EDITOR && 
+               qa_request_part(0)==='hidden-posts' && 
+               qa_handle_to_userid(htmlentities(qa_request_part(1), ENT_QUOTES, "UTF-8"));
     }
 
     public function process_request(string $request)
@@ -30,7 +32,7 @@ class qa_users_hidden_posts
                     'type' => 'checkbox',
                     'label' => qa_lang_html('users-hidden-posts/comments'),
                     'tags' => 'name=comments',
-                    'value' => isset($_POST['comments']) ? true : false,
+                    'value' => isset($_POST['comments']),
                 ],
                 'answers' => [
                     'type' => 'checkbox',
@@ -39,7 +41,7 @@ class qa_users_hidden_posts
                     'value' => isset($_POST['answers']) ? true : false,
 
                 ],
-                'qusetions' => [
+                'questions' => [
                     'type' => 'checkbox',
                     'label' => qa_lang_html('users-hidden-posts/questions'),
                     'tags' => 'name=questions',
@@ -61,36 +63,36 @@ class qa_users_hidden_posts
 
     private function getUsersHiddenPosts()
     {
-        if(isset($_POST['search'])){
+        if(isset($_POST['search'])) {
             $comments = isset($_POST['comments']) ? 'C': false;
             $answers = isset($_POST['answers']) ? 'A' : false;
             $questions = isset($_POST['questions']) ? 'Q' : false;
-            $userID = is_numeric(qa_handle_to_userid($this->userHandle)) ? qa_handle_to_userid($this->userHandle) : 0;
+            $userID = qa_handle_to_userid($this->userHandle);
             $sufix = "_HIDDEN";
 
-            if(!$comments && !$answers && !$questions){
+            if((!$comments && !$answers && !$questions) || !is_numeric($userID)) {
                 return false;
             }
             
-            $sql = "SELECT * FROM `qa_posts` WHERE `userid` = ".$userID." AND (`type`=";
+            $sql = "SELECT `title`, `parentid`, `postid`, `created`, `type` FROM `qa_posts` WHERE `userid` = $ AND (`type`=";
 
-            if($comments){
+            if($comments) {
                 $sql .=  "'".$comments.$sufix."'";
             }
 
             
-            if($answers){
-                $sql .= $comments ? ' OR `type`=':'';
+            if($answers) {
+                $sql .= $comments ? ' OR type=':'';
                 $sql .= "'".$answers.$sufix."'";
             }
 
-            if($questions){
-                $sql .= ($comments || $answers) ? ' OR `type`=':'';
+            if($questions) {
+                $sql .= ($comments || $answers) ? ' OR type=':'';
                 $sql .= "'".$questions.$sufix."'";
             }
 
-            $sql .= ")";
-            $results = qa_db_read_all_assoc(qa_db_query_sub($sql));
+            $sql .= ") ORDER BY postid DESC";
+            $results = qa_db_read_all_assoc(qa_db_query_sub($sql, $userID));
 
             return $results ? $results : false;
         }
@@ -101,19 +103,20 @@ class qa_users_hidden_posts
         $hidden = $this->getUsersHiddenPosts();
         $postsHtml ="";
 
-        if(!$hidden){
+        if(!$hidden) {
             return qa_lang_html("users-hidden-posts/no-results");
         }
         
 
-        foreach($hidden as $post){
+        foreach($hidden as $post) {
             $title = $this->getParentsTitle($post['parentid'], $post['title']);
             $id = !empty($post['parentid']) ? $post['parentid'] : $post['postid'];
 
             $postsHtml .= '<div class = "post">
+                            '.$this->matchPrefixToName($post['type'][0]).':
                             <a class = "postsHeader" href="'.
                                                     qa_q_path($id, $title, false, $post['type'][0], $post['postid']).'">'
-                                                    .$title.' ('.$this->matchPrefixToName($post['type'][0]).')</a>
+                                                    .$title.'</a>
                             <p>Dodano: '.date("Y-m-d", strtotime($post['created'])).' </p>
                         </div>';
 
@@ -125,9 +128,11 @@ class qa_users_hidden_posts
 
     private function getParentsTitle($id, $title)
     {
-        if(empty($id)){return $title;}
+        if(empty($id)) {
+            return $title;
+        }
 
-        $sql = "SELECT `title` FROM `qa_posts` WHERE `postid` = $";
+        $sql = "SELECT `title` FROM `^posts` WHERE `postid` = $";
         $results = qa_db_read_one_assoc(
             qa_db_query_sub($sql, $id)
         );
@@ -137,11 +142,15 @@ class qa_users_hidden_posts
 
     private function matchPrefixToName($prefix)
     {
-        switch($prefix){
-            case "Q": return qa_lang_html("users-hidden-posts/question"); break;
-            case "C": return qa_lang_html("users-hidden-posts/comment"); break;
-            case "A": return qa_lang_html("users-hidden-posts/answer"); break;
-            default:  return qa_lang_html("users-hidden-posts/bad-prefix"); break;
+        switch($prefix) {
+            case "Q": 
+                return qa_lang_html("users-hidden-posts/question");
+            case "C": 
+                return qa_lang_html("users-hidden-posts/comment");
+            case "A": 
+                return qa_lang_html("users-hidden-posts/answer");
+            default:  
+                return qa_lang_html("users-hidden-posts/bad-prefix");
         }
     }
 

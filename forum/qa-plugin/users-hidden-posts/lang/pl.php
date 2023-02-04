@@ -12,7 +12,7 @@ return [
     'hide-label' => 'Ukryj',
     'no-results' => "Brak ukrytych postów",
     'question' => "Pytanie",
-    'comment' => "Komentarz",
-    'answer' => "Odpowiedź",
+    'comment' => "Komentarz do",
+    'answer' => "Odpowiedź na",
     'bad-prefix' => "Nieznany - zły typ"
 ];
