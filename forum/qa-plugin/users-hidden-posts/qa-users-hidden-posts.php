@@ -74,7 +74,8 @@ class qa_users_hidden_posts
                 return false;
             }
             
-            $sql = "SELECT `title`, `parentid`, `postid`, `created`, `type` FROM `qa_posts` WHERE `userid` = $ AND (`type`=";
+            $sql = "SELECT org.title, org.parentid, org.postid, org.created, org.type, par.title AS parentTitle FROM qa_posts as org 
+                    LEFT JOIN qa_posts as par ON org.parentid=par.postid WHERE org.userid = $ AND (org.type =";
 
             if($comments) {
                 $sql .=  "'".$comments.$sufix."'";
@@ -82,16 +83,16 @@ class qa_users_hidden_posts
 
             
             if($answers) {
-                $sql .= $comments ? ' OR type=':'';
+                $sql .= $comments ? ' OR org.type=':'';
                 $sql .= "'".$answers.$sufix."'";
             }
 
             if($questions) {
-                $sql .= ($comments || $answers) ? ' OR type=':'';
+                $sql .= ($comments || $answers) ? ' OR org.type=':'';
                 $sql .= "'".$questions.$sufix."'";
             }
 
-            $sql .= ") ORDER BY postid DESC";
+            $sql .= ") ORDER BY org.postid DESC"; 
             $results = qa_db_read_all_assoc(qa_db_query_sub($sql, $userID));
 
             return $results ? $results : false;
@@ -109,7 +110,7 @@ class qa_users_hidden_posts
         
 
         foreach($hidden as $post) {
-            $title = $this->getParentsTitle($post['parentid'], $post['title']);
+            $title = $post['parentTitle'] ?? $post['title'];
             $id = !empty($post['parentid']) ? $post['parentid'] : $post['postid'];
 
             $postsHtml .= '<div class = "post">
@@ -124,20 +125,6 @@ class qa_users_hidden_posts
         }
 
         return $postsHtml;
-    }
-
-    private function getParentsTitle($id, $title)
-    {
-        if(empty($id)) {
-            return $title;
-        }
-
-        $sql = "SELECT `title` FROM `^posts` WHERE `postid` = $";
-        $results = qa_db_read_one_assoc(
-            qa_db_query_sub($sql, $id)
-        );
-        return $results ? $results['title'] : $title;
- 
     }
 
     private function matchPrefixToName($prefix)
