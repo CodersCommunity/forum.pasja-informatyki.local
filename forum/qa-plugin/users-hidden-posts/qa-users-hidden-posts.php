@@ -74,8 +74,8 @@ class qa_users_hidden_posts
                 return false;
             }
             
-            $sql = "SELECT org.title, org.parentid, org.postid, org.created, org.type, par.title AS parentTitle FROM qa_posts as org 
-                    LEFT JOIN qa_posts as par ON org.parentid=par.postid WHERE org.userid = $ AND (org.type =";
+            $sql = "SELECT org.title, org.parentid, org.postid, org.created, org.type, par.title AS parentTitle FROM ^posts as org 
+                    LEFT JOIN ^posts as par ON org.parentid=par.postid WHERE org.userid = $ AND (org.type =";
 
             if($comments) {
                 $sql .=  "'".$comments.$sufix."'";
