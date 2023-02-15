@@ -38,14 +38,14 @@ class qa_users_hidden_posts
                     'type' => 'checkbox',
                     'label' => qa_lang_html('users-hidden-posts/answers'),
                     'tags' => 'name=answers',
-                    'value' => isset($_POST['answers']) ? true : false,
+                    'value' => isset($_POST['answers']),
 
                 ],
                 'questions' => [
                     'type' => 'checkbox',
                     'label' => qa_lang_html('users-hidden-posts/questions'),
                     'tags' => 'name=questions',
-                    'value' => isset($_POST['questions']) ? true : false,
+                    'value' => isset($_POST['questions']),
                 ],
             ],
 
@@ -102,10 +102,10 @@ class qa_users_hidden_posts
     private function showUsersHiddenPosts()
     {
         $hidden = $this->getUsersHiddenPosts();
-        $postsHtml ="";
+        $postsHtml ="<ol>";
 
         if(!$hidden) {
-            return qa_lang_html("users-hidden-posts/no-results");
+            return isset($_POST['search']) ? qa_lang_html("users-hidden-posts/no-results") : "";
         }
         
 
@@ -113,18 +113,18 @@ class qa_users_hidden_posts
             $title = $post['parentTitle'] ?? $post['title'];
             $id = !empty($post['parentid']) ? $post['parentid'] : $post['postid'];
 
-            $postsHtml .= '<div class = "post">
+            $postsHtml .= '<li>
                             '.$this->matchPrefixToName($post['type'][0]).':
-                            <a class = "postsHeader" href="'.
-                                                    qa_q_path($id, $title, false, $post['type'][0], $post['postid']).'">'
-                                                    .$title.'</a>
-                            <p>Dodano: '.date("Y-m-d", strtotime($post['created'])).' </p>
-                        </div>';
+                            <a href="'.
+                                    qa_q_path($id, $title, false, $post['type'][0], $post['postid']).'">'
+                                    .$title.'</a>
+                            <p>Dodano: <time>'.date("Y-m-d", strtotime($post['created'])).'</time> </p>
+                        </li>';
 
            
         }
 
-        return $postsHtml;
+        return $postsHtml.="</ol>";
     }
 
     private function matchPrefixToName($prefix)
