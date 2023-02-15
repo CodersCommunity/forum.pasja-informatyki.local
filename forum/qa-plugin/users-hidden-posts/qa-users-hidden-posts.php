@@ -95,7 +95,7 @@ class qa_users_hidden_posts
             $sql .= ") ORDER BY org.postid DESC"; 
             $results = qa_db_read_all_assoc(qa_db_query_sub($sql, $userID));
 
-            return $results ? $results : false;
+            return $results ?? false;
         }
     }
 
