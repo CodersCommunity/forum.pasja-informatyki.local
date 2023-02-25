@@ -110,7 +110,7 @@ class qa_users_hidden_posts
         
 
         foreach($hidden as $post) {
-            $title = $post['parentTitle'] ?? $post['title'];
+            $title = htmlentities($post['parentTitle'] ?? $post['title']);
             $id = !empty($post['parentid']) ? $post['parentid'] : $post['postid'];
 
             $postsHtml .= '<li>
