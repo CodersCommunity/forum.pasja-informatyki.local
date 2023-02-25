@@ -1,0 +1,8 @@
+{
+    "name": "Users hidden posts",
+    "description": "Page in users profile that show hidden posts",
+    "version": "1.0",
+    "author": "wizarddos",
+    "license": "GPLv2",
+    "min_q2a": "1.5"
+}
