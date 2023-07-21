@@ -317,7 +317,7 @@ function qa_ajax_error()
                 [].slice.call( document.querySelectorAll( query ) ).forEach( function( replyType ) {
                     var nick = replyType.querySelector( '.nickname' );
 
-                    if ( nick.textContent === authorNick ) {
+                    if ( nick && nick.textContent === authorNick ) {
                         nick.classList.add( 'topic-author' );
                     }
                 } );
