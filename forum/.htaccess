@@ -2,10 +2,16 @@ Options -Indexes
 DirectoryIndex index.php
 
 # Change the path below in production or other environments
-ErrorDocument 403 /vagrant/forum/index.php
+ErrorDocument 403 /forum/index.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    RewriteCond %{HTTP_HOST} ^forum.miroslawzelent.pl$ [NC]
+    RewriteRule ^(.*)$ https://forum.pasja-informatyki.pl/$1 [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^www.forum.miroslawzelent.pl$ [NC]
+    RewriteRule ^(.*)$ https://forum.pasja-informatyki.pl/$1 [R=301,L]
 
     RewriteCond %{HTTP_HOST} ^www.forum.pasja-informatyki.pl$ [NC]
     RewriteRule ^(.*)$ https://forum.pasja-informatyki.pl/$1 [R=301,L]
@@ -31,4 +37,12 @@ ErrorDocument 403 /vagrant/forum/index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^.*$ index.php?qa-rewrite=$0&%{QUERY_STRING} [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SameOrigin"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header unset X-Powered-By
+    Header unset Server
 </IfModule>
