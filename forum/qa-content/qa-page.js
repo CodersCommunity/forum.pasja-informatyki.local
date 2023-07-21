@@ -410,15 +410,16 @@ function qa_ajax_error()
 
             if ( askQuestionBtn ) {
                 askQuestionBtn.addEventListener( 'click', () => {
-                    tags.value = tags.value.split( ' ' ).reduce( ( acc, tag, idx, tagsArray ) => {
-                        const extraSpace = idx === tagsArray.length - 1 ? '' : ' ';
-
-                        if ( tag.startsWith( '#' ) ) {
-                            return acc + tag.slice( 1 ) + extraSpace;
-                        } else {
-                            return acc + tag + extraSpace;
-                        }
-                    }, '' );
+                    tags.value = tags.value
+                      // remove hashes from beginning
+                      .replace(/^#*/, '')
+                      // swap: multiple hashes surrounded with spaces -> single space
+                      .replace(/ #+ /g, ' ')
+                      // shrink redundant hashes in a row to a single hash
+                      .replace(/#+/g, '#')
+                      // swap: letters and subsequent hash -> letters, hash and space
+                      .replace(/(\w+#)/g, '$1 ')
+                      .trim();
                 } );
             }
         } );
