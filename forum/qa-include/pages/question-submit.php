@@ -144,6 +144,9 @@
         if ( (qa_clicked($prefix.'dohide') && $answer['hideable']) || (qa_clicked($prefix.'doreject') && $answer['moderatable']) )
             if (qa_page_q_click_check_form_code($answer, $error)) {
                 qa_answer_set_hidden($answer, true, $userid, $handle, $cookieid, $question, $commentsfollows);
+                if ($question['selchildid'] === $answer['postid']) {
+                    qa_question_set_selchildid($userid, $handle, $cookieid, $question, null, $answers);
+                }
                 return true;
             }
 
