@@ -307,6 +307,9 @@ function qa_ajax_error()
     function styleTopicAuthor() {
 
         var author = document.querySelector( '.qa-q-view-who-data .nickname' );
+        if ( !author ) {
+            return;
+        }
         var authorNick = author.textContent;
         author.classList.add( 'topic-author' );
 
@@ -317,7 +320,7 @@ function qa_ajax_error()
                 [].slice.call( document.querySelectorAll( query ) ).forEach( function( replyType ) {
                     var nick = replyType.querySelector( '.nickname' );
 
-                    if ( nick.textContent === authorNick ) {
+                    if ( nick && nick.textContent === authorNick ) {
                         nick.classList.add( 'topic-author' );
                     }
                 } );
