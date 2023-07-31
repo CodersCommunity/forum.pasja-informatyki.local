@@ -108,6 +108,12 @@
 		'flag_button' => 'flag',
 		'flag_c_popup' => 'Flag this comment as spam or inappropriate',
 		'flag_hide_button' => 'flag and hide',
+
+		'mute_button' => 'Mute thread',
+		'mute_popup' => 'Mute this thread to not receive any further notifications',
+		'unmute_button' => 'Unmute thread',
+		'unmute_popup' => 'Unmute this thread to receive notifications again',
+
 		'flag_limit' => 'Too many posts flagged - please try again in an hour',
 		'flag_must_confirm' => 'Please ^5confirm your email address^6 to flag posts.',
 		'flag_must_login' => 'Please ^1log in^2 or ^3register^4 to flag posts.',

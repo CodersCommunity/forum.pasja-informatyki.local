@@ -157,6 +157,60 @@
 			qa_html_theme_base::doctype();
 		}
 
+		public function a_item_buttons($a_item)
+		{
+			if (!empty($a_item['form'])) {
+				$answerId = $a_item['raw']['postid'];
+				$questionId = $a_item['raw']['parentid'];
+
+				$this->addCustomButtons(
+					$a_item,
+					'a' . $a_item['raw']['postid'],
+					' onclick="return qa_answer_click('.qa_js($answerId).', '.qa_js($questionId).', this);"'
+				);
+			}
+
+			return parent::a_item_buttons($a_item);
+		}
+
+		public function q_view_buttons($q_view)
+		{
+			if (!empty($q_view['form'])) {
+				$this->addCustomButtons(
+					$q_view,
+					'q',
+					' onclick="qa_show_waiting_after(this, false);"'
+				);
+			}
+
+			return parent::q_view_buttons($q_view);
+		}
+
+		protected function addCustomButtons(&$view, $prefix, $clicksuffix)
+		{
+			require_once __DIR__ . '/../qa-plugin/q2apro-on-site-notifications/utils.php';
+
+			$current_user_id = qa_get_logged_in_userid();
+			if ($current_user_id === null) {
+				return;
+			}
+
+			$postId = $view['raw']['postid'];
+			$participantsObtainer = new ThreadParticipantsObtainer($postId);
+			if (!$participantsObtainer->isParticipant($current_user_id)) {
+				return;
+			}
+
+			$muteChecker = new ThreadMuteChecker($postId);
+			$muted = $muteChecker->hasUserMutedThread($current_user_id);
+			$action = $muted ? 'unmute' : 'mute';
+			$view['form']['buttons'][$action]=array(
+				'tags' => "name=\"{$prefix}_do{$action}\"" . $clicksuffix,
+				'label' => qa_lang_html("question/{$action}_button"),
+				'popup' => qa_lang_html("question/{$action}_popup"),
+			);
+		}
+
 	} // end qa_html_theme_layer
 
 /*

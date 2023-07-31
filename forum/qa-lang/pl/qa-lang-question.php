@@ -96,6 +96,12 @@
 		'flag_button' => 'zgłoś',
 		'flag_c_popup' => 'Zgłoś ten komentarz jako spam lub niezgodny z regulaminem',
 		'flag_hide_button' => 'zgłoś i ukryj',
+
+		'mute_button' => 'Wycisz wątek',
+		'mute_popup' => 'Wycisz ten wątek, aby nie otrzymywać dalszych powiadomień',
+		'unmute_button' => 'Subskrybuj wątek',
+		'unmute_popup' => 'Subskrybuj wątek, aby ponownie otrzymywać powiadomienia',
+
 		'flag_limit' => 'Zbyt wiele zgłoszeń. Spróbuj ponownie za godzinę',
 		'flag_must_confirm' => '^5Potwierdź swój adres email^6, aby móc zgłaszać treść.',
 		'flag_must_login' => '^1Zaloguj^2 lub ^3zarejestruj się^4, aby móc zgłaszać treść.',

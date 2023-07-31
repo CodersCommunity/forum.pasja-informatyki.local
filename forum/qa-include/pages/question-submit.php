@@ -39,6 +39,7 @@
     {
         require_once QA_INCLUDE_DIR.'app/post-update.php';
         require_once QA_INCLUDE_DIR.'app/limits.php';
+        require_once QA_PLUGIN_DIR.'/q2apro-on-site-notifications/utils.php';
 
         $userid=qa_get_logged_in_userid();
         $handle=qa_get_logged_in_handle();
@@ -46,6 +47,16 @@
 
         if (qa_clicked('q_doreopen') && $question['reopenable'] && qa_page_q_click_check_form_code($question, $error) ) {
             qa_question_close_clear($question, $closepost, $userid, $handle, $cookieid);
+            return true;
+        }
+
+        if (qa_clicked('q_domute') && qa_page_q_click_check_form_code($question, $error)) {
+            mute_thread($userid, $question['postid']);
+            return true;
+        }
+
+        if (qa_clicked('q_dounmute') && qa_page_q_click_check_form_code($question, $error)) {
+            unmute_thread($userid, $question['postid']);
             return true;
         }
 
@@ -123,6 +134,8 @@
     If there is an error to display, it will be passed out in $error.
 */
     {
+        require_once QA_PLUGIN_DIR.'/q2apro-on-site-notifications/utils.php';
+
         $userid=qa_get_logged_in_userid();
         $handle=qa_get_logged_in_handle();
         $cookieid=qa_cookie_get();
@@ -138,6 +151,16 @@
 
         if (qa_clicked($prefix.'dounselect') && $question['aselectable'] && ($question['selchildid']==$answer['postid']) && ($allowselectmove || !qa_opt('do_close_on_select')) && qa_page_q_click_check_form_code($answer, $error)) {
             qa_question_set_selchildid($userid, $handle, $cookieid, $question, null, $answers);
+            return true;
+        }
+
+        if (qa_clicked($prefix . 'domute') && qa_page_q_click_check_form_code($answer, $error)) {
+            mute_thread($userid, $answer['postid']);
+            return true;
+        }
+
+        if (qa_clicked($prefix . 'dounmute') && qa_page_q_click_check_form_code($answer, $error)) {
+            unmute_thread($userid, $answer['postid']);
             return true;
         }
 

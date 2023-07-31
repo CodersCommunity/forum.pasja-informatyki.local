@@ -29,8 +29,26 @@
  * Link to plugin file: https://github.com/NoahY/q2a-history/blob/master/qa-history-check.php
  */
 
+require_once __DIR__ . '/utils.php';
+
 class q2apro_history_check
 {
+    public function init_queries($tableslc)
+    {
+        $queries = [];
+
+        if (!in_array(qa_db_add_table_prefix('muted_threads'), $tableslc)) {
+            $queries[] = 'CREATE TABLE IF NOT EXISTS ^muted_threads (
+                postid bigint(20) unsigned NOT NULL,
+                userid bigint(20) unsigned NOT NULL,
+                KEY postid (postid),
+                KEY userid (userid)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8';
+        }
+
+        return $queries;
+    }
+
     function process_event($event, $userid, $handle, $cookieid, $params)
     {
         if (!qa_opt('event_logger_to_database')) {
@@ -139,11 +157,12 @@ class q2apro_history_check
         $commentsQuery = qa_db_query_sub('SELECT DISTINCT userid FROM `^posts` WHERE `parentid` = #
             AND `type` = "C" AND `userid` IS NOT NULL', $params['parentid']);
 
+        $muteChecker = new ThreadMuteChecker($params['parentid']);
         while (($comment = qa_db_read_one_assoc($commentsQuery, true)) !== null) {
             $commentUserId = $comment['userid'];
 
             // don't inform user that comments, and don't inform user that comments on his own question/answer
-            if ($commentUserId != $postUserId && $commentUserId != $parentUserId) {
+            if ($commentUserId != $postUserId && $commentUserId != $parentUserId && !$muteChecker->hasUserMutedThread($commentUserId)) {
                 $commentUserHandle = qa_userid_to_handle($commentUserId);
 
                 qa_db_query_sub(
