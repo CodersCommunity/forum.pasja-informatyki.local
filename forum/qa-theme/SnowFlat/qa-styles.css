@@ -2338,6 +2338,12 @@ input[type="submit"], button {
 .qa-form-light-button-unflag, .qa-form-light-button-clearflags {
 	background-image: url('images/icons/un-flag-white.png');
 }
+.qa-form-light-button-mute {
+	background-image: url('images/icons/mute-white.png');
+}
+.qa-form-light-button-unmute {
+	background-image: url('images/icons/unmute-white.png');
+}
 .qa-form-light-button-hide {
 	background-image: url('images/icons/hide-white.png');
 }
@@ -2855,6 +2861,12 @@ input[type="submit"], button {
 }
 .qa-c-list-item .qa-form-light-button-unflag, .qa-c-list-item .qa-form-light-button-clearflags {
 	background-image: url('images/icons/un-flag.png');
+}
+.qa-c-list-item .qa-form-light-button-mute {
+	background-image: url('images/icons/mute.png');
+}
+.qa-c-list-item .qa-form-light-button-unmute {
+	background-image: url('images/icons/unmute.png');
 }
 .qa-c-list-item .qa-form-light-button-hide {
 	background-image: url('images/icons/hide.png');
