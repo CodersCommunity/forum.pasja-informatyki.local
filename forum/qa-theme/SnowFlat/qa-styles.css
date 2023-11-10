@@ -5636,3 +5636,28 @@ padding: 10px;
 }
 
 /* End of notification from WebSocket */
+
+@media (max-width: 1179px){
+
+.qa-sidepanel > div:not(.qa-widgets-side-bottom):not(.wet-asphalt):not(.qa-feed) {
+    display: block !important;
+}
+
+.qa-sidepanel .qa-widget-side {
+	text-align: center !important;
+}
+
+.qa-sidepanel .qa-widget-side div {
+	text-align: center !important;
+}
+
+.qa-sidepanel .qa-widget-side img {
+	margin-top: 15px;
+}
+
+}
+
+.qam-footer-box {
+	margin-top: 25px;
+	padding-top: 8px;
+}
