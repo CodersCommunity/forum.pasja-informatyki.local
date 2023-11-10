@@ -35,3 +35,10 @@
 		padding: 1px;
 	}
 }
+
+@media (max-width: 1179px) {
+	.qa-nav-cat {
+		background: $bcg-dark;
+		border: 1px solid $border;
+	}
+}
