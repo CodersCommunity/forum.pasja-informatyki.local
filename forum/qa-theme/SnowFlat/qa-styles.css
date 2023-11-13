@@ -2956,21 +2956,21 @@ input[type="submit"], button {
 
 #qam-sidepanel-toggle {
 	position: fixed;
-	bottom: 10px;
-	right: 0;
+	bottom: 36px;
+	right: 0px;
 	text-align: center;
-	font-size: 24px;
-	background: #9b59b6;
+	font-size: 30px;
+	background: #2c3e50;
 	cursor: pointer;
 	transition: all 0.15s ease;
 	color: #95a5a6;
-	opacity: 0.5;
+	opacity: 0.8;
 	z-index: 999;
 }
 #qam-sidepanel-toggle.active {
 	opacity: 1;
 	color: #34495e;
-	right: 250px;
+	right: 320px;
 	box-shadow: -5px 0 15px 0 rgba(0, 0, 0, 0.5);
 }
 #qam-sidepanel-toggle [class^="icon-"]:before, #qam-sidepanel-toggle [class*=" icon-"]:before {
@@ -2984,10 +2984,10 @@ input[type="submit"], button {
 #qam-sidepanel-mobile {
 	background: #fff;
 	position: fixed;
-	right: -250px;
+	right: -320px;
 	top: 0;
 	height: 100%;
-	width: 250px;
+	width: 320px;
 	overflow-y: auto;
 	z-index: 99999;
 	transition: all 0.15s ease;
@@ -3703,11 +3703,11 @@ input[type="submit"], button {
 }
 
 .icon-left-open-big:before {
-	content: '\e818';
+	content: '\e816';
 }
 
 .icon-right-open-big:before {
-	content: '\e818';
+	content: '\e816';
 }
 
 .icon-down-open-big:before {
@@ -5660,4 +5660,15 @@ padding: 10px;
 .qam-footer-box {
 	margin-top: 25px;
 	padding-top: 8px;
+}
+
+#qam-sidepanel-mobile.open .qa-nav-cat-item a{
+	font-size: 13px;
+	line-height: 160%;
+}
+
+#qam-sidepanel-mobile.open .qa-nav-cat-note {
+	font-size: 11px;
+	line-height: 160%;
+	margin-top: 3px;
 }
