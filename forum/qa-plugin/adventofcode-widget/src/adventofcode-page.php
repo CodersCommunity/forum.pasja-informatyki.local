@@ -2,6 +2,13 @@
 
 class adventofcode_page
 {
+    private $content;
+
+    public function __construct()
+    {
+        $this->content = new adventofcode_content();
+    }
+
     public function match_request($request)
     {
         return $request === 'advent-of-code' && qa_opt('adventofcode_widget_enabled') == 1;
@@ -9,8 +16,7 @@ class adventofcode_page
 
     public function process_request()
     {
-        $users = json_decode(qa_opt('adventofcode_widget_content'), true);
-        $users = $this->fill_missing_days($users);
+        $users = $this->content->csvToResult(qa_opt('adventofcode_widget_content'));
         $year = qa_opt('adventofcode_widget_year');
         $leaderboard = qa_opt('adventofcode_widget_leaderboard_id');
         $code = qa_opt('adventofcode_widget_leaderboard_code');
@@ -53,13 +59,13 @@ class adventofcode_page
 
             // Ranking
             $html .= '<ol class="aoc-page__ranking">';
-            foreach($users as ['name' => $username, 'score' => $score, 'stars' => $stars, 'link' => $userlink]) {
+            foreach ($users as ['name' => $username, 'score' => $score, 'stars' => $stars]) {
                 $html .= '<li>';
                 $html .= '    <span class="aoc-page__score">'.$score.'</span>';
-                foreach($stars as $day => $dayScore) {
-                    $html .= '<span class="aoc-page__star aoc-page__star--'.$dayScore.'" title="'.$username.' - Dzień: '.$day.'">*</span>';
+                foreach (range(1, 25) as $day) {
+                    $html .= '<span class="aoc-page__star aoc-page__star--'.$stars[$day - 1].'" title="'.$username.' - Dzień: '.$day.'">*</span>';
                 }
-                $html .= '    <span class="aoc-page__username">'.$this->wrap_username_in_anchor($username, $userlink).'</span>';
+                $html .= '    <span class="aoc-page__username">'.$username.'</span>';
                 $html .= '</li>';
             }
             $html .= '</ol>';
@@ -74,11 +80,6 @@ class adventofcode_page
         $html .= '<p>Powodzenia!</p>';
 
         return $html;
-    }
-
-    private function wrap_username_in_anchor($username, $userlink)
-    {
-        return isset($userlink) ? '<a href="'.$userlink.'" target="_blank">'.$username.'</a>' : $username;
     }
 
     private function get_css()
@@ -153,20 +154,5 @@ class adventofcode_page
                 }
             }
         ';
-    }
-
-    private function fill_missing_days($users)
-    {
-        foreach($users as &$user) {
-            $stars = &$user['stars'];
-
-            foreach(range(1, 25) as $day) {
-                $stars[$day] = $stars[$day] ?? 0;
-            }
-
-            ksort($stars);
-        }
-
-        return $users;
     }
 }
