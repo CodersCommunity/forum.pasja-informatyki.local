@@ -80,7 +80,7 @@ class adventofcode_content
             }
 
             $users[] = [
-                'name' => $member['name'] ?? ('Anonim '.$member['id']),
+                'name' => htmlentities($member['name'] ?? ('Anonim '.$member['id'])),
                 'score' => $member['local_score'],
                 'stars' => $stars,
             ];
