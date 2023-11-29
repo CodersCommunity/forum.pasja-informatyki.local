@@ -2,6 +2,13 @@
 
 class adventofcode_widget
 {
+    private $content;
+
+    public function __construct()
+    {
+        $this->content = new adventofcode_content();
+    }
+
     public function allow_template($template)
     {
         return $this->is_enabled();
@@ -18,7 +25,7 @@ class adventofcode_widget
             $this->update_results();
         }
 
-        $users = json_decode(qa_opt('adventofcode_widget_content'), true);
+        $users = $this->content->csvToResult(qa_opt('adventofcode_widget_content'));
         $year = qa_opt('adventofcode_widget_year');
 
         $themeobject->output('<div class="aoc-widget">');
@@ -109,93 +116,10 @@ class adventofcode_widget
         $leaderboard = qa_opt('adventofcode_widget_leaderboard_id');
         $session = qa_opt('adventofcode_widget_session_id');
 
-        $aocResponse = $this->getAoCResponse($year, $leaderboard, $session);
-        $userLinks = $this->getUserLinks($year, $leaderboard, $session);
-
-        $content = $this->parseAocResponse($aocResponse, $userLinks);
-        if ($content) {
-            qa_opt('adventofcode_widget_content', $content);
-        }
+        $users = $this->content->loadFromPage($year, $leaderboard, $session);
+        $content = $this->content->resultToCsv($users);
+        qa_opt('adventofcode_widget_content', $content);
 
         qa_opt('adventofcode_widget_update_date', (new DateTime())->format('Y-m-d H'));
-
-        return true;
-    }
-
-    private function getAoCResponse($year, $leaderboard, $session)
-    {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, "https://adventofcode.com/{$year}/leaderboard/private/view/{$leaderboard}.json");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_COOKIE, 'session=' . $session);
-        $aocResponse = curl_exec($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        if ($httpCode !== 200) {
-            return null;
-        }
-
-        return $aocResponse;
-    }
-
-    private function getUserLinks($year, $leaderboard, $session)
-    {
-        $linksCurl = curl_init();
-        curl_setopt($linksCurl, CURLOPT_URL, "https://adventofcode.com/{$year}/leaderboard/private/view/{$leaderboard}");
-        curl_setopt($linksCurl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($linksCurl, CURLOPT_COOKIE, 'session=' . $session);
-        $linksResponse = curl_exec($linksCurl);
-        $httpCode = curl_getinfo($linksCurl, CURLINFO_HTTP_CODE);
-        curl_close($linksCurl);
-
-        if ($httpCode !== 200) {
-            return null;
-        }
-
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument;
-        $userLinks = [];
-
-        if($dom->loadHTML($linksResponse, LIBXML_NOWARNING)) {
-            foreach($dom->getElementsByTagName('a') as $anchor) {
-                $potentialUserLink = $anchor->getAttribute('href');
-                $potentialUserName = $anchor->textContent;
-                $userLinks[$potentialUserName] = $potentialUserLink;
-            }
-        }
-        libxml_use_internal_errors(false);
-
-        return $userLinks;
-    }
-
-    private function parseAocResponse($aocResponseData, $userLinks)
-    {
-        $data = json_decode($aocResponseData, true);
-        if (!$data) {
-            return null;
-        }
-
-        $users = [];
-        foreach ($data['members'] as $member) {
-            $stars = [];
-            foreach ($member['completion_day_level'] as $day => $dayScore) {
-                $stars[$day] = count($dayScore);
-            }
-
-            $users[] = [
-                'id' => $member['id'],
-                'name' => $member['name'] ?? ('Anonim '.$member['id']),
-                'score' => $member['local_score'],
-                'stars' => $stars,
-                'link' => $member['name'] && isset($userLinks) && isset($userLinks[$member['name']]) ? $userLinks[$member['name']] : null,
-            ];
-        }
-
-        usort($users, function($userA, $userB) {
-            return $userB['score'] <=> $userA['score'];
-        });
-
-        return json_encode($users);
     }
 }
