@@ -1,4 +1,4 @@
-FROM php:7.3-apache-stretch
+FROM php:7.3-apache-buster
 
 ARG XDEBUG_REMOTE_ENABLE=1
 ARG XDEBUG_REMOTE_CONNECT_BACK=0

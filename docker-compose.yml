@@ -13,6 +13,8 @@ services:
         - XDEBUG_IDEKEY=PHPSTORM
         - XDEBUG_AUTOSTART=1
         - XDEBUG_REMOTE_LOG=
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - .:/var/www/html
       - ./docker/apache2:/var/log/apache2
