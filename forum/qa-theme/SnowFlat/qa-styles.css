@@ -3025,7 +3025,6 @@ input[type="submit"], button {
 }
 .qa-sidebar a:hover {
 	color: #fff;
-	border-bottom: 0;
 	text-decoration: none;
 	text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
