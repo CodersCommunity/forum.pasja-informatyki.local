@@ -1,7 +1,7 @@
 .qa-main {
 	h1 {
 		border: none;
-		padding: 10px 20px;
+		padding: 10px 52px 10px 20px;
 		margin-bottom: 0px;
 		background-color: $bcg-dark;
 		color: $color;
@@ -14,6 +14,10 @@
 			&:hover, &:focus {
 				color: $blue;
 			}
+		}
+
+		.qa-favoriting {
+			top: 9px;
 		}
 	}
 }
