@@ -89,6 +89,7 @@
         'max_num_q_tags' => 'number',
         'max_rate_ip_as' => 'number',
         'max_rate_ip_cs' => 'number',
+        'max_rate_ip_feedback' => 'number',
         'max_rate_ip_flags' => 'number',
         'max_rate_ip_logins' => 'number',
         'max_rate_ip_messages' => 'number',
@@ -98,6 +99,7 @@
         'max_rate_ip_votes' => 'number',
         'max_rate_user_as' => 'number',
         'max_rate_user_cs' => 'number',
+        'max_rate_user_feedback' => 'number',
         'max_rate_user_flags' => 'number',
         'max_rate_user_messages' => 'number',
         'max_rate_user_qs' => 'number',
@@ -596,6 +598,10 @@
 
             if (qa_opt('allow_private_messages') || qa_opt('allow_user_walls'))
                 array_push($showoptions, 'max_rate_ip_messages', 'max_rate_user_messages');
+
+            if ($getoptions['feedback_enabled']) {
+                array_push($showoptions, 'max_rate_ip_feedback', 'max_rate_user_feedback');
+            }
 
             $formstyle = 'wide';
 
@@ -1491,6 +1497,7 @@
 
                 case 'max_rate_ip_as':
                 case 'max_rate_ip_cs':
+                case 'max_rate_ip_feedback':
                 case 'max_rate_ip_flags':
                 case 'max_rate_ip_logins':
                 case 'max_rate_ip_messages':
@@ -1503,6 +1510,7 @@
 
                 case 'max_rate_user_as':
                 case 'max_rate_user_cs':
+                case 'max_rate_user_feedback':
                 case 'max_rate_user_flags':
                 case 'max_rate_user_messages':
                 case 'max_rate_user_qs':

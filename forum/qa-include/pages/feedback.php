@@ -27,6 +27,7 @@
 
 	require_once QA_INCLUDE_DIR.'app/captcha.php';
 	require_once QA_INCLUDE_DIR.'db/selects.php';
+    require_once QA_INCLUDE_DIR.'app/limits.php';
 
 
 //	Get useful information on the logged in user
@@ -47,12 +48,23 @@
 	if (!qa_opt('feedback_enabled'))
 		return include QA_INCLUDE_DIR.'qa-page-not-found.php';
 
-	if (qa_user_permit_error()) {
-		$qa_content=qa_content_prepare();
-		$qa_content['error']=qa_lang_html('users/no_permission');
-		$qa_content['http_status']=Q2A_Response::STATUS_FORBIDDEN;
-		return $qa_content;
-	}
+    switch (qa_user_permit_error(null, QA_LIMIT_FEEDBACK)) {
+        case 'limit':
+            $qa_content = qa_content_prepare();
+            $qa_content['error'] = qa_lang_html('misc/feedback_limit');
+
+            return $qa_content;
+
+        case false:
+            break;
+
+        default:
+            $qa_content=qa_content_prepare();
+            $qa_content['error'] = qa_lang_html('users/no_permission');
+            $qa_content['http_status'] = Q2A_Response::STATUS_FORBIDDEN;
+
+            return $qa_content;
+    }
 
 
 //	Send the feedback form

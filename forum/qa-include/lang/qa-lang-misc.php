@@ -46,6 +46,7 @@
 		'feed_retagged_prefix' => 'Retagged: ',
 		'feedback_email' => 'Your email: (optional)',
 		'feedback_empty' => 'Please use this field to send some comments or suggestions',
+		'feedback_limit' => 'You cannot send more feedback forms, try again later',
 		'feedback_message' => 'Your comments or suggestions for ^:',
 		'feedback_name' => 'Your name: (optional)',
 		'feedback_sent' => 'Your message below was sent - thank you.',

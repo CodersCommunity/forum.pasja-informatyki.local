@@ -75,6 +75,10 @@ class qa_event_limits
 			case 'u_wall_post':
 				qa_limits_increment($userid, QA_LIMIT_WALL_POSTS);
 				break;
+
+			case 'feedback':
+				qa_limits_increment($userid, QA_LIMIT_FEEDBACK);
+				break;
 		}
 
 		$writeactions=array(
