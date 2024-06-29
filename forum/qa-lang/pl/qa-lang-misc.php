@@ -45,6 +45,7 @@
 		'feed_retagged_prefix' => 'Zmienione tagi: ',
 		'feedback_email' => 'Twój email: (opcjonalnie)',
 		'feedback_empty' => 'W tym miejscu podaj komentarz lub sugestie',
+		'feedback_limit' => 'Zbyt wiele wysłanych formularzy. Spróbuj ponownie później',
 		'feedback_message' => 'Komentarz lub sugestie dla ^:',
 		'feedback_name' => 'Imię i nazwisko: (opcjonalnie)',
 		'feedback_sent' => 'Twoja wiadomość została wysłana. Dziękujemy.',

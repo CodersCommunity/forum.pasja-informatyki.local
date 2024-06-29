@@ -36,6 +36,7 @@
 	define('QA_LIMIT_FLAGS', 'F');
 	define('QA_LIMIT_MESSAGES', 'M'); // i.e. private messages
 	define('QA_LIMIT_WALL_POSTS', 'W');
+	define('QA_LIMIT_FEEDBACK', 'B');
 
 
 	function qa_user_limits_remaining($action)
@@ -118,6 +119,11 @@
 			case QA_LIMIT_WALL_POSTS:
 				$usermax=qa_opt('max_rate_user_messages');
 				$ipmax=qa_opt('max_rate_ip_messages');
+				break;
+
+			case QA_LIMIT_FEEDBACK:
+				$usermax = qa_opt('max_rate_user_feedback');
+				$ipmax = qa_opt('max_rate_ip_feedback');
 				break;
 
 			default:
