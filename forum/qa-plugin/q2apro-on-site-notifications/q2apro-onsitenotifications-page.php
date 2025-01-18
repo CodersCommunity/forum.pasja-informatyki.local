@@ -47,15 +47,20 @@ class q2apro_onsitenotifications_page
             true
         );
         $maxEvents = qa_opt('q2apro_onsitenotifications_maxevshow'); // maximal events to show
+        $maxAge = qa_opt('q2apro_onsitenotifications_maxage'); // events of last x days
+
+        $fromDate = new DateTime();
+        $fromDate->modify('-' . $maxAge . ' days');
+        $fromDate->setTime(0, 0);
 
         // query all new events of user
         $event_query = qa_db_query_sub(
             'SELECT e.event, e.userid, BINARY e.params as params, UNIX_TIMESTAMP(e.datetime) AS datetime
             FROM ^eventlog AS e
-            WHERE FROM_UNIXTIME(#) <= datetime AND (e.userid=# AND e.event LIKE "in_%")
-            OR ((e.event LIKE "u_message" OR e.event LIKE "u_wall_post") AND e.params LIKE "userid=#\t%" AND e.userid != #)
+            WHERE FROM_UNIXTIME(#) <= datetime AND ((e.userid=# AND e.event LIKE "in_%")
+            OR ((e.event LIKE "u_message" OR e.event LIKE "u_wall_post") AND e.params LIKE "userid=#\t%" AND e.userid != #))
             ORDER BY datetime DESC LIMIT #',
-            qa_opt('q2apro_onsitenotifications_maxage'), // events of last x days
+            $fromDate->getTimestamp(),
             $userid,
             $userid,
             $userid,
