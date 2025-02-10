@@ -378,6 +378,7 @@ class CkEditor
 
     function read_post($fieldname) {
         $html=qa_post_text($fieldname);
+        $html = $this->clearHtmlContent($html);
 
         $htmlformatting=preg_replace('/<\s*\/?\s*(br|p)\s*\/?\s*>/i', '', $html); // remove <p>, <br>, etc... since those are OK in text
 
@@ -395,6 +396,19 @@ class CkEditor
                 'content' => $viewer->get_text($html, 'html', array())
             );
         }
+    }
+
+    private function clearHtmlContent(string $html): string
+    {
+        // remove comments
+        $html = preg_replace('/<!--.*?-->/ms', '', $html);
+
+        // remove empty tags from end
+        do {
+            $html = preg_replace('/<(\w+)(?:\s[^>]*)?>\s*(?:<br\s*\/?>|\s|&nbsp;)*<\/\1>\s*$/i', '', $html, -1, $count);
+        } while ($count > 0);
+
+        return $html;
     }
 
     private function setDefaultToolbar()
