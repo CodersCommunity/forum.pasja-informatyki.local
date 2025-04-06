@@ -9,8 +9,9 @@ return [
     'success_joined' => 'Successfully connected and joined to server',
     'disconnect_button' => 'Disconnect and remove connection',
     'disconnected_success' => 'Your account has successfully disconnected.',
-    'user_blocked' => 'Your account is blocked - you don\'t join to Discord.',
+    'cannot_join' => 'You cannot join to Discord.',
     'already_connected_account' => 'This Discord account is already connected to other user.',
+    'confirm_email' => 'Please ^5confirm your email address^6 to join.',
 
     'client_id' => 'Discord API client ID',
     'client_secret' => 'Discord API secret key',
