@@ -9,8 +9,9 @@ return [
     'success_joined' => 'Gratulacje, dołączyłeś właśnie na serwer! Teraz wystarczy, że włączysz Discorda, wybierzesz nasz serwer i możesz rozmawiać.',
     'disconnect_button' => 'Odłącz powiązanie i opuść serwer',
     'disconnected_success' => 'Twoje konto zostało pomyślnie odłączone.',
-    'user_blocked' => 'Twoje konto jest zablokowane - nie możesz dołączyć do Discorda.',
+    'cannot_join' => 'Nie możesz obecnie dołączyć do Discorda.',
     'already_connected_account' => 'To konto Discord jest już połączone z innym użytkownikiem.',
+    'confirm_email' => '^5Potwierdź swój adres email^6, aby dołączyć.',
 
     'client_id' => 'ID klienta API Discord',
     'client_secret' => 'Sekretny klucz klienta API Discord',

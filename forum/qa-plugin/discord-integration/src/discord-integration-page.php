@@ -39,20 +39,16 @@ class discord_integration_page
             return $this->get_page_content($connected);
         }
 
-        if (empty($user_id)) {
+        $permissions_error_message = $this->get_permissions_error_message($user_id);
+        if (!empty($permissions_error_message)) {
             return $this->get_page_content(
                 null,
                 null,
-                qa_insert_login_links(qa_lang_html('discord_integration/not_logged'), 'login')
+                null,
+                $permissions_error_message
             );
         }
-        if (qa_get_logged_in_flags() & QA_USER_FLAGS_USER_BLOCKED) {
-            return $this->get_page_content(
-                null,
-                null,
-                qa_lang_html('discord_integration/user_blocked')
-            );
-        }
+
         if (!empty(qa_get('error'))) {
             return $this->get_connection_error();
         }
@@ -98,7 +94,7 @@ class discord_integration_page
         return $this->get_page_content();
     }
 
-    protected function get_page_content($connected_user = null, $success_message = null, $error_message = null)
+    protected function get_page_content($connected_user = null, $success_message = null, $error_message = null, $permissions_error_message = null)
     {
         $qa_content = qa_content_prepare();
         $qa_content['custom'] = '';
@@ -122,8 +118,8 @@ class discord_integration_page
                 }
             </style>';
 
-        if (!empty($error_message)) {
-            $qa_content['error'] = $error_message;
+        if (!empty($error_message) || !empty($permissions_error_message)) {
+            $qa_content['error'] = $permissions_error_message ?? $error_message;
         }
         if (!empty($success_message)) {
             $qa_content['custom'] .= '<div class="qa-form-tall-ok">' . $success_message . '</div>';
@@ -132,7 +128,7 @@ class discord_integration_page
         if (!empty(qa_opt('discord_integration_top_info'))) {
             $qa_content['custom'] .= qa_opt('discord_integration_top_info');
         }
-        if (empty($connected_user) && qa_is_logged_in() && !(qa_get_logged_in_flags() & QA_USER_FLAGS_USER_BLOCKED)) {
+        if (empty($connected_user) && $permissions_error_message === null) {
             $url = $this->api->get_discord_url() . '/oauth2/authorize?' . http_build_query([
                     'client_id' => qa_opt('discord_integration_client_id'),
                     'scope' => 'identify guilds.join',
@@ -178,5 +174,27 @@ class discord_integration_page
         }
 
         return qa_db_read_one_assoc($result);
+    }
+
+    private function get_permissions_error_message($user_id)
+    {
+        require_once QA_INCLUDE_DIR.'app/limits.php';
+
+        if (empty($user_id)) {
+            return qa_insert_login_links(qa_lang_html('discord_integration/not_logged'), 'login');
+        }
+
+        $flags = qa_get_logged_in_flags();
+        if (!($flags & QA_USER_FLAGS_EMAIL_CONFIRMED) && qa_opt('confirm_user_emails')) {
+            return qa_insert_login_links(qa_lang_html('discord_integration/confirm_email'), qa_request());
+        }
+        IF (!($flags & QA_USER_FLAGS_MUST_APPROVE) && qa_opt('moderate_users')) {
+            return qa_lang_html('discord_integration/cannot_join');
+        }
+        if (qa_is_ip_blocked() || $flags & QA_USER_FLAGS_USER_BLOCKED) {
+            return qa_lang_html('discord_integration/cannot_join');
+        }
+
+        return null;
     }
 }
