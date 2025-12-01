@@ -34,7 +34,7 @@ class adventofcode_page
         $html = '';
 
         $html .= '<h2>Zapraszamy do wspólnej rywalizacji!</h2>';
-        $html .= '<p><a href="https://adventofcode.com/'.$year.'/about">Advent of Code</a> to coroczne zadania programistyczne, które pojawiają się codziennie przez okres adwentu. Możesz rozwiązywać je w <strong>dowolnym języku programowania</strong>. Nie jest wymagana żadna specjalistyczna wiedza - wystarczą chęci i podstawowa znajomość języka angielskiego.</p>';
+        $html .= '<p><a href="https://adventofcode.com/'.$year.'/about">Advent of Code</a> to coroczne zadania programistyczne, które pojawiają się przez 12 dni w okresie adwentu. Możesz rozwiązywać je w <strong>dowolnym języku programowania</strong>. Nie jest wymagana żadna specjalistyczna wiedza - wystarczą chęci i podstawowa znajomość języka angielskiego.</p>';
 
         $html .= '<p>Aby umilić rozgrywkę, przygotowaliśmy prywatną tablicę wyników dla naszej społeczności.</p>';
 
@@ -51,7 +51,7 @@ class adventofcode_page
 
             // Days numbers
             $html .= '<ol class="aoc-page__days">';
-            foreach(range(1, 25) as $dayNr) {
+            foreach(range(1, 12) as $dayNr) {
                 $html .= '<li class="aoc-page__day-nr">'.$dayNr.'</li>';
             }
             $html .= '</ol>';
@@ -62,7 +62,7 @@ class adventofcode_page
             foreach ($users as ['name' => $username, 'score' => $score, 'stars' => $stars]) {
                 $html .= '<li>';
                 $html .= '    <span class="aoc-page__score">'.$score.'</span>';
-                foreach (range(1, 25) as $day) {
+                foreach (range(1, 12) as $day) {
                     $html .= '<span class="aoc-page__star aoc-page__star--'.$stars[$day - 1].'" title="'.$username.' - Dzień: '.$day.'">*</span>';
                 }
                 $html .= '    <span class="aoc-page__username">'.$username.'</span>';

@@ -75,7 +75,7 @@ class adventofcode_content
         foreach ($data['members'] as $member) {
             $stars = '';
             $days = $member['completion_day_level'];
-            foreach (range(1, 25) as $day) {
+            foreach (range(1, 12) as $day) {
                 $stars .= !empty($days[$day]) ? count($days[$day]) : 0;
             }
 
